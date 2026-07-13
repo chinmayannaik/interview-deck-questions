@@ -19,6 +19,35 @@ content (Firebase stores only *user* data — progress, bookmarks, notes).
 > The `version` bump is what tells the Flutter app to re-download. If you forget
 > it, existing app installs keep the old cached copy.
 
+## Structure is data-driven — add a field or section from git alone
+
+Both the **main fields** (`groups`) and the **sections** (`categories`) are
+defined in `manifest.json`. The website and app read them from there, so adding
+one is a content-only change — **no app release, no website redeploy**.
+
+**Add a new main field** (e.g. "Mobile Development" after DevOps):
+1. Add an entry to `groups` in `manifest.json` at the position you want it shown:
+   ```json
+   { "id": "mobile", "label": "Mobile Development", "color": "#02569B" }
+   ```
+2. Add at least one category that references it (see below). A group with no
+   questions is hidden until it has some.
+3. Bump `version`, push.
+
+**Add a new section** (category) under any field:
+1. Create `<category>.json` (an array of questions using the same schema).
+2. Add an entry to `categories` in `manifest.json`:
+   ```json
+   { "id": "mobile", "file": "mobile.json", "label": "Mobile",
+     "group": "mobile", "color": "#02569B", "count": 12 }
+   ```
+   - `group` is the id of the parent field (must exist in `groups`).
+   - `color` is optional — omit it and the clients auto-assign one.
+3. Bump `version`, push.
+
+Order matters: the order of entries in `groups` and `categories` is the display
+order in both clients.
+
 ## Question schema
 
 ```jsonc
