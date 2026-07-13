@@ -11,13 +11,25 @@ content (Firebase stores only *user* data — progress, bookmarks, notes).
 
 ## Editing content (typo fix / new question / better answer)
 
-1. Edit the relevant `<category>.json` (or add a new object to the array).
-2. If you added/removed questions, update that category's `count` in `manifest.json`.
-3. **Bump `version`** in `manifest.json` (integer +1) and update `updatedAt`.
-4. Commit + push. Website and app pick it up automatically (see ARCHITECTURE.md).
+**Do NOT hand-edit `count`, `version`, `updatedAt` or `totalQuestions`.** A script
+computes them for you:
 
-> The `version` bump is what tells the Flutter app to re-download. If you forget
-> it, existing app installs keep the old cached copy.
+1. Edit the relevant `<category>.json` (or add a new object to the array).
+2. Run the builder — it recomputes counts + total, sets `updatedAt`, and bumps
+   `version` **only if content actually changed** (idempotent), plus per-file
+   content hashes so even a same-count typo fix is detected:
+   ```
+   node build-manifest.mjs      # or: npm run build
+   ```
+3. Commit + push. Website and app pick it up automatically (see the webapp's
+   ARCHITECTURE.md).
+
+The builder also **validates** the content (JSON parses, ids unique, required
+fields present, difficulty valid, group exists) and refuses to write a broken
+manifest — so a bad edit fails locally instead of shipping.
+
+> Only `version` and `count` are functionally required (they drive the app's
+> re-download); the builder guarantees they're always correct.
 
 ## Structure is data-driven — add a field or section from git alone
 
@@ -32,17 +44,19 @@ one is a content-only change — **no app release, no website redeploy**.
    ```
 2. Add at least one category that references it (see below). A group with no
    questions is hidden until it has some.
-3. Bump `version`, push.
+3. Run `node build-manifest.mjs`, then push.
 
 **Add a new section** (category) under any field:
 1. Create `<category>.json` (an array of questions using the same schema).
-2. Add an entry to `categories` in `manifest.json`:
+2. Add an entry to `categories` in `manifest.json` (omit `count` — the builder
+   fills it):
    ```json
    { "id": "mobile", "file": "mobile.json", "label": "Mobile",
-     "group": "mobile", "color": "#02569B", "count": 12 }
+     "group": "mobile", "color": "#02569B" }
    ```
    - `group` is the id of the parent field (must exist in `groups`).
    - `color` is optional — omit it and the clients auto-assign one.
+3. Run `node build-manifest.mjs`, then push.
 3. Bump `version`, push.
 
 Order matters: the order of entries in `groups` and `categories` is the display
