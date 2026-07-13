@@ -234,5 +234,80 @@
     "tip": "Asking about their biggest challenge shows you think like an owner, not just an applicant.",
     "code": "",
     "lang": ""
+  },
+  {
+    "id": "bhv-team-disagreement",
+    "category": "behavioral",
+    "difficulty": "intermediate",
+    "tags": [
+      "teamwork",
+      "communication",
+      "conflict"
+    ],
+    "question": "\"Tell me about a time you disagreed with a teammate.\"",
+    "answer": "<p>Describe the disagreement objectively, explain how you listened to the other person's perspective, shared your reasoning with facts or data, and worked together to reach a solution. Focus on collaboration and the positive outcome rather than who was right.</p>",
+    "tip": "Show that you value teamwork and solving problems over winning arguments.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "bhv-pressure",
+    "category": "behavioral",
+    "difficulty": "intermediate",
+    "tags": [
+      "pressure",
+      "prioritization",
+      "delivery"
+    ],
+    "question": "\"Tell me about a time you worked under pressure or tight deadlines.\"",
+    "answer": "<p>Explain how you prioritized the most important work, communicated risks early, broke the task into smaller milestones, and successfully delivered the feature or agreed scope. Mention how you maintained quality despite the deadline.</p>",
+    "tip": "Interviewers want to hear about planning and communication, not just working late hours.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "bhv-proud-project",
+    "category": "behavioral",
+    "difficulty": "beginner",
+    "tags": [
+      "achievement",
+      "projects",
+      "impact"
+    ],
+    "question": "\"What project or achievement are you most proud of?\"",
+    "answer": "<p>Choose a project that closely matches the role you're applying for. Explain the business problem, your specific contribution, the technologies you used, the challenges you solved, and the measurable impact on users or the business.</p>",
+    "tip": "Keep the focus on your contribution rather than the team's overall work.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "bhv-priority-change",
+    "category": "behavioral",
+    "difficulty": "intermediate",
+    "tags": [
+      "adaptability",
+      "prioritization",
+      "agile"
+    ],
+    "question": "\"Describe a time when priorities changed suddenly.\"",
+    "answer": "<p>Explain how you evaluated the new priorities, discussed the impact with stakeholders, reorganized your tasks, and adapted without losing focus on the team's goals. Demonstrate flexibility and clear communication.</p>",
+    "tip": "Show that you stay calm and organized when requirements change unexpectedly.",
+    "code": "",
+    "lang": ""
+  },
+  {
+    "id": "bhv-fast-learning",
+    "category": "behavioral",
+    "difficulty": "intermediate",
+    "tags": [
+      "learning",
+      "growth",
+      "adaptability"
+    ],
+    "question": "\"Tell me about a time you had to learn a new technology quickly.\"",
+    "answer": "<p>Describe the situation, why the technology was needed, how you learned it using documentation, tutorials, or mentoring, how you applied it in the project, and the successful outcome. Emphasize your ability to learn independently.</p>",
+    "tip": "Use a real example such as Angular Signals, GraphQL, NgRx, ECharts, or another technology you've learned on the job.",
+    "code": "",
+    "lang": ""
   }
 ]
