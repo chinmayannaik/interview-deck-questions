@@ -1,0 +1,34 @@
+[
+    {
+  "id": "leetcode-two-sum",
+  "category": "leetcode",
+  "difficulty": "beginner",
+  "tags": [
+    "array",
+    "hashmap"
+  ],
+  "question": "Two Sum",
+  "answer": "<p>Given an array of integers <code class=\"inline\">nums</code> and an integer <code class=\"inline\">target</code>, return the indices of the two numbers such that they add up to the target.</p><p><strong>Optimal Approach:</strong> Use a <code class=\"inline\">HashMap</code> to store each number and its index while iterating. For each element, check if <code class=\"inline\">target - nums[i]</code> already exists in the map.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
+  "tip": "Always think of HashMap whenever you need fast lookups in array problems.",
+  "code": "public int[] twoSum(int[] nums, int target) {\n    Map<Integer, Integer> map = new HashMap<>();\n    for (int i = 0; i < nums.length; i++) {\n        int complement = target - nums[i];\n        if (map.containsKey(complement)) {\n            return new int[]{map.get(complement), i};\n        }\n        map.put(nums[i], i);\n    }\n    return new int[]{};\n}",
+  "lang": "java",
+  "deep": "<h4>Problem intuition</h4><p>The goal is to find two numbers whose sum equals the target. The naive solution compares every pair, but that's inefficient. The key observation is that for every number <code class=\"inline\">x</code>, we only need to know whether <code class=\"inline\">target - x</code> has already been seen.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Compare every pair using two loops. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Optimal:</strong> Store visited numbers in a <code class=\"inline\">HashMap</code>. Before inserting the current number, check if its complement already exists.</li></ul><pre><code>nums = [2,7,11,15]\ntarget = 9\n\nMap = {}\n2 → complement = 7 → not found\nStore 2\n\n7 → complement = 2 → found\nAnswer = [0,1]</code></pre><h4>Why HashMap works</h4><p>HashMap provides average <strong>O(1)</strong> lookup time. Instead of searching the remaining array for every element, we instantly know whether the required complement already exists.</p><h4>Common mistakes</h4><ul><li>Adding the current element to the map before checking its complement.</li><li>Returning the values instead of their indices.</li><li>Using nested loops after already creating a HashMap.</li></ul><h4>Interview tip</h4><p>Whenever you hear phrases like <strong>find a pair</strong>, <strong>target sum</strong>, or <strong>fast lookup</strong>, think of using a HashMap.</p>",
+  "youtube": "https://youtu.be/Yyyi12oaK94"
+},
+{
+  "id": "leetcode-valid-parentheses",
+  "category": "leetcode",
+  "difficulty": "beginner",
+  "tags": [
+    "stack",
+    "string"
+  ],
+  "question": "Valid Parentheses",
+  "answer": "<p>Given a string containing only <code class=\"inline\">()</code>, <code class=\"inline\">[]</code>, and <code class=\"inline\">{}</code>, determine if the input string is valid.</p><p><strong>Optimal Approach:</strong> Use a <code class=\"inline\">Stack</code>. Push opening brackets onto the stack. Whenever a closing bracket appears, check if it matches the top of the stack.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
+  "tip": "Whenever the problem asks about matching pairs or nested structures, think of a Stack.",
+  "code": "public boolean isValid(String s) {\n    Stack<Character> stack = new Stack<>();\n    for (char c : s.toCharArray()) {\n        if (c == '(' || c == '{' || c == '[') {\n            stack.push(c);\n        } else {\n            if (stack.isEmpty()) return false;\n            char top = stack.pop();\n            if ((c == ')' && top != '(') ||\n                (c == '}' && top != '{') ||\n                (c == ']' && top != '[')) {\n                return false;\n            }\n        }\n    }\n    return stack.isEmpty();\n}",
+  "lang": "java",
+  "deep": "<h4>Problem intuition</h4><p>This problem asks whether every opening bracket has a matching closing bracket in the correct order. Since brackets must close in reverse order of opening, a <strong>Stack</strong> is the perfect data structure.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Repeatedly remove matching pairs like <code class=\"inline\">()</code>, <code class=\"inline\">[]</code>, and <code class=\"inline\">{}</code> until nothing changes. This is inefficient.</li><li><strong>Optimal:</strong> Push every opening bracket onto a stack. Whenever a closing bracket appears, verify it matches the top of the stack.</li></ul><pre><code>Input: \"({[]})\"\n\nStack = []\n( → push\n{ → push\n[ → push\n] → pop [\n} → pop {\n) → pop (\n\nStack empty → Valid</code></pre><h4>Why Stack works</h4><p>A stack follows the <strong>Last In, First Out (LIFO)</strong> principle. The most recently opened bracket must always be closed first, making Stack the ideal choice.</p><h4>Common mistakes</h4><ul><li>Not checking if the stack is empty before popping.</li><li>Forgetting to verify the stack is empty after processing the entire string.</li><li>Trying to count brackets instead of checking their order.</li></ul><h4>Interview tip</h4><p>Whenever the problem involves <strong>nested structures</strong>, <strong>balanced symbols</strong>, or <strong>matching pairs</strong>, your first thought should be a Stack.</p>",
+  "youtube": "https://youtu.be/9kmUaXrjizQ"
+}
+]

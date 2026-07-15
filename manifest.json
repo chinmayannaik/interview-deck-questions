@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
-  "version": 7,
-  "updatedAt": "2026-07-14T12:58:25.540Z",
-  "totalQuestions": 760,
+  "version": 9,
+  "updatedAt": "2026-07-15T17:49:34.984Z",
+  "totalQuestions": 762,
   "groups": [
     {
       "id": "frontend",
@@ -38,7 +38,7 @@
       "group": "frontend",
       "color": "#C3002F",
       "count": 78,
-      "hash": "8ff556722c56"
+      "hash": "99004d0961b9"
     },
     {
       "id": "ngcoding",
@@ -140,6 +140,15 @@
       "hash": "9d6d1cd9d8e9"
     },
     {
+      "id": "leetcode",
+      "file": "leetcode.json",
+      "label": "LeetCode",
+      "group": "backend",
+      "color": "#9dde23",
+      "count": 2,
+      "hash": "ef9eaa92af62"
+    },
+    {
       "id": "springboot",
       "file": "springboot.json",
       "label": "Spring Boot",
@@ -173,7 +182,7 @@
       "group": "hr",
       "color": "#5C7A8F",
       "count": 22,
-      "hash": "c3df8a8f100f"
+      "hash": "608c78b3022b"
     },
     {
       "id": "flutter",
@@ -182,7 +191,7 @@
       "group": "mobile",
       "color": "#42A5F5",
       "count": 100,
-      "hash": "b164173a0876"
+      "hash": "7392b47ab57b"
     },
     {
       "id": "dart",
@@ -212,5 +221,5 @@
       "hash": "d36017bc1528"
     }
   ],
-  "contentHash": "24367536bf8e3b6eb6fa82bfd7c7ceff18a12ffa"
+  "contentHash": "cc4f49a3e0e96f3a9fb90859028a49c8b745488e"
 }
