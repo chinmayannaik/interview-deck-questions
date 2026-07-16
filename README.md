@@ -1,86 +1,108 @@
-# shared-data — the single source of truth
+# Shared Data
 
-This folder holds **all interview questions** as JSON. Both the website and the
-Flutter Android app read from these exact files. Nothing else stores question
-content (Firebase stores only *user* data — progress, bookmarks, notes).
+This folder contains all interview questions used by both the **website** and the **Flutter app**.
+
+<img width="1482" height="753" alt="image" src="https://github.com/user-attachments/assets/566f8855-95f8-4c3a-9209-bd84e0378802" />
+
+
+Question content is stored only here. Firebase stores only user data such as progress, bookmarks, and notes.
+
+<p align="center">
+  <a href="https://interview-questions-bank.netlify.app/">
+    <img src="https://img.shields.io/badge/Live-Demo-C21836?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Live Demo">
+  </a>
+</p>
+
+## Contributing
+
+1. Create a new branch from `main`.
+2. Make your changes.
+3. Commit your changes.
+4. Push your branch.
+5. Raise a Pull Request (PR).
 
 ## Files
 
-- `manifest.json` — content version, timestamp, and the list of categories.
-- `<category>.json` — one file per category (e.g. `angular.json`, `git.json`).
+- `manifest.json` – Categories and content metadata.
+- `<category>.json` – Questions for each category (e.g. `angular.json`, `git.json`).
 
-## Editing content (typo fix / new question / better answer)
+---
 
-**Do NOT hand-edit `count`, `version`, `updatedAt` or `totalQuestions`.** A script
-computes them for you:
+## Updating Questions
 
-1. Edit the relevant `<category>.json` (or add a new object to the array).
-2. Run the builder — it recomputes counts + total, sets `updatedAt`, and bumps
-   `version` **only if content actually changed** (idempotent), plus per-file
-   content hashes so even a same-count typo fix is detected:
-   ```
-   node build-manifest.mjs      # or: npm run build
-   ```
-3. Commit + push. Website and app pick it up automatically (see the webapp's
-   ARCHITECTURE.md).
+1. Open the required `<category>.json`.
+2. Add, edit, or remove questions.
+3. Commit and push.
 
-The builder also **validates** the content (JSON parses, ids unique, required
-fields present, difficulty valid, group exists) and refuses to write a broken
-manifest — so a bad edit fails locally instead of shipping.
+A Git hook automatically:
+- Updates `version`
+- Updates `updatedAt`
+- Updates `totalQuestions`
+- Updates category `count`
+- Validates the content before the push
 
-> Only `version` and `count` are functionally required (they drive the app's
-> re-download); the builder guarantees they're always correct.
+> **Do not manually edit** `version`, `updatedAt`, `count`, or `totalQuestions`.
 
-## Structure is data-driven — add a field or section from git alone
+---
 
-Both the **main fields** (`groups`) and the **sections** (`categories`) are
-defined in `manifest.json`. The website and app read them from there, so adding
-one is a content-only change — **no app release, no website redeploy**.
+## Adding a New Category
 
-**Add a new main field** (e.g. "Mobile Development" after DevOps):
-1. Add an entry to `groups` in `manifest.json` at the position you want it shown:
-   ```json
-   { "id": "mobile", "label": "Mobile Development", "color": "#02569B" }
-   ```
-2. Add at least one category that references it (see below). A group with no
-   questions is hidden until it has some.
-3. Run `node build-manifest.mjs`, then push.
+1. Create a new JSON file (e.g. `flutter.json`).
+2. Add it to `manifest.json`.
 
-**Add a new section** (category) under any field:
-1. Create `<category>.json` (an array of questions using the same schema).
-2. Add an entry to `categories` in `manifest.json` (omit `count` — the builder
-   fills it):
-   ```json
-   { "id": "mobile", "file": "mobile.json", "label": "Mobile",
-     "group": "mobile", "color": "#02569B" }
-   ```
-   - `group` is the id of the parent field (must exist in `groups`).
-   - `color` is optional — omit it and the clients auto-assign one.
-3. Run `node build-manifest.mjs`, then push.
-3. Bump `version`, push.
+Example:
 
-Order matters: the order of entries in `groups` and `categories` is the display
-order in both clients.
-
-## Question schema
-
-```jsonc
+```json
 {
-  "id": "git-merge-rebase",        // globally unique, stable — never reuse
-  "category": "git",               // must equal the manifest category id
-  "difficulty": "intermediate",    // beginner | intermediate | advanced
-  "tags": ["merge", "rebase"],     // string[]
-  "question": "Merge vs rebase.",  // plain text
-  "answer": "<p>…</p>",            // trusted HTML (rendered as markup)
-  "tip": "Don't rebase shared branches.", // optional plain text
-  "code": "git rebase main",       // optional code sample ("" if none)
-  "lang": "bash",                  // optional language hint ("" if none)
-  "deep": "<p>…</p>"               // optional in-depth HTML (omit if absent)
+  "id": "flutter",
+  "file": "flutter.json",
+  "label": "Flutter",
+  "group": "mobile"
 }
 ```
 
-## Regenerating from the legacy JS (one-off)
+Commit and push.
 
-The JSON was generated from the old `data/*.js` files with
-`node scripts/migrate-to-json.js`. That script is kept for reference only —
-**JSON is now the source of truth**; do not edit `data/*.js`.
+---
+
+## Adding a New Group
+
+Example:
+
+```json
+{
+  "id": "mobile",
+  "label": "Mobile Development",
+  "color": "#02569B"
+}
+```
+
+Then add one or more categories that belong to the group.
+
+---
+
+## Question Format
+
+```json
+{
+  "id": "angular-components",
+  "category": "angular",
+  "difficulty": "beginner",
+  "tags": ["components"],
+  "question": "What is a component?",
+  "answer": "<p>...</p>",
+  "tip": "Optional",
+  "code": "",
+  "lang": "",
+  "deep": "<p>...</p>"
+}
+```
+
+---
+
+## Notes
+
+- Every `id` must be unique.
+- `category` must match a category in `manifest.json`.
+- `difficulty` must be `beginner`, `intermediate`, or `advanced`.
+- The order of `groups` and `categories` in `manifest.json` determines the display order in both the website and the app.
