@@ -3,11 +3,7 @@
     "id": "js-closure",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "V.Imp",
-      "closure",
-      "scope"
-    ],
+    "tags": ["V.Imp", "closure", "scope"],
     "question": "What is a closure? Give a real use.",
     "answer": "<p>A <strong>closure</strong> is a function that keeps access to variables from its outer (lexical) scope even after the outer function has returned. The inner function \"remembers\" the environment it was created in.</p><p>Uses: <strong>data privacy</strong> (private variables), function factories, and holding state in callbacks — e.g. a <code class=\"inline\">debounce</code> keeps its timer id in a closure.</p>",
     "tip": "Closures are the answer to 'how do you make a private variable in JavaScript'.",
@@ -20,29 +16,20 @@
     "id": "js-var-let-const",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "V.Imp",
-      "scope",
-      "hoisting",
-      "variables"
-    ],
+    "tags": ["V.Imp", "scope", "hoisting", "variables"],
     "question": "var vs let vs const, and what is hoisting?",
     "answer": "<ul><li><strong>var</strong> — function-scoped, hoisted and initialised to <code class=\"inline\">undefined</code>, re-declarable.</li><li><strong>let</strong> — block-scoped, hoisted but in the <strong>Temporal Dead Zone</strong> (error if used before declaration).</li><li><strong>const</strong> — block-scoped, assigned once. The <em>binding</em> is constant, not the object — you can still mutate a <code class=\"inline\">const</code> array/object.</li></ul><p><strong>Hoisting</strong>: declarations are moved to the top of their scope at compile time. <code class=\"inline\">var</code> and function declarations are usable early; <code class=\"inline\">let/const</code> are not.</p>",
     "tip": "Default to const, use let when you must reassign, avoid var.",
     "code": "",
     "lang": "",
+    "youtube": "https://youtu.be/XgSjoHgy3Rk",
     "deep": "<h4>Side-by-side</h4><table><thead><tr><th></th><th>var</th><th>let</th><th>const</th></tr></thead><tbody><tr><td>Scope</td><td>function</td><td>block</td><td>block</td></tr><tr><td>Hoisted</td><td>yes → <code class=\"inline\">undefined</code></td><td>yes → TDZ</td><td>yes → TDZ</td></tr><tr><td>Re-declare</td><td>allowed</td><td>no</td><td>no</td></tr><tr><td>Re-assign</td><td>yes</td><td>yes</td><td>no</td></tr><tr><td>Global prop</td><td>adds to <code class=\"inline\">window</code></td><td>no</td><td>no</td></tr></tbody></table><h4>What hoisting actually is</h4><p>At compile time the engine scans a scope and registers its declarations before running any line. So the <em>declaration</em> is “moved up,” but the <em>assignment</em> stays put.</p><pre><code>console.log(a); // undefined (declaration hoisted, value not)\nvar a = 5;\n\nconsole.log(b); // ReferenceError (TDZ)\nlet b = 5;</code></pre><p><code class=\"inline\">var</code> is initialised to <code class=\"inline\">undefined</code> when hoisted; <code class=\"inline\">let</code>/<code class=\"inline\">const</code> are hoisted but left <em>uninitialised</em> — reading them before the declaration line throws (the Temporal Dead Zone).</p><h4>Block scope matters</h4><pre><code>if (true) { var x = 1; let y = 2; }\nconsole.log(x); // 1  — var leaks out of the block\nconsole.log(y); // ReferenceError — let is block-scoped</code></pre><h4>const is not \"immutable\"</h4><p><code class=\"inline\">const</code> freezes the <em>binding</em>, not the value. You can still mutate the contents of a const object/array — use <code class=\"inline\">Object.freeze()</code> for shallow immutability.</p><pre><code>const arr = [1];\narr.push(2);   // ✅ allowed — same reference\narr = [];      // ❌ TypeError — reassigning the binding</code></pre><h4>Function declarations vs expressions</h4><p>Function <em>declarations</em> are fully hoisted (callable before their line). Function <em>expressions</em> assigned to <code class=\"inline\">var</code>/<code class=\"inline\">let</code> follow the variable's hoisting rules.</p><h4>How to say it in an interview</h4><p>“Use <code class=\"inline\">const</code> by default, <code class=\"inline\">let</code> when you must reassign, and avoid <code class=\"inline\">var</code> because it’s function-scoped and leaks. Hoisting means declarations are processed before execution — <code class=\"inline\">var</code> becomes <code class=\"inline\">undefined</code>, while <code class=\"inline\">let</code>/<code class=\"inline\">const</code> sit in the TDZ and throw if used early.”</p>"
   },
   {
     "id": "js-event-loop",
     "category": "javascript",
     "difficulty": "advanced",
-    "tags": [
-      "V.Imp",
-      "event-loop",
-      "async",
-      "microtask"
-    ],
+    "tags": ["V.Imp", "event-loop", "async", "microtask"],
     "question": "Explain the event loop, microtasks vs macrotasks.",
     "answer": "<p>JS is single-threaded. The <strong>call stack</strong> runs synchronous code. Async callbacks wait in queues and the <strong>event loop</strong> pushes them onto the stack when it's empty.</p><ul><li><strong>Microtask queue</strong> — Promise <code class=\"inline\">.then</code>, <code class=\"inline\">queueMicrotask</code>, <code class=\"inline\">await</code> continuations. Fully drained after each task.</li><li><strong>Macrotask queue</strong> — <code class=\"inline\">setTimeout</code>, <code class=\"inline\">setInterval</code>, I/O, UI events.</li></ul><p>Microtasks always run before the next macrotask.</p>",
     "tip": "Classic trick question: a resolved Promise's .then logs before a setTimeout(…, 0).",
@@ -54,10 +41,7 @@
     "id": "js-equality",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "operators",
-      "coercion"
-    ],
+    "tags": ["operators", "coercion"],
     "question": "== vs === ?",
     "answer": "<p><strong>==</strong> compares after type coercion (<code class=\"inline\">0 == \"0\"</code> is <code class=\"inline\">true</code>). <strong>===</strong> checks value <em>and</em> type with no coercion.</p><p>Always use <code class=\"inline\">===</code> unless you deliberately want coercion (e.g. <code class=\"inline\">x == null</code> to catch both null and undefined).</p>",
     "tip": "x == null is the one idiomatic use of == — it matches null and undefined.",
@@ -68,11 +52,7 @@
     "id": "js-this",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "this",
-      "binding",
-      "arrow"
-    ],
+    "tags": ["this", "binding", "arrow"],
     "question": "How does the this keyword work?",
     "answer": "<p><code class=\"inline\">this</code> depends on <em>how a function is called</em>:</p><ul><li>Regular call → global object, or <code class=\"inline\">undefined</code> in strict mode.</li><li>Method call <code class=\"inline\">obj.fn()</code> → <code class=\"inline\">obj</code>.</li><li><strong>Arrow function</strong> → no own <code class=\"inline\">this</code>; inherits from the enclosing scope.</li><li><code class=\"inline\">call</code> / <code class=\"inline\">apply</code> / <code class=\"inline\">bind</code> → set <code class=\"inline\">this</code> explicitly.</li></ul>",
     "tip": "Arrow functions are why callbacks 'just work' inside classes — they keep the outer this.",
@@ -84,42 +64,33 @@
     "id": "js-promise-async",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "promise",
-      "async-await",
-      "error-handling"
-    ],
+    "tags": ["promise", "async-await", "error-handling"],
     "question": "Promise vs async/await, and how do you handle errors?",
     "answer": "<p>A <strong>Promise</strong> represents a future value (pending → fulfilled/rejected). <strong>async/await</strong> is syntactic sugar that lets asynchronous code read synchronously.</p><p>Errors: <code class=\"inline\">.catch()</code> on a chain, or <code class=\"inline\">try/catch</code> around <code class=\"inline\">await</code>. Use <code class=\"inline\">Promise.all</code> for parallel and <code class=\"inline\">Promise.allSettled</code> when you need every result regardless of failures.</p>",
     "tip": "await inside a loop is sequential — use Promise.all to parallelise independent calls.",
     "code": "async function load() {\n  try {\n    const res = await fetch('/api/user');\n    return await res.json();\n  } catch (e) { /* handle */ }\n}",
     "lang": "js",
+    "youtube": "https://www.youtube.com/watch?v=li7FzDHYZpc",
     "deep": "<h4>A Promise's three states</h4><p><strong>pending</strong> → then either <strong>fulfilled</strong> (has a value) or <strong>rejected</strong> (has a reason). It settles once and never changes again.</p><h4>async/await is sugar over Promises</h4><p>An <code class=\"inline\">async</code> function always returns a Promise. <code class=\"inline\">await</code> pauses the function until the awaited Promise settles, unwrapping the value (or throwing the rejection). It reads top-to-bottom but is still non-blocking.</p><pre><code>// chain\nfetch('/user').then(r =&gt; r.json()).then(use).catch(handle);\n// same thing, flatter\nasync function load() {\n  try { const r = await fetch('/user'); use(await r.json()); }\n  catch (e) { handle(e); }\n}</code></pre><h4>Error handling — the four traps</h4><ul><li><code class=\"inline\">try/catch</code> around <code class=\"inline\">await</code>, or <code class=\"inline\">.catch()</code> on a chain.</li><li><strong><code class=\"inline\">fetch</code> doesn't reject on HTTP errors</strong> — a 404/500 still fulfils. Check <code class=\"inline\">res.ok</code> yourself.</li><li>A missing <code class=\"inline\">catch</code> → an <em>unhandled promise rejection</em>.</li><li>Forgetting <code class=\"inline\">await</code> → you handle the Promise object, not the value, and the <code class=\"inline\">try/catch</code> won't catch its rejection.</li></ul><pre><code>const res = await fetch(url);\nif (!res.ok) throw new Error(`HTTP ${res.status}`);</code></pre><h4>Sequential vs parallel</h4><pre><code>// ❌ sequential — waits ~2x\nconst a = await getA();\nconst b = await getB();\n\n// ✅ parallel — independent calls at once\nconst [a, b] = await Promise.all([getA(), getB()]);</code></pre><p><code class=\"inline\">await</code> inside a <code class=\"inline\">for</code> loop runs one at a time. For independent work, kick them all off and <code class=\"inline\">Promise.all</code> — or <code class=\"inline\">allSettled</code> when you need every result even if some fail.</p><h4>How to say it in an interview</h4><p>“A Promise is a future value; <code class=\"inline\">async/await</code> is syntax sugar that makes it read synchronously. I handle errors with <code class=\"inline\">try/catch</code> around <code class=\"inline\">await</code> — remembering <code class=\"inline\">fetch</code> doesn’t reject on 4xx/5xx so I check <code class=\"inline\">res.ok</code> — and I use <code class=\"inline\">Promise.all</code> to parallelise independent calls instead of awaiting them in sequence.”</p>"
   },
   {
     "id": "js-debounce-throttle",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "performance",
-      "debounce",
-      "throttle"
-    ],
+    "tags": ["performance", "debounce", "throttle"],
     "question": "Debounce vs throttle — what and when?",
-    "answer": "<p><strong>Debounce</strong> — wait until events <em>stop</em> for N ms, then fire once. Use for search-as-you-type.</p><p><strong>Throttle</strong> — fire at most once per N ms while events keep coming. Use for scroll/resize/mousemove.</p>",
-    "tip": "Debounce = 'wait for quiet'; throttle = 'rate limit'.",
-    "code": "function debounce(fn, ms) {\n  let t;\n  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };\n}",
-    "lang": "js"
+    "answer": "<p><strong>Debounce</strong> delays execution until events stop firing for a specified time. If another event occurs before the delay ends, the timer resets. It is ideal for search boxes, autocomplete, and validation.</p><p><strong>Throttle</strong> limits execution to at most once every specified interval, regardless of how many events occur. It is ideal for scroll, resize, drag, and mouse movement events.</p>",
+    "tip": "Think: <strong>Debounce = Wait until the user stops.</strong> <strong>Throttle = Execute at a fixed rate.</strong>",
+    "code": "// Debounce\nfunction debounce(fn, delay) {\n  let timer;\n\n  return (...args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => {\n      fn(...args);\n    }, delay);\n  };\n}\n\n// Throttle\nfunction throttle(fn, delay) {\n  let lastCall = 0;\n\n  return (...args) => {\n    const now = Date.now();\n\n    if (now - lastCall >= delay) {\n      lastCall = now;\n      fn(...args);\n    }\n  };\n}",
+    "deep": "<h4>Why do we need Debounce and Throttle?</h4><p>Browser events like <code class=\"inline\">scroll</code>, <code class=\"inline\">mousemove</code>, <code class=\"inline\">resize</code>, and <code class=\"inline\">keyup</code> can fire hundreds of times per second. Executing expensive logic for every event can slow down the application and increase unnecessary API calls.</p><h4>Debounce</h4><p>Debounce waits until the user stops triggering events for a specified duration before executing the function. Every new event resets the timer.</p><pre><code>User typing:\nH\nHe\nHel\nHell\nHello\n\nTimer resets each time\n\nAfter user stops typing (300ms)\n        ↓\nAPI Call</code></pre><p><strong>Real-world uses:</strong></p><ul><li>Search autocomplete</li><li>Username availability check</li><li>Form validation</li><li>Saving drafts after typing stops</li></ul><pre><code>searchInput.addEventListener(\n  'input',\n  debounce(() => {\n    searchProducts();\n  }, 300)\n);</code></pre><h4>Throttle</h4><p>Throttle ensures a function executes at most once during a specified interval, even if events continue firing.</p><pre><code>Scroll Events\n||||||||||||||||||||||\n\nThrottle (500ms)\n↓       ↓       ↓\nRun     Run     Run</code></pre><p><strong>Real-world uses:</strong></p><ul><li>Scroll events</li><li>Window resize</li><li>Mouse movement</li><li>Infinite scrolling</li><li>Drag & Drop</li></ul><pre><code>window.addEventListener(\n  'scroll',\n  throttle(() => {\n    updateProgressBar();\n  }, 200)\n);</code></pre><h4>Comparison</h4><table><tr><th>Feature</th><th>Debounce</th><th>Throttle</th></tr><tr><td>Execution</td><td>After events stop</td><td>At fixed intervals</td></tr><tr><td>Best For</td><td>Search, Validation</td><td>Scroll, Resize, Mouse Move</td></tr><tr><td>API Calls</td><td>Usually One</td><td>Multiple (Rate Limited)</td></tr><tr><td>Goal</td><td>Avoid unnecessary executions</td><td>Limit execution frequency</td></tr></table><h4>Angular Example</h4><p>RxJS provides built-in operators for these patterns.</p><pre><code>// Debounce\nsearchControl.valueChanges.pipe(\n  debounceTime(300)\n);\n\n// Throttle\nfromEvent(window, 'scroll').pipe(\n  throttleTime(200)\n);</code></pre><h4>Interview Tip</h4><p>If asked which one to use for a search bar, answer <strong>Debounce</strong> because you only want to call the API after the user finishes typing. If asked about scroll or resize events, answer <strong>Throttle</strong> because you still want periodic updates while the event continues.</p><h4>Interview Answer</h4><p><strong>\"Debounce delays execution until events stop occurring, making it ideal for search boxes and form validation. Throttle limits execution to once every specified interval, making it ideal for continuous events like scrolling, resizing, and mouse movement. Debounce reduces unnecessary work, while throttle controls the execution rate.\"</strong></p>",
+    "lang": "js",
+    "youtube": "https://youtu.be/cjIswDCKgu0"
   },
   {
     "id": "js-array-methods",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "arrays",
-      "map",
-      "reduce"
-    ],
+    "tags": ["arrays", "map", "reduce"],
     "question": "map vs forEach vs reduce.",
     "answer": "<p><strong>map</strong> returns a new transformed array. <strong>forEach</strong> just iterates and returns nothing. <strong>reduce</strong> folds an array into a single value (sum, group-by, flatten, etc.).</p>",
     "tip": "Use map when you need a result; forEach only for side effects.",
@@ -130,26 +101,19 @@
     "id": "js-copy",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "objects",
-      "copy",
-      "reference"
-    ],
+    "tags": ["objects", "copy", "reference"],
     "question": "Shallow copy vs deep copy.",
-    "answer": "<p><strong>Shallow copy</strong> (<code class=\"inline\">{...obj}</code>, <code class=\"inline\">Object.assign</code>) copies the top level only — nested objects remain shared references.</p><p><strong>Deep copy</strong> clones everything: <code class=\"inline\">structuredClone(obj)</code> (modern) or the old <code class=\"inline\">JSON.parse(JSON.stringify(obj))</code> (loses functions, dates, undefined).</p>",
-    "tip": "structuredClone is the modern one-liner for deep copies.",
-    "code": "const shallow = { ...original };\nconst deep = structuredClone(original);",
+    "answer": "<p><strong>Shallow copy</strong> creates a new object but copies only the first level. Nested objects and arrays are still shared references, so modifying them affects both the original and the copied object.</p><p><strong>Deep copy</strong> creates a completely independent clone, including all nested objects and arrays. Modern JavaScript provides <code class=\"inline\">structuredClone()</code> for deep cloning. The older <code class=\"inline\">JSON.parse(JSON.stringify())</code> approach works only for simple JSON data and loses Dates, Maps, Sets, functions, undefined values, and class instances.</p>",
+    "tip": "Remember: <strong>Spread operator creates a shallow copy.</strong> For true deep cloning, prefer <code class=\"inline\">structuredClone()</code>.",
+    "code": "const original = {\n  name: 'John',\n  address: {\n    city: 'Bangalore'\n  }\n};\n\n// Shallow Copy\nconst shallow = { ...original };\nshallow.address.city = 'Mumbai';\n\nconsole.log(original.address.city); // Mumbai\n\n// Deep Copy\nconst deep = structuredClone(original);\ndeep.address.city = 'Delhi';\n\nconsole.log(original.address.city); // Mumbai\nconsole.log(deep.address.city);     // Delhi",
+    "deep": "<h4>Why do we need Copying?</h4><p>Objects and arrays in JavaScript are <strong>reference types</strong>. Assigning one object to another variable copies only the reference, not the actual object.</p><pre><code>const user1 = { name: 'John' };\nconst user2 = user1;\n\nuser2.name = 'David';\n\nconsole.log(user1.name); // David</code></pre><p>Both variables point to the same object in memory.</p><h4>Shallow Copy</h4><p>A shallow copy creates a new object but copies only the first level. Nested objects are still shared.</p><pre><code>const original = {\n  name: 'John',\n  address: {\n    city: 'Bangalore'\n  }\n};\n\nconst copy = { ...original };\n\ncopy.address.city = 'Mumbai';\n\nconsole.log(original.address.city); // Mumbai</code></pre><pre><code>Memory\n\noriginal ─────┐\n              │\n              ▼\n         address {}\n              ▲\n              │\ncopy ─────────┘</code></pre><p>The outer object is new, but the nested <code class=\"inline\">address</code> object is shared.</p><h4>Ways to Create a Shallow Copy</h4><ul><li><code class=\"inline\">{ ...obj }</code></li><li><code class=\"inline\">Object.assign({}, obj)</code></li><li><code class=\"inline\">array.slice()</code></li><li><code class=\"inline\">Array.from()</code></li></ul><h4>Deep Copy</h4><p>A deep copy recursively clones every nested object and array, producing a completely independent object.</p><pre><code>const deep = structuredClone(original);\n\ndeep.address.city = 'Delhi';\n\nconsole.log(original.address.city); // Bangalore</code></pre><pre><code>Memory\n\noriginal ──► address {}\n\ndeep ─────► address {}</code></pre><p>Each object has its own nested data.</p><h4>structuredClone()</h4><p><code class=\"inline\">structuredClone()</code> is the recommended modern API for deep cloning. It supports nested objects, arrays, Dates, Maps, Sets, ArrayBuffers, and many other built-in types.</p><pre><code>const clone = structuredClone(original);</code></pre><h4>JSON.parse(JSON.stringify())</h4><p>This older technique performs a deep copy only for JSON-compatible data.</p><pre><code>const clone = JSON.parse(JSON.stringify(original));</code></pre><p>Limitations:</p><ul><li>❌ Removes functions.</li><li>❌ Removes undefined values.</li><li>❌ Converts Date to string.</li><li>❌ Loses Map and Set.</li><li>❌ Cannot clone circular references.</li><li>❌ Loses class instances and prototypes.</li></ul><h4>Comparison</h4><table><tr><th>Feature</th><th>Shallow Copy</th><th>Deep Copy</th></tr><tr><td>Top-level properties</td><td>Copied</td><td>Copied</td></tr><tr><td>Nested objects</td><td>Shared</td><td>Independent</td></tr><tr><td>Performance</td><td>Fast</td><td>Slower</td></tr><tr><td>Memory Usage</td><td>Low</td><td>Higher</td></tr><tr><td>Best For</td><td>Simple objects</td><td>Nested structures</td></tr></table><h4>Real-world Example</h4><p>NgRx and Redux require immutable state updates.</p><pre><code>// ❌ Wrong\nstate.user.name = 'John';\n\n// ✅ Correct\nreturn {\n  ...state,\n  user: {\n    ...state.user,\n    name: 'John'\n  }\n};</code></pre><p>Using shallow copies of each changed level preserves immutability while avoiding unnecessary deep cloning.</p><h4>Interview Tip</h4><p>Interviewers often ask whether the spread operator performs a deep copy. The answer is <strong>No</strong>. It creates only a shallow copy. Mention that <code class=\"inline\">structuredClone()</code> is the preferred modern solution for deep cloning, but in frameworks like Angular and React, we usually avoid deep cloning entire objects for performance reasons and instead update only the necessary nested properties immutably.</p><h4>Interview Answer</h4><p><strong>\"A shallow copy duplicates only the first level of an object, so nested objects remain shared references. A deep copy recursively clones all nested objects, making the clone completely independent. The spread operator and Object.assign() create shallow copies, while structuredClone() performs a true deep copy. In Angular and NgRx, we typically use shallow copies with immutable updates instead of deep cloning entire state objects for better performance.\"</strong></p>",
     "lang": "js"
   },
   {
     "id": "js-prototype",
     "category": "javascript",
     "difficulty": "advanced",
-    "tags": [
-      "prototype",
-      "inheritance",
-      "oop"
-    ],
+    "tags": ["prototype", "inheritance", "oop"],
     "question": "Explain prototypal inheritance.",
     "answer": "<p>Every object has a hidden link (<code class=\"inline\">[[Prototype]]</code>) to another object. When you access a property, JS walks up this <strong>prototype chain</strong> until it finds it or reaches <code class=\"inline\">null</code>.</p><p><code class=\"inline\">class</code> syntax is sugar over this — methods live on the prototype so all instances share one copy.</p>",
     "tip": "class ... extends is prototype-based inheritance under the hood.",
@@ -160,10 +124,7 @@
     "id": "js-hoisting-tdz",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "hoisting",
-      "tdz"
-    ],
+    "tags": ["hoisting", "tdz"],
     "question": "What is the Temporal Dead Zone (TDZ)?",
     "answer": "<p>The span between entering a scope and the point where a <code class=\"inline\">let</code>/<code class=\"inline\">const</code> variable is declared. The binding is hoisted but not initialised, so accessing it in that window throws a <code class=\"inline\">ReferenceError</code>.</p>",
     "tip": "TDZ is why let/const 'feel' un-hoisted even though they technically are hoisted.",
@@ -175,11 +136,7 @@
     "id": "js-spread-rest",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "es6",
-      "spread",
-      "rest"
-    ],
+    "tags": ["es6", "spread", "rest"],
     "question": "Spread vs rest operator.",
     "answer": "<p>Same <code class=\"inline\">...</code> syntax, opposite jobs. <strong>Spread</strong> expands an iterable into elements. <strong>Rest</strong> gathers remaining arguments/elements into an array.</p>",
     "tip": "Spread 'spreads out'; rest 'collects the rest'.",
@@ -190,11 +147,7 @@
     "id": "js-null-undefined",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "types",
-      "null",
-      "undefined"
-    ],
+    "tags": ["types", "null", "undefined"],
     "question": "null vs undefined.",
     "answer": "<p><strong>undefined</strong> — a variable declared but not assigned, or a missing property/return. Set by the engine.</p><p><strong>null</strong> — an intentional 'no value', set by the developer.</p><p>Quirk: <code class=\"inline\">typeof null</code> is <code class=\"inline\">'object'</code> (a historical bug).</p>",
     "tip": "Use ?? (nullish coalescing) to default only on null/undefined, not on 0 or ''.",
@@ -205,10 +158,7 @@
     "id": "js-hof",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "functions",
-      "higher-order"
-    ],
+    "tags": ["functions", "higher-order"],
     "question": "What is a higher-order function?",
     "answer": "<p>A function that <strong>takes a function as an argument</strong> and/or <strong>returns a function</strong>. Examples: <code class=\"inline\">map</code>, <code class=\"inline\">filter</code>, <code class=\"inline\">setTimeout</code>, and any function factory.</p>",
     "tip": "Debounce, throttle, and curry are all higher-order functions.",
@@ -224,20 +174,17 @@
       "currying"
     ],
     "question": "What is currying?",
-    "answer": "<p>Transforming a function that takes multiple arguments into a chain of functions that each take one argument. Enables partial application and reusable specialised functions.</p>",
-    "tip": "Currying leans on closures to remember earlier arguments.",
-    "code": "const add = a => b => c => a + b + c;\nadd(1)(2)(3); // 6",
+    "answer": "<p><strong>Currying</strong> is a functional programming technique that transforms a function with multiple arguments into a sequence of functions, each taking one argument. Each function remembers its argument using a <strong>closure</strong> until all required arguments are provided. Currying enables <strong>partial application</strong>, code reuse, and function composition.</p>",
+    "tip": "Remember: <strong>Currying = One argument at a time.</strong> It works because of JavaScript closures.",
+    "code": "// Curried Function\nconst add = a => b => c => a + b + c;\n\nconsole.log(add(1)(2)(3)); // 6\n\n// Partial Application\nconst multiply = a => b => a * b;\n\nconst double = multiply(2);\nconst triple = multiply(3);\n\nconsole.log(double(10)); // 20\nconsole.log(triple(10)); // 30",
+    "deep": "<h4>What is Currying?</h4><p>Currying is a technique where a function that normally accepts multiple arguments is transformed into a sequence of functions that each accept a single argument. Every function returns another function until all required arguments have been supplied.</p><pre><code>// Normal Function\nfunction add(a, b, c) {\n  return a + b + c;\n}\n\nadd(1, 2, 3); // 6</code></pre><pre><code>// Curried Version\nconst add = a => b => c => a + b + c;\n\nadd(1)(2)(3); // 6</code></pre><h4>How does it work?</h4><p>Currying relies on <strong>closures</strong>. Each returned function remembers the arguments passed to the previous function.</p><pre><code>add(1)\n   ↓ remembers a = 1\nreturns function\n   ↓\nadd(1)(2)\n   ↓ remembers b = 2\nreturns function\n   ↓\nadd(1)(2)(3)\n   ↓\nreturns 6</code></pre><h4>Partial Application</h4><p>One of the biggest advantages of currying is creating specialized functions by fixing some arguments.</p><pre><code>const multiply = a => b => a * b;\n\nconst double = multiply(2);\nconst triple = multiply(3);\n\nconsole.log(double(8)); // 16\nconsole.log(triple(8)); // 24</code></pre><p>Instead of repeatedly writing multiplication by 2, we create a reusable <code class=\"inline\">double()</code> function.</p><h4>Real-world Example</h4><p>Imagine an API client.</p><pre><code>const request = baseUrl => endpoint =>\n  fetch(baseUrl + endpoint);\n\nconst api = request('https://api.example.com');\n\napi('/users');\napi('/orders');</code></pre><p>The base URL is supplied once and reused for every request.</p><h4>Currying vs Normal Function</h4><table><tr><th>Normal Function</th><th>Curried Function</th></tr><tr><td>Accepts all arguments together</td><td>Accepts one argument at a time</td></tr><tr><td>Simple to call</td><td>Supports partial application</td></tr><tr><td>Less reusable</td><td>Highly reusable</td></tr><tr><td>Common in OOP</td><td>Common in Functional Programming</td></tr></table><h4>Currying vs Partial Application</h4><p>These terms are often confused.</p><ul><li><strong>Currying</strong> transforms a multi-argument function into nested single-argument functions.</li><li><strong>Partial Application</strong> fixes some arguments of a function, producing a new function with fewer parameters.</li></ul><pre><code>// Currying\nconst add = a => b => c => a + b + c;\n\n// Partial Application\nconst add5 = add(5);\nconst add5And10 = add5(10);\nconsole.log(add5And10(20)); // 35</code></pre><h4>Where is Currying Used?</h4><ul><li>Functional programming libraries like Lodash and Ramda.</li><li>Redux and NgRx selectors.</li><li>React Higher-Order Components.</li><li>Event handlers.</li><li>Reusable utility functions.</li></ul><h4>Interview Tip</h4><p>Interviewers usually ask <strong>'How does currying work?'</strong> Mention that it is implemented using <strong>closures</strong>. Each returned function remembers the previous argument until all arguments are collected.</p><h4>Interview Answer</h4><p><strong>\"Currying is the process of converting a function that takes multiple arguments into a chain of functions that each take one argument. It works using closures, allowing each function to remember previously supplied arguments. Currying makes code more reusable by enabling partial application, which is commonly used in functional programming and utility libraries.\"</strong></p>",
     "lang": "js"
   },
   {
     "id": "js-event-delegation",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "dom",
-      "events",
-      "delegation"
-    ],
+    "tags": ["dom", "events", "delegation"],
     "question": "What is event delegation?",
     "answer": "<p>Attach a single listener to a common parent and use event <strong>bubbling</strong> to handle events from many children (checked via <code class=\"inline\">event.target</code>). Fewer listeners, and it works for dynamically added elements.</p>",
     "tip": "Great answer for 'how would you handle clicks on a list of 1000 rows'.",
@@ -248,16 +195,12 @@
     "id": "js-bubbling-capturing",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "V.Imp",
-      "dom",
-      "events"
-    ],
+    "tags": ["V.Imp", "dom", "events"],
     "question": "Event bubbling vs capturing.",
     "answer": "<p>When an event fires, it travels <strong>capturing</strong> phase (top → target) then <strong>bubbling</strong> phase (target → top). Listeners run in the bubbling phase by default; pass <code class=\"inline\">{ capture: true }</code> for the capture phase.</p><p><code class=\"inline\">stopPropagation()</code> halts travel; <code class=\"inline\">preventDefault()</code> cancels the default action.</p>",
     "tip": "stopPropagation and preventDefault do different things — don't confuse them.",
     "code": "",
-    "lang": "",
+    "lang": "js",
     "youtube": "https://www.youtube.com/watch?v=aVSf0b1jVKk",
     "deep": "<h4>The three phases of event flow</h4><p>Click a nested element and the event travels the DOM in order:</p><ol><li><strong>Capturing</strong> — <code class=\"inline\">window</code> → down toward the target.</li><li><strong>Target</strong> — reaches the element you interacted with.</li><li><strong>Bubbling</strong> — target → back up to <code class=\"inline\">window</code>.</li></ol><p>By default listeners fire in the <strong>bubbling</strong> phase. Pass <code class=\"inline\">{ capture: true }</code> (or <code class=\"inline\">true</code> as the 3rd arg) to fire in the capturing phase instead.</p><pre><code>el.addEventListener('click', fn);                 // bubbling\nel.addEventListener('click', fn, { capture: true }); // capturing</code></pre><h4>Event delegation — the big payoff</h4><p>Because events bubble, you can put <em>one</em> listener on a parent instead of many on children — great for lists and dynamically added items:</p><pre><code>list.addEventListener('click', (e) =&gt; {\n  const li = e.target.closest('li');\n  if (li) select(li.dataset.id);\n});</code></pre><h4>target vs currentTarget</h4><ul><li><code class=\"inline\">e.target</code> — the element that actually triggered the event (deepest).</li><li><code class=\"inline\">e.currentTarget</code> — the element whose listener is running (where you attached it).</li></ul><h4>stopPropagation vs preventDefault — not the same</h4><table><thead><tr><th>Method</th><th>Does</th></tr></thead><tbody><tr><td><code class=\"inline\">stopPropagation()</code></td><td>stops the event travelling further (no more bubbling/capturing)</td></tr><tr><td><code class=\"inline\">stopImmediatePropagation()</code></td><td>that, plus skips other listeners on the same element</td></tr><tr><td><code class=\"inline\">preventDefault()</code></td><td>cancels the browser's default action (link nav, form submit) — travel continues</td></tr></tbody></table><p>Non-bubbling events exist too — <code class=\"inline\">focus</code>, <code class=\"inline\">blur</code>, <code class=\"inline\">mouseenter</code> (use <code class=\"inline\">focusin</code>/<code class=\"inline\">mouseover</code> if you need delegation).</p><h4>How to say it in an interview</h4><p>“An event captures down from the root to the target, then bubbles back up; listeners run on the bubbling phase unless I set <code class=\"inline\">capture: true</code>. I lean on bubbling for event delegation — one listener on a parent. <code class=\"inline\">stopPropagation</code> halts the travel, while <code class=\"inline\">preventDefault</code> cancels the default action — different jobs.”</p>"
   },
@@ -265,24 +208,19 @@
     "id": "js-callback-hell",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "async",
-      "callbacks"
-    ],
+    "tags": ["async", "callbacks"],
     "question": "What is callback hell and how do you avoid it?",
     "answer": "<p>Deeply nested callbacks (the 'pyramid of doom') that are hard to read and error-handle. Avoid it with <strong>Promises</strong>, <strong>async/await</strong>, and by extracting named functions.</p>",
     "tip": "async/await is the modern cure for callback hell.",
-    "code": "",
-    "lang": ""
+    "code": "function getUser(id, callback) {\n  setTimeout(() => callback({ id, name: 'John' }), 1000);\n}\n\nfunction getOrders(user, callback) {\n  setTimeout(() => callback(['Laptop', 'Phone']), 1000);\n}\n\nfunction getPayment(orders, callback) {\n  setTimeout(() => callback('Payment Successful'), 1000);\n}\n\n// Callback Hell\ngetUser(1, (user) => {\n  getOrders(user, (orders) => {\n    getPayment(orders, (payment) => {\n      console.log(payment);\n    });\n  });\n});",
+    "deep": "<h4>What is a Callback?</h4><p>A <strong>callback</strong> is simply a function passed as an argument to another function. It is executed later, usually after an asynchronous operation like an API call, timer, or file read completes.</p><pre><code>setTimeout(() =&gt; {\n  console.log('Hello');\n}, 1000);</code></pre><p>Here, the arrow function is the callback.</p><h4>What is Callback Hell?</h4><p><strong>Callback Hell</strong> occurs when multiple asynchronous operations depend on one another, resulting in deeply nested callbacks. This creates the famous <em>Pyramid of Doom</em>, making the code difficult to read, debug, and maintain.</p><pre><code>getUser(1, (user) =&gt; {\n  getOrders(user, (orders) =&gt; {\n    getPayment(orders, (payment) =&gt; {\n      console.log(payment);\n    });\n  });\n});</code></pre><h4>Why is it a Problem?</h4><ul><li>Code becomes deeply nested.</li><li>Hard to understand and maintain.</li><li>Error handling becomes repetitive.</li><li>Difficult to reuse logic.</li><li>Adding another async step increases nesting further.</li></ul><h4>Solution 1 — Promises</h4><p>Promises flatten asynchronous code and centralize error handling.</p><pre><code>getUser(1)\n  .then(user =&gt; getOrders(user))\n  .then(orders =&gt; getPayment(orders))\n  .then(result =&gt; console.log(result))\n  .catch(err =&gt; console.error(err));</code></pre><p>The code now reads from top to bottom and uses a single <code class=\"inline\">catch()</code> for errors.</p><h4>Solution 2 — async / await (Recommended)</h4><p><code class=\"inline\">async/await</code> is syntactic sugar over Promises and is the preferred modern approach.</p><pre><code>async function processOrder() {\n  try {\n    const user = await getUser(1);\n    const orders = await getOrders(user);\n    const payment = await getPayment(orders);\n\n    console.log(payment);\n  } catch (err) {\n    console.error(err);\n  }\n}</code></pre><p>This looks almost identical to synchronous code while still being asynchronous.</p><h4>Real-world Example</h4><p>Imagine an e-commerce website.</p><ol><li>Fetch user details.</li><li>Fetch user's orders.</li><li>Calculate total amount.</li><li>Make payment.</li><li>Send confirmation email.</li></ol><p>Using callbacks would produce deeply nested code, whereas Promises or async/await keep each step clear and readable.</p><h4>Callback Hell vs Promises vs async/await</h4><table><tr><th>Approach</th><th>Readability</th><th>Error Handling</th></tr><tr><td>Callbacks</td><td>Low</td><td>Repeated at every level</td></tr><tr><td>Promises</td><td>Good</td><td>Single catch()</td></tr><tr><td>async/await</td><td>Excellent</td><td>Normal try/catch</td></tr></table><h4>Interview Tip</h4><p>Interviewers often ask whether callbacks are bad. The answer is <strong>No.</strong> Callbacks themselves are perfectly fine. The problem arises when many dependent asynchronous operations are nested inside each other, creating Callback Hell.</p><h4>Interview Answer</h4><p><strong>\"Callback Hell is a situation where multiple asynchronous callbacks become deeply nested, making the code difficult to read, maintain, and debug. Modern JavaScript solves this using Promises and async/await, which flatten the code structure and provide much cleaner error handling through catch() or try/catch.\"</strong></p>",
+    "lang": "js"
   },
   {
     "id": "js-immutability",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "immutability",
-      "freeze"
-    ],
+    "tags": ["immutability", "freeze"],
     "question": "How do you make an object immutable?",
     "answer": "<p><code class=\"inline\">Object.freeze(obj)</code> prevents adding, removing, or changing top-level properties (shallow). For deep immutability you must freeze nested objects recursively, or use a library.</p>",
     "tip": "Immutability + OnPush is the pairing that makes Angular change detection fast.",
@@ -293,11 +231,7 @@
     "id": "js-set-map",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "es6",
-      "set",
-      "map"
-    ],
+    "tags": ["es6", "set", "map"],
     "question": "When would you use a Set or a Map?",
     "answer": "<p><strong>Set</strong> — a collection of unique values (dedupe an array with <code class=\"inline\">[...new Set(arr)]</code>).</p><p><strong>Map</strong> — key/value pairs where keys can be <em>any</em> type (objects included) and insertion order is preserved. Better than a plain object for frequent add/delete.</p>",
     "tip": "Use a Set for fast has() lookups instead of array.includes in loops.",
@@ -308,10 +242,7 @@
     "id": "js-optional-chaining",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "es2020",
-      "optional-chaining"
-    ],
+    "tags": ["es2020", "optional-chaining"],
     "question": "What do ?. and ?? do?",
     "answer": "<p><strong>Optional chaining</strong> <code class=\"inline\">?.</code> short-circuits to <code class=\"inline\">undefined</code> instead of throwing when accessing a property on null/undefined.</p><p><strong>Nullish coalescing</strong> <code class=\"inline\">??</code> returns the right side only when the left is null/undefined (unlike <code class=\"inline\">||</code>, it keeps 0, '', and false).</p>",
     "tip": "Combine them: user?.profile?.name ?? 'Guest'.",
@@ -322,13 +253,10 @@
     "id": "js-func-types",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "functions",
-      "arrow",
-      "hoisting"
-    ],
+    "tags": ["functions", "arrow", "hoisting"],
     "question": "Function declaration vs expression vs arrow function.",
-    "answer": "<ul><li><strong>Declaration</strong> — hoisted fully, has its own <code class=\"inline\">this</code>/<code class=\"inline\">arguments</code>.</li><li><strong>Expression</strong> — assigned to a variable, not hoisted (the variable is).</li><li><strong>Arrow</strong> — concise, no own <code class=\"inline\">this</code>/<code class=\"inline\">arguments</code>/<code class=\"inline\">prototype</code>; can't be a constructor.</li></ul>",
+    "answer": "<ul><li><strong>Function Declaration</strong> — fully hoisted, can be called before its definition, has its own <code class=\"inline\">this</code> and <code class=\"inline\">arguments</code>.</li><li><strong>Function Expression</strong> — assigned to a variable, not callable before initialization, commonly used for callbacks and closures.</li><li><strong>Arrow Function</strong> — concise syntax, lexically binds <code class=\"inline\">this</code>, has no own <code class=\"inline\">arguments</code>, <code class=\"inline\">prototype</code>, or <code class=\"inline\">new</code>. Best suited for callbacks and functional programming.</li></ul>",
+    "deep": "<h4>1. Function Declaration</h4><p>A function declaration defines a named function using the <code class=\"inline\">function</code> keyword. It is <strong>fully hoisted</strong>, meaning it can be invoked before its declaration because both the function name and implementation are moved to memory during the creation phase.</p><pre><code>sayHello();\n\nfunction sayHello() {\n  console.log('Hello');\n}</code></pre><h4>2. Function Expression</h4><p>A function expression assigns a function to a variable. Only the variable is hoisted, not the function itself. If declared using <code class=\"inline\">const</code> or <code class=\"inline\">let</code>, it cannot be used before initialization due to the Temporal Dead Zone (TDZ).</p><pre><code>const greet = function () {\n  console.log('Hello');\n};\n\ngreet();</code></pre><pre><code>greet(); // ❌ ReferenceError\nconst greet = function() {};</code></pre><h4>3. Arrow Function</h4><p>Arrow functions provide a shorter syntax and inherit <code class=\"inline\">this</code> from their surrounding scope. They do not create their own <code class=\"inline\">this</code>, <code class=\"inline\">arguments</code>, or <code class=\"inline\">prototype</code>, and therefore cannot be used as constructors.</p><pre><code>const add = (a, b) =&gt; a + b;</code></pre><h4>Lexical this</h4><p>The biggest difference is how <code class=\"inline\">this</code> behaves.</p><pre><code>const user = {\n  name: 'John',\n\n  normal() {\n    console.log(this.name);\n  },\n\n  arrow: () =&gt; {\n    console.log(this.name);\n  }\n};\n\nuser.normal(); // John\nuser.arrow();  // undefined (or window.name)</code></pre><p>The normal function gets <code class=\"inline\">this</code> from the object calling it. The arrow function inherits <code class=\"inline\">this</code> from the outer scope.</p><h4>Can Arrow Functions be Constructors?</h4><p>No. Arrow functions do not have a <code class=\"inline\">prototype</code>, so they cannot be called with <code class=\"inline\">new</code>.</p><pre><code>const Person = (name) =&gt; {\n  this.name = name;\n};\n\nnew Person('John'); // ❌ TypeError</code></pre><h4>Comparison</h4><table><tr><th>Feature</th><th>Declaration</th><th>Expression</th><th>Arrow</th></tr><tr><td>Hoisted</td><td>✅ Yes</td><td>❌ No</td><td>❌ No</td></tr><tr><td>Own this</td><td>✅ Yes</td><td>✅ Yes</td><td>❌ Lexical</td></tr><tr><td>Own arguments</td><td>✅ Yes</td><td>✅ Yes</td><td>❌ No</td></tr><tr><td>Constructor</td><td>✅ Yes</td><td>✅ Yes</td><td>❌ No</td></tr><tr><td>prototype</td><td>✅ Yes</td><td>✅ Yes</td><td>❌ No</td></tr></table><h4>When should you use each?</h4><ul><li><strong>Function Declaration</strong> – Utility functions and reusable business logic.</li><li><strong>Function Expression</strong> – Callbacks, closures, factory functions, event handlers.</li><li><strong>Arrow Function</strong> – Array methods (<code class=\"inline\">map</code>, <code class=\"inline\">filter</code>, <code class=\"inline\">reduce</code>), Promise callbacks, RxJS operators, and places where lexical <code class=\"inline\">this</code> is desired.</li></ul><h4>Interview Tip</h4><p>Interviewers almost always ask about <code class=\"inline\">this</code>. Mention that <strong>arrow functions inherit <code class=\"inline\">this</code> from the surrounding scope</strong>, making them ideal for callbacks but a poor choice for object methods or constructors.</p><h4>Interview Answer</h4><p><strong>\"Function declarations are fully hoisted and can be called before they are defined. Function expressions are assigned to variables and cannot be used before initialization. Arrow functions provide concise syntax and lexically bind <code class=\"inline\">this</code>, but they don't have their own <code class=\"inline\">arguments</code> or <code class=\"inline\">prototype</code>, so they cannot be used as constructors. I typically use declarations for reusable functions, expressions for callbacks, and arrows for array methods, Promises, and RxJS.\"</strong></p>",
     "tip": "Never use an arrow as an object method that needs `this`, or as a constructor.",
     "code": "function decl() {}         // hoisted\nconst expr = function () {};// not hoisted\nconst arrow = () => {};     // lexical this",
     "lang": "js"
@@ -337,11 +265,7 @@
     "id": "js-iife-module",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "iife",
-      "module-pattern",
-      "closures"
-    ],
+    "tags": ["iife", "module-pattern", "closures"],
     "question": "What is an IIFE and the module pattern?",
     "answer": "<p>An <strong>IIFE</strong> (Immediately Invoked Function Expression) runs the moment it's defined, creating a private scope. The <strong>module pattern</strong> uses one to expose only a public API while keeping internals private via closures — the pre-ESM way to avoid globals.</p>",
     "tip": "This app itself uses the IIFE pattern to register data without leaking globals.",
@@ -352,10 +276,7 @@
     "id": "js-destructuring",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "es6",
-      "destructuring"
-    ],
+    "tags": ["es6", "destructuring"],
     "question": "Explain destructuring with defaults and renaming.",
     "answer": "<p>Unpack arrays/objects into variables in one statement, with defaults for missing values and renaming for objects. Also enables clean swaps and nested extraction.</p>",
     "tip": "Destructuring function params with defaults gives clean, self-documenting APIs.",
@@ -366,10 +287,7 @@
     "id": "js-object-methods",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "objects",
-      "es2017"
-    ],
+    "tags": ["objects", "es2017"],
     "question": "Object.keys / values / entries / fromEntries.",
     "answer": "<p><code class=\"inline\">Object.keys/values/entries</code> turn an object into arrays you can map/filter/reduce. <code class=\"inline\">Object.fromEntries</code> rebuilds an object from key/value pairs — perfect for transforming objects.</p>",
     "tip": "entries → map → fromEntries is the idiomatic 'map over an object' pattern.",
@@ -380,25 +298,19 @@
     "id": "js-json",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "json",
-      "serialization"
-    ],
+    "tags": ["json", "serialization"],
     "question": "JSON.stringify / parse — gotchas?",
-    "answer": "<p>Serialise/deserialise data. Gotchas: <code class=\"inline\">undefined</code>, functions, and symbols are dropped; <code class=\"inline\">Date</code> becomes a string; <code class=\"inline\">NaN</code>/<code class=\"inline\">Infinity</code> become <code class=\"inline\">null</code>; circular references throw. A <em>replacer</em>/<em>reviver</em> function can customise both.</p>",
+    "answer": "<p><code class=\"inline\">JSON.stringify()</code> converts a JavaScript object into a JSON string, while <code class=\"inline\">JSON.parse()</code> converts a JSON string back into a JavaScript object.</p><p><strong>Common gotchas:</strong> <code class=\"inline\">undefined</code>, functions, and symbols are omitted; <code class=\"inline\">Date</code> objects become ISO strings; <code class=\"inline\">NaN</code> and <code class=\"inline\">Infinity</code> become <code class=\"inline\">null</code>; <code class=\"inline\">BigInt</code> throws an error; circular references cause <code class=\"inline\">JSON.stringify()</code> to fail. Use a <strong>replacer</strong> and <strong>reviver</strong> to customize serialization and deserialization.</p>",
     "tip": "JSON.stringify(obj, null, 2) pretty-prints — handy for debugging and exports.",
-    "code": "JSON.stringify({ a: 1 }, null, 2);\nJSON.parse(str, (k, v) => k === 'date' ? new Date(v) : v);",
+    "code": "const obj = {\n  name: 'John',\n  created: new Date(),\n  score: NaN\n};\n\nconst json = JSON.stringify(obj, null, 2);\nconsole.log(json);\n\nconst parsed = JSON.parse(json, (key, value) => {\n  if (key === 'created') return new Date(value);\n  return value;\n});\n\nconsole.log(parsed);",
+    "deep": "<h4>What is JSON?</h4><p><strong>JSON (JavaScript Object Notation)</strong> is a lightweight text format used to exchange data between applications. APIs usually send and receive JSON strings.</p><h4>JSON.stringify()</h4><p><code class=\"inline\">JSON.stringify()</code> converts a JavaScript object into a JSON string.</p><pre><code>const user = {\n  name: 'John',\n  age: 25\n};\n\nconst json = JSON.stringify(user);\nconsole.log(json);\n// {\"name\":\"John\",\"age\":25}</code></pre><h4>JSON.parse()</h4><p><code class=\"inline\">JSON.parse()</code> converts a JSON string back into a JavaScript object.</p><pre><code>const json = '{\"name\":\"John\",\"age\":25}';\nconst user = JSON.parse(json);\nconsole.log(user.name);</code></pre><h4>Common Gotchas</h4><table><tr><th>Value</th><th>Result after JSON.stringify()</th></tr><tr><td>undefined</td><td>Removed</td></tr><tr><td>Function</td><td>Removed</td></tr><tr><td>Symbol</td><td>Removed</td></tr><tr><td>Date</td><td>Converted to ISO String</td></tr><tr><td>NaN</td><td>null</td></tr><tr><td>Infinity</td><td>null</td></tr><tr><td>BigInt</td><td>Throws TypeError</td></tr></table><pre><code>JSON.stringify({\n  value: undefined,\n  fn() {},\n  date: new Date(),\n  score: NaN\n});</code></pre><h4>Circular Reference</h4><p>Objects that reference themselves cannot be serialized.</p><pre><code>const obj = {};\nobj.self = obj;\n\nJSON.stringify(obj);\n// TypeError: Converting circular structure to JSON</code></pre><h4>Replacer Function</h4><p>The replacer lets you modify values while converting an object into JSON.</p><pre><code>const json = JSON.stringify(user, (key, value) => {\n  if (key === 'password') return undefined;\n  return value;\n});</code></pre><h4>Reviver Function</h4><p>The reviver transforms values while parsing JSON.</p><pre><code>const user = JSON.parse(json, (key, value) => {\n  if (key === 'createdAt') {\n    return new Date(value);\n  }\n  return value;\n});</code></pre><h4>JSON is NOT a Deep Clone Solution</h4><p>Many developers use:</p><pre><code>const copy = JSON.parse(JSON.stringify(obj));</code></pre><p>Although this creates a deep copy for simple objects, it loses important information such as Dates, Maps, Sets, functions, undefined values, and class instances. In modern JavaScript, use <code class=\"inline\">structuredClone()</code> when available.</p><pre><code>const clone = structuredClone(obj);</code></pre><h4>Real-world Example</h4><p>Suppose an Angular application receives customer data from a Spring Boot backend.</p><pre><code>Spring Boot\n      ↓\nJSON Response\n      ↓\nHttpClient\n      ↓\nJSON.parse()\n      ↓\nJavaScript Object\n      ↓\nAngular UI</code></pre><p>Similarly, when submitting a form, Angular converts the object into JSON before sending it to the backend.</p><h4>Interview Tip</h4><p>Interviewers often ask whether <code class=\"inline\">JSON.parse(JSON.stringify(obj))</code> is a good way to deep clone an object. Explain that it only works for simple JSON-compatible objects and loses Dates, Maps, Sets, functions, undefined values, and class instances. Prefer <code class=\"inline\">structuredClone()</code> for modern applications.</p><h4>Interview Answer</h4><p><strong>\"JSON.stringify() converts a JavaScript object into a JSON string, while JSON.parse() converts a JSON string back into an object. Common pitfalls include losing undefined values, functions, Symbols, Dates becoming strings, NaN and Infinity becoming null, BigInt throwing an error, and circular references failing. Replacer and reviver functions allow custom serialization and deserialization, and structuredClone() is preferred over the JSON trick for deep cloning modern JavaScript objects.\"</strong></p>",
     "lang": "js"
   },
   {
     "id": "js-fetch",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "fetch",
-      "async",
-      "abortcontroller"
-    ],
+    "tags": ["fetch", "async", "abortcontroller"],
     "question": "How does fetch work, and how do you cancel a request?",
     "answer": "<p><code class=\"inline\">fetch</code> returns a Promise of a <code class=\"inline\">Response</code>. Note it only rejects on network failure — a 404/500 still resolves, so check <code class=\"inline\">res.ok</code>. Cancel with an <code class=\"inline\">AbortController</code>'s signal.</p>",
     "tip": "fetch doesn't throw on HTTP errors — always check res.ok yourself.",
@@ -409,10 +321,7 @@
     "id": "js-promise-combinators",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "promise",
-      "async"
-    ],
+    "tags": ["promise", "async"],
     "question": "Promise.all vs allSettled vs race vs any.",
     "answer": "<ul><li><strong>all</strong> — resolves with all results, rejects on the first failure.</li><li><strong>allSettled</strong> — waits for all, returns status for each (never rejects).</li><li><strong>race</strong> — settles as soon as the first one settles (resolve or reject).</li><li><strong>any</strong> — resolves with the first success, rejects only if all fail.</li></ul>",
     "tip": "Use allSettled when you want every result even if some calls fail.",
@@ -428,19 +337,17 @@
       "iterators"
     ],
     "question": "What are generators and iterators?",
-    "answer": "<p>A <strong>generator</strong> (<code class=\"inline\">function*</code>) can pause with <code class=\"inline\">yield</code> and resume, producing values lazily. It returns an <strong>iterator</strong> (has <code class=\"inline\">.next()</code>). Great for infinite/lazy sequences and custom iteration.</p>",
-    "tip": "Any object with a [Symbol.iterator] method works in for...of and spread.",
-    "code": "function* ids() { let i = 1; while (true) yield i++; }\nconst gen = ids();\ngen.next().value; // 1\ngen.next().value; // 2",
+    "answer": "<p>An <strong>iterator</strong> is an object that allows sequential access to a collection using the <code class=\"inline\">next()</code> method. A <strong>generator</strong> is a special function declared with <code class=\"inline\">function*</code> that automatically creates an iterator. It can pause execution using <code class=\"inline\">yield</code> and resume later, making it ideal for lazy evaluation, large datasets, and infinite sequences.</p>",
+    "tip": "Remember: <strong>Generator = Function that creates an Iterator.</strong> <code class=\"inline\">yield</code> pauses execution, and <code class=\"inline\">next()</code> resumes it.",
+    "code": "// Generator Function\nfunction* numbers() {\n  yield 1;\n  yield 2;\n  yield 3;\n}\n\nconst gen = numbers();\n\nconsole.log(gen.next()); // { value: 1, done: false }\nconsole.log(gen.next()); // { value: 2, done: false }\nconsole.log(gen.next()); // { value: 3, done: false }\nconsole.log(gen.next()); // { value: undefined, done: true }\n\n// Using for...of\nfor (const n of numbers()) {\n  console.log(n);\n}",
+    "deep": "<h4>What is an Iterator?</h4><p>An <strong>iterator</strong> is an object that provides sequential access to values. It exposes a <code class=\"inline\">next()</code> method that returns an object containing:</p><ul><li><code class=\"inline\">value</code> – the current value.</li><li><code class=\"inline\">done</code> – whether iteration has finished.</li></ul><pre><code>const arr = [10, 20, 30];\nconst iterator = arr[Symbol.iterator]();\n\nconsole.log(iterator.next());\n// { value: 10, done: false }\n\nconsole.log(iterator.next());\n// { value: 20, done: false }</code></pre><p>Arrays, Strings, Maps, Sets, and many built-in objects are iterable because they implement <code class=\"inline\">Symbol.iterator</code>.</p><h4>What is a Generator?</h4><p>A generator is a special function declared using <code class=\"inline\">function*</code>. Instead of returning once, it can pause execution with <code class=\"inline\">yield</code> and continue from the same point when <code class=\"inline\">next()</code> is called.</p><pre><code>function* numbers() {\n  yield 1;\n  yield 2;\n  yield 3;\n}\n\nconst gen = numbers();</code></pre><h4>How yield Works</h4><pre><code>function* demo() {\n  console.log('Start');\n  yield 1;\n\n  console.log('Middle');\n  yield 2;\n\n  console.log('End');\n  yield 3;\n}</code></pre><pre><code>const g = demo();\n\ng.next();\n// Start\n// { value: 1, done: false }\n\ng.next();\n// Middle\n// { value: 2, done: false }\n\ng.next();\n// End\n// { value: 3, done: false }</code></pre><p>Each call to <code class=\"inline\">next()</code> resumes execution from the previous <code class=\"inline\">yield</code>.</p><h4>Iterator vs Generator</h4><table><tr><th>Iterator</th><th>Generator</th></tr><tr><td>Object</td><td>Special Function</td></tr><tr><td>Must implement next()</td><td>Automatically creates an iterator</td></tr><tr><td>Manual implementation</td><td>Easy to write using yield</td></tr><tr><td>Controls iteration</td><td>Produces iterable values</td></tr></table><h4>Infinite Sequence</h4><p>Generators are useful for generating values on demand instead of storing everything in memory.</p><pre><code>function* ids() {\n  let id = 1;\n\n  while (true) {\n    yield id++;\n  }\n}\n\nconst gen = ids();\n\nconsole.log(gen.next().value); // 1\nconsole.log(gen.next().value); // 2\nconsole.log(gen.next().value); // 3</code></pre><p>The generator produces values only when requested, making it memory efficient.</p><h4>Using for...of</h4><p>Generators implement the iterator protocol automatically, so they work directly with <code class=\"inline\">for...of</code>.</p><pre><code>function* colors() {\n  yield 'Red';\n  yield 'Green';\n  yield 'Blue';\n}\n\nfor (const color of colors()) {\n  console.log(color);\n}</code></pre><h4>Real-world Uses</h4><ul><li>Lazy loading large datasets.</li><li>Infinite sequences (IDs, pagination).</li><li>Tree and graph traversal.</li><li>Custom iterators.</li><li>Streaming data processing.</li></ul><h4>Iterator Protocol</h4><p>Any object that implements <code class=\"inline\">Symbol.iterator</code> is iterable.</p><pre><code>const person = {\n  names: ['John', 'Alice'],\n\n  *[Symbol.iterator]() {\n    for (const name of this.names) {\n      yield name;\n    }\n  }\n};\n\nfor (const name of person) {\n  console.log(name);\n}</code></pre><h4>Interview Tip</h4><p>Many interviewers ask whether generators return arrays. The answer is <strong>No</strong>. A generator returns an <strong>iterator</strong>. Values are produced one at a time only when <code class=\"inline\">next()</code> is called, which makes generators memory efficient for large or infinite collections.</p><h4>Interview Answer</h4><p><strong>\"An iterator is an object with a next() method that returns values sequentially. A generator is a special function declared with function* that automatically creates an iterator. It uses yield to pause execution and next() to resume it. Generators are useful for lazy evaluation, custom iteration, infinite sequences, and processing large datasets efficiently because values are generated only when needed.\"</strong></p>",
     "lang": "js"
   },
   {
     "id": "js-symbol",
     "category": "javascript",
     "difficulty": "advanced",
-    "tags": [
-      "symbol",
-      "es6"
-    ],
+    "tags": ["symbol", "es6"],
     "question": "What is a Symbol and where is it used?",
     "answer": "<p>A <strong>Symbol</strong> is a unique, immutable primitive often used as a non-colliding object key. <em>Well-known symbols</em> like <code class=\"inline\">Symbol.iterator</code> let you hook into language behaviour (making an object iterable).</p>",
     "tip": "Symbols create 'hidden' keys that won't clash with string keys or show in for...in.",
@@ -451,11 +358,7 @@
     "id": "js-weakmap",
     "category": "javascript",
     "difficulty": "advanced",
-    "tags": [
-      "weakmap",
-      "memory",
-      "gc"
-    ],
+    "tags": ["weakmap", "memory", "gc"],
     "question": "WeakMap / WeakSet — when and why?",
     "answer": "<p>They hold <strong>object keys weakly</strong> — if nothing else references the key, it can be garbage-collected, preventing leaks. Keys must be objects; they're not iterable. Use them for private per-object metadata or caches tied to an object's lifetime.</p>",
     "tip": "A WeakMap cache won't keep DOM nodes alive after they're removed — no leak.",
@@ -466,11 +369,7 @@
     "id": "js-loop-closure",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "closures",
-      "scope",
-      "classic"
-    ],
+    "tags": ["closures", "scope", "classic"],
     "question": "Why does a for-loop with var log the wrong value in setTimeout?",
     "answer": "<p><code class=\"inline\">var</code> is function-scoped, so every callback shares the <em>same</em> variable, which by the time the timers fire equals the final value. <code class=\"inline\">let</code> is block-scoped — each iteration gets a fresh binding, so it logs correctly.</p>",
     "tip": "The classic fix is just changing var to let — each iteration captures its own i.",
@@ -481,11 +380,7 @@
     "id": "js-typeof-instanceof",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "types",
-      "typeof",
-      "instanceof"
-    ],
+    "tags": ["types", "typeof", "instanceof"],
     "question": "typeof vs instanceof.",
     "answer": "<p><code class=\"inline\">typeof</code> returns a string for primitives (<code class=\"inline\">'string'</code>, <code class=\"inline\">'number'</code>, <code class=\"inline\">'function'</code>…). <code class=\"inline\">instanceof</code> checks the prototype chain for objects/classes. Note <code class=\"inline\">typeof null === 'object'</code> and arrays are <code class=\"inline\">'object'</code> — use <code class=\"inline\">Array.isArray</code>.</p>",
     "tip": "Use Array.isArray(x), not typeof, to detect arrays.",
@@ -496,10 +391,7 @@
     "id": "js-nan",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "numbers",
-      "nan"
-    ],
+    "tags": ["numbers", "nan"],
     "question": "How do you check for NaN correctly?",
     "answer": "<p><code class=\"inline\">NaN</code> is the only value not equal to itself, so <code class=\"inline\">NaN === NaN</code> is false. Use <code class=\"inline\">Number.isNaN(x)</code> (strict — no coercion) rather than the global <code class=\"inline\">isNaN()</code>, which coerces (<code class=\"inline\">isNaN('foo')</code> is true).</p>",
     "tip": "Prefer Number.isNaN over the global isNaN to avoid coercion surprises.",
@@ -510,11 +402,7 @@
     "id": "js-dom-perf",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "dom",
-      "performance",
-      "reflow"
-    ],
+    "tags": ["dom", "performance", "reflow"],
     "question": "How do you update the DOM efficiently?",
     "answer": "<p>Minimise reflows/repaints: batch DOM writes, build nodes in a <code class=\"inline\">DocumentFragment</code> and append once, avoid reading layout (<code class=\"inline\">offsetWidth</code>) between writes (layout thrashing), and prefer <code class=\"inline\">class</code> toggles over inline style loops. Use <code class=\"inline\">requestAnimationFrame</code> for visual updates.</p>",
     "tip": "Appending 100 nodes one-by-one triggers 100 reflows; a DocumentFragment triggers one.",
@@ -525,25 +413,19 @@
     "id": "js-pure-function",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "functional",
-      "pure",
-      "side-effects"
-    ],
+    "tags": ["functional", "pure", "side-effects"],
     "question": "What is a pure function and why prefer it?",
-    "answer": "<p>A <strong>pure function</strong> always returns the same output for the same input and has <strong>no side effects</strong> (no mutation, I/O, or external state). Pure functions are predictable, testable, cacheable, and safe to parallelise — the basis of reducers and OnPush change detection.</p>",
+    "answer": "<p>A <strong>pure function</strong> always produces the same output for the same input and does <strong>not cause side effects</strong>. It does not modify external variables, mutate its arguments, perform I/O operations, or depend on external state. Pure functions are predictable, easy to test, reusable, cacheable (memoization), and form the foundation of functional programming, Redux, and NgRx reducers.</p>",
     "tip": "Reducers in Redux/NgRx must be pure — that's what enables time-travel debugging.",
-    "code": "const add = (a, b) => a + b;            // pure\nlet total = 0; const addTo = n => total += n; // impure",
-    "lang": "js"
+    "code": "// ✅ Pure Function\nconst add = (a, b) => a + b;\n\nconsole.log(add(2, 3)); // 5\nconsole.log(add(2, 3)); // 5\n\n// ❌ Impure Function\nlet total = 0;\n\nfunction addToTotal(value) {\n  total += value;\n  return total;\n}\n\nconsole.log(addToTotal(5)); // 5\nconsole.log(addToTotal(5)); // 10",
+    "lang": "js",
+    "deep": "<h4>What is a Pure Function?</h4><p>A <strong>pure function</strong> satisfies two important rules:</p><ol><li>It always returns the <strong>same output</strong> for the same input.</li><li>It has <strong>no side effects</strong>.</li></ol><p>This means the function depends only on its parameters and does not modify or rely on anything outside itself.</p><h4>Pure Function Example</h4><pre><code>function add(a, b) {\n  return a + b;\n}\n\nadd(2, 3); // 5\nadd(2, 3); // 5</code></pre><p>No matter how many times it is called with the same arguments, the result is always identical.</p><h4>Impure Function Example</h4><pre><code>let total = 0;\n\nfunction addToTotal(value) {\n  total += value;\n  return total;\n}</code></pre><p>This function is impure because it modifies an external variable. Calling <code class=\"inline\">addToTotal(5)</code> twice returns different values.</p><pre><code>addToTotal(5); // 5\naddToTotal(5); // 10</code></pre><h4>What are Side Effects?</h4><p>A side effect is any operation that changes something outside the function or depends on external state.</p><p>Examples include:</p><ul><li>Modifying global variables.</li><li>Changing function arguments.</li><li>Updating the DOM.</li><li>Making API calls.</li><li>Reading or writing files.</li><li>Writing to localStorage.</li><li>Logging to the console (technically a side effect).</li></ul><h4>Mutating Parameters</h4><p>Changing the input object also makes a function impure.</p><pre><code>// ❌ Impure\nfunction rename(user) {\n  user.name = 'John';\n}\n\n// ✅ Pure\nfunction rename(user) {\n  return {\n    ...user,\n    name: 'John'\n  };\n}</code></pre><h4>Why Prefer Pure Functions?</h4><table><tr><th>Benefit</th><th>Reason</th></tr><tr><td>Predictable</td><td>Same input always produces the same output.</td></tr><tr><td>Easy to Test</td><td>No mocks or setup for external state.</td></tr><tr><td>Reusable</td><td>No dependency on surrounding code.</td></tr><tr><td>Memoization</td><td>Results can be safely cached.</td></tr><tr><td>Debugging</td><td>Behavior is deterministic.</td></tr><tr><td>Parallel Execution</td><td>No shared mutable state.</td></tr></table><h4>Real-world Example</h4><p>NgRx reducers are required to be pure functions.</p><pre><code>export const counterReducer = createReducer(\n  initialState,\n  on(increment, state => ({\n    ...state,\n    count: state.count + 1\n  }))\n);</code></pre><p>The reducer never modifies the existing state. Instead, it returns a new state object, making change detection and time-travel debugging possible.</p><h4>Pure Functions and Angular</h4><ul><li><strong>NgRx Reducers</strong> must be pure.</li><li><strong>Pure Pipes</strong> execute only when input values change.</li><li><strong>OnPush Change Detection</strong> works best with immutable data and pure functions.</li></ul><h4>Interview Tip</h4><p>Interviewers often ask whether a function that calls an API or updates the DOM is pure. The answer is <strong>No</strong>, because those operations produce side effects. Mention that reducers and pure pipes are common real-world examples of pure functions.</p><h4>Interview Answer</h4><p><strong>\"A pure function always returns the same output for the same input and has no side effects. It doesn't modify external variables, mutate its arguments, or depend on external state. Pure functions are easier to test, debug, cache, and reason about, which is why frameworks like Redux and NgRx require reducers to be pure.\"</strong></p>"
   },
   {
     "id": "js-data-types",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "types",
-      "primitives"
-    ],
+    "tags": ["types", "primitives"],
     "question": "What are the data types in JavaScript?",
     "answer": "<p><strong>Primitive</strong> (immutable, copied by value): <code class=\"inline\">string</code>, <code class=\"inline\">number</code>, <code class=\"inline\">boolean</code>, <code class=\"inline\">bigint</code>, <code class=\"inline\">symbol</code>, <code class=\"inline\">undefined</code>, <code class=\"inline\">null</code>.</p><p><strong>Non-primitive</strong> (reference type): <code class=\"inline\">object</code> — which includes arrays, functions, and dates.</p>",
     "tip": "Primitives are compared/copied by value; objects by reference — a very common gotcha.",
@@ -554,11 +436,7 @@
     "id": "js-type-conversion",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "conversion",
-      "numbers",
-      "strings"
-    ],
+    "tags": ["conversion", "numbers", "strings"],
     "question": "How do you convert between strings and numbers?",
     "answer": "<p><strong>Number → string</strong>: <code class=\"inline\">String(n)</code>, <code class=\"inline\">n.toString()</code>, or a template literal <code class=\"inline\">`${n}`</code>.</p><p><strong>String → number</strong>: <code class=\"inline\">Number(s)</code>, <code class=\"inline\">parseInt(s)</code> (integer), <code class=\"inline\">parseFloat(s)</code> (decimal), or the unary <code class=\"inline\">+s</code>.</p>",
     "tip": "parseInt('123px') = 123 (stops at non-digits); Number('123px') = NaN (strict).",
@@ -569,40 +447,32 @@
     "id": "js-sync-async",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "async",
-      "concurrency"
-    ],
+    "tags": ["async", "concurrency"],
     "question": "Synchronous vs asynchronous programming.",
-    "answer": "<p><strong>Synchronous</strong> code runs line by line — each task blocks the next until it finishes. <strong>Asynchronous</strong> code lets long-running work (network, timers, I/O) happen in the background and continue later via callbacks/promises/async-await, keeping the single UI thread responsive.</p>",
+    "answer": "<p><strong>Synchronous programming</strong> executes code one statement at a time. Each operation must finish before the next one starts, so long-running tasks block the execution.</p><p><strong>Asynchronous programming</strong> allows time-consuming operations like API calls, timers, and file I/O to run without blocking the main thread. Once completed, the result is handled later using callbacks, Promises, or <code class=\"inline\">async/await</code>, keeping the application responsive.</p>",
     "tip": "JS is single-threaded, so async is how it stays responsive during I/O.",
-    "code": "",
-    "lang": ""
+    "code": "// Synchronous\nconsole.log('Start');\nconsole.log('Processing...');\nconsole.log('End');\n\n// Asynchronous\nconsole.log('Start');\n\nsetTimeout(() => {\n  console.log('Timer Finished');\n}, 2000);\n\nconsole.log('End');\n\n// Output:\n// Start\n// End\n// Timer Finished",
+    "deep": "<h4>What is Synchronous Programming?</h4><p>In synchronous programming, JavaScript executes one statement at a time. Every line waits for the previous one to finish before executing. If one operation takes a long time, the entire program waits.</p><pre><code>console.log('Start');\n\nfunction longTask() {\n  for (let i = 0; i < 1e9; i++) {}\n}\n\nlongTask();\nconsole.log('End');</code></pre><p>The UI becomes unresponsive until <code class=\"inline\">longTask()</code> finishes because JavaScript executes everything on a single main thread.</p><h4>What is Asynchronous Programming?</h4><p>Asynchronous programming allows JavaScript to start a long-running operation without blocking the main thread. The operation runs outside the JavaScript engine (through browser APIs or Node.js APIs), and once completed, its callback is queued for execution.</p><pre><code>console.log('Start');\n\nsetTimeout(() => {\n  console.log('Timer Finished');\n}, 2000);\n\nconsole.log('End');</code></pre><p><strong>Output:</strong></p><pre><code>Start\nEnd\nTimer Finished</code></pre><p>JavaScript does not wait for the timer. Instead, it continues executing the remaining synchronous code.</p><h4>How Async Works</h4><pre><code>Call Stack\n     ↓\nWeb APIs (setTimeout, fetch, DOM Events)\n     ↓\nCallback Queue / Microtask Queue\n     ↓\nEvent Loop\n     ↓\nCall Stack</code></pre><p>The Event Loop continuously checks whether the Call Stack is empty. If it is, it moves ready callbacks into the stack for execution.</p><h4>Real-world Example</h4><p>Imagine an Angular application fetching customers from a Spring Boot backend.</p><pre><code>Component\n     ↓\nHttpClient.get()\n     ↓\nNetwork Request\n     ↓\nBackend API\n     ↓\nResponse\n     ↓\nObservable emits data\n     ↓\nUI Updates</code></pre><p>While the request is in progress, the user can continue interacting with the application because the network request is asynchronous.</p><h4>Synchronous vs Asynchronous</h4><table><tr><th>Synchronous</th><th>Asynchronous</th></tr><tr><td>Runs line by line</td><td>Does not block the main thread</td></tr><tr><td>Blocking</td><td>Non-blocking</td></tr><tr><td>Simple flow</td><td>Uses callbacks, Promises, or async/await</td></tr><tr><td>Poor for long-running tasks</td><td>Ideal for API calls, timers, and file operations</td></tr></table><h4>Ways to Write Async Code</h4><ul><li><strong>Callbacks</strong> (older approach)</li><li><strong>Promises</strong> (better error handling)</li><li><strong>async/await</strong> (modern and most readable)</li></ul><pre><code>// Promise\nfetch('/users')\n  .then(res => res.json())\n  .then(console.log);\n\n// async/await\nasync function loadUsers() {\n  const res = await fetch('/users');\n  const users = await res.json();\n  console.log(users);\n}</code></pre><h4>Common Misconception</h4><p>JavaScript is <strong>single-threaded</strong>, but it can still perform asynchronous operations. It achieves this using the Event Loop together with browser or Node.js APIs, not by creating a new JavaScript thread for every async task.</p><h4>Interview Tip</h4><p>If asked this question, don't stop at 'blocking vs non-blocking.' Mention that JavaScript is single-threaded and asynchronous behavior is made possible by the <strong>Event Loop</strong>, <strong>Web APIs</strong>, and the <strong>Callback/Microtask Queues</strong>. This demonstrates a deeper understanding.</p><h4>Interview Answer</h4><p><strong>\"Synchronous programming executes code sequentially, where each statement blocks the next until it completes. Asynchronous programming allows long-running tasks like API calls and timers to execute without blocking the main thread. JavaScript achieves this using the Event Loop, Web APIs, and callback or microtask queues, while developers typically work with callbacks, Promises, or async/await.\"</strong></p>",
+    "lang": "js"
   },
   {
     "id": "js-single-threaded",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "event-loop",
-      "concurrency",
-      "threads"
-    ],
+    "tags": ["event-loop", "concurrency", "threads"],
     "question": "Is JavaScript single-threaded or multi-threaded?",
     "answer": "<p>JavaScript is <strong>single-threaded</strong> — one call stack, one thing at a time. It <em>feels</em> concurrent because of the <strong>event loop</strong>: async work is offloaded to the browser/Node APIs and their callbacks are queued back onto the stack when it's free. (Web Workers add real parallel threads, but they don't share the main thread.)</p>",
     "tip": "One thread + event loop = the mental model for all async behaviour in JS.",
     "code": "",
     "lang": "",
+    "youtube": "https://youtu.be/eiC58R16hb8",
     "deep": "<h4>Single-threaded, but concurrent</h4><p>JavaScript has <strong>one call stack</strong> — it executes one statement at a time and can't run two pieces of JS in parallel on the main thread. What makes it <em>feel</em> concurrent is that slow work (timers, network, file I/O) is handed off to the host (browser or Node), which runs it elsewhere and queues a callback back when it's done.</p><h4>Who does the async work?</h4><p>The engine (V8) is single-threaded, but the <strong>runtime around it</strong> isn't. The browser provides Web APIs and a thread pool; Node uses libuv with its own worker threads. Your JS callback still runs back on the one main thread via the event loop.</p><pre><code>console.log('start');\nsetTimeout(() =&gt; console.log('later'), 0); // offloaded to timer API\nconsole.log('end');\n// start, end, later</code></pre><h4>Why single-threaded is a deliberate choice</h4><p>No shared-memory threads on the main thread means <strong>no data races or locks</strong> in your app code — simpler and safe for DOM manipulation. The cost: a long synchronous loop <em>blocks everything</em> (UI freezes), so you must keep the main thread free.</p><h4>Getting real parallelism</h4><ul><li><strong>Web Workers</strong> — separate threads for CPU-heavy work; communicate by messages, no shared DOM.</li><li><strong>Node worker_threads</strong> — the Node equivalent.</li><li><strong>SharedArrayBuffer / Atomics</strong> — actual shared memory between workers (advanced).</li></ul><h4>How to say it in an interview</h4><p>“JavaScript itself is single-threaded — one call stack. It handles async work by offloading it to the browser or Node runtime and queuing the callbacks, which the event loop runs back on that single thread. For true parallelism I’d use Web Workers, which run on separate threads and communicate via messages.”</p>"
   },
   {
     "id": "js-event-listener",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "dom",
-      "events"
-    ],
+    "tags": ["dom", "events"],
     "question": "What is an event listener?",
     "answer": "<p>A function registered to run when a specific event (click, input, mouseover, …) fires on a DOM element, via <code class=\"inline\">addEventListener</code>. Remove it with <code class=\"inline\">removeEventListener</code> to avoid leaks.</p>",
     "tip": "Use addEventListener (not onclick=) so you can attach multiple handlers and remove them.",
@@ -613,10 +483,7 @@
     "id": "js-slice-splice",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "arrays",
-      "methods"
-    ],
+    "tags": ["arrays", "methods"],
     "question": "slice() vs splice().",
     "answer": "<p><strong>slice(start, end)</strong> returns a <em>copy</em> of a portion — it does <strong>not</strong> mutate the original. <strong>splice(start, count, …items)</strong> <em>mutates</em> the array, removing and/or inserting elements, and returns the removed ones.</p>",
     "tip": "slice = safe copy; splice = in-place edit. Easy to mix up — remember 'p' for 'mutate in place'.",
@@ -627,26 +494,20 @@
     "id": "js-call-apply-bind",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "this",
-      "functions",
-      "binding"
-    ],
+    "tags": ["this", "functions", "binding"],
     "question": "call() vs apply() vs bind().",
     "answer": "<p>All set <code class=\"inline\">this</code> explicitly. <strong>call</strong> invokes immediately with arguments listed individually; <strong>apply</strong> invokes immediately with arguments as an array; <strong>bind</strong> returns a <em>new</em> function with <code class=\"inline\">this</code> permanently bound (call it later).</p>",
     "tip": "call/apply invoke now; bind returns a function to invoke later. apply takes an Array.",
     "code": "greet.call(obj, 'hi', '!');\ngreet.apply(obj, ['hi', '!']);\nconst bound = greet.bind(obj); bound('hi', '!');",
     "lang": "js",
+    "youtube": "https://youtu.be/VkmUOktYDAU",
     "deep": "<h4>All three set <code class=\"inline\">this</code> — they differ in <em>when</em> and <em>how args are passed</em></h4><table><thead><tr><th>Method</th><th>Invokes</th><th>Arguments</th></tr></thead><tbody><tr><td><code class=\"inline\">call</code></td><td>immediately</td><td>listed individually</td></tr><tr><td><code class=\"inline\">apply</code></td><td>immediately</td><td>as one array</td></tr><tr><td><code class=\"inline\">bind</code></td><td>later (returns a new fn)</td><td>listed; can pre-fill some</td></tr></tbody></table><pre><code>function greet(g, p) { return `${g}, ${this.name}${p}`; }\nconst user = { name: 'Asha' };\n\ngreet.call(user, 'Hi', '!');       // 'Hi, Asha!'\ngreet.apply(user, ['Hi', '!']);    // 'Hi, Asha!'\nconst g = greet.bind(user);        // new function\ng('Hi', '!');                      // 'Hi, Asha!'</code></pre><p>Mnemonic: <strong>A</strong>pply = <strong>A</strong>rray. Call = comma-separated. Bind = build-for-later.</p><h4>bind also does partial application</h4><pre><code>function multiply(a, b) { return a * b; }\nconst double = multiply.bind(null, 2);\ndouble(5); // 10  — first arg pre-filled</code></pre><h4>Real uses</h4><ul><li><strong>Fix a lost <code class=\"inline\">this</code></strong> when passing a method as a callback: <code class=\"inline\">btn.addEventListener('click', this.handle.bind(this))</code>.</li><li><strong>Borrow methods</strong>: <code class=\"inline\">Array.prototype.slice.call(arguments)</code> to arrayify array-likes.</li><li><strong>Spread into a variadic fn</strong>: <code class=\"inline\">Math.max.apply(null, nums)</code> (modern: <code class=\"inline\">Math.max(...nums)</code>).</li></ul><h4>Caveats</h4><p>You can't rebind an arrow function's <code class=\"inline\">this</code> (it has none). And <code class=\"inline\">bind</code> is permanent — binding an already-bound function again has no effect.</p><h4>How to say it in an interview</h4><p>“All three explicitly set <code class=\"inline\">this</code>. <code class=\"inline\">call</code> and <code class=\"inline\">apply</code> invoke immediately — <code class=\"inline\">call</code> takes comma-separated args, <code class=\"inline\">apply</code> takes an array. <code class=\"inline\">bind</code> returns a new function with <code class=\"inline\">this</code> permanently fixed to call later, and can pre-fill arguments for partial application.”</p>"
   },
   {
     "id": "js-template-literals",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "es6",
-      "strings"
-    ],
+    "tags": ["es6", "strings"],
     "question": "What are template literals?",
     "answer": "<p>Strings written in backticks that support <strong>interpolation</strong> (<code class=\"inline\">${expr}</code>) and multi-line text without concatenation. <em>Tagged</em> template literals let a function process the parts (used for i18n, styled-components, safe HTML).</p>",
     "tip": "Backticks + ${} replace clunky string concatenation and allow multi-line strings.",
@@ -662,18 +523,17 @@
       "gc"
     ],
     "question": "How does garbage collection work in JavaScript?",
-    "answer": "<p>The engine automatically frees memory for objects that are no longer <strong>reachable</strong> from a root (global, current call stack). The main algorithm is <strong>mark-and-sweep</strong>. Leaks still happen via lingering references — forgotten timers, detached DOM nodes, or global variables.</p>",
-    "tip": "You can't force GC; you prevent leaks by clearing references, timers, and listeners.",
-    "code": "",
-    "lang": ""
+    "answer": "<p>JavaScript uses <strong>automatic garbage collection (GC)</strong> to reclaim memory occupied by objects that are no longer <strong>reachable</strong>. Modern JavaScript engines (such as V8) primarily use the <strong>Mark-and-Sweep</strong> algorithm. Developers cannot manually free memory, but they can prevent memory leaks by removing unnecessary references, clearing timers, and unregistering event listeners.</p>",
+    "tip": "Remember: <strong>Reachable objects stay alive.</strong> Unreachable objects are automatically removed by the Garbage Collector.",
+    "code": "// Object becomes unreachable\nlet user = {\n  name: 'John'\n};\n\nuser = null; // Previous object is now eligible for garbage collection\n\n// Prevent memory leaks\nconst timer = setInterval(() => {\n  console.log('Running...');\n}, 1000);\n\nclearInterval(timer);",
+    "deep": "<h4>What is Garbage Collection?</h4><p>Garbage Collection (GC) is JavaScript's automatic memory management mechanism. When objects are no longer accessible from the application, the JavaScript engine automatically reclaims their memory.</p><p>Unlike languages such as C or C++, developers do not manually allocate or free memory.</p><h4>Reachability</h4><p>The most important concept in garbage collection is <strong>reachability</strong>.</p><p>An object is considered <strong>reachable</strong> if it can be accessed from one of the GC roots.</p><p>Common GC roots include:</p><ul><li>Global variables.</li><li>Variables in the current Call Stack.</li><li>Active function parameters.</li><li>Closures that still reference variables.</li></ul><pre><code>let user = {\n  name: 'John'\n};\n\nuser = null;</code></pre><p>After assigning <code class=\"inline\">null</code>, no references remain to the original object, making it eligible for garbage collection.</p><h4>Mark-and-Sweep Algorithm</h4><p>Modern JavaScript engines such as Google's V8 use the <strong>Mark-and-Sweep</strong> algorithm.</p><ol><li>Start from the GC roots.</li><li>Mark every reachable object.</li><li>Traverse all referenced objects recursively.</li><li>Objects that are not marked are unreachable.</li><li>Sweep (delete) all unmarked objects and reclaim their memory.</li></ol><pre><code>Global Object\n      │\n      ▼\n    user\n      │\n      ▼\n  address\n      │\n      ▼\n   city\n\n(All marked ✓)\n\nUnreachable object\n      ▼\n   oldData\n\n(Not marked → Garbage Collected)</code></pre><h4>Circular References</h4><p>Older reference-counting algorithms failed to clean circular references. Mark-and-Sweep handles them correctly.</p><pre><code>let a = {};\nlet b = {};\n\na.ref = b;\nb.ref = a;\n\na = null;\nb = null;</code></pre><p>Although the objects reference each other, neither is reachable from a GC root, so both are collected.</p><h4>Common Causes of Memory Leaks</h4><ul><li>Global variables that are never cleared.</li><li>Forgotten <code class=\"inline\">setInterval()</code> or <code class=\"inline\">setTimeout()</code>.</li><li>Event listeners that are never removed.</li><li>Detached DOM elements still referenced in JavaScript.</li><li>Large caches that keep growing.</li><li>Closures unintentionally holding large objects in memory.</li></ul><pre><code>// ❌ Memory Leak\nconst timer = setInterval(() => {\n  console.log('Running');\n}, 1000);\n\n// ✅ Cleanup\nclearInterval(timer);</code></pre><pre><code>// ❌ Event Listener Leak\nbutton.addEventListener('click', handler);\n\n// ✅ Cleanup\nbutton.removeEventListener('click', handler);</code></pre><h4>Closures and Garbage Collection</h4><p>A closure keeps variables alive as long as the closure itself is reachable.</p><pre><code>function createCounter() {\n  let count = 0;\n\n  return () => ++count;\n}\n\nconst counter = createCounter();</code></pre><p>The variable <code class=\"inline\">count</code> is not garbage collected because the returned function still references it.</p><h4>Garbage Collection in Browsers</h4><p>Modern JavaScript engines (V8, SpiderMonkey, JavaScriptCore) optimize garbage collection using techniques such as:</p><ul><li>Generational Garbage Collection.</li><li>Incremental Garbage Collection.</li><li>Concurrent Garbage Collection.</li><li>Compacting memory to reduce fragmentation.</li></ul><p>These optimizations reduce application pauses while cleaning memory.</p><h4>Best Practices</h4><ul><li>Set unused objects to <code class=\"inline\">null</code> when appropriate.</li><li>Clear timers using <code class=\"inline\">clearTimeout()</code> and <code class=\"inline\">clearInterval()</code>.</li><li>Remove event listeners when components are destroyed.</li><li>Avoid unnecessary global variables.</li><li>Limit the size of caches.</li><li>Be mindful of closures retaining large objects.</li></ul><h4>Angular Example</h4><p>In Angular, memory leaks commonly occur when Observables or subscriptions are not cleaned up.</p><pre><code>private destroy$ = new Subject&lt;void&gt;();\n\nthis.userService.getUsers()\n  .pipe(takeUntil(this.destroy$))\n  .subscribe();\n\nngOnDestroy() {\n  this.destroy$.next();\n  this.destroy$.complete();\n}</code></pre><p>This ensures subscriptions are released when the component is destroyed.</p><h4>Interview Tip</h4><p>Interviewers often ask whether developers can manually trigger garbage collection. The correct answer is <strong>No.</strong> JavaScript engines automatically decide when to run GC. Developers focus on preventing memory leaks by removing references, clearing timers, unsubscribing from Observables, and cleaning up event listeners.</p><h4>Interview Answer</h4><p><strong>\"JavaScript automatically manages memory using Garbage Collection. Modern engines use the Mark-and-Sweep algorithm, starting from GC roots and removing objects that are no longer reachable. Developers cannot manually free memory, but they should prevent memory leaks by clearing timers, removing event listeners, unsubscribing from Observables, avoiding unnecessary global variables, and releasing unused references.\"</strong></p>",
+    "lang": "js"
   },
   {
     "id": "js-add-props",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "objects"
-    ],
+    "tags": ["objects"],
     "question": "How do you add or access properties dynamically on an object?",
     "answer": "<p>Use <strong>bracket notation</strong> when the key is dynamic or not a valid identifier: <code class=\"inline\">obj[key] = value</code>. Dot notation (<code class=\"inline\">obj.key</code>) only works for fixed, valid names.</p>",
     "tip": "Bracket notation is how you set a property whose name is in a variable.",
@@ -684,10 +544,7 @@
     "id": "js-for-of-in",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "loops",
-      "iteration"
-    ],
+    "tags": ["loops", "iteration"],
     "question": "for...of vs for...in.",
     "answer": "<p><strong>for…of</strong> iterates the <em>values</em> of an iterable (arrays, strings, Maps, Sets). <strong>for…in</strong> iterates the <em>keys</em> (property names) of an object — and can pick up inherited enumerable keys, so it's not ideal for arrays.</p>",
     "tip": "for…of for arrays/values, for…in for object keys. Don't loop arrays with for…in.",
@@ -698,10 +555,7 @@
     "id": "js-settimeout-interval",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "timers",
-      "async"
-    ],
+    "tags": ["timers", "async"],
     "question": "setTimeout() vs setInterval().",
     "answer": "<p><strong>setTimeout</strong> runs a callback <em>once</em> after a delay. <strong>setInterval</strong> runs it <em>repeatedly</em> at a fixed interval. Both return an id you clear with <code class=\"inline\">clearTimeout</code>/<code class=\"inline\">clearInterval</code>.</p>",
     "tip": "Always clear intervals (e.g. in cleanup) or they run forever and leak.",
@@ -712,25 +566,20 @@
     "id": "js-shadowing",
     "category": "javascript",
     "difficulty": "intermediate",
-    "tags": [
-      "scope",
-      "shadowing"
-    ],
+    "tags": ["scope", "shadowing"],
     "question": "What is variable shadowing?",
     "answer": "<p>When a variable declared in an inner scope has the <strong>same name</strong> as one in an outer scope, the inner one <em>shadows</em> (hides) the outer within that block. Common with function parameters and block-scoped <code class=\"inline\">let</code>/<code class=\"inline\">const</code>.</p>",
     "tip": "Illegal shadowing: you can't shadow a let with a var in the same scope.",
     "code": "let x = 1;\nfunction f() { let x = 2; return x; } // inner x shadows outer\nf(); // 2, outer x still 1",
     "lang": "js",
+    "youtube": "https://youtu.be/oUWRxJ19gfE",
     "deep": "<h4>What it is</h4><p>Shadowing happens when a variable in an inner scope has the <strong>same name</strong> as one in an enclosing scope. Inside the inner scope, the name resolves to the inner variable — the outer one is hidden (not overwritten).</p><pre><code>let x = 1;\nfunction f() {\n  let x = 2;   // shadows the outer x\n  return x;    // 2\n}\nf();           // 2\nx;             // 1 — outer untouched</code></pre><h4>It follows the scope chain</h4><p>JS resolves a name by walking outward: current block → enclosing function → … → global. The <em>nearest</em> declaration wins, so the inner one shadows the rest.</p><pre><code>const v = 'global';\n{\n  const v = 'block';\n  console.log(v); // 'block'\n}\nconsole.log(v);   // 'global'</code></pre><h4>Illegal shadowing</h4><p>You can shadow across nested scopes, but you can't create a conflicting redeclaration in the <em>same</em> scope — mixing <code class=\"inline\">let</code> and <code class=\"inline\">var</code> for the same name throws:</p><pre><code>function bad() {\n  let a = 1;\n  { var a = 2; } // ❌ SyntaxError: 'a' already declared\n}</code></pre><h4>The loop-variable case</h4><pre><code>for (let i = 0; i &lt; 3; i++) { /* each iteration: a fresh i */ }</code></pre><p><code class=\"inline\">let</code> in a loop head effectively creates a new binding per iteration — a form of scoping that shadows across iterations and fixes the classic closure-in-loop bug.</p><h4>Should you do it?</h4><p>Deliberate shadowing (e.g. narrowing a param inside a block) is fine and common. <em>Accidental</em> shadowing hides bugs — a linter rule (<code class=\"inline\">no-shadow</code>) catches unintended cases.</p><h4>How to say it in an interview</h4><p>“Shadowing is when an inner-scope variable reuses an outer variable’s name and hides it within that scope — name resolution picks the nearest one. The outer value is untouched. It’s legal across nested scopes but not as a conflicting redeclaration in the same scope.”</p>"
   },
   {
     "id": "js-generator-vs-normal",
     "category": "javascript",
     "difficulty": "advanced",
-    "tags": [
-      "generators",
-      "functions"
-    ],
+    "tags": ["generators", "functions"],
     "question": "Generator function vs normal function.",
     "answer": "<p>A <strong>normal function</strong> runs to completion and returns once. A <strong>generator</strong> (<code class=\"inline\">function*</code>) can <strong>pause</strong> at each <code class=\"inline\">yield</code> and resume later, returning an <em>iterator</em>. It's lazy — values are produced on demand, enabling infinite sequences and custom iteration.</p>",
     "tip": "Generators return an iterator you drive with .next(); normal functions just return a value.",
@@ -741,10 +590,7 @@
     "id": "js-mutable-immutable",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "immutability",
-      "types"
-    ],
+    "tags": ["immutability", "types"],
     "question": "Mutable vs immutable in JavaScript.",
     "answer": "<p><strong>Primitives</strong> (string, number, boolean…) are <strong>immutable</strong> — operations produce new values, never change the original. <strong>Objects and arrays</strong> are <strong>mutable</strong> — their contents can change in place. Freeze an object with <code class=\"inline\">Object.freeze</code> to prevent top-level mutation.</p>",
     "tip": "String methods return NEW strings — the original never changes.",
@@ -755,11 +601,7 @@
     "id": "js-truthy-falsy",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "V.Imp",
-      "coercion",
-      "basics"
-    ],
+    "tags": ["V.Imp", "coercion", "basics"],
     "question": "What are truthy and falsy values?",
     "answer": "<p>In a boolean context (<code class=\"inline\">if</code>, <code class=\"inline\">&amp;&amp;</code>, <code class=\"inline\">!</code>), every value coerces to <code class=\"inline\">true</code> or <code class=\"inline\">false</code>. There are exactly <strong>8 falsy values</strong>: <code class=\"inline\">false</code>, <code class=\"inline\">0</code>, <code class=\"inline\">-0</code>, <code class=\"inline\">0n</code>, <code class=\"inline\">\"\"</code>, <code class=\"inline\">null</code>, <code class=\"inline\">undefined</code>, and <code class=\"inline\">NaN</code>. <strong>Everything else is truthy</strong> — including <code class=\"inline\">\"0\"</code>, <code class=\"inline\">\"false\"</code>, <code class=\"inline\">[]</code>, and <code class=\"inline\">{}</code>.</p>",
     "tip": "Empty array [] and empty object {} are TRUTHY — the classic gotcha.",
@@ -771,10 +613,7 @@
     "id": "js-use-strict",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "strict-mode",
-      "basics"
-    ],
+    "tags": ["strict-mode", "basics"],
     "question": "What does \"use strict\" do?",
     "answer": "<p>Strict mode (<code class=\"inline\">'use strict';</code> at the top of a file or function) opts into a stricter JS variant that catches common mistakes as errors: it forbids undeclared globals, makes silent failures throw, disallows duplicate parameter names, and sets <code class=\"inline\">this</code> to <code class=\"inline\">undefined</code> in plain function calls (instead of the global object).</p><p>ES modules and class bodies are <strong>always</strong> strict, so you rarely write it by hand anymore.</p>",
     "tip": "Inside a module or a class, you're already in strict mode — no directive needed.",
@@ -785,10 +624,7 @@
     "id": "js-array-search",
     "category": "javascript",
     "difficulty": "beginner",
-    "tags": [
-      "array",
-      "methods"
-    ],
+    "tags": ["array", "methods"],
     "question": "find, filter, some, every, includes — what do they do?",
     "answer": "<ul><li><strong>filter</strong> — returns a <em>new array</em> of all items passing a test.</li><li><strong>find</strong> — returns the <em>first</em> matching item (or <code class=\"inline\">undefined</code>).</li><li><strong>findIndex</strong> — the index of the first match (or <code class=\"inline\">-1</code>).</li><li><strong>some</strong> — <code class=\"inline\">true</code> if <em>at least one</em> item passes.</li><li><strong>every</strong> — <code class=\"inline\">true</code> if <em>all</em> items pass.</li><li><strong>includes</strong> — <code class=\"inline\">true</code> if the array contains a value (uses <code class=\"inline\">===</code>).</li></ul>",
     "tip": "find returns the item; filter returns an array. Use find when you expect one result.",
