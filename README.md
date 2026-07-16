@@ -15,16 +15,10 @@ content (Firebase stores only *user* data — progress, bookmarks, notes).
 computes them for you:
 
 1. Edit the relevant `<category>.json` (or add a new object to the array).
-2. Run the builder — it recomputes counts + total, sets `updatedAt`, and bumps
-   `version` **only if content actually changed** (idempotent), plus per-file
-   content hashes so even a same-count typo fix is detected:
-   ```
-   node build-manifest.mjs      # or: npm run build
-   ```
-3. Commit + push. Website and app pick it up automatically (see the webapp's
+2. Commit + push. Website and app pick it up automatically (see the webapp's
    ARCHITECTURE.md).
 
-The builder also **validates** the content (JSON parses, ids unique, required
+The builder will **validates** the content (JSON parses, ids unique, required
 fields present, difficulty valid, group exists) and refuses to write a broken
 manifest — so a bad edit fails locally instead of shipping.
 
@@ -56,8 +50,7 @@ one is a content-only change — **no app release, no website redeploy**.
    ```
    - `group` is the id of the parent field (must exist in `groups`).
    - `color` is optional — omit it and the clients auto-assign one.
-3. Run `node build-manifest.mjs`, then push.
-3. Bump `version`, push.
+3. then push.
 
 Order matters: the order of entries in `groups` and `categories` is the display
 order in both clients.
