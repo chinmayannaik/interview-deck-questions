@@ -15,7 +15,7 @@
    You still DEFINE groups/categories in manifest.json (id, file, label,
    group, color, order). This script only fills in the derived numbers.
 
-   Usage:  node build-manifest.mjs        (or: npm run build)
+   Usage:  node build-manifest.mjs        (or: npm run build) No need to do this mannually we have ahook to do this.
    ============================================================ */
 import { readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
