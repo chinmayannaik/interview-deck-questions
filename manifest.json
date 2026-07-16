@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
-  "version": 13,
-  "updatedAt": "2026-07-16T15:09:06.354Z",
-  "totalQuestions": 888,
+  "version": 14,
+  "updatedAt": "2026-07-16T16:04:19.277Z",
+  "totalQuestions": 891,
   "groups": [
     {
       "id": "frontend",
@@ -37,8 +37,8 @@
       "label": "Angular",
       "group": "frontend",
       "color": "#C3002F",
-      "count": 78,
-      "hash": "3d0962ae1d32"
+      "count": 81,
+      "hash": "e16a97312096"
     },
     {
       "id": "ngcoding",
@@ -221,5 +221,5 @@
       "hash": "d36017bc1528"
     }
   ],
-  "contentHash": "a62c6acb76c03a80c80f5e551ce54af77a376dad"
+  "contentHash": "eea9baf42c24d7e63a05a04f761c65703d9df0c2"
 }
