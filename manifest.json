@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
-  "version": 19,
-  "updatedAt": "2026-07-16T16:50:58.056Z",
-  "totalQuestions": 953,
+  "version": 20,
+  "updatedAt": "2026-07-18T21:14:47.058Z",
+  "totalQuestions": 958,
   "groups": [
     {
       "id": "frontend",
@@ -37,8 +37,8 @@
       "label": "Angular",
       "group": "frontend",
       "color": "#C3002F",
-      "count": 81,
-      "hash": "b2577c40f8e7"
+      "count": 83,
+      "hash": "5252e7a26ca1"
     },
     {
       "id": "ngcoding",
@@ -55,8 +55,8 @@
       "label": "JavaScript",
       "group": "frontend",
       "color": "#B4820A",
-      "count": 54,
-      "hash": "e434b28f9aee"
+      "count": 57,
+      "hash": "e0d1b9b2a519"
     },
     {
       "id": "typescript",
@@ -65,7 +65,7 @@
       "group": "frontend",
       "color": "#2F6FB0",
       "count": 24,
-      "hash": "65c3b021bb6c"
+      "hash": "834739ef800f"
     },
     {
       "id": "html",
@@ -221,5 +221,5 @@
       "hash": "d36017bc1528"
     }
   ],
-  "contentHash": "f7f669f05ce8d08961b362b86f8d7783d04270d6"
+  "contentHash": "7a806c18a444e2f059f17bb7e8228b901a4e479f"
 }
