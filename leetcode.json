@@ -80,5 +80,54 @@
     "lang": "java",
     "deep": "<h4>Problem intuition</h4><p>The task is simply to determine whether any number appears more than once. Instead of comparing every pair, remember the numbers you've already seen.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Compare every pair using nested loops. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Sorting:</strong> Sort the array and check adjacent elements. Time Complexity: <strong>O(n log n)</strong>.</li><li><strong>Optimal:</strong> Store visited elements in a <code class=\"inline\">HashSet</code>. If insertion fails, a duplicate exists.</li></ul><pre><code>nums = [1,2,3,1]\n\nSet = {}\n1 → add\n2 → add\n3 → add\n1 → already exists\n\nAnswer = true</code></pre><h4>Why HashSet works</h4><p>A HashSet provides average <strong>O(1)</strong> insertion and lookup. This allows us to detect duplicates in a single pass through the array.</p><h4>Common mistakes</h4><ul><li>Using nested loops instead of a HashSet.</li><li>Sorting unnecessarily when only duplicate detection is required.</li><li>Using a List instead of a Set, resulting in slower lookups.</li></ul><h4>Interview Tip</h4><p>Whenever you hear phrases like <strong>contains duplicate</strong>, <strong>unique elements</strong>, or <strong>already seen</strong>, think of using a <strong>HashSet</strong>.</p>",
     "youtube": "https://youtu.be/3OamzN90kPg"
+  },
+  {
+    "id": "leetcode-valid-anagram",
+    "category": "leetcode",
+    "difficulty": "beginner",
+    "tags": [
+      "string",
+      "hashing",
+      "array"
+    ],
+    "question": "Valid Anagram",
+    "answer": "<p>Given two strings <code class=\"inline\">s</code> and <code class=\"inline\">t</code>, return <code class=\"inline\">true</code> if <code class=\"inline\">t</code> is an anagram of <code class=\"inline\">s</code>, otherwise return <code class=\"inline\">false</code>.</p><p><strong>Optimal Approach:</strong> Since the strings contain only lowercase English letters, use an integer frequency array of size <code class=\"inline\">26</code>. Increment the count for each character in <code class=\"inline\">s</code> and decrement for each character in <code class=\"inline\">t</code>. If all counts become zero, the strings are anagrams.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul>",
+    "tip": "Whenever the input contains only lowercase English letters, prefer an <strong>int[26]</strong> over a HashMap.",
+    "code": "public boolean isAnagram(String s, String t) {\n    if (s.length() != t.length()) {\n        return false;\n    }\n\n    int[] count = new int[26];\n\n    for (int i = 0; i < s.length(); i++) {\n        count[s.charAt(i) - 'a']++;\n        count[t.charAt(i) - 'a']--;\n    }\n\n    for (int c : count) {\n        if (c != 0) {\n            return false;\n        }\n    }\n\n    return true;\n}",
+    "lang": "java",
+    "deep": "<h4>Problem intuition</h4><p>Two strings are anagrams if they contain exactly the same characters with the same frequencies. Instead of sorting both strings, simply count how many times each letter appears.</p><h4>Approaches</h4><ul><li><strong>Sorting:</strong> Sort both strings and compare. Time Complexity: <strong>O(n log n)</strong>.</li><li><strong>Optimal:</strong> Maintain a frequency array of size 26. Increase counts for one string and decrease for the other.</li></ul><pre><code>s = \"anagram\"\nt = \"nagaram\"\n\nCount['a']++ / Count['a']--\nCount['n']++ / Count['n']--\n...\n\nAll counts become 0\nAnswer = true</code></pre><h4>Why Frequency Array works</h4><p>Each increment is canceled by a matching decrement. If every character appears the same number of times, all values become zero.</p><h4>Common mistakes</h4><ul><li>Using HashMap when only lowercase letters are present.</li><li>Forgetting to compare string lengths first.</li><li>Sorting when an O(n) solution exists.</li></ul><h4>Interview Tip</h4><p>When the character set is fixed (26 lowercase letters), an array is almost always faster than a HashMap.</p>",
+    "youtube": "https://youtu.be/9UtInBqnCgA"
+  },
+  {
+    "id": "leetcode-merge-sorted-array",
+    "category": "leetcode",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "two-pointers"
+    ],
+    "question": "Merge Sorted Array",
+    "answer": "<p>You are given two sorted integer arrays <code class=\"inline\">nums1</code> and <code class=\"inline\">nums2</code>. Merge <code class=\"inline\">nums2</code> into <code class=\"inline\">nums1</code> as one sorted array.</p><p><strong>Optimal Approach:</strong> Use three pointers starting from the end of both arrays. Compare the largest remaining elements and place the larger one at the end of <code class=\"inline\">nums1</code>.</p><ul><li>Time Complexity: <strong>O(m+n)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul>",
+    "tip": "Whenever you merge into an existing array, fill it from the end to avoid overwriting values.",
+    "code": "public void merge(int[] nums1, int m, int[] nums2, int n) {\n    int i = m - 1;\n    int j = n - 1;\n    int k = m + n - 1;\n\n    while (j >= 0) {\n        if (i >= 0 && nums1[i] > nums2[j]) {\n            nums1[k--] = nums1[i--];\n        } else {\n            nums1[k--] = nums2[j--];\n        }\n    }\n}",
+    "lang": "java",
+    "deep": "<h4>Problem intuition</h4><p>Since both arrays are already sorted, the largest element must always be at the end of one of the arrays. Filling from the end prevents overwriting valid values inside <code class=\"inline\">nums1</code>.</p><h4>Approaches</h4><ul><li><strong>Extra Array:</strong> Merge into a new array and copy back.</li><li><strong>Optimal:</strong> Use three pointers from the end.</li></ul><pre><code>nums1 = [1,2,3,0,0,0]\nnums2 = [2,5,6]\n\nCompare 3 and 6 → place 6\nCompare 3 and 5 → place 5\nCompare 3 and 2 → place 3\n...\n\nResult = [1,2,2,3,5,6]</code></pre><h4>Why it works</h4><p>The unused space is already at the end of <code class=\"inline\">nums1</code>, making backward traversal ideal.</p><h4>Common mistakes</h4><ul><li>Merging from the front and overwriting values.</li><li>Forgetting to copy remaining elements from <code class=\"inline\">nums2</code>.</li><li>Using unnecessary extra arrays.</li></ul><h4>Interview Tip</h4><p>Whenever merging into an existing array with extra space, think <strong>backward two pointers</strong>.</p>",
+    "youtube": "https://youtu.be/P1Ic85RarKY"
+  },
+  {
+    "id": "leetcode-squares-of-a-sorted-array",
+    "category": "leetcode",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "two-pointers"
+    ],
+    "question": "Squares of a Sorted Array",
+    "answer": "<p>Given a sorted integer array <code class=\"inline\">nums</code>, return an array of the squares of each number sorted in non-decreasing order.</p><p><strong>Optimal Approach:</strong> Use two pointers at the beginning and end of the array. Compare the absolute values and place the larger square at the end of the result array.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
+    "tip": "Whenever negative and positive numbers are sorted, compare their absolute values using two pointers.",
+    "code": "public int[] sortedSquares(int[] nums) {\n    int n = nums.length;\n    int[] result = new int[n];\n\n    int left = 0;\n    int right = n - 1;\n\n    for (int i = n - 1; i >= 0; i--) {\n        if (Math.abs(nums[left]) > Math.abs(nums[right])) {\n            result[i] = nums[left] * nums[left];\n            left++;\n        } else {\n            result[i] = nums[right] * nums[right];\n            right--;\n        }\n    }\n\n    return result;\n}",
+    "lang": "java",
+    "deep": "<h4>Problem intuition</h4><p>Although the input array is sorted, squaring negative numbers changes their order. The largest square always comes from either the leftmost negative number or the rightmost positive number.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Square every element and sort again. Time Complexity: <strong>O(n log n)</strong>.</li><li><strong>Optimal:</strong> Compare absolute values using two pointers.</li></ul><pre><code>nums = [-4,-1,0,3,10]\n\nCompare |-4| and |10| → 100\nCompare |-4| and |3| → 16\nCompare |-1| and |3| → 9\n...\n\nResult = [0,1,9,16,100]</code></pre><h4>Why Two Pointers work</h4><p>The maximum square always comes from one of the two ends of the sorted array. Fill the result array from right to left.</p><h4>Common mistakes</h4><ul><li>Squaring first and assuming the array remains sorted.</li><li>Sorting after squaring instead of using two pointers.</li><li>Comparing actual values instead of absolute values.</li></ul><h4>Interview Tip</h4><p>Whenever the input is sorted but a transformation changes the order, think about using <strong>two pointers</strong> instead of sorting again.</p>",
+    "youtube": "https://youtu.be/Q1IUQbJf_7g"
   }
 ]
