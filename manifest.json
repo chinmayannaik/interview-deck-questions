@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "version": 24,
-  "updatedAt": "2026-07-19T12:48:41.432Z",
+  "version": 25,
+  "updatedAt": "2026-07-19T12:58:25.208Z",
   "totalQuestions": 966,
   "groups": [
     {
@@ -83,7 +83,7 @@
       "group": "frontend",
       "color": "#7A4FD6",
       "count": 35,
-      "hash": "6569bc9376bb"
+      "hash": "3864328c3d80"
     },
     {
       "id": "coding",
@@ -221,5 +221,5 @@
       "hash": "d36017bc1528"
     }
   ],
-  "contentHash": "a20abf714e1d09bf65a8fe18e6626b7cadc789fd"
+  "contentHash": "1900b5d8b60e81930e49d1ce98a38feb10f1dfc2"
 }

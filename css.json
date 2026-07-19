@@ -221,7 +221,7 @@
       "layout",
       "template-areas"
     ],
-    "question": "What is <code class=\"inline\">grid-template-areas</code>, and when would you use it?",
+    "question": "What is grid-template-areas and when is it used?",
     "answer": "<p><code class=\"inline\">grid-template-areas</code> lets you define named regions in a CSS Grid using a readable, text-based layout. Child elements are assigned to these regions using the <code class=\"inline\">grid-area</code> property. This makes complex layouts easier to understand, maintain, and rearrange for responsive designs by simply changing the area definitions.</p>",
     "tip": "Use <code class=\"inline\">grid-template-areas</code> for page layouts with clearly defined sections like headers, sidebars, and content. Responsive layouts often require changing only the area map.",
     "code": ".layout {\n  display: grid;\n  grid-template-columns: 250px 1fr;\n  grid-template-areas:\n    \"header header\"\n    \"sidebar main\"\n    \"footer footer\";\n  gap: 16px;\n}\n\n.header { grid-area: header; }\n.sidebar { grid-area: sidebar; }\n.main { grid-area: main; }\n.footer { grid-area: footer; }\n\n@media (max-width: 768px) {\n  .layout {\n    grid-template-columns: 1fr;\n    grid-template-areas:\n      \"header\"\n      \"main\"\n      \"sidebar\"\n      \"footer\";\n  }\n}",
@@ -237,7 +237,7 @@
       "clamp",
       "fluid-typography"
     ],
-    "question": "What is the CSS <code class=\"inline\">clamp()</code> function, and when would you use it?",
+    "question": "What is clamp() and when is it used?",
     "answer": "<p>The <code class=\"inline\">clamp()</code> function lets you define a responsive value by specifying a <strong>minimum</strong>, a <strong>preferred</strong>, and a <strong>maximum</strong> value. The browser uses the preferred value as long as it stays within the specified range. It is commonly used for fluid typography, spacing, widths, and other responsive values without relying on multiple media queries.</p>",
     "tip": "A common pattern is <code class=\"inline\">clamp(min, viewport-based value, max)</code>, which creates smooth responsive sizing while preventing values from becoming too small or too large.",
     "code": "h1 {\n  font-size: clamp(1.5rem, 4vw, 3rem);\n}\n\n.container {\n  padding: clamp(1rem, 3vw, 2rem);\n}",
@@ -388,7 +388,7 @@
       "scroll",
       "layout"
     ],
-    "question": "What is the difference between <code class=\"inline\">overflow: visible</code>, <code class=\"inline\">hidden</code>, <code class=\"inline\">auto</code>, <code class=\"inline\">scroll</code>, and <code class=\"inline\">clip</code>?",
+    "question": "What is the overflow property in CSS?",
     "answer": "<p>The <code class=\"inline\">overflow</code> property controls what happens when an element's content exceeds its available space. <strong>visible</strong> lets content overflow outside the element. <strong>hidden</strong> clips the overflow without showing scrollbars. <strong>auto</strong> displays scrollbars only when needed. <strong>scroll</strong> always shows scrollbars, even if there is no overflow. <strong>clip</strong> clips overflowing content like <code class=\"inline\">hidden</code> but completely disables scrolling, including programmatic scrolling.</p>",
     "tip": "Use <code class=\"inline\">overflow: auto</code> for most scrollable containers. Reserve <code class=\"inline\">scroll</code> only when you always want scrollbars visible.",
     "code": ".container {\n  height: 300px;\n  overflow: auto;\n}\n\n.image {\n  overflow: hidden;\n}\n\n.code-block {\n  overflow-x: auto;\n}",
