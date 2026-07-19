@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "version": 21,
-  "updatedAt": "2026-07-18T21:16:13.708Z",
+  "version": 22,
+  "updatedAt": "2026-07-19T07:16:10.354Z",
   "totalQuestions": 963,
   "groups": [
     {
@@ -47,7 +47,7 @@
       "group": "frontend",
       "color": "#B0335F",
       "count": 21,
-      "hash": "9c6a8b1ebbce"
+      "hash": "9aa254dd30bf"
     },
     {
       "id": "javascript",
@@ -221,5 +221,5 @@
       "hash": "d36017bc1528"
     }
   ],
-  "contentHash": "26d15011d21bdf6ebbe892de35c617b48950cac1"
+  "contentHash": "b7c43dafd7bdc70c1c9f50ac059951481c6e372b"
 }
