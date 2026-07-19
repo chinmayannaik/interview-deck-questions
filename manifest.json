@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
-  "version": 25,
-  "updatedAt": "2026-07-19T12:58:25.208Z",
-  "totalQuestions": 966,
+  "version": 26,
+  "updatedAt": "2026-07-19T17:08:30.085Z",
+  "totalQuestions": 1002,
   "groups": [
     {
       "id": "frontend",
@@ -28,6 +28,11 @@
       "id": "mobile",
       "label": "Mobile Development",
       "color": "#0EA5E9"
+    },
+    {
+      "id": "testing",
+      "label": "Testing",
+      "color": "#0F766E"
     }
   ],
   "categories": [
@@ -111,15 +116,6 @@
       "color": "#4B4ECB",
       "count": 34,
       "hash": "b759ac2a292f"
-    },
-    {
-      "id": "testing",
-      "file": "testing.json",
-      "label": "Testing",
-      "group": "frontend",
-      "color": "#A83294",
-      "count": 18,
-      "hash": "b0e7cfd09e7a"
     },
     {
       "id": "general",
@@ -219,7 +215,70 @@
       "color": "#FA7349",
       "count": 5,
       "hash": "d36017bc1528"
+    },
+    {
+      "id": "testing-fundamentals",
+      "file": "testing-fundamentals.json",
+      "label": "Fundamentals",
+      "group": "testing",
+      "color": "#0F766E",
+      "count": 6,
+      "hash": "dc1e12795154"
+    },
+    {
+      "id": "manual-qa",
+      "file": "manual-qa.json",
+      "label": "Manual QA",
+      "group": "testing",
+      "color": "#14919B",
+      "count": 6,
+      "hash": "a8c525ccfda6"
+    },
+    {
+      "id": "api-testing",
+      "file": "api-testing.json",
+      "label": "API Testing",
+      "group": "testing",
+      "color": "#0E7490",
+      "count": 6,
+      "hash": "63943825b614"
+    },
+    {
+      "id": "ui-automation",
+      "file": "ui-automation.json",
+      "label": "UI Automation",
+      "group": "testing",
+      "color": "#B45309",
+      "count": 6,
+      "hash": "ac58137257ed"
+    },
+    {
+      "id": "sql-testing",
+      "file": "sql-testing.json",
+      "label": "SQL for Testers",
+      "group": "testing",
+      "color": "#A16207",
+      "count": 6,
+      "hash": "bcf2692366d0"
+    },
+    {
+      "id": "cicd-testing",
+      "file": "cicd-testing.json",
+      "label": "CI/CD for Testers",
+      "group": "testing",
+      "color": "#C2410C",
+      "count": 6,
+      "hash": "c1b34d2ae70e"
+    },
+    {
+      "id": "angular-testing",
+      "file": "angular-testing.json",
+      "label": "Angular Testing",
+      "group": "testing",
+      "color": "#A83294",
+      "count": 18,
+      "hash": "ae7cc50aec9c"
     }
   ],
-  "contentHash": "1900b5d8b60e81930e49d1ce98a38feb10f1dfc2"
+  "contentHash": "55aadc1f43672e8c6ac28144bb59edf23796a2cd"
 }

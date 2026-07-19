@@ -1,0 +1,98 @@
+[
+  {
+    "id": "tf-why-test",
+    "category": "testing-fundamentals",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "basics",
+      "quality"
+    ],
+    "question": "Why do we test software? What is the goal of testing?",
+    "answer": "<p>Testing finds defects <strong>before users do</strong>, reduces risk, and builds confidence that the product meets requirements. The goal is not to prove the software is perfect — it is to provide information about quality so the team can decide whether to ship.</p><ul><li>Catch bugs early (cheaper to fix).</li><li>Verify behaviour against requirements.</li><li>Prevent regressions when code changes.</li><li>Improve trust for release decisions.</li></ul>",
+    "tip": "Say: testing reduces risk and informs release decisions — it does not guarantee zero bugs.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Beginner framing</h4><p>Think of testing like checking a car before a long trip: you are not trying to invent a perfect car in the garage — you are finding what is broken or risky before customers drive it.</p><h4>What testing is (and is not)</h4><ul><li><strong>Is</strong>: a process of evaluating software against expected behaviour and risk.</li><li><strong>Is not</strong>: a promise that every bug is found. Exhaustive testing of real systems is impossible.</li></ul><h4>Why interviews love this</h4><p>Junior answers stop at \"to find bugs\". Stronger answers add: cost of late defects, regression safety, and helping product/business decide release readiness.</p><h4>How to say it in an interview</h4><p>“We test to find defects early, confirm the product matches requirements, and give the team evidence to ship with acceptable risk. Testing never proves zero bugs — it reduces uncertainty.”</p>"
+  },
+  {
+    "id": "tf-verification-validation",
+    "category": "testing-fundamentals",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "verification",
+      "validation"
+    ],
+    "question": "Verification vs Validation?",
+    "answer": "<p><strong>Verification</strong> asks: <em>Are we building the product right?</em> — checks against specs/design (reviews, static analysis, unit tests against requirements).</p><p><strong>Validation</strong> asks: <em>Are we building the right product?</em> — checks whether it satisfies the real user need (UAT, usability, acceptance testing).</p>",
+    "tip": "Memory aid: Verification = specs; Validation = user/business need.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Simple example</h4><ul><li><strong>Verification</strong>: requirement says checkout must apply a 10% coupon — your test confirms the discount math and API response.</li><li><strong>Validation</strong>: users in UAT say the coupon field is confusing and they abandon checkout — product is \"correct\" but not the right experience.</li></ul><h4>Where each happens</h4><table><thead><tr><th></th><th>Verification</th><th>Validation</th></tr></thead><tbody><tr><td>Question</td><td>Built correctly?</td><td>Useful / acceptable?</td></tr><tr><td>Against</td><td>Requirements, design, code standards</td><td>User needs, business goals</td></tr><tr><td>Examples</td><td>Code review, unit/API tests, walkthroughs</td><td>UAT, beta, usability testing</td></tr></tbody></table><h4>How to say it in an interview</h4><p>“Verification checks we implemented the spec correctly; validation checks we solved the real user problem. A feature can pass verification and still fail validation.”</p>"
+  },
+  {
+    "id": "tf-functional-nonfunctional",
+    "category": "testing-fundamentals",
+    "difficulty": "beginner",
+    "tags": [
+      "functional",
+      "non-functional",
+      "types"
+    ],
+    "question": "Functional vs non-functional testing?",
+    "answer": "<p><strong>Functional</strong> checks <em>what</em> the system does — features, business rules, inputs/outputs (login works, order is created, invoice total is correct).</p><p><strong>Non-functional</strong> checks <em>how</em> the system behaves — performance, security, usability, reliability, compatibility.</p>",
+    "tip": "Functional = correct behaviour; non-functional = quality attributes under real conditions.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Examples you can name</h4><ul><li><strong>Functional</strong>: place order, apply coupon, cancel subscription, role-based access to a page.</li><li><strong>Non-functional</strong>: page loads under 2s for 1k users, password storage is hashed, app works on Chrome/Firefox, system recovers after crash.</li></ul><h4>Why SDETs care</h4><p>Many teams automate functional API/UI flows first. Non-functional work (load, security) often needs specialised tools and environments — mention that you know the difference even if your current role is mostly functional automation.</p><h4>How to say it in an interview</h4><p>“Functional testing verifies features against business rules. Non-functional testing verifies quality attributes like speed, security, and usability. Both are needed for release confidence.”</p>"
+  },
+  {
+    "id": "tf-test-levels",
+    "category": "testing-fundamentals",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "levels",
+      "strategy"
+    ],
+    "question": "Explain the main test levels: unit, integration, system, acceptance.",
+    "answer": "<ul><li><strong>Unit</strong> — smallest piece of code (method/class) in isolation; fast; usually by developers.</li><li><strong>Integration</strong> — modules/services working together (API + DB, service A calling service B).</li><li><strong>System</strong> — the full application as a whole against requirements.</li><li><strong>Acceptance (UAT)</strong> — business/users confirm it is ready for real use.</li></ul><p>You need all levels; relying only on UI/system tests is slow and brittle.</p>",
+    "tip": "Map each bug to the lowest level that could have caught it — that is seniority.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Who usually owns what</h4><table><thead><tr><th>Level</th><th>Typical owner</th><th>Example</th></tr></thead><tbody><tr><td>Unit</td><td>Developer</td><td>Discount calculator returns 10%</td></tr><tr><td>Integration</td><td>Dev / SDET</td><td>Order API writes a row in DB</td></tr><tr><td>System / E2E</td><td>SDET / QA</td><td>User completes checkout in UI</td></tr><tr><td>Acceptance</td><td>Business / UAT users</td><td>Client signs off release</td></tr></tbody></table><h4>Common anti-pattern</h4><p>Only E2E UI tests: suite is slow, flaky, and hard to debug. Better: many fast lower-level checks + fewer critical E2E paths.</p><h4>How to say it in an interview</h4><p>“Unit catches logic bugs cheaply, integration catches wiring bugs, system confirms the whole product, and acceptance confirms business readiness. As an SDET I automate heavily at API/UI system level, but I still push for unit coverage on complex rules.”</p>"
+  },
+  {
+    "id": "tf-shift-left",
+    "category": "testing-fundamentals",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "shift-left",
+      "process"
+    ],
+    "question": "What is shift-left testing?",
+    "answer": "<p><strong>Shift-left</strong> means starting quality activities earlier in the lifecycle — during requirements, design, and development — instead of only testing at the end.</p><p>Examples: review requirements for testability, write acceptance criteria with the story, automate unit/API tests in the PR pipeline, pair with developers on edge cases.</p>",
+    "tip": "Finding a requirement bug in planning is cheaper than finding it in UAT.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Why it matters</h4><p>Defect cost grows over time. A missing requirement found in production can mean hotfixes, data repair, and lost trust. Shift-left moves feedback closer to the change.</p><h4>Concrete SDET behaviours</h4><ul><li>Ask clarifying questions in grooming (\"What if payment fails mid-order?\").</li><li>Add API tests for new endpoints in the same sprint.</li><li>Block merges when critical automated checks fail (CI).</li><li>Share bug patterns so developers prevent repeats.</li></ul><h4>How to say it in an interview</h4><p>“Shift-left means I don’t wait for a ‘QA phase’. I get involved in requirements, automate early, and put fast checks in CI so defects are found when they are cheapest to fix.”</p>"
+  },
+  {
+    "id": "tf-positive-negative",
+    "category": "testing-fundamentals",
+    "difficulty": "beginner",
+    "tags": [
+      "positive",
+      "negative",
+      "test-design"
+    ],
+    "question": "Positive testing vs negative testing?",
+    "answer": "<p><strong>Positive testing</strong> uses valid inputs and happy-path flows to confirm the system works as expected (correct login, successful order).</p><p><strong>Negative testing</strong> uses invalid/unexpected inputs to confirm the system handles failure safely (wrong password, missing required field, SQL injection attempt).</p>",
+    "tip": "Interviewers expect both: prove it works, and prove it fails gracefully.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Examples</h4><ul><li><strong>Positive</strong>: valid user + correct password → dashboard.</li><li><strong>Negative</strong>: valid user + wrong password → clear error, no session created.</li><li><strong>Negative</strong>: quantity = -1 or \"abc\" → validation error, no order placed.</li></ul><h4>Why negative tests catch expensive bugs</h4><p>Many production incidents are edge cases: empty payloads, timeouts, duplicate submit clicks, expired tokens. Negative testing is how you design those scenarios on purpose.</p><h4>How to say it in an interview</h4><p>“Positive tests confirm the happy path. Negative tests confirm invalid input is rejected safely — with the right message, status code, and no bad side effects like partial orders.”</p>"
+  }
+]

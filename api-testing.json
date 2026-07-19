@@ -1,0 +1,99 @@
+[
+  {
+    "id": "api-what-is",
+    "category": "api-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "basics",
+      "rest"
+    ],
+    "question": "What is API testing? Why is it important for SDETs?",
+    "answer": "<p><strong>API testing</strong> validates application programming interfaces — usually REST/HTTP services — by sending requests and checking responses without (or before) using the UI.</p><p>It is important because APIs are the backbone of modern apps: faster than UI tests, more stable, and they catch business-logic and contract bugs early.</p>",
+    "tip": "If UI is down but API works, backend may be fine — API tests isolate layers.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>What you typically validate</h4><ul><li>Status code (200, 201, 400, 401, 404, 500…).</li><li>Response body fields, types, and business values.</li><li>Headers (Content-Type, auth).</li><li>Error messages for invalid input.</li><li>Side effects (DB row created, message published) when needed.</li></ul><h4>Why SDETs love API tests</h4><p>UI tests are slower and flakier. API tests give high coverage of rules (pricing, order state transitions) in seconds and fit well in CI.</p><h4>How to say it in an interview</h4><p>“API testing checks service contracts and business logic directly. I use it as the backbone of automation because it’s faster and more stable than UI, then keep UI for critical user journeys.”</p>"
+  },
+  {
+    "id": "api-http-methods-status",
+    "category": "api-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "http",
+      "status-codes"
+    ],
+    "question": "Explain common HTTP methods and status codes used in API testing.",
+    "answer": "<p><strong>Methods</strong>: <code class=\"inline\">GET</code> (read), <code class=\"inline\">POST</code> (create), <code class=\"inline\">PUT</code>/<code class=\"inline\">PATCH</code> (update), <code class=\"inline\">DELETE</code> (remove).</p><p><strong>Status codes</strong>: <code class=\"inline\">2xx</code> success (<code class=\"inline\">200</code>/<code class=\"inline\">201</code>), <code class=\"inline\">4xx</code> client error (<code class=\"inline\">400</code> bad request, <code class=\"inline\">401</code> unauthorized, <code class=\"inline\">403</code> forbidden, <code class=\"inline\">404</code> not found), <code class=\"inline\">5xx</code> server error (<code class=\"inline\">500</code>).</p>",
+    "tip": "Always assert both status code and body — 200 with wrong data is still a bug.",
+    "code": "GET    /api/orders/123     → 200 + order JSON\nPOST   /api/orders         → 201 + created id\nDELETE /api/orders/123     → 204 or 200",
+    "lang": "http",
+    "deep": "<h4>Beginner map</h4><table><thead><tr><th>Code</th><th>Meaning for testers</th></tr></thead><tbody><tr><td>200</td><td>OK — request succeeded</td></tr><tr><td>201</td><td>Created — resource created</td></tr><tr><td>204</td><td>No Content — success, empty body</td></tr><tr><td>400</td><td>Client sent invalid data</td></tr><tr><td>401</td><td>Not authenticated (missing/bad token)</td></tr><tr><td>403</td><td>Authenticated but not allowed</td></tr><tr><td>404</td><td>Resource missing</td></tr><tr><td>500</td><td>Server bug / unhandled error</td></tr></tbody></table><h4>PUT vs PATCH</h4><p><code class=\"inline\">PUT</code> usually replaces the whole resource; <code class=\"inline\">PATCH</code> updates partial fields. Confirm with your API docs — teams differ.</p><h4>How to say it in an interview</h4><p>“I treat method + status + body as one assertion set. For example, creating an order should be POST → 201 with an id, and a missing auth token should be 401, not 500.”</p>"
+  },
+  {
+    "id": "api-postman",
+    "category": "api-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "postman",
+      "tools"
+    ],
+    "question": "How do you use Postman for API testing?",
+    "answer": "<p>In Postman you create <strong>requests</strong> (method, URL, headers, body), organise them into <strong>Collections</strong>, and use <strong>Environments</strong> for variables like base URL and tokens.</p><p>You can add <strong>Tests</strong> (JavaScript assertions) on status/body, chain requests with variables, and run collections via Collection Runner or Newman in CI.</p>",
+    "tip": "Never hardcode tokens in shared collections — use environment variables.",
+    "code": "pm.test('status is 200', () => {\n  pm.response.to.have.status(200);\n});\npm.test('has orderId', () => {\n  const json = pm.response.json();\n  pm.expect(json.orderId).to.be.a('string');\n});",
+    "lang": "js",
+    "deep": "<h4>Practical workflow</h4><ol><li>Set <code class=\"inline\">baseUrl</code> in Environment (dev/qa/stage).</li><li>Login/auth request → save <code class=\"inline\">token</code> to environment.</li><li>Business requests use <code class=\"inline\">{{baseUrl}}</code> and <code class=\"inline\">Authorization: Bearer {{token}}</code>.</li><li>Write assertions for status, schema fields, and key values.</li></ol><h4>What interviewers want to hear</h4><p>Not just \"I click Send\" — mention collections, environments, assertions, data-driven runs, and exporting for Newman/CI.</p><h4>How to say it in an interview</h4><p>“I structure Postman by feature collections, separate environments per stage, store auth tokens in variables, and assert status plus critical response fields. For automation I can run the same collection via Newman in Jenkins.”</p>"
+  },
+  {
+    "id": "api-auth",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "authentication",
+      "authorization",
+      "security"
+    ],
+    "question": "How do you test API authentication and authorization?",
+    "answer": "<p><strong>Authentication</strong> = who you are (login/token). <strong>Authorization</strong> = what you are allowed to do (roles/permissions).</p><p>Test with valid token, missing token, expired/invalid token, and a valid user calling a forbidden resource (e.g. normal user hitting admin API).</p>",
+    "tip": "401 = not logged in; 403 = logged in but not allowed — don’t mix them up.",
+    "code": "Authorization: Bearer <access_token>",
+    "lang": "http",
+    "deep": "<h4>Common mechanisms</h4><ul><li><strong>Basic Auth</strong> — username/password encoded (rare for modern public APIs).</li><li><strong>Bearer JWT / OAuth2 token</strong> — most common.</li><li><strong>API keys</strong> — header/query key for service access.</li></ul><h4>Must-run negative cases</h4><ul><li>No <code class=\"inline\">Authorization</code> header → 401.</li><li>Garbage/expired token → 401.</li><li>Valid user, wrong role → 403.</li><li>IDOR-style checks: user A must not read user B’s order by changing id.</li></ul><h4>How to say it in an interview</h4><p>“I test both authn and authz: valid token works, missing/invalid token is rejected, and role boundaries return 403. I also check users can’t access other users’ resources by swapping IDs.”</p>"
+  },
+  {
+    "id": "api-validate-response",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "assertions",
+      "validation"
+    ],
+    "question": "What do you validate in an API response?",
+    "answer": "<ul><li><strong>Status code</strong> matches the scenario.</li><li><strong>Response time</strong> is within an agreed limit (basic performance signal).</li><li><strong>Headers</strong> like <code class=\"inline\">Content-Type</code>.</li><li><strong>Body</strong>: required fields present, correct types/values, error structure on failures.</li><li><strong>Contract</strong>: no unexpected breaking field changes when relevant.</li><li><strong>Side effects</strong>: DB/UI state updated if the API creates/updates data.</li></ul>",
+    "tip": "Assert business meaning, not only \"status 200\".",
+    "code": "pm.test('order status is CREATED', () => {\n  pm.expect(pm.response.json().status).to.eql('CREATED');\n});",
+    "lang": "js",
+    "deep": "<h4>Layered assertions</h4><ol><li>Transport OK? (status, content-type)</li><li>Shape OK? (required keys exist)</li><li>Business OK? (totals, statuses, IDs)</li><li>Persistence OK? (optional DB check)</li></ol><h4>Positive + negative example</h4><ul><li>Create order with valid payload → 201, <code class=\"inline\">orderId</code> returned, status <code class=\"inline\">CREATED</code>.</li><li>Create order with missing itemId → 400, clear validation message, no DB row.</li></ul><h4>How to say it in an interview</h4><p>“I validate status, schema/fields, business values, and important side effects. A 200 with wrong order total is still a failed test.”</p>"
+  },
+  {
+    "id": "api-end-to-end-flow",
+    "category": "api-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "e2e",
+      "workflow",
+      "real-world"
+    ],
+    "question": "How do you design an end-to-end API test flow (example: ecommerce order)?",
+    "answer": "<p>Chain APIs in business order and pass data between calls: authenticate → create customer/cart → place order → fetch order → (optional) cancel/update → assert final state.</p><p>Store dynamic IDs/tokens from each response and reuse them. Clean up test data when possible so runs stay independent.</p>",
+    "tip": "One flow should tell a business story, not randomly call unrelated endpoints.",
+    "code": "1) POST /auth/login          → token\n2) POST /cart/items          → cartId\n3) POST /orders              → orderId\n4) GET  /orders/{{orderId}}  → status=CREATED",
+    "lang": "http",
+    "deep": "<h4>Design checklist</h4><ul><li>Independent test data (unique emails/ids).</li><li>Clear assertions after each step, not only at the end.</li><li>Negative branch: payment failure should not create a completed order.</li><li>Idempotency/duplicate submit behaviour if the business cares.</li></ul><h4>How to say it in an interview</h4><p>“I model API tests as business journeys. For order management I’d authenticate, create the order, verify retrieval/status transitions, and include failure paths like invalid payment — asserting no incorrect final state.”</p>"
+  }
+]

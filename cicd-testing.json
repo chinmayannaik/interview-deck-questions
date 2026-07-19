@@ -1,0 +1,101 @@
+[
+  {
+    "id": "cicd-what-why",
+    "category": "cicd-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "ci",
+      "cd",
+      "basics"
+    ],
+    "question": "What is CI/CD? Why should a tester/SDET care?",
+    "answer": "<p><strong>CI (Continuous Integration)</strong> automatically builds and tests every code change. <strong>CD (Continuous Delivery/Deployment)</strong> automates releasing that change to environments/production with quality gates.</p><p>SDETs care because automated tests are quality gates in the pipeline — they catch regressions early on every commit/PR, not only at the end of a sprint.</p>",
+    "tip": "Your Selenium/API suite only pays off when it runs reliably in CI.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Beginner picture</h4><pre><code>Developer push → CI build → Run tests → Pass: deploy to QA / Fail: block merge</code></pre><h4>What \"quality gate\" means</h4><p>If smoke API/UI tests fail, the pipeline fails and the broken change does not quietly reach QA/prod.</p><h4>How to say it in an interview</h4><p>“CI/CD is how we get fast feedback. I design automated suites that can run in Jenkins on every build so defects are caught at commit time, not during late UAT.”</p>"
+  },
+  {
+    "id": "cicd-jenkins-basics",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "jenkins",
+      "pipeline"
+    ],
+    "question": "How is Jenkins used in test automation?",
+    "answer": "<p><strong>Jenkins</strong> is a CI server that runs jobs/pipelines. For testing, a job typically: pulls code from Git, installs dependencies (Maven), runs TestNG/API suites, publishes reports/artifacts, and marks the build pass/fail.</p>",
+    "tip": "Be ready to explain a simple pipeline stage list even if you are not a DevOps specialist.",
+    "code": "stages:\n  - checkout git repo\n  - mvn clean test -Dsuite=smoke\n  - publish test report\n  - fail build if tests fail",
+    "lang": "text",
+    "deep": "<h4>What interviewers expect</h4><ul><li>Job triggered by commit, schedule, or manually.</li><li>Parameters for environment (QA/Stage) and suite (smoke/regression).</li><li>Archived surefire/HTML reports and screenshots on failure.</li><li>Notifications when the build fails.</li></ul><h4>Freestyle vs Pipeline</h4><p>Older setups use freestyle jobs; modern teams use Jenkinsfile pipelines as code — same idea, more repeatable.</p><h4>How to say it in an interview</h4><p>“In Jenkins I run Maven TestNG suites as pipeline stages, parameterise environment/suite type, publish reports, and fail the build on test failures so bad changes don’t move forward.”</p>"
+  },
+  {
+    "id": "cicd-tests-in-pipeline",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "strategy",
+      "smoke",
+      "regression"
+    ],
+    "question": "Where should different test types run in a CI/CD pipeline?",
+    "answer": "<ul><li><strong>On every PR/commit</strong>: fast unit tests + critical API smoke (minutes).</li><li><strong>After merge / nightly</strong>: broader API + UI regression.</li><li><strong>Before release</strong>: full regression + UAT support checks.</li></ul><p>Put the fastest, most reliable tests earliest so feedback is cheap.</p>",
+    "tip": "Don’t run a 2-hour UI suite on every commit — stage your packs.",
+    "code": "PR pipeline     → unit + API smoke\nNightly         → API regression + UI critical paths\nRelease pipeline→ full regression pack",
+    "lang": "text",
+    "deep": "<h4>Why staging matters</h4><p>If every commit waits for full UI regression, developers stop trusting CI or bypass it. Split suites by speed and criticality.</p><h4>SDET ownership</h4><ul><li>Keep smoke green and stable.</li><li>Tag tests (<code class=\"inline\">smoke</code>, <code class=\"inline\">regression</code>) in TestNG groups.</li><li>Fail fast on blockers; quarantine flakes with a ticket.</li></ul><h4>How to say it in an interview</h4><p>“I map tests to pipeline stages by speed and risk: smoke on every build, broader regression nightly/pre-release. That keeps feedback fast without sacrificing coverage.”</p>"
+  },
+  {
+    "id": "cicd-git-for-sdet",
+    "category": "cicd-testing",
+    "difficulty": "beginner",
+    "tags": [
+      "git",
+      "collaboration",
+      "branching"
+    ],
+    "question": "What Git skills should an SDET have for day-to-day work?",
+    "answer": "<p>SDETs use Git to version test automation code: clone/pull, create feature branches, commit tests, open merge requests/PRs, and sync with main.</p><p>You should understand branch workflow, reviewing diffs, resolving simple conflicts in test code, and never committing secrets (tokens, passwords).</p>",
+    "tip": "Automation code is product code — treat branches/PRs with the same discipline.",
+    "code": "git checkout -b feature/add-order-smoke\n# add tests\ngit add .\ngit commit -m \"Add order smoke API tests\"\ngit push -u origin HEAD",
+    "lang": "bash",
+    "deep": "<h4>Daily loop</h4><ol><li>Pull latest main/develop.</li><li>Branch for your test work.</li><li>Commit small, reviewable changes.</li><li>PR → CI runs → address review comments → merge.</li></ol><h4>How to say it in an interview</h4><p>“I keep test automation in Git with feature branches and PRs. CI runs the suite on my branch, and I avoid storing credentials in the repo — they belong in Jenkins credentials or environment config.”</p>"
+  },
+  {
+    "id": "cicd-failed-build",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "debugging",
+      "ci",
+      "triage"
+    ],
+    "question": "A Jenkins build failed because of automated tests — what do you do?",
+    "answer": "<ol><li>Open the failed job logs/report and identify which tests failed.</li><li>Check whether it’s a product bug, test bug, or environment issue.</li><li>Re-run locally/on QA if needed with the same build.</li><li>File a defect or fix the test; don’t blindly re-run until green.</li><li>Communicate impact (block merge/release or not).</li></ol>",
+    "tip": "Stabilize signal first — a red build must mean something real.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Triage questions</h4><ul><li>Did only one test fail or many?</li><li>Is it new after a specific commit?</li><li>Does it fail locally too?</li><li>Is the environment down / test data missing?</li><li>Is the locator/wait flaky?</li></ul><h4>Outcomes</h4><ul><li><strong>Product bug</strong> → defect + keep failing until fixed (or agreed waive).</li><li><strong>Test bug</strong> → fix automation ASAP.</li><li><strong>Env issue</strong> → infra/data fix; mark build unstable with reason.</li></ul><h4>How to say it in an interview</h4><p>“I triage CI failures by report and recent changes, reproduce, then classify product vs test vs environment. I avoid ‘rerun until green’ because that destroys trust in the pipeline.”</p>"
+  },
+  {
+    "id": "cicd-reports-artifacts",
+    "category": "cicd-testing",
+    "difficulty": "intermediate",
+    "tags": [
+      "reports",
+      "artifacts",
+      "jenkins"
+    ],
+    "question": "What reports/artifacts should a test pipeline publish?",
+    "answer": "<p>Useful CI outputs: TestNG/Surefire reports, pass/fail counts, failed test names, logs, screenshots/videos for UI failures, and optionally Allure/HTML dashboards.</p><p>Artifacts help developers understand failures without rerunning blindly on their machine.</p>",
+    "tip": "A failure without evidence slows everyone — always attach logs/screenshots for UI.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Minimum useful set</h4><ul><li>JUnit/TestNG XML + HTML report.</li><li>Console log excerpt for the failing assertion.</li><li>Screenshot on UI failure + page URL.</li><li>Build number + environment name.</li></ul><h4>How to say it in an interview</h4><p>“I configure Jenkins to publish test reports and archive screenshots/logs on failure so anyone can diagnose quickly. Good artifacts turn a red build into an actionable defect.”</p>"
+  }
+]

@@ -1,0 +1,103 @@
+[
+  {
+    "id": "uia-selenium-webdriver",
+    "category": "ui-automation",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "selenium",
+      "webdriver",
+      "java"
+    ],
+    "question": "What is Selenium WebDriver? How does it work at a high level?",
+    "answer": "<p><strong>Selenium WebDriver</strong> is a tool/API for automating browsers. Your test code (e.g. Java) sends commands to a browser driver (ChromeDriver, GeckoDriver), which controls the real browser to click, type, navigate, and assert UI behaviour.</p>",
+    "tip": "WebDriver automates real browsers — great for E2E UI confidence, but keep the suite lean.",
+    "code": "WebDriver driver = new ChromeDriver();\ndriver.get(\"https://example.com/login\");\ndriver.findElement(By.id(\"email\")).sendKeys(\"a@b.com\");\ndriver.findElement(By.id(\"password\")).sendKeys(\"secret\");\ndriver.findElement(By.id(\"loginBtn\")).click();",
+    "lang": "java",
+    "deep": "<h4>Beginner mental model</h4><pre><code>Test (Java + Selenium) → WebDriver API → Browser Driver → Browser</code></pre><p>You write steps a user would take. Selenium executes them in Chrome/Firefox/Edge.</p><h4>What it is good for</h4><ul><li>Critical user journeys (login, checkout, order search).</li><li>Cross-browser checks when required.</li></ul><h4>What it is not</h4><p>Not the best tool for every check — API/unit tests are faster for business rules. UI automation should focus on high-value paths.</p><h4>How to say it in an interview</h4><p>“Selenium WebDriver drives a real browser from test code. I use Java bindings to automate critical ecommerce journeys, and I keep UI coverage focused because these tests are slower than API tests.”</p>"
+  },
+  {
+    "id": "uia-locators",
+    "category": "ui-automation",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "locators",
+      "selenium"
+    ],
+    "question": "What are Selenium locators? Which ones do you prefer and why?",
+    "answer": "<p>Locators tell WebDriver how to find an element: <code class=\"inline\">id</code>, <code class=\"inline\">name</code>, <code class=\"inline\">cssSelector</code>, <code class=\"inline\">xpath</code>, <code class=\"inline\">linkText</code>, etc.</p><p>Prefer stable attributes: <code class=\"inline\">id</code> or dedicated test ids (<code class=\"inline\">data-testid</code>). Avoid long absolute XPaths tied to layout — they break when UI changes.</p>",
+    "tip": "Stable locator strategy reduces flaky failures more than fancy waits alone.",
+    "code": "By.id(\"loginBtn\")\nBy.cssSelector(\"[data-testid='submit-order']\")\nBy.xpath(\"//button[normalize-space()='Place Order']\")",
+    "lang": "java",
+    "deep": "<h4>Practical preference order</h4><ol><li><code class=\"inline\">id</code> / <code class=\"inline\">data-testid</code> (best if unique and stable)</li><li>CSS selector (readable, fast)</li><li>XPath when you need text/DOM relationships</li></ol><h4>Bad vs good</h4><pre><code>// brittle\n/html/body/div[2]/div[1]/button[3]\n\n// better\nBy.cssSelector(\"[data-testid='place-order']\")</code></pre><h4>How to say it in an interview</h4><p>“I choose locators for stability first. IDs or test ids beat absolute XPath. If the UI is unstable, I collaborate with developers to add test-friendly attributes.”</p>"
+  },
+  {
+    "id": "uia-waits",
+    "category": "ui-automation",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "waits",
+      "flaky",
+      "selenium"
+    ],
+    "question": "Implicit wait vs Explicit wait vs Thread.sleep — which should you use?",
+    "answer": "<p><strong>Thread.sleep</strong> always waits a fixed time — slow and flaky; avoid in real suites.</p><p><strong>Implicit wait</strong> sets a global timeout for findElement polling — easy but blunt; can hide issues and slow failures.</p><p><strong>Explicit wait</strong> (<code class=\"inline\">WebDriverWait</code> + expected conditions) waits for a specific condition (visible, clickable, text present) — preferred for reliable UI tests.</p>",
+    "tip": "Wait for a condition, not for a number of seconds.",
+    "code": "WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));\nWebElement btn = wait.until(\n  ExpectedConditions.elementToBeClickable(By.id(\"placeOrder\"))\n);\nbtn.click();",
+    "lang": "java",
+    "deep": "<h4>Why sleeps create flaky tests</h4><p>2 seconds may pass on your laptop and fail on a slow Jenkins agent. Explicit waits retry until ready or timeout — adaptive and clearer failures.</p><h4>Common expected conditions</h4><ul><li><code class=\"inline\">visibilityOfElementLocated</code></li><li><code class=\"inline\">elementToBeClickable</code></li><li><code class=\"inline\">presenceOfElementLocated</code></li><li><code class=\"inline\">textToBePresentInElement</code></li></ul><h4>How to say it in an interview</h4><p>“I avoid Thread.sleep. I use explicit waits for the exact UI state I need — for example, button clickable after order summary loads — so tests are faster and more stable in CI.”</p>"
+  },
+  {
+    "id": "uia-pom",
+    "category": "ui-automation",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "pom",
+      "framework",
+      "design"
+    ],
+    "question": "What is the Page Object Model (POM)? Why use it?",
+    "answer": "<p><strong>Page Object Model</strong> is a design pattern where each page/component has a class that stores its locators and user actions (login, search, add to cart). Tests call those methods instead of raw Selenium calls.</p><p>Benefits: less duplication, easier maintenance when UI changes, and more readable tests.</p>",
+    "tip": "Tests should read like business steps; page classes hide Selenium details.",
+    "code": "public class LoginPage {\n  private By email = By.id(\"email\");\n  private By password = By.id(\"password\");\n  private By loginBtn = By.id(\"loginBtn\");\n  private WebDriver driver;\n\n  public LoginPage(WebDriver driver) { this.driver = driver; }\n\n  public HomePage login(String user, String pass) {\n    driver.findElement(email).sendKeys(user);\n    driver.findElement(password).sendKeys(pass);\n    driver.findElement(loginBtn).click();\n    return new HomePage(driver);\n  }\n}",
+    "lang": "java",
+    "deep": "<h4>Before vs after</h4><pre><code>// without POM — duplicated everywhere\ndriver.findElement(By.id(\"email\")).sendKeys(...);\n\n// with POM — one place to update\nloginPage.login(\"a@b.com\", \"secret\");</code></pre><h4>Good POM rules</h4><ul><li>No assertions inside page objects (or keep them minimal) — assertions belong in tests.</li><li>Methods return the next page when navigation happens.</li><li>Keep locators private to the page class.</li></ul><h4>How to say it in an interview</h4><p>“I use POM so UI changes update in one class. Tests stay business-readable — login, create order, verify status — while Selenium details stay in page objects.”</p>"
+  },
+  {
+    "id": "uia-testng",
+    "category": "ui-automation",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "testng",
+      "java",
+      "maven"
+    ],
+    "question": "What is TestNG and how do you use it with Selenium?",
+    "answer": "<p><strong>TestNG</strong> is a Java testing framework used to organise and run automated tests. With Selenium you write test methods annotated with <code class=\"inline\">@Test</code>, use annotations like <code class=\"inline\">@BeforeMethod</code>/<code class=\"inline\">@AfterMethod</code> for setup/teardown, and configure suites via <code class=\"inline\">testng.xml</code>.</p><p>It supports assertions, groups, dependencies, data providers, and parallel execution — commonly run through Maven.</p>",
+    "tip": "Mention annotations, assertions, suite XML, and parallel runs — that is what interviewers expect.",
+    "code": "public class LoginTest {\n  WebDriver driver;\n\n  @BeforeMethod\n  public void setUp() {\n    driver = new ChromeDriver();\n  }\n\n  @Test\n  public void validLogin_showsHomePage() {\n    new LoginPage(driver).login(\"a@b.com\", \"secret\");\n    Assert.assertTrue(new HomePage(driver).isLoaded());\n  }\n\n  @AfterMethod\n  public void tearDown() {\n    driver.quit();\n  }\n}",
+    "lang": "java",
+    "deep": "<h4>Annotations you should know</h4><ul><li><code class=\"inline\">@BeforeSuite</code> / <code class=\"inline\">@AfterSuite</code></li><li><code class=\"inline\">@BeforeMethod</code> / <code class=\"inline\">@AfterMethod</code> (browser per test is common)</li><li><code class=\"inline\">@Test</code>, <code class=\"inline\">groups</code>, <code class=\"inline\">priority</code></li><li><code class=\"inline\">@DataProvider</code> for data-driven tests</li></ul><h4>Maven connection</h4><p>Maven manages dependencies (Selenium, TestNG) and can run suites in CI with Surefire/Failsafe plugins.</p><h4>How to say it in an interview</h4><p>“I structure Selenium tests with TestNG: setup/teardown annotations, clear @Test methods with assertions, and suite XML for smoke vs regression packs. Maven runs the same suites locally and in Jenkins.”</p>"
+  },
+  {
+    "id": "uia-flaky-tests",
+    "category": "ui-automation",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "flaky",
+      "stability",
+      "ci"
+    ],
+    "question": "Why do UI automated tests become flaky, and how do you reduce flakiness?",
+    "answer": "<p>Flaky tests pass/fail without code changes. Common causes: timing races, unstable locators, shared test data, environment issues, animations, and order-dependent tests.</p><p>Reduce flakiness with explicit waits, stable locators, isolated data, idempotent setup/cleanup, avoiding sleeps, and quarantining/fixing flakes instead of re-running until green.</p>",
+    "tip": "A flaky suite trains the team to ignore failures — treat flakes as defects.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Top causes</h4><ul><li>Element not ready → click intercepted / stale element.</li><li>Brittle XPath after UI redesign.</li><li>Two tests share the same user/order and collide.</li><li>Hard-coded sleeps that are too short in CI.</li></ul><h4>Practical fixes</h4><ul><li>Explicit waits for clickable/visible.</li><li><code class=\"inline\">data-testid</code> locators.</li><li>Unique test data per run (timestamp/UUID).</li><li>Retry only as a temporary signal, not a strategy.</li></ul><h4>How to say it in an interview</h4><p>“Flakes usually come from sync and data issues. I fix root causes with explicit waits, stable locators, and isolated data. Re-running until green hides quality problems, so I treat flaky tests as bugs.”</p>"
+  }
+]

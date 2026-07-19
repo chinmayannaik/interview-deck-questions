@@ -1,0 +1,102 @@
+[
+  {
+    "id": "mqa-test-case",
+    "category": "manual-qa",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "test-case",
+      "documentation"
+    ],
+    "question": "What is a test case? What makes a good one?",
+    "answer": "<p>A <strong>test case</strong> is a documented set of steps, data, and expected results used to verify a specific behaviour.</p><p>A good test case is clear, reusable, and independent. It usually includes: ID, title, preconditions, steps, test data, expected result, and sometimes priority/severity.</p>",
+    "tip": "Another tester should be able to execute it without asking you what you meant.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Minimal template</h4><table><thead><tr><th>Field</th><th>Example</th></tr></thead><tbody><tr><td>Title</td><td>Login with valid credentials</td></tr><tr><td>Preconditions</td><td>User exists; app is on login page</td></tr><tr><td>Steps</td><td>1) Enter email 2) Enter password 3) Click Login</td></tr><tr><td>Test data</td><td>user@test.com / Valid@123</td></tr><tr><td>Expected</td><td>User lands on Home; session cookie set</td></tr></tbody></table><h4>What \"good\" looks like</h4><ul><li><strong>One main behaviour</strong> per case (don’t mix login + checkout).</li><li><strong>Observable expected result</strong> (UI message, DB row, API status).</li><li><strong>Traceable</strong> to a requirement/story ID when possible.</li></ul><h4>How to say it in an interview</h4><p>“A test case is a repeatable recipe: preconditions, steps, data, and expected result. I write it so anyone on the team can run it and know pass/fail without guessing.”</p>"
+  },
+  {
+    "id": "mqa-bug-lifecycle",
+    "category": "manual-qa",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "defect",
+      "jira",
+      "lifecycle"
+    ],
+    "question": "Explain the defect / bug life cycle.",
+    "answer": "<p>Typical flow: <strong>New → Assigned → Open/In Progress → Fixed → Retest → Verified/Closed</strong>. Branches: <strong>Rejected</strong> (not a bug), <strong>Deferred</strong> (fix later), <strong>Reopened</strong> (fix failed), <strong>Duplicate</strong>.</p><p>Tools like Jira track status, owner, and history so triage stays organised.</p>",
+    "tip": "Always retest after fix — and check nearby areas for regression.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Statuses in plain language</h4><ul><li><strong>New</strong>: logged, not yet reviewed.</li><li><strong>Assigned / Open</strong>: developer owns it.</li><li><strong>Fixed / Ready for QA</strong>: developer believes it is done.</li><li><strong>Retest</strong>: QA verifies the fix.</li><li><strong>Closed</strong>: confirmed fixed (or accepted as not a defect).</li><li><strong>Reopened</strong>: fix did not work or bug returned.</li></ul><h4>What a good bug report needs</h4><ul><li>Clear title, environment, build/version.</li><li>Steps to reproduce, actual vs expected.</li><li>Severity/priority, screenshots/logs, evidence.</li></ul><h4>How to say it in an interview</h4><p>“I log defects with clear repro steps, triage severity/priority, track them through fix and retest, and reopen if the issue persists. The lifecycle exists so nothing is lost between QA, dev, and release.”</p>"
+  },
+  {
+    "id": "mqa-severity-priority",
+    "category": "manual-qa",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "severity",
+      "priority",
+      "triage"
+    ],
+    "question": "Severity vs Priority — what’s the difference?",
+    "answer": "<p><strong>Severity</strong> = how badly the defect impacts the system (technical impact). <strong>Priority</strong> = how soon it should be fixed (business urgency).</p><p>Example: a typo on the homepage can be <em>low severity</em> but <em>high priority</em> before a marketing launch. A crash in a rarely used admin screen can be <em>high severity</em> but <em>low priority</em>.</p>",
+    "tip": "QA usually proposes severity; product/lead often sets priority.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Common severity scale</h4><ul><li><strong>Critical/Blocker</strong>: system down, data loss, no workaround.</li><li><strong>Major</strong>: major feature broken, workaround may exist.</li><li><strong>Minor</strong>: limited impact, UI/functional nuisance.</li><li><strong>Trivial</strong>: cosmetic.</li></ul><h4>Interview trap</h4><p>People treat them as the same. Show you can give a mismatched example — that proves you understand triage, not just definitions.</p><h4>How to say it in an interview</h4><p>“Severity is impact on the product; priority is order of fixing for the business. I classify severity from evidence, then align priority with stakeholders during defect triage.”</p>"
+  },
+  {
+    "id": "mqa-smoke-sanity-regression",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "smoke",
+      "sanity",
+      "regression"
+    ],
+    "question": "Smoke vs Sanity vs Regression testing?",
+    "answer": "<ul><li><strong>Smoke</strong> — shallow, wide check that the build is testable (app launches, main pages open). Fail smoke → reject build.</li><li><strong>Sanity</strong> — narrow, deeper check of a specific fix/area after a small change.</li><li><strong>Regression</strong> — broader suite to ensure old features still work after changes.</li></ul>",
+    "tip": "Smoke = build stability; Sanity = fix confidence; Regression = no side effects.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>When you run each</h4><table><thead><tr><th>Type</th><th>When</th><th>Scope</th></tr></thead><tbody><tr><td>Smoke</td><td>New build arrives</td><td>Critical paths only, quick</td></tr><tr><td>Sanity</td><td>After a bug fix / small patch</td><td>Affected feature</td></tr><tr><td>Regression</td><td>Before release / after larger changes</td><td>Existing features</td></tr></tbody></table><h4>SDET angle</h4><p>Smoke and regression are prime automation candidates in CI. Sanity is often a short manual or targeted automated pack around the ticket.</p><h4>How to say it in an interview</h4><p>“Smoke decides if the build is worth testing. Sanity checks the specific change. Regression protects existing behaviour. I automate smoke/regression where possible and keep sanity focused on the ticket.”</p>"
+  },
+  {
+    "id": "mqa-uat",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "uat",
+      "acceptance"
+    ],
+    "question": "What is UAT (User Acceptance Testing)? How is it different from system testing?",
+    "answer": "<p><strong>UAT</strong> is acceptance testing by business users/clients to confirm the system meets real-world needs and is ready for production.</p><p><strong>System testing</strong> is usually done by QA against requirements in a test environment. <strong>UAT</strong> focuses on business workflows, real data scenarios, and sign-off — not every low-level validation.</p>",
+    "tip": "UAT success = business acceptance, not just 'QA passed'.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>What SDETs/QA do in UAT</h4><ul><li>Prepare UAT scenarios and data with stakeholders.</li><li>Support users, capture defects, clarify expected business behaviour.</li><li>Track sign-off criteria and open risks.</li></ul><h4>Difference that matters</h4><p>QA may verify \"order status updates to Shipped\". UAT users ask \"Can our operations team process Friday’s peak orders the way they work today?\" — process fit, not only functional correctness.</p><h4>How to say it in an interview</h4><p>“System testing validates requirements from a QA lens. UAT validates business readiness with real users. I’ve led UAT by preparing scenarios, guiding stakeholders, and driving defect triage to sign-off.”</p>"
+  },
+  {
+    "id": "mqa-ep-bva",
+    "category": "manual-qa",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "equivalence-partitioning",
+      "boundary-value",
+      "test-design"
+    ],
+    "question": "What are Equivalence Partitioning and Boundary Value Analysis?",
+    "answer": "<p><strong>Equivalence Partitioning (EP)</strong> groups inputs that should behave the same, then tests one value from each group (valid/invalid partitions).</p><p><strong>Boundary Value Analysis (BVA)</strong> tests the edges of those groups — bugs often live at min/max limits (e.g. 0, 1, 100, 101 for a 1–100 range).</p>",
+    "tip": "EP reduces cases; BVA catches off-by-one defects.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Example: age field allowed 18–60</h4><ul><li><strong>EP valid</strong>: 18–60 → pick 30.</li><li><strong>EP invalid</strong>: &lt;18, &gt;60, non-numeric → pick 17, 61, \"abc\".</li><li><strong>BVA</strong>: 17, 18, 19 and 59, 60, 61.</li></ul><h4>Why interviewers ask</h4><p>It shows you design tests systematically instead of randomly clicking. Mention combining EP + BVA for efficient coverage.</p><h4>How to say it in an interview</h4><p>“I use equivalence partitioning to avoid redundant cases, then boundary value analysis on the edges because off-by-one defects are common. Together they give strong coverage with fewer tests.”</p>"
+  }
+]
