@@ -197,7 +197,7 @@
     "code": "public int[] nextGreaterElements(int[] nums) {\n    int n = nums.length;\n    int[] result = new int[n];\n    Arrays.fill(result, -1);\n\n    Stack<Integer> stack = new Stack<>();\n\n    for (int i = 0; i < 2 * n; i++) {\n        int index = i % n;\n\n        while (!stack.isEmpty() && nums[index] > nums[stack.peek()]) {\n            result[stack.pop()] = nums[index];\n        }\n\n        if (i < n) {\n            stack.push(index);\n        }\n    }\n\n    return result;\n}",
     "lang": "java",
     "deep": "<h4>Problem intuition</h4><p>The only difference from Next Greater Element I is that the array wraps around. We simulate the circular behavior by traversing the array twice.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Search circularly for every element. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Optimal:</strong> Traverse twice using modulo with a Monotonic Stack.</li></ul><pre><code>nums = [1,2,1]\n\nFirst pass:\n1 → push\n2 → pop 1\n1 → push\n\nSecond pass:\n2 becomes next greater for last 1\n\nAnswer = [2,-1,2]</code></pre><h4>Why it works</h4><p>Traversing twice ensures every element can look beyond the end of the array while still maintaining linear complexity.</p><h4>Common mistakes</h4><ul><li>Pushing indices during the second pass.</li><li>Traversing only once.</li><li>Not initializing the result array with -1.</li></ul><h4>Interview Tip</h4><p>Whenever you see a <strong>circular array</strong>, consider doubling the traversal using modulo arithmetic.</p>",
-    "youtube": "https://youtu.be/rSf9vPtKcmI"
+    "youtube": "https://youtu.be/If--3pm9K3U"
   },
   {
     "id": "leetcode-daily-temperatures",
