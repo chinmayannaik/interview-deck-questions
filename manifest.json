@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
-  "version": 27,
-  "updatedAt": "2026-07-19T17:24:33.152Z",
-  "totalQuestions": 1088,
+  "version": 29,
+  "updatedAt": "2026-07-22T09:08:55.560Z",
+  "totalQuestions": 1206,
   "groups": [
     {
       "id": "frontend",
@@ -33,6 +33,11 @@
       "id": "testing",
       "label": "Testing",
       "color": "#0F766E"
+    },
+    {
+      "id": "ai",
+      "label": "AI",
+      "color": "#7C3AED"
     }
   ],
   "categories": [
@@ -152,6 +157,24 @@
       "color": "#4E8B2C",
       "count": 73,
       "hash": "e4379e99e18c"
+    },
+    {
+      "id": "python",
+      "file": "python.json",
+      "label": "Python",
+      "group": "backend",
+      "color": "#3776AB",
+      "count": 35,
+      "hash": "ad0662e84269"
+    },
+    {
+      "id": "nodejs",
+      "file": "nodejs.json",
+      "label": "Node.js",
+      "group": "backend",
+      "color": "#339933",
+      "count": 35,
+      "hash": "a99da6c49a22"
     },
     {
       "id": "sql",
@@ -278,7 +301,25 @@
       "color": "#A83294",
       "count": 20,
       "hash": "d068ae52dc49"
+    },
+    {
+      "id": "llm",
+      "file": "llm.json",
+      "label": "LLMs & GenAI",
+      "group": "ai",
+      "color": "#8B5CF6",
+      "count": 24,
+      "hash": "044ab49add0b"
+    },
+    {
+      "id": "ml-fundamentals",
+      "file": "ml-fundamentals.json",
+      "label": "ML Fundamentals",
+      "group": "ai",
+      "color": "#6366F1",
+      "count": 24,
+      "hash": "98d0786384c5"
     }
   ],
-  "contentHash": "5876a88af88e2d4051e0ebbd84159059c0fa803f"
+  "contentHash": "442b62b1197ed6433ad40a7c15f28f5846f75f0e"
 }
