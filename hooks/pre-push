@@ -14,6 +14,8 @@ root="$(git rev-parse --show-toplevel)"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 cp "$root"/*.json "$root/build-manifest.mjs" "$tmp/" 2>/dev/null || exit 0
+# packs/ holds the focus-pack files the builder validates too
+[ -d "$root/packs" ] && cp -r "$root/packs" "$tmp/packs"
 
 if ! node "$tmp/build-manifest.mjs" >/dev/null 2>&1; then
   echo "pre-push: manifest build failed — run 'npm run build' to see the errors" >&2
