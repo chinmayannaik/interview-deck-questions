@@ -2485,5 +2485,69 @@
     "tip": "Interned strings and static fields moved out of PermGen into the heap already in Java 7 — Metaspace holds only class metadata.",
     "code": "",
     "lang": ""
+  },
+  {
+    "id": "java-streams-employee-exercises",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "streams",
+      "java8",
+      "coding",
+      "V.Imp"
+    ],
+    "question": "Streams coding drills: second-highest salary, group by department, highest paid per department, List→Map.",
+    "answer": "<p>The four employee-stream exercises that dominate Java 8 coding rounds. The building blocks: <code class=\"inline\">sorted + distinct + skip/limit</code> for ranking, <code class=\"inline\">groupingBy</code> for buckets, <code class=\"inline\">groupingBy + maxBy</code> (or toMap with a merge) for per-group winners, and <code class=\"inline\">toMap</code> with a <strong>merge function</strong> for duplicate keys.</p>",
+    "tip": "toMap without a merge function throws IllegalStateException on duplicate keys — knowing (and saying) that is half the marks on the List→Map question.",
+    "code": "// 1) second highest salary\nOptional<Double> second = employees.stream()\n    .map(Employee::salary).distinct()\n    .sorted(Comparator.reverseOrder())\n    .skip(1).findFirst();\n\n// 2) count per department\nMap<String, Long> byDept = employees.stream()\n    .collect(Collectors.groupingBy(Employee::dept, Collectors.counting()));\n\n// 3) highest paid per department\nMap<String, Optional<Employee>> topPaid = employees.stream()\n    .collect(Collectors.groupingBy(Employee::dept,\n        Collectors.maxBy(Comparator.comparingDouble(Employee::salary))));\n\n// 4) List -> Map<id, Employee>, duplicate keys handled\nMap<Long, Employee> byId = employees.stream()\n    .collect(Collectors.toMap(Employee::id, e -> e, (a, b) -> b));",
+    "lang": "java"
+  },
+  {
+    "id": "java-streams-string-exercises",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "streams",
+      "java8",
+      "coding",
+      "V.Imp"
+    ],
+    "question": "Streams coding drills: first non-repeating character, word/char frequency, join names.",
+    "answer": "<p>String-processing in streams hinges on one bridge: <code class=\"inline\">s.chars()</code> gives an IntStream — box to Character for grouping. Frequency = <code class=\"inline\">groupingBy(identity, counting())</code>; ordered frequency needs a <strong>LinkedHashMap supplier</strong>; joining = <code class=\"inline\">Collectors.joining(\", \")</code>.</p>",
+    "tip": "The LinkedHashMap::new supplier in the 3-arg groupingBy is THE trick for 'first non-repeating' — default HashMap loses encounter order and sinks the answer.",
+    "code": "// word frequency in a sentence\nMap<String, Long> freq = Arrays.stream(sentence.toLowerCase().split(\"\\\\s+\"))\n    .collect(Collectors.groupingBy(w -> w, Collectors.counting()));\n\n// first non-repeating character\nCharacter first = s.chars().mapToObj(c -> (char) c)\n    .collect(Collectors.groupingBy(c -> c, LinkedHashMap::new, Collectors.counting()))\n    .entrySet().stream().filter(e -> e.getValue() == 1)\n    .map(Map.Entry::getKey).findFirst().orElse(null);\n\n// join names\nString joined = employees.stream().map(Employee::name)\n    .collect(Collectors.joining(\", \"));",
+    "lang": "java"
+  },
+  {
+    "id": "java-streams-misc-exercises",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "streams",
+      "java8",
+      "coding",
+      "V.Imp"
+    ],
+    "question": "Streams coding drills: duplicates, sort a map by value, flatten, partition even/odd, sum/average, nth highest.",
+    "answer": "<p>The remaining regulars: duplicates via a seen-Set inside filter (or frequency map), map-by-value sorting via <code class=\"inline\">entrySet().stream().sorted(comparingByValue())</code> into a LinkedHashMap, <code class=\"inline\">flatMap</code> for List-of-Lists, <code class=\"inline\">partitioningBy</code> for the even/odd split, IntStream <code class=\"inline\">sum()/average()</code>, and <code class=\"inline\">distinct+sorted+skip(n−1)</code> for nth highest.</p>",
+    "tip": "partitioningBy vs groupingBy: partitioning takes a boolean predicate and ALWAYS yields both true/false keys — that distinction is a common rapid-fire question.",
+    "code": "// duplicates in a list\nSet<Integer> seen = new HashSet<>();\nList<Integer> dups = nums.stream().filter(n -> !seen.add(n)).toList();\n\n// sort map by value desc -> LinkedHashMap\nMap<String, Integer> sorted = map.entrySet().stream()\n    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())\n    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,\n        (a, b) -> a, LinkedHashMap::new));\n\n// flatten, partition, aggregate, nth highest\nList<String> flat = listOfLists.stream().flatMap(List::stream).toList();\nMap<Boolean, List<Integer>> evenOdd = nums.stream()\n    .collect(Collectors.partitioningBy(n -> n % 2 == 0));\ndouble avg = nums.stream().mapToInt(Integer::intValue).average().orElse(0);\nint nth = nums.stream().distinct()\n    .sorted(Comparator.reverseOrder()).skip(n - 1).findFirst().orElseThrow();",
+    "lang": "java"
+  },
+  {
+    "id": "java-odd-even-printer",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "coding",
+      "wait-notify",
+      "V.Imp"
+    ],
+    "question": "Print odd/even numbers alternately with two threads (and 1..N with 3 threads).",
+    "answer": "<p>The classic coordination exercise: a shared counter + a shared lock. Each thread waits until it's <em>its turn</em> (counter parity), prints, increments, and <code class=\"inline\">notifyAll()</code>. The same pattern generalizes to N threads with <code class=\"inline\">counter % N == myIndex</code> — which answers the 3-thread variant too.</p>",
+    "tip": "The while (not if) around wait() is what they're checking — spurious wakeups and the re-check-after-wake rule. Bonus points for mentioning the Semaphore alternative.",
+    "code": "class AlternatePrinter {\n  private int n = 1;\n  private final int max;\n  AlternatePrinter(int max) { this.max = max; }\n\n  synchronized void print(int parity) throws InterruptedException {\n    while (n <= max) {\n      while (n <= max && n % 2 != parity) wait();   // not my turn\n      if (n > max) break;\n      System.out.println(Thread.currentThread().getName() + \": \" + n++);\n      notifyAll();\n    }\n  }\n}\n// main:\nvar p = new AlternatePrinter(10);\nnew Thread(() -> { try { p.print(1); } catch (Exception e) {} }, \"odd\").start();\nnew Thread(() -> { try { p.print(0); } catch (Exception e) {} }, \"even\").start();\n// 3 threads printing 1..N: same monitor, condition n % 3 == myIndex",
+    "lang": "java"
   }
 ]

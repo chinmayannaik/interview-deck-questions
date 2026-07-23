@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 40,
-  "updatedAt": "2026-07-23T15:17:35.852Z",
-  "totalQuestions": 1564,
-  "contentHash": "0adcbb20492936c026660cf7e6fa964371a300b0",
+  "version": 42,
+  "updatedAt": "2026-07-23T15:21:42.990Z",
+  "totalQuestions": 1598,
+  "contentHash": "9553f6df7200e72e3e862f6b46eee1d03504f342",
   "groups": [
     {
       "id": "frontend",
@@ -51,7 +51,7 @@
       "id": "java-angular",
       "file": "packs/java-angular.json",
       "label": "Java + Angular",
-      "count": 875,
+      "count": 909,
       "hash": "023e90a1045a"
     }
   ],
@@ -125,8 +125,8 @@
       "label": "JS Coding",
       "group": "frontend",
       "color": "#0B7285",
-      "count": 53,
-      "hash": "d01d5a6bf566"
+      "count": 83,
+      "hash": "c1eb018b4603"
     },
     {
       "id": "rxjs",
@@ -170,8 +170,8 @@
       "label": "Java",
       "group": "backend",
       "color": "#9A5B34",
-      "count": 165,
-      "hash": "8ccbe8e580d7"
+      "count": 169,
+      "hash": "7285f35b8848"
     },
     {
       "id": "leetcode",

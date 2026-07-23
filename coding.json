@@ -810,5 +810,447 @@
     "code": "async function f() {\n  console.log('A');\n  return 'done';\n}\n\nf().then((v) => console.log('B', v));\nconsole.log('C');\n\n// Output:\n// A\n// C\n// B done",
     "lang": "js",
     "deep": "<h4>Key points</h4><ul><li>An <code class=\"inline\">async</code> function <strong>always</strong> returns a Promise; a plain <code class=\"inline\">return x</code> resolves it with <code class=\"inline\">x</code>.</li><li>The body runs synchronously until the first <code class=\"inline\">await</code> or the <code class=\"inline\">return</code> — that's why <code class=\"inline\">A</code> prints during the <code class=\"inline\">f()</code> call.</li><li>The <code class=\"inline\">.then</code> callback is scheduled as a microtask, so it runs after the current synchronous code (<code class=\"inline\">C</code>).</li></ul><p>Corollary: <code class=\"inline\">throw</code> inside an async function rejects its returned Promise — catch it with <code class=\"inline\">.catch()</code> or <code class=\"inline\">try/catch</code> around the <code class=\"inline\">await</code>.</p>"
+  },
+  {
+    "id": "code-first-non-repeating-char",
+    "category": "coding",
+    "difficulty": "intermediate",
+    "tags": [
+      "string",
+      "hashmap",
+      "streams",
+      "V.Imp"
+    ],
+    "question": "Find the first non-repeating character in a string.",
+    "answer": "<p>Count frequencies in one pass (LinkedHashMap keeps encounter order), then return the first key with count 1. O(n) time, O(1) space (bounded alphabet).</p><p>Very often asked as a <strong>Java 8 streams</strong> one-liner — practice both forms.</p>",
+    "tip": "The streams version with groupingBy + LinkedHashMap::new is a favorite 'write it in streams' follow-up.",
+    "code": "// classic\nchar firstUnique(String s) {\n  Map<Character, Integer> freq = new LinkedHashMap<>();\n  for (char c : s.toCharArray()) freq.merge(c, 1, Integer::sum);\n  for (var e : freq.entrySet()) if (e.getValue() == 1) return e.getKey();\n  return 0;\n}\n\n// streams\nCharacter first = s.chars().mapToObj(c -> (char) c)\n  .collect(Collectors.groupingBy(c -> c, LinkedHashMap::new, Collectors.counting()))\n  .entrySet().stream()\n  .filter(e -> e.getValue() == 1)\n  .map(Map.Entry::getKey)\n  .findFirst().orElse(null);   // \"swiss\" -> 'w'",
+    "lang": "java"
+  },
+  {
+    "id": "code-string-compression",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "string",
+      "classic"
+    ],
+    "question": "String compression: aabbbc → a2b3c1.",
+    "answer": "<p>Walk the string counting runs of the same character; append <code class=\"inline\">char + count</code> when the run breaks. Use StringBuilder — string concatenation in a loop is O(n²). O(n) time.</p>",
+    "tip": "Ask the clarifying questions out loud: is a1 kept or dropped? Return original if 'compressed' is longer? That's what they're testing.",
+    "code": "String compress(String s) {\n  StringBuilder sb = new StringBuilder();\n  int count = 1;\n  for (int i = 1; i <= s.length(); i++) {\n    if (i < s.length() && s.charAt(i) == s.charAt(i - 1)) count++;\n    else { sb.append(s.charAt(i - 1)).append(count); count = 1; }\n  }\n  return sb.toString();\n}\ncompress(\"aabbbc\"); // \"a2b3c1\"",
+    "lang": "java"
+  },
+  {
+    "id": "code-longest-common-prefix",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "string",
+      "classic"
+    ],
+    "question": "Longest common prefix of an array of strings.",
+    "answer": "<p>Take the first string as candidate; for each other string, shrink the candidate from the end while it isn't a prefix. O(S) where S = total characters.</p><p>Alternative: sort and compare only first vs last string — they're the most different.</p>",
+    "tip": "The sort trick (compare first and last after sorting) is a nice one-liner insight to mention even if you code the simple version.",
+    "code": "String longestCommonPrefix(String[] strs) {\n  String prefix = strs[0];\n  for (int i = 1; i < strs.length; i++) {\n    while (!strs[i].startsWith(prefix))\n      prefix = prefix.substring(0, prefix.length() - 1);\n    if (prefix.isEmpty()) return \"\";\n  }\n  return prefix;\n}\n// [\"flower\",\"flow\",\"flight\"] -> \"fl\"",
+    "lang": "java"
+  },
+  {
+    "id": "code-string-rotation",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "string",
+      "trick"
+    ],
+    "question": "Check if one string is a rotation of another (and rotate a string by k).",
+    "answer": "<p>The elegant trick: <code class=\"inline\">b</code> is a rotation of <code class=\"inline\">a</code> iff they're the same length and <strong>b is a substring of a + a</strong>. One line after the length check.</p><p>Rotating by k: <code class=\"inline\">s.substring(k) + s.substring(0, k)</code> (normalize k with modulo first).</p>",
+    "tip": "\"waterbottle\" rotated is \"erbottlewat\" — and \"waterbottlewaterbottle\".contains(\"erbottlewat\") is true. Interviewers love hearing WHY: every rotation appears inside the doubled string.",
+    "code": "boolean isRotation(String a, String b) {\n  return a.length() == b.length() && (a + a).contains(b);\n}\n\nString rotateLeft(String s, int k) {\n  k %= s.length();\n  return s.substring(k) + s.substring(0, k);\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-count-vowels",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "string",
+      "basics"
+    ],
+    "question": "Count vowels and consonants in a string (loop and streams).",
+    "answer": "<p>Normalize to lowercase, check membership in the vowel set, count letters only. Trivial logic — what's evaluated is clean code and the streams variant.</p>",
+    "tip": "Edge cases to name: ignore digits/spaces/punctuation; decide upfront whether 'y' counts.",
+    "code": "int[] countVowelsConsonants(String s) {\n  int v = 0, c = 0;\n  for (char ch : s.toLowerCase().toCharArray()) {\n    if (ch < 'a' || ch > 'z') continue;\n    if (\"aeiou\".indexOf(ch) >= 0) v++; else c++;\n  }\n  return new int[]{v, c};\n}\n\n// streams\nlong vowels = s.toLowerCase().chars()\n    .filter(ch -> \"aeiou\".indexOf(ch) >= 0).count();",
+    "lang": "java"
+  },
+  {
+    "id": "code-second-largest",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "classic",
+      "V.Imp"
+    ],
+    "question": "Find max, min, and the second largest in an array — without sorting.",
+    "answer": "<p>Single pass with two trackers: when a new max appears, the old max becomes second; else update second when the value fits between. O(n) time, O(1) space — sorting (O(n log n)) is the answer they don't want.</p>",
+    "tip": "Handle the traps: duplicates of the max (use strict <), arrays shorter than 2, and all-equal arrays (no second largest — say what you return).",
+    "code": "int secondLargest(int[] a) {\n  int max = Integer.MIN_VALUE, second = Integer.MIN_VALUE;\n  for (int x : a) {\n    if (x > max) { second = max; max = x; }\n    else if (x > second && x < max) second = x;\n  }\n  return second; // MIN_VALUE => not found\n}\n// [12, 35, 1, 10, 34, 1] -> 34",
+    "lang": "java"
+  },
+  {
+    "id": "code-move-zeros",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "two-pointer"
+    ],
+    "question": "Move all zeros to the end, keeping the order of non-zeros (in place).",
+    "answer": "<p>Two pointers: <code class=\"inline\">insertPos</code> tracks where the next non-zero goes; sweep once copying non-zeros forward, then fill the tail with zeros. O(n) time, O(1) space, stable.</p>",
+    "tip": "The follow-up is always 'in place, one pass, keep relative order' — the copy-to-new-array answer scores zero.",
+    "code": "void moveZeroes(int[] nums) {\n  int insertPos = 0;\n  for (int x : nums) if (x != 0) nums[insertPos++] = x;\n  while (insertPos < nums.length) nums[insertPos++] = 0;\n}\n// [0,1,0,3,12] -> [1,3,12,0,0]",
+    "lang": "java"
+  },
+  {
+    "id": "code-remove-duplicates-sorted",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "two-pointer"
+    ],
+    "question": "Remove duplicates from a sorted array in place; return the new length.",
+    "answer": "<p>Because it's sorted, duplicates are adjacent. Slow pointer marks the end of the unique prefix; fast pointer scans — copy forward only when the value differs from the last kept one. O(n) time, O(1) space.</p>",
+    "tip": "Say why sorted matters: adjacency is what makes O(1)-space dedup possible; unsorted needs a HashSet (O(n) space) or sorting first.",
+    "code": "int removeDuplicates(int[] nums) {\n  if (nums.length == 0) return 0;\n  int k = 1;                       // nums[0..k-1] = unique prefix\n  for (int i = 1; i < nums.length; i++)\n    if (nums[i] != nums[k - 1]) nums[k++] = nums[i];\n  return k;\n}\n// [1,1,2,2,3] -> 3, array starts [1,2,3,...]",
+    "lang": "java"
+  },
+  {
+    "id": "code-missing-duplicate-number",
+    "category": "coding",
+    "difficulty": "intermediate",
+    "tags": [
+      "array",
+      "math",
+      "classic",
+      "V.Imp"
+    ],
+    "question": "Find the missing number in 1..n — and the duplicate number in an array.",
+    "answer": "<p><strong>Missing</strong>: expected sum <code class=\"inline\">n(n+1)/2</code> minus actual sum; or XOR all indices and values (overflow-proof). O(n)/O(1).</p><p><strong>Duplicate</strong>: HashSet catches the first repeat in O(n)/O(n); the O(1)-space follow-up is Floyd's cycle detection treating values as pointers.</p>",
+    "tip": "If both a missing AND a duplicate exist together, sum alone can't separate them — that's the harder variant (use XOR bucketing or math with sum + sum of squares).",
+    "code": "int missing(int[] a, int n) {          // values 1..n, one absent\n  long sum = (long) n * (n + 1) / 2;\n  for (int x : a) sum -= x;\n  return (int) sum;\n}\n\nint firstDuplicate(int[] a) {\n  Set<Integer> seen = new HashSet<>();\n  for (int x : a) if (!seen.add(x)) return x;\n  return -1;\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-rotate-array",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "reversal",
+      "classic"
+    ],
+    "question": "Reverse an array in place, and rotate an array by k (reversal algorithm).",
+    "answer": "<p><strong>Reverse</strong>: two pointers swapping inward. <strong>Rotate right by k</strong> without extra space — the reversal trick: reverse the whole array, then reverse the first k, then the rest. O(n) time, O(1) space.</p>",
+    "tip": "Normalize k %= n first (k may exceed n). The three-reversal trick is the expected 'clever' answer; the extra-array version is the warm-up.",
+    "code": "void rotate(int[] a, int k) {\n  k %= a.length;\n  reverse(a, 0, a.length - 1);   // [1,2,3,4,5,6,7] k=3\n  reverse(a, 0, k - 1);          // -> [5,6,7,1,2,3,4]\n  reverse(a, k, a.length - 1);\n}\nvoid reverse(int[] a, int i, int j) {\n  while (i < j) { int t = a[i]; a[i++] = a[j]; a[j--] = t; }\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-sort-012",
+    "category": "coding",
+    "difficulty": "intermediate",
+    "tags": [
+      "array",
+      "two-pointer",
+      "classic"
+    ],
+    "question": "Sort an array of 0s, 1s and 2s in one pass (Dutch National Flag).",
+    "answer": "<p>Three pointers: <code class=\"inline\">low</code> (next slot for 0), <code class=\"inline\">mid</code> (scanner), <code class=\"inline\">high</code> (next slot for 2). Swap 0s down, 2s up, walk past 1s. One pass, O(n) time, O(1) space — no counting, no sorting.</p>",
+    "tip": "The subtle bit: after swapping with high, do NOT advance mid — the swapped-in value is unexamined. That line is where most people bug out.",
+    "code": "void sortColors(int[] a) {\n  int low = 0, mid = 0, high = a.length - 1;\n  while (mid <= high) {\n    switch (a[mid]) {\n      case 0 -> { swap(a, low++, mid++); }\n      case 1 -> mid++;\n      case 2 -> { swap(a, mid, high--); }  // mid stays!\n    }\n  }\n}\n// [2,0,2,1,1,0] -> [0,0,1,1,2,2]",
+    "lang": "java"
+  },
+  {
+    "id": "code-array-intersection",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "hashset",
+      "V.Imp"
+    ],
+    "question": "Intersection and union of two arrays in O(n).",
+    "answer": "<p>Sets do the work: union = add everything to one set; intersection = build a set from the first array, keep elements of the second found in it (<code class=\"inline\">retainAll</code> or a manual contains loop). O(n + m) time — the point is avoiding the O(n·m) nested loop.</p>",
+    "tip": "This doubles as 'find common elements of two arrays in O(n)'. If both arrays are sorted, mention the two-pointer alternative with O(1) extra space.",
+    "code": "Set<Integer> intersection(int[] a, int[] b) {\n  Set<Integer> setA = new HashSet<>();\n  for (int x : a) setA.add(x);\n  Set<Integer> result = new HashSet<>();\n  for (int x : b) if (setA.contains(x)) result.add(x);\n  return result;\n}\n\n// streams union\nint[] union = IntStream.concat(Arrays.stream(a), Arrays.stream(b))\n    .distinct().toArray();",
+    "lang": "java"
+  },
+  {
+    "id": "code-majority-element",
+    "category": "coding",
+    "difficulty": "intermediate",
+    "tags": [
+      "array",
+      "boyer-moore",
+      "classic"
+    ],
+    "question": "Find the majority element (appears more than n/2 times).",
+    "answer": "<p><strong>Boyer-Moore voting</strong>: keep a candidate and a counter — same element increments, different decrements, zero picks a new candidate. Majority survives all cancellations. O(n) time, O(1) space.</p><p>The HashMap-count version is the obvious O(n)/O(n) warm-up; Boyer-Moore is the answer that impresses.</p>",
+    "tip": "If existence isn't guaranteed, a second verification pass counts the candidate. Explain the intuition: every non-majority vote can cancel at most one majority vote — majority still wins.",
+    "code": "int majorityElement(int[] nums) {\n  int count = 0, candidate = 0;\n  for (int x : nums) {\n    if (count == 0) candidate = x;\n    count += (x == candidate) ? 1 : -1;\n  }\n  return candidate;\n}\n// [2,2,1,1,1,2,2] -> 2",
+    "lang": "java"
+  },
+  {
+    "id": "code-leaders-array",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "classic"
+    ],
+    "question": "Find all leaders in an array (elements greater than everything to their right).",
+    "answer": "<p>Scan <strong>right to left</strong> tracking the running max: an element ≥ max-so-far is a leader. O(n) time, one pass — versus the naive O(n²) 'for each element scan its right side'.</p>",
+    "tip": "The rightmost element is always a leader. Reverse the result list at the end if left-to-right order is wanted.",
+    "code": "List<Integer> leaders(int[] a) {\n  List<Integer> res = new ArrayList<>();\n  int maxRight = Integer.MIN_VALUE;\n  for (int i = a.length - 1; i >= 0; i--) {\n    if (a[i] >= maxRight) { res.add(a[i]); maxRight = a[i]; }\n  }\n  Collections.reverse(res);\n  return res;\n}\n// [16,17,4,3,5,2] -> [17,5,2]",
+    "lang": "java"
+  },
+  {
+    "id": "code-subarray-given-sum",
+    "category": "coding",
+    "difficulty": "intermediate",
+    "tags": [
+      "array",
+      "sliding-window",
+      "prefix-sum"
+    ],
+    "question": "Find a contiguous subarray with a given sum.",
+    "answer": "<p><strong>Positive numbers</strong>: sliding window — grow the right edge, shrink from the left while the sum exceeds the target. O(n).</p><p><strong>With negatives</strong> (window breaks): prefix sums + HashMap — at each index look up <code class=\"inline\">prefix − target</code>; if seen before, the slice between is the answer. O(n)/O(n).</p>",
+    "tip": "State the constraint question immediately: 'are numbers all positive?' — it decides the technique and shows you know WHY sliding window needs positivity (sum must grow monotonically as the window grows).",
+    "code": "// positives: sliding window\nint[] subarraySum(int[] a, int target) {\n  int left = 0, sum = 0;\n  for (int right = 0; right < a.length; right++) {\n    sum += a[right];\n    while (sum > target && left <= right) sum -= a[left++];\n    if (sum == target) return new int[]{left, right};\n  }\n  return new int[]{-1, -1};\n}\n// negatives allowed: prefix + HashMap<prefixSum, index>",
+    "lang": "java"
+  },
+  {
+    "id": "code-rotate-matrix",
+    "category": "coding",
+    "difficulty": "intermediate",
+    "tags": [
+      "matrix",
+      "classic"
+    ],
+    "question": "Transpose a matrix, and rotate it 90° clockwise in place.",
+    "answer": "<p><strong>Transpose</strong>: swap <code class=\"inline\">a[i][j]</code> with <code class=\"inline\">a[j][i]</code> across the diagonal (j starts at i+1 to avoid double-swapping).</p><p><strong>Rotate 90° clockwise</strong> = transpose, then reverse each row. Two clean passes, O(n²) time, O(1) extra space. (Counter-clockwise = transpose + reverse columns.)</p>",
+    "tip": "Deriving 'transpose + reverse rows' on the spot beats memorizing index gymnastics — say the composition out loud and the code writes itself.",
+    "code": "void rotate90(int[][] m) {\n  int n = m.length;\n  for (int i = 0; i < n; i++)                 // transpose\n    for (int j = i + 1; j < n; j++) {\n      int t = m[i][j]; m[i][j] = m[j][i]; m[j][i] = t;\n    }\n  for (int[] row : m) {                        // reverse each row\n    for (int i = 0, j = n - 1; i < j; i++, j--) {\n      int t = row[i]; row[i] = row[j]; row[j] = t;\n    }\n  }\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-fibonacci",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "numbers",
+      "recursion",
+      "dp",
+      "V.Imp"
+    ],
+    "question": "Fibonacci — iterative, recursive, and memoized.",
+    "answer": "<p>Three versions, three lessons: naive recursion is O(2ⁿ) (recomputes everything), memoization makes it O(n) by caching, iteration is O(n) time O(1) space and usually the best answer.</p>",
+    "tip": "The point of this question is complexity discussion: be ready to explain WHY naive recursion explodes (draw the call tree) and which version you'd actually ship.",
+    "code": "// iterative — O(n)/O(1), the answer to give\nlong fib(int n) {\n  long a = 0, b = 1;\n  for (int i = 0; i < n; i++) { long t = a + b; a = b; b = t; }\n  return a;\n}\n\n// memoized — O(n)/O(n)\nMap<Integer, Long> memo = new HashMap<>();\nlong fibMemo(int n) {\n  if (n < 2) return n;\n  return memo.computeIfAbsent(n, k -> fibMemo(k - 1) + fibMemo(k - 2));\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-factorial-trailing-zeros",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "numbers",
+      "math"
+    ],
+    "question": "Factorial — and count the trailing zeros of n! without computing it.",
+    "answer": "<p>Factorial itself: iterative loop (use <code class=\"inline\">long</code>/BigInteger — int overflows at 13!).</p><p><strong>Trailing zeros</strong>: each zero comes from a factor 10 = 2×5, and 5s are rarer than 2s — so count factors of 5: <code class=\"inline\">n/5 + n/25 + n/125 + ...</code>. O(log n), no factorial computed.</p>",
+    "tip": "25 contributes TWO fives (25 = 5×5) — that's why you keep dividing by growing powers of 5, and why n/5 alone is wrong for n ≥ 25.",
+    "code": "long factorial(int n) {\n  long f = 1;\n  for (int i = 2; i <= n; i++) f *= i;\n  return f;                       // 20! is the long limit\n}\n\nint trailingZeros(int n) {\n  int count = 0;\n  for (int p = 5; p <= n; p *= 5) count += n / p;\n  return count;\n}\ntrailingZeros(100); // 24",
+    "lang": "java"
+  },
+  {
+    "id": "code-prime-sieve",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "numbers",
+      "math",
+      "classic"
+    ],
+    "question": "Check if a number is prime, and list primes up to N (Sieve of Eratosthenes).",
+    "answer": "<p><strong>Single check</strong>: trial division up to √n — a factor above √n implies one below it. O(√n).</p><p><strong>All primes ≤ N</strong>: the sieve — mark multiples of each prime as composite, starting from p². O(N log log N), the expected answer for 'primes up to N'.</p>",
+    "tip": "Two details that score: loop condition i*i <= n (not Math.sqrt in the condition), and the sieve inner loop starting at p*p (smaller multiples were already marked).",
+    "code": "boolean isPrime(int n) {\n  if (n < 2) return false;\n  for (int i = 2; (long) i * i <= n; i++)\n    if (n % i == 0) return false;\n  return true;\n}\n\nboolean[] sieve(int n) {\n  boolean[] composite = new boolean[n + 1];\n  for (int p = 2; (long) p * p <= n; p++)\n    if (!composite[p])\n      for (int m = p * p; m <= n; m += p) composite[m] = true;\n  return composite;   // !composite[i] && i >= 2 => prime\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-armstrong-perfect",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "numbers",
+      "math"
+    ],
+    "question": "Armstrong number and perfect number checks.",
+    "answer": "<p><strong>Armstrong</strong>: sum of each digit raised to the power of the digit count equals the number (153 = 1³+5³+3³).</p><p><strong>Perfect</strong>: sum of proper divisors equals the number (28 = 1+2+4+7+14). Collect divisors in pairs up to √n for O(√n).</p>",
+    "tip": "Standard warm-up pair — narrate digit extraction (n % 10, n / 10) fluently; that pattern repeats in reverse-integer and sum-of-digits.",
+    "code": "boolean isArmstrong(int n) {\n  int digits = String.valueOf(n).length(), sum = 0;\n  for (int t = n; t > 0; t /= 10)\n    sum += (int) Math.pow(t % 10, digits);\n  return sum == n;\n}\n\nboolean isPerfect(int n) {\n  if (n < 2) return false;\n  int sum = 1;\n  for (int i = 2; (long) i * i <= n; i++)\n    if (n % i == 0) { sum += i; if (i != n / i) sum += n / i; }\n  return sum == n;\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-reverse-integer-digits",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "numbers",
+      "math",
+      "classic"
+    ],
+    "question": "Reverse an integer, and sum its digits.",
+    "answer": "<p>Both are the same digit loop: peel with <code class=\"inline\">% 10</code>, shrink with <code class=\"inline\">/ 10</code>. For reversal, build <code class=\"inline\">rev = rev * 10 + digit</code> — and mention <strong>overflow</strong>: reversing 1999999999 exceeds int; check before multiplying or use long.</p>",
+    "tip": "Negative numbers work naturally in Java (% keeps the sign) — knowing that saves the special-case branch. The overflow mention is what separates candidates.",
+    "code": "int reverse(int n) {\n  long rev = 0;                       // long to detect overflow\n  while (n != 0) {\n    rev = rev * 10 + n % 10;\n    n /= 10;\n  }\n  return (rev < Integer.MIN_VALUE || rev > Integer.MAX_VALUE) ? 0 : (int) rev;\n}\n\nint digitSum(int n) {\n  int sum = 0;\n  for (n = Math.abs(n); n > 0; n /= 10) sum += n % 10;\n  return sum;\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-gcd-lcm",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "numbers",
+      "math",
+      "classic"
+    ],
+    "question": "Compute GCD and LCM (Euclid's algorithm).",
+    "answer": "<p><strong>Euclid</strong>: gcd(a, b) = gcd(b, a % b) until b is 0 — O(log min(a,b)). Then <code class=\"inline\">lcm = a / gcd * b</code>.</p><p>Divide <em>before</em> multiplying in LCM — <code class=\"inline\">a * b</code> first overflows for large ints.</p>",
+    "tip": "Be able to say why Euclid works: any divisor of a and b also divides a % b, so the pair (b, a%b) has the same divisor set.",
+    "code": "int gcd(int a, int b) {\n  while (b != 0) { int t = b; b = a % b; a = t; }\n  return a;\n}\n// recursive: gcd(a, b) = b == 0 ? a : gcd(b, a % b)\n\nlong lcm(int a, int b) {\n  return (long) (a / gcd(a, b)) * b;   // divide first: no overflow\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-bit-tricks",
+    "category": "coding",
+    "difficulty": "intermediate",
+    "tags": [
+      "bits",
+      "math",
+      "trick",
+      "V.Imp"
+    ],
+    "question": "Bit tricks: power-of-two check, count set bits, swap without a temp variable.",
+    "answer": "<ul><li><strong>Power of two</strong>: <code class=\"inline\">n &gt; 0 &amp;&amp; (n &amp; (n − 1)) == 0</code> — a power of two has exactly one set bit, and n−1 flips it plus everything below.</li><li><strong>Count set bits</strong>: Kernighan's loop — <code class=\"inline\">n &amp;= n − 1</code> clears the lowest set bit; iterations = bit count.</li><li><strong>Swap without temp</strong>: XOR three times (or arithmetic a = a + b...). Party trick — in real code use a temp.</li></ul>",
+    "tip": "n & (n-1) 'drops the lowest set bit' — one idiom, two answers. Also name Integer.bitCount(n) to show you know the library does it.",
+    "code": "boolean isPowerOfTwo(int n) { return n > 0 && (n & (n - 1)) == 0; }\n\nint countSetBits(int n) {\n  int c = 0;\n  while (n != 0) { n &= n - 1; c++; }   // Kernighan\n  return c;\n}\n\n// swap without temp\na ^= b; b ^= a; a ^= b;",
+    "lang": "java"
+  },
+  {
+    "id": "code-reverse-linked-list",
+    "category": "coding",
+    "difficulty": "intermediate",
+    "tags": [
+      "linked-list",
+      "classic",
+      "V.Imp"
+    ],
+    "question": "Reverse a singly linked list.",
+    "answer": "<p>Three pointers walking the list: <code class=\"inline\">prev</code>, <code class=\"inline\">curr</code>, <code class=\"inline\">next</code>. Save next, point curr backwards, advance. O(n) time, O(1) space; <code class=\"inline\">prev</code> is the new head.</p>",
+    "tip": "The #1 linked-list question anywhere. Practice until you can write it while talking — and know the recursive version exists (O(n) stack) if asked.",
+    "code": "class ListNode { int val; ListNode next; }\n\nListNode reverse(ListNode head) {\n  ListNode prev = null, curr = head;\n  while (curr != null) {\n    ListNode next = curr.next;   // save\n    curr.next = prev;            // flip\n    prev = curr;                 // advance\n    curr = next;\n  }\n  return prev;                   // new head\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-linked-list-cycle",
+    "category": "coding",
+    "difficulty": "intermediate",
+    "tags": [
+      "linked-list",
+      "floyd",
+      "two-pointer",
+      "V.Imp"
+    ],
+    "question": "Detect a cycle in a linked list (Floyd's tortoise and hare).",
+    "answer": "<p>Two pointers: slow moves 1, fast moves 2. If there's a cycle they must meet inside it (fast gains one step per iteration); if fast hits null, no cycle. O(n) time, <strong>O(1) space</strong> — the whole point versus the HashSet approach.</p><p>Follow-up: after meeting, reset one pointer to head; both stepping by 1 meet at the <strong>cycle start</strong>.</p>",
+    "tip": "Explain the intuition in one line: inside a loop, a runner gaining 1 step per tick must lap the walker. The cycle-start follow-up is pure math (distance argument) — knowing it exists is often enough.",
+    "code": "boolean hasCycle(ListNode head) {\n  ListNode slow = head, fast = head;\n  while (fast != null && fast.next != null) {\n    slow = slow.next;\n    fast = fast.next.next;\n    if (slow == fast) return true;\n  }\n  return false;\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-middle-linked-list",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "linked-list",
+      "two-pointer"
+    ],
+    "question": "Find the middle element of a linked list in one pass.",
+    "answer": "<p>Slow/fast pointers again: fast moves 2, slow moves 1 — when fast reaches the end, slow is at the middle. One pass, no length count. For even lengths this yields the <em>second</em> middle; adjust the loop condition for the first.</p>",
+    "tip": "Same skeleton solves 'kth from the end': advance fast k steps first, then move both — when fast hits null, slow is the answer.",
+    "code": "ListNode middle(ListNode head) {\n  ListNode slow = head, fast = head;\n  while (fast != null && fast.next != null) {\n    slow = slow.next;\n    fast = fast.next.next;\n  }\n  return slow;   // 1->2->3->4->5 => 3\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-merge-sorted-lists",
+    "category": "coding",
+    "difficulty": "intermediate",
+    "tags": [
+      "linked-list",
+      "classic"
+    ],
+    "question": "Merge two sorted linked lists.",
+    "answer": "<p>A <strong>dummy head</strong> + tail pointer: repeatedly attach the smaller front node, advance that list; attach the leftover at the end. O(n+m) time, O(1) space — reusing existing nodes, no copies.</p>",
+    "tip": "Say 'dummy node' early — it's the idiom that removes all the empty-list/first-node special cases, and interviewers listen for it.",
+    "code": "ListNode merge(ListNode a, ListNode b) {\n  ListNode dummy = new ListNode(), tail = dummy;\n  while (a != null && b != null) {\n    if (a.val <= b.val) { tail.next = a; a = a.next; }\n    else                { tail.next = b; b = b.next; }\n    tail = tail.next;\n  }\n  tail.next = (a != null) ? a : b;   // leftover\n  return dummy.next;\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-stack-queue-conversions",
+    "category": "coding",
+    "difficulty": "intermediate",
+    "tags": [
+      "stack",
+      "queue",
+      "design"
+    ],
+    "question": "Implement a queue using two stacks (and a stack using queues).",
+    "answer": "<p><strong>Queue via two stacks</strong>: push into <code class=\"inline\">in</code>; pop from <code class=\"inline\">out</code>, refilling it by draining <code class=\"inline\">in</code> only when empty. Each element moves at most twice → <strong>amortized O(1)</strong> per operation.</p><p><strong>Stack via one queue</strong>: after enqueueing, rotate the queue (dequeue+enqueue n−1 times) so the newest sits at the front — push O(n), pop O(1).</p>",
+    "tip": "The word to say is 'amortized': a single pop may move n elements, but across n operations each element transfers once. That's the entire lesson of this question.",
+    "code": "class QueueViaStacks {\n  Deque<Integer> in = new ArrayDeque<>(), out = new ArrayDeque<>();\n  void enqueue(int x) { in.push(x); }\n  int dequeue() {\n    if (out.isEmpty())\n      while (!in.isEmpty()) out.push(in.pop());   // reverse once\n    return out.pop();\n  }\n}",
+    "lang": "java"
+  },
+  {
+    "id": "code-binary-search",
+    "category": "coding",
+    "difficulty": "beginner",
+    "tags": [
+      "search",
+      "classic",
+      "V.Imp"
+    ],
+    "question": "Binary search — iterative and recursive.",
+    "answer": "<p>On a <strong>sorted</strong> array, halve the search space each step: compare the middle, discard the wrong half. O(log n) time; iterative is O(1) space, recursive O(log n) stack.</p><p>The two classic bugs: <code class=\"inline\">mid = lo + (hi − lo) / 2</code> (not <code class=\"inline\">(lo+hi)/2</code> — overflow), and getting <code class=\"inline\">lo &lt;= hi</code> / boundary updates right.</p>",
+    "tip": "Mid-computation overflow is a legendary real bug (it sat in the JDK's own binarySearch for years) — mentioning that is an easy credibility point.",
+    "code": "int binarySearch(int[] a, int target) {\n  int lo = 0, hi = a.length - 1;\n  while (lo <= hi) {\n    int mid = lo + (hi - lo) / 2;      // overflow-safe\n    if (a[mid] == target) return mid;\n    if (a[mid] < target) lo = mid + 1;\n    else hi = mid - 1;\n  }\n  return -1;\n}\n// recursive: search(a, t, lo, mid-1) / (a, t, mid+1, hi)",
+    "lang": "java"
+  },
+  {
+    "id": "code-tower-of-hanoi",
+    "category": "coding",
+    "difficulty": "intermediate",
+    "tags": [
+      "recursion",
+      "classic"
+    ],
+    "question": "Tower of Hanoi — explain the approach and complexity.",
+    "answer": "<p>Move n disks A→C using B: recursively move <strong>n−1 disks A→B</strong>, move the largest disk A→C, then move <strong>n−1 disks B→C</strong>. The recursion IS the answer — three lines.</p><p>Moves: T(n) = 2T(n−1) + 1 = <strong>2ⁿ − 1</strong>, so O(2ⁿ) — the standard example of exponential growth from an innocent recurrence.</p>",
+    "tip": "This is asked as an 'explain recursion' question, not a coding race — narrate the three steps and derive 2ⁿ−1 (64 disks ≈ 5.8×10¹⁹ moves) and you're done.",
+    "code": "void hanoi(int n, char from, char via, char to) {\n  if (n == 0) return;\n  hanoi(n - 1, from, to, via);            // n-1 out of the way\n  System.out.println(\"disk \" + n + \": \" + from + \" -> \" + to);\n  hanoi(n - 1, via, from, to);            // n-1 onto the big one\n}\nhanoi(3, 'A', 'B', 'C');   // 7 moves",
+    "lang": "java"
   }
 ]
