@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 43,
-  "updatedAt": "2026-07-23T15:26:14.586Z",
+  "version": 44,
+  "updatedAt": "2026-07-23T15:44:45.660Z",
   "totalQuestions": 1622,
-  "contentHash": "12a2ae05f87c138a30605a319bea80a15ed18ccf",
+  "contentHash": "2ea5c8ba635ae45d150df2421d4091efd9a443c5",
   "groups": [
     {
       "id": "frontend",
@@ -53,6 +53,20 @@
       "label": "Java + Angular",
       "count": 933,
       "hash": "ae5da0dfd601"
+    },
+    {
+      "id": "angular-developer",
+      "file": "packs/angular-developer.json",
+      "label": "Angular Developer",
+      "count": 535,
+      "hash": "0c5721f80805"
+    },
+    {
+      "id": "java-backend",
+      "file": "packs/java-backend.json",
+      "label": "Java Backend Developer",
+      "count": 525,
+      "hash": "ef4083c12fbd"
     }
   ],
   "categories": [

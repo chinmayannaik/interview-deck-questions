@@ -1,0 +1,23 @@
+{
+  "id": "angular-developer",
+  "label": "Angular Developer",
+  "description": "Focused prep for Angular frontend roles: Angular, RxJS, NgRx, testing, microfrontends, JavaScript, TypeScript, HTML, CSS, coding rounds, system design and behavioral.",
+  "categories": [
+    "angular",
+    "ngcoding",
+    "angular-testing",
+    "rxjs",
+    "ngrx",
+    "microfrontends",
+    "javascript",
+    "typescript",
+    "html",
+    "css",
+    "coding",
+    "general",
+    "git",
+    "system-design",
+    "behavioral"
+  ],
+  "questionIds": []
+}

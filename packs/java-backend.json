@@ -1,0 +1,27 @@
+{
+  "id": "java-backend",
+  "label": "Java Backend Developer",
+  "description": "Focused prep for Java backend roles: core Java, Spring Boot, Quarkus, Kafka, RabbitMQ, Redis, GraphQL, SQL, PostgreSQL, DSA, Docker & Kubernetes, system design and behavioral.",
+  "categories": [
+    "java",
+    "springboot",
+    "quarkus",
+    "kafka",
+    "rabbitmq",
+    "redis",
+    "graphql",
+    "sql",
+    "postgresql",
+    "leetcode",
+    "git",
+    "docker-kubernetes",
+    "system-design",
+    "behavioral"
+  ],
+  "questionIds": [
+    "tf-test-levels",
+    "tf-tdd",
+    "tf-good-unit-test",
+    "tf-code-coverage"
+  ]
+}
