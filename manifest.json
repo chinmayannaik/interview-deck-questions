@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 46,
-  "updatedAt": "2026-07-23T18:19:57.466Z",
+  "version": 47,
+  "updatedAt": "2026-07-25T15:13:32.807Z",
   "totalQuestions": 1697,
-  "contentHash": "9e47ecf9780f9477141cc5c1ec244fcb67b7ecb0",
+  "contentHash": "d58ea3de2ee5367d817b6d97b48f60b808e99e75",
   "groups": [
     {
       "id": "frontend",
@@ -193,8 +193,9 @@
       "label": "LeetCode",
       "group": "backend",
       "color": "#a80362",
+      "mode": "coding",
       "count": 13,
-      "hash": "9eca7630cf79"
+      "hash": "97aea8b2e3cf"
     },
     {
       "id": "springboot",

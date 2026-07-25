@@ -1,52 +1,318 @@
 [
-    {
-  "id": "leetcode-two-sum",
-  "category": "leetcode",
-  "difficulty": "beginner",
-  "tags": [
-    "array",
-    "hashmap"
-  ],
-  "question": "Two Sum",
-  "answer": "<p>Given an array of integers <code class=\"inline\">nums</code> and an integer <code class=\"inline\">target</code>, return the indices of the two numbers such that they add up to the target.</p><p><strong>Optimal Approach:</strong> Use a <code class=\"inline\">HashMap</code> to store each number and its index while iterating. For each element, check if <code class=\"inline\">target - nums[i]</code> already exists in the map.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
-  "tip": "Always think of HashMap whenever you need fast lookups in array problems.",
-  "code": "public int[] twoSum(int[] nums, int target) {\n    Map<Integer, Integer> map = new HashMap<>();\n    for (int i = 0; i < nums.length; i++) {\n        int complement = target - nums[i];\n        if (map.containsKey(complement)) {\n            return new int[]{map.get(complement), i};\n        }\n        map.put(nums[i], i);\n    }\n    return new int[]{};\n}",
-  "lang": "java",
-  "deep": "<h4>Problem intuition</h4><p>The goal is to find two numbers whose sum equals the target. The naive solution compares every pair, but that's inefficient. The key observation is that for every number <code class=\"inline\">x</code>, we only need to know whether <code class=\"inline\">target - x</code> has already been seen.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Compare every pair using two loops. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Optimal:</strong> Store visited numbers in a <code class=\"inline\">HashMap</code>. Before inserting the current number, check if its complement already exists.</li></ul><pre><code>nums = [2,7,11,15]\ntarget = 9\n\nMap = {}\n2 → complement = 7 → not found\nStore 2\n\n7 → complement = 2 → found\nAnswer = [0,1]</code></pre><h4>Why HashMap works</h4><p>HashMap provides average <strong>O(1)</strong> lookup time. Instead of searching the remaining array for every element, we instantly know whether the required complement already exists.</p><h4>Common mistakes</h4><ul><li>Adding the current element to the map before checking its complement.</li><li>Returning the values instead of their indices.</li><li>Using nested loops after already creating a HashMap.</li></ul><h4>Interview tip</h4><p>Whenever you hear phrases like <strong>find a pair</strong>, <strong>target sum</strong>, or <strong>fast lookup</strong>, think of using a HashMap.</p>",
-  "youtube": "https://youtu.be/Yyyi12oaK94"
-},
-{
-  "id": "leetcode-valid-parentheses",
-  "category": "leetcode",
-  "difficulty": "beginner",
-  "tags": [
-    "stack",
-    "string"
-  ],
-  "question": "Valid Parentheses",
-  "answer": "<p>Given a string containing only <code class=\"inline\">()</code>, <code class=\"inline\">[]</code>, and <code class=\"inline\">{}</code>, determine if the input string is valid.</p><p><strong>Optimal Approach:</strong> Use a <code class=\"inline\">Stack</code>. Push opening brackets onto the stack. Whenever a closing bracket appears, check if it matches the top of the stack.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
-  "tip": "Whenever the problem asks about matching pairs or nested structures, think of a Stack.",
-  "code": "public boolean isValid(String s) {\n    Stack<Character> stack = new Stack<>();\n    for (char c : s.toCharArray()) {\n        if (c == '(' || c == '{' || c == '[') {\n            stack.push(c);\n        } else {\n            if (stack.isEmpty()) return false;\n            char top = stack.pop();\n            if ((c == ')' && top != '(') ||\n                (c == '}' && top != '{') ||\n                (c == ']' && top != '[')) {\n                return false;\n            }\n        }\n    }\n    return stack.isEmpty();\n}",
-  "lang": "java",
-  "deep": "<h4>Problem intuition</h4><p>This problem asks whether every opening bracket has a matching closing bracket in the correct order. Since brackets must close in reverse order of opening, a <strong>Stack</strong> is the perfect data structure.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Repeatedly remove matching pairs like <code class=\"inline\">()</code>, <code class=\"inline\">[]</code>, and <code class=\"inline\">{}</code> until nothing changes. This is inefficient.</li><li><strong>Optimal:</strong> Push every opening bracket onto a stack. Whenever a closing bracket appears, verify it matches the top of the stack.</li></ul><pre><code>Input: \"({[]})\"\n\nStack = []\n( → push\n{ → push\n[ → push\n] → pop [\n} → pop {\n) → pop (\n\nStack empty → Valid</code></pre><h4>Why Stack works</h4><p>A stack follows the <strong>Last In, First Out (LIFO)</strong> principle. The most recently opened bracket must always be closed first, making Stack the ideal choice.</p><h4>Common mistakes</h4><ul><li>Not checking if the stack is empty before popping.</li><li>Forgetting to verify the stack is empty after processing the entire string.</li><li>Trying to count brackets instead of checking their order.</li></ul><h4>Interview tip</h4><p>Whenever the problem involves <strong>nested structures</strong>, <strong>balanced symbols</strong>, or <strong>matching pairs</strong>, your first thought should be a Stack.</p>",
-  "youtube": "https://youtu.be/9kmUaXrjizQ"
-},
-{
-  "id": "leetcode-best-time-buy-sell-stock",
-  "category": "leetcode",
-  "difficulty": "beginner",
-  "tags": [
-    "array",
-    "greedy"
-  ],
-  "question": "Best Time to Buy and Sell Stock",
-  "answer": "<p>Given an array <code class=\"inline\">prices</code> where <code class=\"inline\">prices[i]</code> is the stock price on day <code class=\"inline\">i</code>, find the maximum profit by choosing one day to buy and one later day to sell.</p><p><strong>Optimal Approach:</strong> Traverse the array once while maintaining the minimum price seen so far. At each step, calculate the profit if you sold today and update the maximum profit.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul>",
-  "tip": "Track the minimum price so far, not every possible buy day. One pass is enough.",
-  "code": "public int maxProfit(int[] prices) {\n    int minPrice = Integer.MAX_VALUE;\n    int maxProfit = 0;\n\n    for (int price : prices) {\n        if (price < minPrice) {\n            minPrice = price;\n        } else {\n            maxProfit = Math.max(maxProfit, price - minPrice);\n        }\n    }\n\n    return maxProfit;\n}",
-  "lang": "java",
-  "deep": "<h4>Problem intuition</h4><p>You must buy before selling, and you can complete only one transaction. Instead of checking every buy-sell pair, keep track of the cheapest stock price seen so far.</p><h4>Brute Force</h4><p>Try every pair of buy and sell days using two loops.</p><ul><li>Time Complexity: <strong>O(n²)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul><h4>Optimal Approach</h4><p>Maintain two variables:</p><ul><li><strong>minPrice</strong> → Lowest stock price seen so far.</li><li><strong>maxProfit</strong> → Best profit found so far.</li></ul><pre><code>prices = [7,1,5,3,6,4]\n\nDay 1: min=7 profit=0\nDay 2: min=1 profit=0\nDay 3: profit=5-1=4\nDay 4: profit=3-1=2\nDay 5: profit=6-1=5\nDay 6: profit=4-1=3\n\nMaximum Profit = 5</code></pre><h4>Why it works</h4><p>At every day, we know the cheapest buying price available before today. Selling today gives the best possible profit for that day. Taking the maximum over all days gives the answer.</p><h4>Common mistakes</h4><ul><li>Trying every buy-sell pair (O(n²)).</li><li>Selling before buying.</li><li>Returning negative profit when prices always decrease.</li></ul><h4>Interview Tip</h4><p>This is a classic <strong>Greedy</strong> problem. Whenever you need the best difference while scanning an array once, think of maintaining a running minimum or maximum.</p>",
-  "youtube": "https://youtu.be/1pkOgXD63yU"
-},
+  {
+    "id": "leetcode-two-sum",
+    "category": "leetcode",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "hashmap"
+    ],
+    "question": "Two Sum",
+    "problem": "<p>Given an array of integers <code class=\"inline\">nums</code> and an integer <code class=\"inline\">target</code>, return the <strong>indices</strong> of the two numbers such that they add up to <code class=\"inline\">target</code>.</p><p>You may assume that each input would have <strong>exactly one solution</strong>, and you may not use the <em>same</em> element twice. You can return the answer in any order.</p>",
+    "examples": [
+      {
+        "input": "nums = [2,7,11,15], target = 9",
+        "output": "[0,1]",
+        "explanation": "Because nums[0] + nums[1] == 9, we return [0, 1]."
+      },
+      {
+        "input": "nums = [3,2,4], target = 6",
+        "output": "[1,2]"
+      },
+      {
+        "input": "nums = [3,3], target = 6",
+        "output": "[0,1]"
+      }
+    ],
+    "constraints": [
+      "2 <= nums.length <= 10^4",
+      "-10^9 <= nums[i] <= 10^9",
+      "-10^9 <= target <= 10^9",
+      "Only one valid answer exists."
+    ],
+    "fn": "twoSum",
+    "starter": {
+      "js": "/**\n * @param {number[]} nums\n * @param {number} target\n * @return {number[]}\n */\nfunction twoSum(nums, target) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          [
+            2,
+            7,
+            11,
+            15
+          ],
+          9
+        ],
+        "expected": [
+          0,
+          1
+        ],
+        "compare": "unordered"
+      },
+      {
+        "args": [
+          [
+            3,
+            2,
+            4
+          ],
+          6
+        ],
+        "expected": [
+          1,
+          2
+        ],
+        "compare": "unordered"
+      },
+      {
+        "args": [
+          [
+            3,
+            3
+          ],
+          6
+        ],
+        "expected": [
+          0,
+          1
+        ],
+        "compare": "unordered"
+      },
+      {
+        "args": [
+          [
+            -1,
+            -2,
+            -3,
+            -4,
+            -5
+          ],
+          -8
+        ],
+        "expected": [
+          2,
+          4
+        ],
+        "compare": "unordered"
+      },
+      {
+        "args": [
+          [
+            0,
+            4,
+            3,
+            0
+          ],
+          0
+        ],
+        "expected": [
+          0,
+          3
+        ],
+        "compare": "unordered"
+      }
+    ],
+    "answer": "<p><strong>Optimal approach:</strong> use a hash map to store each number and its index while iterating. For each element, check whether <code class=\"inline\">target - nums[i]</code> has already been seen — if it has, you have the pair.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
+    "tip": "Always think of HashMap whenever you need fast lookups in array problems.",
+    "code": "public int[] twoSum(int[] nums, int target) {\n    Map<Integer, Integer> map = new HashMap<>();\n    for (int i = 0; i < nums.length; i++) {\n        int complement = target - nums[i];\n        if (map.containsKey(complement)) {\n            return new int[]{map.get(complement), i};\n        }\n        map.put(nums[i], i);\n    }\n    return new int[]{};\n}",
+    "lang": "java",
+    "solution": {
+      "js": "function twoSum(nums, target) {\n  const seen = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const complement = target - nums[i];\n    if (seen.has(complement)) return [seen.get(complement), i];\n    seen.set(nums[i], i);\n  }\n  return [];\n}\n"
+    },
+    "deep": "<h4>Problem intuition</h4><p>The goal is to find two numbers whose sum equals the target. The naive solution compares every pair, but that's inefficient. The key observation is that for every number <code class=\"inline\">x</code>, we only need to know whether <code class=\"inline\">target - x</code> has already been seen.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Compare every pair using two loops. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Optimal:</strong> Store visited numbers in a <code class=\"inline\">HashMap</code>. Before inserting the current number, check if its complement already exists.</li></ul><pre><code>nums = [2,7,11,15]\ntarget = 9\n\nMap = {}\n2 → complement = 7 → not found\nStore 2\n\n7 → complement = 2 → found\nAnswer = [0,1]</code></pre><h4>Why HashMap works</h4><p>HashMap provides average <strong>O(1)</strong> lookup time. Instead of searching the remaining array for every element, we instantly know whether the required complement already exists.</p><h4>Common mistakes</h4><ul><li>Adding the current element to the map before checking its complement.</li><li>Returning the values instead of their indices.</li><li>Using nested loops after already creating a HashMap.</li></ul><h4>Interview tip</h4><p>Whenever you hear phrases like <strong>find a pair</strong>, <strong>target sum</strong>, or <strong>fast lookup</strong>, think of using a HashMap.</p>",
+    "youtube": "https://youtu.be/Yyyi12oaK94"
+  },
+  {
+    "id": "leetcode-valid-parentheses",
+    "category": "leetcode",
+    "difficulty": "beginner",
+    "tags": [
+      "stack",
+      "string"
+    ],
+    "question": "Valid Parentheses",
+    "problem": "<p>Given a string <code class=\"inline\">s</code> containing just the characters <code class=\"inline\">'('</code>, <code class=\"inline\">')'</code>, <code class=\"inline\">'{'</code>, <code class=\"inline\">'}'</code>, <code class=\"inline\">'['</code> and <code class=\"inline\">']'</code>, determine if the input string is valid.</p><p>A string is valid if open brackets are closed by the <strong>same type</strong> of bracket, open brackets are closed in the <strong>correct order</strong>, and every closing bracket has a matching opening bracket of the same type.</p>",
+    "examples": [
+      {
+        "input": "s = \"()\"",
+        "output": "true"
+      },
+      {
+        "input": "s = \"()[]{}\"",
+        "output": "true"
+      },
+      {
+        "input": "s = \"(]\"",
+        "output": "false"
+      },
+      {
+        "input": "s = \"([)]\"",
+        "output": "false",
+        "explanation": "The brackets close in the wrong order."
+      }
+    ],
+    "constraints": [
+      "1 <= s.length <= 10^4",
+      "s consists only of the characters '()[]{}'."
+    ],
+    "fn": "isValid",
+    "starter": {
+      "js": "/**\n * @param {string} s\n * @return {boolean}\n */\nfunction isValid(s) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          "()"
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          "()[]{}"
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          "(]"
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          "([)]"
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          "{[]}"
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          "]"
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          "((("
+        ],
+        "expected": false
+      }
+    ],
+    "answer": "<p>Given a string containing only <code class=\"inline\">()</code>, <code class=\"inline\">[]</code>, and <code class=\"inline\">{}</code>, determine if the input string is valid.</p><p><strong>Optimal Approach:</strong> Use a <code class=\"inline\">Stack</code>. Push opening brackets onto the stack. Whenever a closing bracket appears, check if it matches the top of the stack.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
+    "tip": "Whenever the problem asks about matching pairs or nested structures, think of a Stack.",
+    "code": "public boolean isValid(String s) {\n    Stack<Character> stack = new Stack<>();\n    for (char c : s.toCharArray()) {\n        if (c == '(' || c == '{' || c == '[') {\n            stack.push(c);\n        } else {\n            if (stack.isEmpty()) return false;\n            char top = stack.pop();\n            if ((c == ')' && top != '(') ||\n                (c == '}' && top != '{') ||\n                (c == ']' && top != '[')) {\n                return false;\n            }\n        }\n    }\n    return stack.isEmpty();\n}",
+    "lang": "java",
+    "solution": {
+      "js": "function isValid(s) {\n  const pairs = { \")\": \"(\", \"]\": \"[\", \"}\": \"{\" };\n  const stack = [];\n  for (const ch of s) {\n    if (ch === \"(\" || ch === \"[\" || ch === \"{\") stack.push(ch);\n    else if (stack.pop() !== pairs[ch]) return false;\n  }\n  return stack.length === 0;\n}\n"
+    },
+    "deep": "<h4>Problem intuition</h4><p>This problem asks whether every opening bracket has a matching closing bracket in the correct order. Since brackets must close in reverse order of opening, a <strong>Stack</strong> is the perfect data structure.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Repeatedly remove matching pairs like <code class=\"inline\">()</code>, <code class=\"inline\">[]</code>, and <code class=\"inline\">{}</code> until nothing changes. This is inefficient.</li><li><strong>Optimal:</strong> Push every opening bracket onto a stack. Whenever a closing bracket appears, verify it matches the top of the stack.</li></ul><pre><code>Input: \"({[]})\"\n\nStack = []\n( → push\n{ → push\n[ → push\n] → pop [\n} → pop {\n) → pop (\n\nStack empty → Valid</code></pre><h4>Why Stack works</h4><p>A stack follows the <strong>Last In, First Out (LIFO)</strong> principle. The most recently opened bracket must always be closed first, making Stack the ideal choice.</p><h4>Common mistakes</h4><ul><li>Not checking if the stack is empty before popping.</li><li>Forgetting to verify the stack is empty after processing the entire string.</li><li>Trying to count brackets instead of checking their order.</li></ul><h4>Interview tip</h4><p>Whenever the problem involves <strong>nested structures</strong>, <strong>balanced symbols</strong>, or <strong>matching pairs</strong>, your first thought should be a Stack.</p>",
+    "youtube": "https://youtu.be/9kmUaXrjizQ"
+  },
+  {
+    "id": "leetcode-best-time-buy-sell-stock",
+    "category": "leetcode",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "greedy"
+    ],
+    "question": "Best Time to Buy and Sell Stock",
+    "problem": "<p>You are given an array <code class=\"inline\">prices</code> where <code class=\"inline\">prices[i]</code> is the price of a given stock on the <code class=\"inline\">i</code>-th day.</p><p>You want to maximise your profit by choosing a <strong>single day</strong> to buy one stock and choosing a <strong>different day in the future</strong> to sell it. Return the maximum profit you can achieve. If no profit is possible, return <code class=\"inline\">0</code>.</p>",
+    "examples": [
+      {
+        "input": "prices = [7,1,5,3,6,4]",
+        "output": "5",
+        "explanation": "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6 - 1 = 5."
+      },
+      {
+        "input": "prices = [7,6,4,3,1]",
+        "output": "0",
+        "explanation": "No transaction is profitable, so the max profit is 0."
+      }
+    ],
+    "constraints": [
+      "1 <= prices.length <= 10^5",
+      "0 <= prices[i] <= 10^4"
+    ],
+    "fn": "maxProfit",
+    "starter": {
+      "js": "/**\n * @param {number[]} prices\n * @return {number}\n */\nfunction maxProfit(prices) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          [
+            7,
+            1,
+            5,
+            3,
+            6,
+            4
+          ]
+        ],
+        "expected": 5
+      },
+      {
+        "args": [
+          [
+            7,
+            6,
+            4,
+            3,
+            1
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "args": [
+          [
+            1
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "args": [
+          [
+            2,
+            4,
+            1
+          ]
+        ],
+        "expected": 2
+      },
+      {
+        "args": [
+          [
+            3,
+            2,
+            6,
+            5,
+            0,
+            3
+          ]
+        ],
+        "expected": 4
+      }
+    ],
+    "answer": "<p>Given an array <code class=\"inline\">prices</code> where <code class=\"inline\">prices[i]</code> is the stock price on day <code class=\"inline\">i</code>, find the maximum profit by choosing one day to buy and one later day to sell.</p><p><strong>Optimal Approach:</strong> Traverse the array once while maintaining the minimum price seen so far. At each step, calculate the profit if you sold today and update the maximum profit.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul>",
+    "tip": "Track the minimum price so far, not every possible buy day. One pass is enough.",
+    "code": "public int maxProfit(int[] prices) {\n    int minPrice = Integer.MAX_VALUE;\n    int maxProfit = 0;\n\n    for (int price : prices) {\n        if (price < minPrice) {\n            minPrice = price;\n        } else {\n            maxProfit = Math.max(maxProfit, price - minPrice);\n        }\n    }\n\n    return maxProfit;\n}",
+    "lang": "java",
+    "solution": {
+      "js": "function maxProfit(prices) {\n  let min = Infinity;\n  let best = 0;\n  for (const price of prices) {\n    if (price < min) min = price;\n    else if (price - min > best) best = price - min;\n  }\n  return best;\n}\n"
+    },
+    "deep": "<h4>Problem intuition</h4><p>You must buy before selling, and you can complete only one transaction. Instead of checking every buy-sell pair, keep track of the cheapest stock price seen so far.</p><h4>Brute Force</h4><p>Try every pair of buy and sell days using two loops.</p><ul><li>Time Complexity: <strong>O(n²)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul><h4>Optimal Approach</h4><p>Maintain two variables:</p><ul><li><strong>minPrice</strong> → Lowest stock price seen so far.</li><li><strong>maxProfit</strong> → Best profit found so far.</li></ul><pre><code>prices = [7,1,5,3,6,4]\n\nDay 1: min=7 profit=0\nDay 2: min=1 profit=0\nDay 3: profit=5-1=4\nDay 4: profit=3-1=2\nDay 5: profit=6-1=5\nDay 6: profit=4-1=3\n\nMaximum Profit = 5</code></pre><h4>Why it works</h4><p>At every day, we know the cheapest buying price available before today. Selling today gives the best possible profit for that day. Taking the maximum over all days gives the answer.</p><h4>Common mistakes</h4><ul><li>Trying every buy-sell pair (O(n²)).</li><li>Selling before buying.</li><li>Returning negative profit when prices always decrease.</li></ul><h4>Interview Tip</h4><p>This is a classic <strong>Greedy</strong> problem. Whenever you need the best difference while scanning an array once, think of maintaining a running minimum or maximum.</p>",
+    "youtube": "https://youtu.be/1pkOgXD63yU"
+  },
   {
     "id": "leetcode-longest-substring-without-repeating-characters",
     "category": "leetcode",
@@ -58,10 +324,83 @@
       "two-pointers"
     ],
     "question": "Longest Substring Without Repeating Characters",
+    "problem": "<p>Given a string <code class=\"inline\">s</code>, find the length of the <strong>longest substring</strong> without duplicate characters.</p><p>A substring is a contiguous, non-empty sequence of characters within the string.</p>",
+    "examples": [
+      {
+        "input": "s = \"abcabcbb\"",
+        "output": "3",
+        "explanation": "The answer is \"abc\", with length 3."
+      },
+      {
+        "input": "s = \"bbbbb\"",
+        "output": "1",
+        "explanation": "The answer is \"b\", with length 1."
+      },
+      {
+        "input": "s = \"pwwkew\"",
+        "output": "3",
+        "explanation": "The answer is \"wke\". Note \"pwke\" is a subsequence, not a substring."
+      }
+    ],
+    "constraints": [
+      "0 <= s.length <= 5 * 10^4",
+      "s consists of English letters, digits, symbols and spaces."
+    ],
+    "fn": "lengthOfLongestSubstring",
+    "starter": {
+      "js": "/**\n * @param {string} s\n * @return {number}\n */\nfunction lengthOfLongestSubstring(s) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          "abcabcbb"
+        ],
+        "expected": 3
+      },
+      {
+        "args": [
+          "bbbbb"
+        ],
+        "expected": 1
+      },
+      {
+        "args": [
+          "pwwkew"
+        ],
+        "expected": 3
+      },
+      {
+        "args": [
+          ""
+        ],
+        "expected": 0
+      },
+      {
+        "args": [
+          " "
+        ],
+        "expected": 1
+      },
+      {
+        "args": [
+          "dvdf"
+        ],
+        "expected": 3
+      },
+      {
+        "args": [
+          "au"
+        ],
+        "expected": 2
+      }
+    ],
     "answer": "<p>Given a string <code class=\"inline\">s</code>, find the length of the longest substring without repeating characters.</p><p><strong>Optimal Approach:</strong> Use the <code class=\"inline\">Sliding Window</code> technique along with a <code class=\"inline\">HashMap</code> to store the last index of every character. Whenever a duplicate character is found inside the current window, move the left pointer just after its previous occurrence.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(min(n, charset))</strong></li></ul>",
     "tip": "Whenever you hear <strong>longest/shortest substring</strong> with a condition, think <strong>Sliding Window</strong>.",
     "code": "public int lengthOfLongestSubstring(String s) {\n    Map<Character, Integer> map = new HashMap<>();\n    int left = 0;\n    int maxLength = 0;\n\n    for (int right = 0; right < s.length(); right++) {\n        char ch = s.charAt(right);\n\n        if (map.containsKey(ch)) {\n            left = Math.max(left, map.get(ch) + 1);\n        }\n\n        map.put(ch, right);\n        maxLength = Math.max(maxLength, right - left + 1);\n    }\n\n    return maxLength;\n}",
     "lang": "java",
+    "solution": {
+      "js": "function lengthOfLongestSubstring(s) {\n  const lastSeen = new Map();\n  let start = 0;\n  let best = 0;\n  for (let i = 0; i < s.length; i++) {\n    const ch = s[i];\n    if (lastSeen.has(ch) && lastSeen.get(ch) >= start) start = lastSeen.get(ch) + 1;\n    lastSeen.set(ch, i);\n    best = Math.max(best, i - start + 1);\n  }\n  return best;\n}\n"
+    },
     "deep": "<h4>Problem intuition</h4><p>We need the longest contiguous substring where every character is unique. Instead of checking every possible substring, maintain a moving window that always contains unique characters.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Generate every substring and check if it contains duplicates. Time Complexity: <strong>O(n³)</strong>.</li><li><strong>Better:</strong> Check uniqueness using a HashSet for every starting index. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Optimal:</strong> Use a Sliding Window with a HashMap storing each character's latest index.</li></ul><pre><code>s = \"abcabcbb\"\n\nleft = 0\nright = 0 → a → window = \"a\"\nright = 1 → b → window = \"ab\"\nright = 2 → c → window = \"abc\"\nright = 3 → a (duplicate)\nMove left to index after previous 'a'\nwindow = \"bca\"\nContinue...\n\nMaximum Length = 3</code></pre><h4>Why Sliding Window works</h4><p>The window always maintains unique characters. Whenever a duplicate is found, we shrink the window only as much as needed, ensuring every character is processed at most twice.</p><h4>Common mistakes</h4><ul><li>Moving the left pointer backwards instead of using <code class=\"inline\">Math.max()</code>.</li><li>Using a HashSet but removing characters one by one unnecessarily.</li><li>Checking all substrings instead of maintaining a valid window.</li></ul><h4>Interview Tip</h4><p>Whenever the problem mentions <strong>longest substring</strong>, <strong>unique characters</strong>, or <strong>contiguous sequence</strong>, your first thought should be <strong>Sliding Window</strong>.</p>",
     "youtube": "https://youtu.be/wiGpQwVHdE0"
   },
@@ -74,10 +413,95 @@
       "hashset"
     ],
     "question": "Contains Duplicate",
+    "problem": "<p>Given an integer array <code class=\"inline\">nums</code>, return <code class=\"inline\">true</code> if any value appears <strong>at least twice</strong> in the array, and return <code class=\"inline\">false</code> if every element is distinct.</p>",
+    "examples": [
+      {
+        "input": "nums = [1,2,3,1]",
+        "output": "true",
+        "explanation": "The value 1 appears at indices 0 and 3."
+      },
+      {
+        "input": "nums = [1,2,3,4]",
+        "output": "false"
+      },
+      {
+        "input": "nums = [1,1,1,3,3,4,3,2,4,2]",
+        "output": "true"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 10^5",
+      "-10^9 <= nums[i] <= 10^9"
+    ],
+    "fn": "containsDuplicate",
+    "starter": {
+      "js": "/**\n * @param {number[]} nums\n * @return {boolean}\n */\nfunction containsDuplicate(nums) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            1
+          ]
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            4
+          ]
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          [
+            1,
+            1,
+            1,
+            3,
+            3,
+            4,
+            3,
+            2,
+            4,
+            2
+          ]
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          [
+            5
+          ]
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          [
+            -1,
+            -1
+          ]
+        ],
+        "expected": true
+      }
+    ],
     "answer": "<p>Given an integer array <code class=\"inline\">nums</code>, return <code class=\"inline\">true</code> if any value appears at least twice in the array, and return <code class=\"inline\">false</code> if every element is distinct.</p><p><strong>Optimal Approach:</strong> Use a <code class=\"inline\">HashSet</code>. As you iterate through the array, check if the current element already exists in the set. If it does, a duplicate has been found.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
     "tip": "Whenever you need to detect duplicates quickly, think <strong>HashSet</strong>.",
     "code": "public boolean containsDuplicate(int[] nums) {\n    Set<Integer> set = new HashSet<>();\n\n    for (int num : nums) {\n        if (!set.add(num)) {\n            return true;\n        }\n    }\n\n    return false;\n}",
     "lang": "java",
+    "solution": {
+      "js": "function containsDuplicate(nums) {\n  return new Set(nums).size !== nums.length;\n}\n"
+    },
     "deep": "<h4>Problem intuition</h4><p>The task is simply to determine whether any number appears more than once. Instead of comparing every pair, remember the numbers you've already seen.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Compare every pair using nested loops. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Sorting:</strong> Sort the array and check adjacent elements. Time Complexity: <strong>O(n log n)</strong>.</li><li><strong>Optimal:</strong> Store visited elements in a <code class=\"inline\">HashSet</code>. If insertion fails, a duplicate exists.</li></ul><pre><code>nums = [1,2,3,1]\n\nSet = {}\n1 → add\n2 → add\n3 → add\n1 → already exists\n\nAnswer = true</code></pre><h4>Why HashSet works</h4><p>A HashSet provides average <strong>O(1)</strong> insertion and lookup. This allows us to detect duplicates in a single pass through the array.</p><h4>Common mistakes</h4><ul><li>Using nested loops instead of a HashSet.</li><li>Sorting unnecessarily when only duplicate detection is required.</li><li>Using a List instead of a Set, resulting in slower lookups.</li></ul><h4>Interview Tip</h4><p>Whenever you hear phrases like <strong>contains duplicate</strong>, <strong>unique elements</strong>, or <strong>already seen</strong>, think of using a <strong>HashSet</strong>.</p>",
     "youtube": "https://youtu.be/3OamzN90kPg"
   },
@@ -91,10 +515,69 @@
       "array"
     ],
     "question": "Valid Anagram",
+    "problem": "<p>Given two strings <code class=\"inline\">s</code> and <code class=\"inline\">t</code>, return <code class=\"inline\">true</code> if <code class=\"inline\">t</code> is an anagram of <code class=\"inline\">s</code>, and <code class=\"inline\">false</code> otherwise.</p><p>An <strong>anagram</strong> is a word formed by rearranging the letters of another, using all the original letters exactly once.</p>",
+    "examples": [
+      {
+        "input": "s = \"anagram\", t = \"nagaram\"",
+        "output": "true"
+      },
+      {
+        "input": "s = \"rat\", t = \"car\"",
+        "output": "false"
+      }
+    ],
+    "constraints": [
+      "1 <= s.length, t.length <= 5 * 10^4",
+      "s and t consist of lowercase English letters."
+    ],
+    "fn": "isAnagram",
+    "starter": {
+      "js": "/**\n * @param {string} s\n * @param {string} t\n * @return {boolean}\n */\nfunction isAnagram(s, t) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          "anagram",
+          "nagaram"
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          "rat",
+          "car"
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          "a",
+          "a"
+        ],
+        "expected": true
+      },
+      {
+        "args": [
+          "ab",
+          "a"
+        ],
+        "expected": false
+      },
+      {
+        "args": [
+          "aacc",
+          "ccac"
+        ],
+        "expected": false
+      }
+    ],
     "answer": "<p>Given two strings <code class=\"inline\">s</code> and <code class=\"inline\">t</code>, return <code class=\"inline\">true</code> if <code class=\"inline\">t</code> is an anagram of <code class=\"inline\">s</code>, otherwise return <code class=\"inline\">false</code>.</p><p><strong>Optimal Approach:</strong> Since the strings contain only lowercase English letters, use an integer frequency array of size <code class=\"inline\">26</code>. Increment the count for each character in <code class=\"inline\">s</code> and decrement for each character in <code class=\"inline\">t</code>. If all counts become zero, the strings are anagrams.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul>",
     "tip": "Whenever the input contains only lowercase English letters, prefer an <strong>int[26]</strong> over a HashMap.",
     "code": "public boolean isAnagram(String s, String t) {\n    if (s.length() != t.length()) {\n        return false;\n    }\n\n    int[] count = new int[26];\n\n    for (int i = 0; i < s.length(); i++) {\n        count[s.charAt(i) - 'a']++;\n        count[t.charAt(i) - 'a']--;\n    }\n\n    for (int c : count) {\n        if (c != 0) {\n            return false;\n        }\n    }\n\n    return true;\n}",
     "lang": "java",
+    "solution": {
+      "js": "function isAnagram(s, t) {\n  if (s.length !== t.length) return false;\n  const counts = new Map();\n  for (const ch of s) counts.set(ch, (counts.get(ch) || 0) + 1);\n  for (const ch of t) {\n    const n = counts.get(ch);\n    if (!n) return false;\n    counts.set(ch, n - 1);\n  }\n  return true;\n}\n"
+    },
     "deep": "<h4>Problem intuition</h4><p>Two strings are anagrams if they contain exactly the same characters with the same frequencies. Instead of sorting both strings, simply count how many times each letter appears.</p><h4>Approaches</h4><ul><li><strong>Sorting:</strong> Sort both strings and compare. Time Complexity: <strong>O(n log n)</strong>.</li><li><strong>Optimal:</strong> Maintain a frequency array of size 26. Increase counts for one string and decrease for the other.</li></ul><pre><code>s = \"anagram\"\nt = \"nagaram\"\n\nCount['a']++ / Count['a']--\nCount['n']++ / Count['n']--\n...\n\nAll counts become 0\nAnswer = true</code></pre><h4>Why Frequency Array works</h4><p>Each increment is canceled by a matching decrement. If every character appears the same number of times, all values become zero.</p><h4>Common mistakes</h4><ul><li>Using HashMap when only lowercase letters are present.</li><li>Forgetting to compare string lengths first.</li><li>Sorting when an O(n) solution exists.</li></ul><h4>Interview Tip</h4><p>When the character set is fixed (26 lowercase letters), an array is almost always faster than a HashMap.</p>",
     "youtube": "https://youtu.be/9UtInBqnCgA"
   },
@@ -107,10 +590,148 @@
       "two-pointers"
     ],
     "question": "Merge Sorted Array",
+    "problem": "<p>You are given two integer arrays <code class=\"inline\">nums1</code> and <code class=\"inline\">nums2</code>, sorted in <strong>non-decreasing order</strong>, and two integers <code class=\"inline\">m</code> and <code class=\"inline\">n</code> representing the number of real elements in each.</p><p>Merge <code class=\"inline\">nums2</code> into <code class=\"inline\">nums1</code> so that <code class=\"inline\">nums1</code> ends up sorted. <code class=\"inline\">nums1</code> has length <code class=\"inline\">m + n</code>: the first <code class=\"inline\">m</code> slots hold its elements and the trailing <code class=\"inline\">n</code> slots are <code class=\"inline\">0</code> placeholders you should overwrite.</p><p><strong>Merge in place</strong> — modify <code class=\"inline\">nums1</code> directly rather than allocating a second array — and <strong>return <code class=\"inline\">nums1</code></strong> so your answer can be checked.</p>",
+    "examples": [
+      {
+        "input": "nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3",
+        "output": "[1,2,2,3,5,6]",
+        "explanation": "Merging [1,2,3] and [2,5,6] gives [1,2,2,3,5,6]."
+      },
+      {
+        "input": "nums1 = [1], m = 1, nums2 = [], n = 0",
+        "output": "[1]"
+      },
+      {
+        "input": "nums1 = [0], m = 0, nums2 = [1], n = 1",
+        "output": "[1]",
+        "explanation": "nums1 holds no real elements, so the single 0 is a placeholder to overwrite."
+      }
+    ],
+    "constraints": [
+      "nums1.length == m + n",
+      "nums2.length == n",
+      "0 <= m, n <= 200",
+      "1 <= m + n <= 200",
+      "-10^9 <= nums1[i], nums2[j] <= 10^9"
+    ],
+    "fn": "merge",
+    "starter": {
+      "js": "/**\n * @param {number[]} nums1\n * @param {number} m\n * @param {number[]} nums2\n * @param {number} n\n * @return {number[]} the merged nums1\n */\nfunction merge(nums1, m, nums2, n) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            0,
+            0,
+            0
+          ],
+          3,
+          [
+            2,
+            5,
+            6
+          ],
+          3
+        ],
+        "expected": [
+          1,
+          2,
+          2,
+          3,
+          5,
+          6
+        ]
+      },
+      {
+        "args": [
+          [
+            1
+          ],
+          1,
+          [],
+          0
+        ],
+        "expected": [
+          1
+        ]
+      },
+      {
+        "args": [
+          [
+            0
+          ],
+          0,
+          [
+            1
+          ],
+          1
+        ],
+        "expected": [
+          1
+        ]
+      },
+      {
+        "args": [
+          [
+            4,
+            5,
+            6,
+            0,
+            0,
+            0
+          ],
+          3,
+          [
+            1,
+            2,
+            3
+          ],
+          3
+        ],
+        "expected": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      {
+        "args": [
+          [
+            -1,
+            0,
+            0,
+            0
+          ],
+          1,
+          [
+            -3,
+            -2,
+            2
+          ],
+          3
+        ],
+        "expected": [
+          -3,
+          -2,
+          -1,
+          2
+        ]
+      }
+    ],
     "answer": "<p>You are given two sorted integer arrays <code class=\"inline\">nums1</code> and <code class=\"inline\">nums2</code>. Merge <code class=\"inline\">nums2</code> into <code class=\"inline\">nums1</code> as one sorted array.</p><p><strong>Optimal Approach:</strong> Use three pointers starting from the end of both arrays. Compare the largest remaining elements and place the larger one at the end of <code class=\"inline\">nums1</code>.</p><ul><li>Time Complexity: <strong>O(m+n)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul>",
     "tip": "Whenever you merge into an existing array, fill it from the end to avoid overwriting values.",
     "code": "public void merge(int[] nums1, int m, int[] nums2, int n) {\n    int i = m - 1;\n    int j = n - 1;\n    int k = m + n - 1;\n\n    while (j >= 0) {\n        if (i >= 0 && nums1[i] > nums2[j]) {\n            nums1[k--] = nums1[i--];\n        } else {\n            nums1[k--] = nums2[j--];\n        }\n    }\n}",
     "lang": "java",
+    "solution": {
+      "js": "function merge(nums1, m, nums2, n) {\n  let i = m - 1;\n  let j = n - 1;\n  let k = m + n - 1;\n  // fill from the back, so nothing unread is ever overwritten\n  while (j >= 0) {\n    nums1[k--] = (i >= 0 && nums1[i] > nums2[j]) ? nums1[i--] : nums2[j--];\n  }\n  return nums1;\n}\n"
+    },
     "deep": "<h4>Problem intuition</h4><p>Since both arrays are already sorted, the largest element must always be at the end of one of the arrays. Filling from the end prevents overwriting valid values inside <code class=\"inline\">nums1</code>.</p><h4>Approaches</h4><ul><li><strong>Extra Array:</strong> Merge into a new array and copy back.</li><li><strong>Optimal:</strong> Use three pointers from the end.</li></ul><pre><code>nums1 = [1,2,3,0,0,0]\nnums2 = [2,5,6]\n\nCompare 3 and 6 → place 6\nCompare 3 and 5 → place 5\nCompare 3 and 2 → place 3\n...\n\nResult = [1,2,2,3,5,6]</code></pre><h4>Why it works</h4><p>The unused space is already at the end of <code class=\"inline\">nums1</code>, making backward traversal ideal.</p><h4>Common mistakes</h4><ul><li>Merging from the front and overwriting values.</li><li>Forgetting to copy remaining elements from <code class=\"inline\">nums2</code>.</li><li>Using unnecessary extra arrays.</li></ul><h4>Interview Tip</h4><p>Whenever merging into an existing array with extra space, think <strong>backward two pointers</strong>.</p>",
     "youtube": "https://youtu.be/P1Ic85RarKY"
   },
@@ -123,14 +744,112 @@
       "two-pointers"
     ],
     "question": "Squares of a Sorted Array",
+    "problem": "<p>Given an integer array <code class=\"inline\">nums</code> sorted in <strong>non-decreasing order</strong>, return an array of the squares of each number, also sorted in non-decreasing order.</p><p>Sorting afterwards is <code class=\"inline\">O(n log n)</code> — try to solve it in <code class=\"inline\">O(n)</code>.</p>",
+    "examples": [
+      {
+        "input": "nums = [-4,-1,0,3,10]",
+        "output": "[0,1,9,16,100]",
+        "explanation": "Squaring gives [16,1,0,9,100]; sorted it becomes [0,1,9,16,100]."
+      },
+      {
+        "input": "nums = [-7,-3,2,3,11]",
+        "output": "[4,9,9,49,121]"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 10^4",
+      "-10^4 <= nums[i] <= 10^4",
+      "nums is sorted in non-decreasing order."
+    ],
+    "fn": "sortedSquares",
+    "starter": {
+      "js": "/**\n * @param {number[]} nums\n * @return {number[]}\n */\nfunction sortedSquares(nums) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          [
+            -4,
+            -1,
+            0,
+            3,
+            10
+          ]
+        ],
+        "expected": [
+          0,
+          1,
+          9,
+          16,
+          100
+        ]
+      },
+      {
+        "args": [
+          [
+            -7,
+            -3,
+            2,
+            3,
+            11
+          ]
+        ],
+        "expected": [
+          4,
+          9,
+          9,
+          49,
+          121
+        ]
+      },
+      {
+        "args": [
+          [
+            -5
+          ]
+        ],
+        "expected": [
+          25
+        ]
+      },
+      {
+        "args": [
+          [
+            0,
+            2
+          ]
+        ],
+        "expected": [
+          0,
+          4
+        ]
+      },
+      {
+        "args": [
+          [
+            -3,
+            -2,
+            -1
+          ]
+        ],
+        "expected": [
+          1,
+          4,
+          9
+        ]
+      }
+    ],
     "answer": "<p>Given a sorted integer array <code class=\"inline\">nums</code>, return an array of the squares of each number sorted in non-decreasing order.</p><p><strong>Optimal Approach:</strong> Use two pointers at the beginning and end of the array. Compare the absolute values and place the larger square at the end of the result array.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
     "tip": "Whenever negative and positive numbers are sorted, compare their absolute values using two pointers.",
     "code": "public int[] sortedSquares(int[] nums) {\n    int n = nums.length;\n    int[] result = new int[n];\n\n    int left = 0;\n    int right = n - 1;\n\n    for (int i = n - 1; i >= 0; i--) {\n        if (Math.abs(nums[left]) > Math.abs(nums[right])) {\n            result[i] = nums[left] * nums[left];\n            left++;\n        } else {\n            result[i] = nums[right] * nums[right];\n            right--;\n        }\n    }\n\n    return result;\n}",
     "lang": "java",
+    "solution": {
+      "js": "function sortedSquares(nums) {\n  const out = new Array(nums.length);\n  let left = 0;\n  let right = nums.length - 1;\n  // the largest square is always at one end, so fill the result backwards\n  for (let k = nums.length - 1; k >= 0; k--) {\n    const l = nums[left] * nums[left];\n    const r = nums[right] * nums[right];\n    if (l > r) { out[k] = l; left++; } else { out[k] = r; right--; }\n  }\n  return out;\n}\n"
+    },
     "deep": "<h4>Problem intuition</h4><p>Although the input array is sorted, squaring negative numbers changes their order. The largest square always comes from either the leftmost negative number or the rightmost positive number.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Square every element and sort again. Time Complexity: <strong>O(n log n)</strong>.</li><li><strong>Optimal:</strong> Compare absolute values using two pointers.</li></ul><pre><code>nums = [-4,-1,0,3,10]\n\nCompare |-4| and |10| → 100\nCompare |-4| and |3| → 16\nCompare |-1| and |3| → 9\n...\n\nResult = [0,1,9,16,100]</code></pre><h4>Why Two Pointers work</h4><p>The maximum square always comes from one of the two ends of the sorted array. Fill the result array from right to left.</p><h4>Common mistakes</h4><ul><li>Squaring first and assuming the array remains sorted.</li><li>Sorting after squaring instead of using two pointers.</li><li>Comparing actual values instead of absolute values.</li></ul><h4>Interview Tip</h4><p>Whenever the input is sorted but a transformation changes the order, think about using <strong>two pointers</strong> instead of sorting again.</p>",
     "youtube": "https://youtu.be/FPCZsG_AkUg"
   },
-    {
+  {
     "id": "leetcode-longest-repeating-character-replacement",
     "category": "leetcode",
     "difficulty": "intermediate",
@@ -140,10 +859,72 @@
       "hashmap"
     ],
     "question": "Longest Repeating Character Replacement",
+    "problem": "<p>You are given a string <code class=\"inline\">s</code> and an integer <code class=\"inline\">k</code>. You may choose any character of the string and change it to any other uppercase English letter — you can perform this operation <strong>at most <code class=\"inline\">k</code> times</strong>.</p><p>Return the length of the longest substring containing the <strong>same letter</strong> you can get after performing those operations.</p>",
+    "examples": [
+      {
+        "input": "s = \"ABAB\", k = 2",
+        "output": "4",
+        "explanation": "Replace the two \"A\"s with two \"B\"s, or vice versa."
+      },
+      {
+        "input": "s = \"AABABBA\", k = 1",
+        "output": "4",
+        "explanation": "Replace the one \"A\" in the middle to get \"AABBBBA\"; the substring \"BBBB\" has length 4."
+      }
+    ],
+    "constraints": [
+      "1 <= s.length <= 10^5",
+      "s consists of only uppercase English letters.",
+      "0 <= k <= s.length"
+    ],
+    "fn": "characterReplacement",
+    "starter": {
+      "js": "/**\n * @param {string} s\n * @param {number} k\n * @return {number}\n */\nfunction characterReplacement(s, k) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          "ABAB",
+          2
+        ],
+        "expected": 4
+      },
+      {
+        "args": [
+          "AABABBA",
+          1
+        ],
+        "expected": 4
+      },
+      {
+        "args": [
+          "A",
+          0
+        ],
+        "expected": 1
+      },
+      {
+        "args": [
+          "AAAA",
+          2
+        ],
+        "expected": 4
+      },
+      {
+        "args": [
+          "ABCDE",
+          1
+        ],
+        "expected": 2
+      }
+    ],
     "answer": "<p>Given a string <code class=\"inline\">s</code> and an integer <code class=\"inline\">k</code>, you can replace at most <code class=\"inline\">k</code> characters. Return the length of the longest substring containing the same letter after performing at most <code class=\"inline\">k</code> replacements.</p><p><strong>Optimal Approach:</strong> Use a <code class=\"inline\">Sliding Window</code>. Maintain the frequency of characters inside the window and keep track of the highest frequency character. If the number of characters that need replacement exceeds <code class=\"inline\">k</code>, shrink the window from the left.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(1)</strong> (26 uppercase letters)</li></ul>",
     "tip": "Whenever you hear <strong>longest substring with at most K changes</strong>, think <strong>Sliding Window</strong>.",
     "code": "public int characterReplacement(String s, int k) {\n    int[] freq = new int[26];\n    int left = 0;\n    int maxFreq = 0;\n    int maxLength = 0;\n\n    for (int right = 0; right < s.length(); right++) {\n        maxFreq = Math.max(maxFreq, ++freq[s.charAt(right) - 'A']);\n\n        while ((right - left + 1) - maxFreq > k) {\n            freq[s.charAt(left) - 'A']--;\n            left++;\n        }\n\n        maxLength = Math.max(maxLength, right - left + 1);\n    }\n\n    return maxLength;\n}",
     "lang": "java",
+    "solution": {
+      "js": "function characterReplacement(s, k) {\n  const counts = new Array(26).fill(0);\n  let left = 0;\n  let maxCount = 0;\n  let best = 0;\n  for (let right = 0; right < s.length; right++) {\n    const idx = s.charCodeAt(right) - 65;\n    counts[idx]++;\n    maxCount = Math.max(maxCount, counts[idx]);\n    // more than k characters would need replacing — shrink from the left\n    while (right - left + 1 - maxCount > k) {\n      counts[s.charCodeAt(left) - 65]--;\n      left++;\n    }\n    best = Math.max(best, right - left + 1);\n  }\n  return best;\n}\n"
+    },
     "deep": "<h4>Problem intuition</h4><p>Inside every window, we want to make all characters the same. The best choice is to keep the character that already appears the most and replace all the others.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Check every substring and count character frequencies. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Optimal:</strong> Use Sliding Window with a frequency array.</li></ul><pre><code>s = \"AABABBA\", k = 1\n\nWindow = \"AABA\"\nMost frequent = A (3)\nWindow size = 4\nNeed replacements = 4 - 3 = 1\nValid window\n\nExpand...\nIf replacements > k,\nmove left pointer.</code></pre><h4>Why Sliding Window works</h4><p>The minimum replacements required for a window is <code class=\"inline\">windowSize - maxFrequency</code>. If this exceeds <code class=\"inline\">k</code>, the window becomes invalid and must shrink.</p><h4>Common mistakes</h4><ul><li>Recomputing the maximum frequency every time.</li><li>Using a HashMap when only uppercase English letters are present.</li><li>Shrinking the window too early.</li></ul><h4>Interview Tip</h4><p>Whenever you see <strong>longest substring</strong> with a constraint like <strong>at most K replacements</strong>, Sliding Window is usually the optimal solution.</p>",
     "youtube": "https://youtu.be/gqXU1UyA8pk"
   },
@@ -156,10 +937,99 @@
       "sliding-window"
     ],
     "question": "Maximum Average Subarray I",
+    "problem": "<p>You are given an integer array <code class=\"inline\">nums</code> consisting of <code class=\"inline\">n</code> elements, and an integer <code class=\"inline\">k</code>.</p><p>Find a <strong>contiguous subarray</strong> whose length is exactly <code class=\"inline\">k</code> that has the maximum average value, and return that value. Any answer within <code class=\"inline\">10^-5</code> of the true answer is accepted.</p>",
+    "examples": [
+      {
+        "input": "nums = [1,12,-5,-6,50,3], k = 4",
+        "output": "12.75000",
+        "explanation": "The maximum average is (12 - 5 - 6 + 50) / 4 = 51 / 4 = 12.75."
+      },
+      {
+        "input": "nums = [5], k = 1",
+        "output": "5.00000"
+      }
+    ],
+    "constraints": [
+      "n == nums.length",
+      "1 <= k <= n <= 10^5",
+      "-10^4 <= nums[i] <= 10^4"
+    ],
+    "fn": "findMaxAverage",
+    "starter": {
+      "js": "/**\n * @param {number[]} nums\n * @param {number} k\n * @return {number}\n */\nfunction findMaxAverage(nums, k) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          [
+            1,
+            12,
+            -5,
+            -6,
+            50,
+            3
+          ],
+          4
+        ],
+        "expected": 12.75,
+        "compare": "float"
+      },
+      {
+        "args": [
+          [
+            5
+          ],
+          1
+        ],
+        "expected": 5,
+        "compare": "float"
+      },
+      {
+        "args": [
+          [
+            0,
+            1,
+            1,
+            3,
+            3
+          ],
+          4
+        ],
+        "expected": 2,
+        "compare": "float"
+      },
+      {
+        "args": [
+          [
+            -1
+          ],
+          1
+        ],
+        "expected": -1,
+        "compare": "float"
+      },
+      {
+        "args": [
+          [
+            4,
+            0,
+            4,
+            3,
+            3
+          ],
+          5
+        ],
+        "expected": 2.8,
+        "compare": "float"
+      }
+    ],
     "answer": "<p>Given an integer array <code class=\"inline\">nums</code> consisting of <code class=\"inline\">n</code> elements and an integer <code class=\"inline\">k</code>, find the contiguous subarray of length <code class=\"inline\">k</code> that has the maximum average value and return that value.</p><p><strong>Optimal Approach:</strong> Compute the sum of the first window of size <code class=\"inline\">k</code>. Then slide the window by removing the leftmost element and adding the next element. Track the maximum window sum.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(1)</strong></li></ul>",
     "tip": "Whenever you need a fixed-size contiguous subarray, think <strong>Sliding Window</strong>.",
     "code": "public double findMaxAverage(int[] nums, int k) {\n    int sum = 0;\n\n    for (int i = 0; i < k; i++) {\n        sum += nums[i];\n    }\n\n    int maxSum = sum;\n\n    for (int i = k; i < nums.length; i++) {\n        sum = sum - nums[i - k] + nums[i];\n        maxSum = Math.max(maxSum, sum);\n    }\n\n    return (double) maxSum / k;\n}",
     "lang": "java",
+    "solution": {
+      "js": "function findMaxAverage(nums, k) {\n  let sum = 0;\n  for (let i = 0; i < k; i++) sum += nums[i];\n  let best = sum;\n  // slide the window: add the entering element, drop the leaving one\n  for (let i = k; i < nums.length; i++) {\n    sum += nums[i] - nums[i - k];\n    if (sum > best) best = sum;\n  }\n  return best / k;\n}\n"
+    },
     "deep": "<h4>Problem intuition</h4><p>Instead of recalculating the sum of every subarray of size <code class=\"inline\">k</code>, reuse the previous window's sum. Remove the outgoing element and add the incoming element.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Compute every subarray sum separately. Time Complexity: <strong>O(n × k)</strong>.</li><li><strong>Optimal:</strong> Maintain a running window sum.</li></ul><pre><code>nums = [1,12,-5,-6,50,3], k = 4\n\nWindow1 = 1+12-5-6 = 2\nWindow2 = 2-1+50 = 51\nWindow3 = 51-12+3 = 42\n\nMaximum Sum = 51\nAverage = 51 / 4</code></pre><h4>Why Sliding Window works</h4><p>Each new window differs from the previous one by only one outgoing and one incoming element. Therefore, each update takes constant time.</p><h4>Common mistakes</h4><ul><li>Recalculating the entire window sum every iteration.</li><li>Forgetting to compute the first window separately.</li><li>Performing integer division instead of returning a double.</li></ul><h4>Interview Tip</h4><p>Whenever the problem asks for a <strong>fixed-size contiguous subarray</strong>, Sliding Window should be your first choice.</p>",
     "youtube": "https://youtu.be/6jY2vD7rNfM"
   },
@@ -174,10 +1044,115 @@
       "hashmap"
     ],
     "question": "Next Greater Element I",
+    "problem": "<p>The <strong>next greater element</strong> of some element <code class=\"inline\">x</code> in an array is the <strong>first</strong> greater element that is <strong>to the right</strong> of <code class=\"inline\">x</code> in the same array.</p><p>You are given two <strong>distinct 0-indexed</strong> integer arrays <code class=\"inline\">nums1</code> and <code class=\"inline\">nums2</code>, where <code class=\"inline\">nums1</code> is a subset of <code class=\"inline\">nums2</code>. For each <code class=\"inline\">nums1[i]</code>, find the index <code class=\"inline\">j</code> where <code class=\"inline\">nums1[i] == nums2[j]</code> and determine the next greater element of <code class=\"inline\">nums2[j]</code>. If there is none, the answer for that query is <code class=\"inline\">-1</code>.</p><p>Return an array of the same length as <code class=\"inline\">nums1</code> holding those answers.</p>",
+    "examples": [
+      {
+        "input": "nums1 = [4,1,2], nums2 = [1,3,4,2]",
+        "output": "[-1,3,-1]",
+        "explanation": "4 has no greater element to its right. 1 is followed by 3. 2 has nothing greater after it."
+      },
+      {
+        "input": "nums1 = [2,4], nums2 = [1,2,3,4]",
+        "output": "[3,-1]"
+      }
+    ],
+    "constraints": [
+      "1 <= nums1.length <= nums2.length <= 1000",
+      "0 <= nums1[i], nums2[i] <= 10^4",
+      "All integers in nums1 and nums2 are unique.",
+      "All the integers of nums1 also appear in nums2."
+    ],
+    "fn": "nextGreaterElement",
+    "starter": {
+      "js": "/**\n * @param {number[]} nums1\n * @param {number[]} nums2\n * @return {number[]}\n */\nfunction nextGreaterElement(nums1, nums2) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          [
+            4,
+            1,
+            2
+          ],
+          [
+            1,
+            3,
+            4,
+            2
+          ]
+        ],
+        "expected": [
+          -1,
+          3,
+          -1
+        ]
+      },
+      {
+        "args": [
+          [
+            2,
+            4
+          ],
+          [
+            1,
+            2,
+            3,
+            4
+          ]
+        ],
+        "expected": [
+          3,
+          -1
+        ]
+      },
+      {
+        "args": [
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        "expected": [
+          -1
+        ]
+      },
+      {
+        "args": [
+          [
+            1,
+            3,
+            5,
+            2,
+            4
+          ],
+          [
+            6,
+            5,
+            4,
+            3,
+            2,
+            1,
+            7
+          ]
+        ],
+        "expected": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ]
+      }
+    ],
     "answer": "<p>You are given two arrays <code class=\"inline\">nums1</code> and <code class=\"inline\">nums2</code>, where <code class=\"inline\">nums1</code> is a subset of <code class=\"inline\">nums2</code>. For each element in <code class=\"inline\">nums1</code>, find the first greater element to its right in <code class=\"inline\">nums2</code>. If none exists, return <code class=\"inline\">-1</code>.</p><p><strong>Optimal Approach:</strong> Traverse <code class=\"inline\">nums2</code> using a <code class=\"inline\">Monotonic Decreasing Stack</code>. Whenever the current number is greater than the stack's top, it becomes the next greater element for all smaller numbers popped from the stack. Store these mappings in a <code class=\"inline\">HashMap</code>.</p><ul><li>Time Complexity: <strong>O(n + m)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
     "tip": "Whenever you hear <strong>Next Greater</strong> or <strong>Next Smaller</strong>, think <strong>Monotonic Stack</strong>.",
     "code": "public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n    Stack<Integer> stack = new Stack<>();\n    Map<Integer, Integer> map = new HashMap<>();\n\n    for (int num : nums2) {\n        while (!stack.isEmpty() && num > stack.peek()) {\n            map.put(stack.pop(), num);\n        }\n        stack.push(num);\n    }\n\n    while (!stack.isEmpty()) {\n        map.put(stack.pop(), -1);\n    }\n\n    int[] result = new int[nums1.length];\n    for (int i = 0; i < nums1.length; i++) {\n        result[i] = map.get(nums1[i]);\n    }\n\n    return result;\n}",
     "lang": "java",
+    "solution": {
+      "js": "function nextGreaterElement(nums1, nums2) {\n  const nextGreater = new Map();\n  const stack = [];\n  // a monotonic decreasing stack: anything it pops has just found its answer\n  for (const n of nums2) {\n    while (stack.length && stack[stack.length - 1] < n) nextGreater.set(stack.pop(), n);\n    stack.push(n);\n  }\n  return nums1.map((n) => (nextGreater.has(n) ? nextGreater.get(n) : -1));\n}\n"
+    },
     "deep": "<h4>Problem intuition</h4><p>Instead of searching to the right for every element, process the array once while maintaining a decreasing stack. As soon as a larger value appears, it becomes the next greater element for every smaller value waiting in the stack.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> For every element, search to its right. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Optimal:</strong> Monotonic Decreasing Stack with a HashMap.</li></ul><pre><code>nums2 = [1,3,4,2]\n\nStack = []\n1 → push\n3 → pop 1 → map[1]=3\n4 → pop 3 → map[3]=4\n2 → push\nRemaining → -1</code></pre><h4>Why Monotonic Stack works</h4><p>The stack stores elements waiting for their next greater value. Each element is pushed and popped at most once, making the solution linear.</p><h4>Common mistakes</h4><ul><li>Using nested loops.</li><li>Forgetting to assign -1 to remaining stack elements.</li><li>Building the map from <code class=\"inline\">nums1</code> instead of <code class=\"inline\">nums2</code>.</li></ul><h4>Interview Tip</h4><p>Whenever the question contains <strong>next greater</strong>, <strong>next smaller</strong>, or <strong>nearest greater</strong>, Monotonic Stack is usually the optimal approach.</p>",
     "youtube": "https://youtu.be/Du881K7Jtk8"
   },
@@ -192,10 +1167,109 @@
       "circular-array"
     ],
     "question": "Next Greater Element II",
+    "problem": "<p>Given a <strong>circular</strong> integer array <code class=\"inline\">nums</code> (the element after <code class=\"inline\">nums[nums.length - 1]</code> is <code class=\"inline\">nums[0]</code>), return the <strong>next greater number</strong> for every element.</p><p>The next greater number of <code class=\"inline\">nums[i]</code> is the first greater number found by searching to its right, wrapping around the end of the array. If it does not exist, the answer is <code class=\"inline\">-1</code>.</p>",
+    "examples": [
+      {
+        "input": "nums = [1,2,1]",
+        "output": "[2,-1,2]",
+        "explanation": "The last 1's next greater number wraps around to the first 2."
+      },
+      {
+        "input": "nums = [1,2,3,4,3]",
+        "output": "[2,3,4,-1,4]"
+      }
+    ],
+    "constraints": [
+      "1 <= nums.length <= 10^4",
+      "-10^9 <= nums[i] <= 10^9"
+    ],
+    "fn": "nextGreaterElements",
+    "starter": {
+      "js": "/**\n * @param {number[]} nums\n * @return {number[]}\n */\nfunction nextGreaterElements(nums) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          [
+            1,
+            2,
+            1
+          ]
+        ],
+        "expected": [
+          2,
+          -1,
+          2
+        ]
+      },
+      {
+        "args": [
+          [
+            1,
+            2,
+            3,
+            4,
+            3
+          ]
+        ],
+        "expected": [
+          2,
+          3,
+          4,
+          -1,
+          4
+        ]
+      },
+      {
+        "args": [
+          [
+            5,
+            4,
+            3,
+            2,
+            1
+          ]
+        ],
+        "expected": [
+          -1,
+          5,
+          5,
+          5,
+          5
+        ]
+      },
+      {
+        "args": [
+          [
+            1
+          ]
+        ],
+        "expected": [
+          -1
+        ]
+      },
+      {
+        "args": [
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "expected": [
+          -1,
+          -1,
+          -1
+        ]
+      }
+    ],
     "answer": "<p>Given a circular integer array <code class=\"inline\">nums</code>, return the next greater number for every element. If no greater element exists, return <code class=\"inline\">-1</code>.</p><p><strong>Optimal Approach:</strong> Since the array is circular, iterate through it twice using modulo (<code class=\"inline\">i % n</code>). Maintain a <code class=\"inline\">Monotonic Decreasing Stack</code> of indices. Whenever a greater value is found, update the answer for indices popped from the stack.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
     "tip": "For circular arrays, think of traversing the array twice using modulo indexing.",
     "code": "public int[] nextGreaterElements(int[] nums) {\n    int n = nums.length;\n    int[] result = new int[n];\n    Arrays.fill(result, -1);\n\n    Stack<Integer> stack = new Stack<>();\n\n    for (int i = 0; i < 2 * n; i++) {\n        int index = i % n;\n\n        while (!stack.isEmpty() && nums[index] > nums[stack.peek()]) {\n            result[stack.pop()] = nums[index];\n        }\n\n        if (i < n) {\n            stack.push(index);\n        }\n    }\n\n    return result;\n}",
     "lang": "java",
+    "solution": {
+      "js": "function nextGreaterElements(nums) {\n  const n = nums.length;\n  const out = new Array(n).fill(-1);\n  const stack = []; // indices, not values\n  // two passes over the array simulate the wrap-around\n  for (let i = 0; i < 2 * n; i++) {\n    const val = nums[i % n];\n    while (stack.length && nums[stack[stack.length - 1]] < val) out[stack.pop()] = val;\n    if (i < n) stack.push(i);\n  }\n  return out;\n}\n"
+    },
     "deep": "<h4>Problem intuition</h4><p>The only difference from Next Greater Element I is that the array wraps around. We simulate the circular behavior by traversing the array twice.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Search circularly for every element. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Optimal:</strong> Traverse twice using modulo with a Monotonic Stack.</li></ul><pre><code>nums = [1,2,1]\n\nFirst pass:\n1 → push\n2 → pop 1\n1 → push\n\nSecond pass:\n2 becomes next greater for last 1\n\nAnswer = [2,-1,2]</code></pre><h4>Why it works</h4><p>Traversing twice ensures every element can look beyond the end of the array while still maintaining linear complexity.</p><h4>Common mistakes</h4><ul><li>Pushing indices during the second pass.</li><li>Traversing only once.</li><li>Not initializing the result array with -1.</li></ul><h4>Interview Tip</h4><p>Whenever you see a <strong>circular array</strong>, consider doubling the traversal using modulo arithmetic.</p>",
     "youtube": "https://youtu.be/If--3pm9K3U"
   },
@@ -209,10 +1283,116 @@
       "monotonic-stack"
     ],
     "question": "Daily Temperatures",
+    "problem": "<p>Given an array of integers <code class=\"inline\">temperatures</code> representing the daily temperatures, return an array <code class=\"inline\">answer</code> such that <code class=\"inline\">answer[i]</code> is the <strong>number of days</strong> you have to wait after day <code class=\"inline\">i</code> to get a warmer temperature.</p><p>If there is no future day for which this is possible, set <code class=\"inline\">answer[i] = 0</code>.</p>",
+    "examples": [
+      {
+        "input": "temperatures = [73,74,75,71,69,72,76,73]",
+        "output": "[1,1,4,2,1,1,0,0]"
+      },
+      {
+        "input": "temperatures = [30,40,50,60]",
+        "output": "[1,1,1,0]"
+      },
+      {
+        "input": "temperatures = [30,60,90]",
+        "output": "[1,1,0]"
+      }
+    ],
+    "constraints": [
+      "1 <= temperatures.length <= 10^5",
+      "30 <= temperatures[i] <= 100"
+    ],
+    "fn": "dailyTemperatures",
+    "starter": {
+      "js": "/**\n * @param {number[]} temperatures\n * @return {number[]}\n */\nfunction dailyTemperatures(temperatures) {\n  \n}\n"
+    },
+    "tests": [
+      {
+        "args": [
+          [
+            73,
+            74,
+            75,
+            71,
+            69,
+            72,
+            76,
+            73
+          ]
+        ],
+        "expected": [
+          1,
+          1,
+          4,
+          2,
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      {
+        "args": [
+          [
+            30,
+            40,
+            50,
+            60
+          ]
+        ],
+        "expected": [
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      {
+        "args": [
+          [
+            30,
+            60,
+            90
+          ]
+        ],
+        "expected": [
+          1,
+          1,
+          0
+        ]
+      },
+      {
+        "args": [
+          [
+            50
+          ]
+        ],
+        "expected": [
+          0
+        ]
+      },
+      {
+        "args": [
+          [
+            90,
+            80,
+            70
+          ]
+        ],
+        "expected": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
     "answer": "<p>Given an array <code class=\"inline\">temperatures</code>, return an array where each element represents the number of days you have to wait until a warmer temperature. If there is no future warmer day, return <code class=\"inline\">0</code>.</p><p><strong>Optimal Approach:</strong> Use a <code class=\"inline\">Monotonic Decreasing Stack</code> that stores indices. Whenever a warmer temperature is found, pop indices from the stack and calculate the distance between the current day and the popped day.</p><ul><li>Time Complexity: <strong>O(n)</strong></li><li>Space Complexity: <strong>O(n)</strong></li></ul>",
     "tip": "Whenever you need the next greater value along with its distance or index, think <strong>Monotonic Stack of Indices</strong>.",
     "code": "public int[] dailyTemperatures(int[] temperatures) {\n    int n = temperatures.length;\n    int[] answer = new int[n];\n    Stack<Integer> stack = new Stack<>();\n\n    for (int i = 0; i < n; i++) {\n        while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n            int index = stack.pop();\n            answer[index] = i - index;\n        }\n        stack.push(i);\n    }\n\n    return answer;\n}",
     "lang": "java",
+    "solution": {
+      "js": "function dailyTemperatures(temperatures) {\n  const out = new Array(temperatures.length).fill(0);\n  const stack = []; // indices of days still waiting for a warmer one\n  for (let i = 0; i < temperatures.length; i++) {\n    while (stack.length && temperatures[stack[stack.length - 1]] < temperatures[i]) {\n      const j = stack.pop();\n      out[j] = i - j;\n    }\n    stack.push(i);\n  }\n  return out;\n}\n"
+    },
     "deep": "<h4>Problem intuition</h4><p>Each day waits for the next warmer day. Instead of checking every future day, keep unresolved days in a decreasing stack. Once a warmer temperature appears, resolve all waiting days.</p><h4>Approaches</h4><ul><li><strong>Brute Force:</strong> Search forward from every day. Time Complexity: <strong>O(n²)</strong>.</li><li><strong>Optimal:</strong> Monotonic Decreasing Stack storing indices.</li></ul><pre><code>temps = [73,74,75,71,69,72,76,73]\n\n73 → push\n74 → pop 73 (1 day)\n75 → pop 74 (1 day)\n71 → push\n69 → push\n72 → pop 69 (1)\n72 → pop 71 (2)\n76 → pop 72\n76 → pop 75\n...</code></pre><h4>Why Monotonic Stack works</h4><p>The stack keeps unresolved indices in decreasing order of temperature. Each index is pushed and popped once, resulting in linear complexity.</p><h4>Common mistakes</h4><ul><li>Storing temperatures instead of indices.</li><li>Using nested loops.</li><li>Returning -1 instead of 0 for days without a warmer temperature.</li></ul><h4>Interview Tip</h4><p>If the problem asks for the <strong>distance to the next greater element</strong>, store <strong>indices</strong> in a Monotonic Stack instead of values.</p>",
     "youtube": "https://youtu.be/cTBiBSnjO3c"
   }
