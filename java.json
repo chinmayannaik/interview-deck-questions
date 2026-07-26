@@ -802,7 +802,7 @@
     "difficulty": "intermediate",
     "tags": [
       "math",
-      "overflow",
+      "overflow"
     ],
     "question": "What happens on integer overflow in Java?",
     "answer": "<p>It <strong>wraps around silently</strong> — no exception. <code class=\"inline\">Integer.MAX_VALUE + 1</code> becomes <code class=\"inline\">Integer.MIN_VALUE</code>.</p><p>Use <code class=\"inline\">Math.addExact()</code> / <code class=\"inline\">multiplyExact()</code> to throw <code class=\"inline\">ArithmeticException</code> instead, or use <code class=\"inline\">long</code>.</p>",
@@ -965,7 +965,7 @@
     "difficulty": "intermediate",
     "tags": [
       "arrays",
-      "list",
+      "list"
     ],
     "question": "What are the pitfalls of Arrays.asList()?",
     "answer": "<p>It returns a <strong>fixed-size view backed by the array</strong> — not an independent ArrayList. <code class=\"inline\">add()</code>/<code class=\"inline\">remove()</code> throw <code class=\"inline\">UnsupportedOperationException</code>, and <code class=\"inline\">set()</code> writes through to the array.</p><p>With primitives, <code class=\"inline\">Arrays.asList(intArray)</code> gives a single-element <code class=\"inline\">List&lt;int[]&gt;</code>, not a list of ints.</p>",
@@ -1170,7 +1170,7 @@
     "difficulty": "advanced",
     "tags": [
       "exceptions",
-      "finally",
+      "finally"
     ],
     "question": "Does finally always run? What if it returns?",
     "answer": "<p>It runs after try/catch in essentially every case — including when they <code class=\"inline\">return</code>. It's skipped only on <code class=\"inline\">System.exit()</code>, a JVM crash, or an infinite loop/killed thread.</p><p>A <code class=\"inline\">return</code> or <code class=\"inline\">throw</code> inside <code class=\"inline\">finally</code> <strong>discards</strong> the try block's return value or exception — which silently swallows bugs.</p>",
@@ -1408,7 +1408,7 @@
     "category": "java",
     "difficulty": "advanced",
     "tags": [
-      "optional",
+      "optional"
     ],
     "question": "orElse() vs orElseGet() vs orElseThrow().",
     "answer": "<p><strong>orElse(x)</strong> — <code class=\"inline\">x</code> is evaluated <em>always</em>, even when the Optional has a value.</p><p><strong>orElseGet(supplier)</strong> — lazy; only runs when empty. Use it when the fallback is expensive.</p><p><strong>orElseThrow(supplier)</strong> — throws when empty.</p>",
@@ -2750,7 +2750,7 @@
     "difficulty": "intermediate",
     "tags": [
       "switch",
-      "rapid-fire",
+      "rapid-fire"
     ],
     "question": "Why is String allowed in switch but not long?",
     "answer": "<p><code class=\"inline\">switch</code> compiles to constant-time jump instructions (<code class=\"inline\">tableswitch</code>/<code class=\"inline\">lookupswitch</code>) that operate on <strong>int</strong>. Allowed types are things reducible to int: byte/short/char/int, their wrappers, and enums (ordinal). <strong>String</strong> (Java 7+) works via a compiler trick — switch on <code class=\"inline\">hashCode()</code> plus an <code class=\"inline\">equals()</code> confirmation for collisions.</p><p><strong>long/float/double</strong> don't fit the int-based bytecode (and floats can't be compared exactly) — hence not allowed. Modern pattern-matching switch (Java 21) extends to type patterns, but the primitive rule stands.</p>",
@@ -2765,7 +2765,7 @@
     "difficulty": "beginner",
     "tags": [
       "main",
-      "rapid-fire",
+      "rapid-fire"
     ],
     "question": "Can main() be private? Overloaded? Final? What if there's no main at all?",
     "answer": "<ul><li><strong>Overloaded</strong> — yes, freely; the JVM only ever launches <code class=\"inline\">public static void main(String[])</code>, other overloads are normal methods.</li><li><strong>final</strong> — yes; final only forbids overriding, which is irrelevant for a static entry point. <code class=\"inline\">static</code> is required (no instance exists yet).</li><li><strong>private</strong> — compiles fine, but the launcher refuses to run it: <em>\"main method not found\"-style error at launch</em>, not a compile error.</li><li><strong>No main</strong> — compiles fine too; running it fails at launch. (Java 21+ preview relaxes this with unnamed classes/instance main.)</li></ul>",
@@ -2781,7 +2781,7 @@
     "tags": [
       "string",
       "operators",
-      "rapid-fire",
+      "rapid-fire"
     ],
     "question": "What does \"abc\" + 1 + 2 print vs 1 + 2 + \"abc\"?",
     "answer": "<p><code class=\"inline\">+</code> evaluates <strong>left to right</strong>, and its meaning flips per operand pair: once either side is a String, it's concatenation forever after.</p><ul><li><code class=\"inline\">\"abc\" + 1 + 2</code> → <code class=\"inline\">(\"abc\" + 1) + 2</code> → <strong>\"abc12\"</strong></li><li><code class=\"inline\">1 + 2 + \"abc\"</code> → <code class=\"inline\">(1 + 2) + \"abc\"</code> → <strong>\"3abc\"</strong> — the ints add first.</li></ul>",
