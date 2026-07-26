@@ -11,7 +11,8 @@
     "answer": "<ul><li><strong>INNER JOIN</strong> — only rows matching in both tables.</li><li><strong>LEFT JOIN</strong> — all left rows + matches (NULLs where none).</li><li><strong>RIGHT JOIN</strong> — all right rows + matches.</li><li><strong>FULL JOIN</strong> — all rows from both, matched where possible.</li></ul>",
     "tip": "'Find records with no match' = LEFT JOIN ... WHERE right.id IS NULL.",
     "code": "SELECT u.name, o.total\nFROM users u\nLEFT JOIN orders o ON o.user_id = u.id;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "INNER = matches only. LEFT = all left + matches. RIGHT = all right. FULL = all from both (NULLs where no match)."
   },
   {
     "id": "sql-where-having",
@@ -27,7 +28,8 @@
     "answer": "<p><strong>WHERE</strong> filters rows <em>before</em> grouping/aggregation. <strong>HAVING</strong> filters <em>after</em> <code class=\"inline\">GROUP BY</code>, so it can use aggregate functions like <code class=\"inline\">COUNT()</code>.</p>",
     "tip": "You can't use an aggregate in WHERE — that's what HAVING is for.",
     "code": "SELECT dept, COUNT(*)\nFROM emp GROUP BY dept HAVING COUNT(*) > 5;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "WHERE filters rows before GROUP BY. HAVING filters groups after aggregation."
   },
   {
     "id": "sql-index",
@@ -41,7 +43,8 @@
     "answer": "<p>An index (usually a B-tree) speeds up reads by letting the DB find rows without a full scan. Tradeoff: it consumes storage and slows down <strong>writes</strong> (every insert/update maintains the index). Index columns used in WHERE/JOIN/ORDER BY, not everything.</p>",
     "tip": "A composite index's column order matters — it helps queries that filter on the leftmost columns.",
     "code": "CREATE INDEX idx_user_email ON users(email);",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Speeds reads/lookups (B-tree etc.). Tradeoff: slower writes + extra storage. Index columns you filter/join on."
   },
   {
     "id": "sql-normalization",
@@ -55,7 +58,8 @@
     "answer": "<p>Organising tables to reduce redundancy and anomalies. <strong>1NF</strong> — atomic columns; <strong>2NF</strong> — no partial dependency on part of a composite key; <strong>3NF</strong> — no transitive dependencies. Denormalise selectively for read performance.</p>",
     "tip": "Normalise for integrity, denormalise for read speed — know when to trade.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "Reduce duplication via related tables (1NF/2NF/3NF…). Tradeoff: more joins; denormalize carefully for read speed."
   },
   {
     "id": "sql-aggregate",
@@ -69,7 +73,8 @@
     "answer": "<p><code class=\"inline\">COUNT</code>, <code class=\"inline\">SUM</code>, <code class=\"inline\">AVG</code>, <code class=\"inline\">MIN</code>, <code class=\"inline\">MAX</code> collapse rows into a summary. <code class=\"inline\">GROUP BY</code> defines the buckets they summarise.</p>",
     "tip": "Every non-aggregated column in SELECT must appear in GROUP BY.",
     "code": "SELECT status, COUNT(*) FROM orders GROUP BY status;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "COUNT/SUM/AVG/MIN/MAX with GROUP BY. Non-aggregated SELECT columns must appear in GROUP BY."
   },
   {
     "id": "sql-subquery",
@@ -83,7 +88,8 @@
     "answer": "<p>Both nest a query. A <strong>CTE</strong> (<code class=\"inline\">WITH name AS (...)</code>) is named, more readable, can be referenced multiple times, and supports recursion — generally preferred for complex logic over deeply nested subqueries.</p>",
     "tip": "Reach for a CTE when a subquery gets hard to read or is reused.",
     "code": "WITH active AS (SELECT * FROM users WHERE active = true)\nSELECT * FROM active WHERE country = 'IN';",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Subquery = nested SELECT. CTE (WITH) = named, reusable, often clearer — especially multi-step logic."
   },
   {
     "id": "sql-transaction",
@@ -98,7 +104,8 @@
     "answer": "<ul><li><strong>Atomicity</strong> — all or nothing.</li><li><strong>Consistency</strong> — valid state to valid state.</li><li><strong>Isolation</strong> — concurrent transactions don't corrupt each other.</li><li><strong>Durability</strong> — committed data survives crashes.</li></ul>",
     "tip": "Isolation levels (read committed, serializable...) trade consistency against concurrency.",
     "code": "BEGIN; UPDATE acct SET bal = bal - 100 WHERE id = 1; UPDATE acct SET bal = bal + 100 WHERE id = 2; COMMIT;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "ACID: Atomicity, Consistency, Isolation, Durability — all-or-nothing, valid state, concurrent safety, persisted."
   },
   {
     "id": "sql-delete-truncate",
@@ -112,7 +119,8 @@
     "answer": "<ul><li><strong>DELETE</strong> — removes rows (can use WHERE), logged, can roll back.</li><li><strong>TRUNCATE</strong> — empties the whole table fast, minimal logging, resets identity.</li><li><strong>DROP</strong> — removes the table structure entirely.</li></ul>",
     "tip": "TRUNCATE can't be filtered and usually can't be rolled back — be careful.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "DELETE = row remove (can WHERE, logged). TRUNCATE = empty table fast. DROP = remove table entirely."
   },
   {
     "id": "sql-primary-foreign",
@@ -126,7 +134,8 @@
     "answer": "<p><strong>Primary key</strong> — uniquely identifies a row, not null, one per table. <strong>Foreign key</strong> — references a primary key in another table, enforcing referential integrity. <strong>Unique</strong> — no duplicates, but allows a null.</p>",
     "tip": "A foreign key is how you enforce that an order must belong to a real user.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "PK = unique row id. UNIQUE = uniqueness, allows NULL (DB-dependent). FK = refers to another table's key."
   },
   {
     "id": "sql-window",
@@ -141,7 +150,8 @@
     "answer": "<p>They compute across a set of rows related to the current row <em>without</em> collapsing them (unlike GROUP BY). Examples: <code class=\"inline\">ROW_NUMBER()</code>, <code class=\"inline\">RANK()</code>, running totals with <code class=\"inline\">SUM() OVER (...)</code>.</p>",
     "tip": "ROW_NUMBER() OVER (PARTITION BY ...) is the classic 'top N per group' pattern.",
     "code": "SELECT name, ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC) rn\nFROM emp;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Aggregates without collapsing rows — OVER (PARTITION BY … ORDER BY …). RANK, SUM() OVER, etc."
   },
   {
     "id": "sql-distinct-nulls",
@@ -155,7 +165,8 @@
     "answer": "<p>NULL means 'unknown', so <code class=\"inline\">NULL = NULL</code> is <em>not</em> true — use <code class=\"inline\">IS NULL</code> / <code class=\"inline\">IS NOT NULL</code>. Aggregates like <code class=\"inline\">COUNT(col)</code> skip NULLs, and <code class=\"inline\">COALESCE</code> substitutes a default.</p>",
     "tip": "WHERE col != 'x' silently drops NULL rows — add OR col IS NULL if you want them.",
     "code": "SELECT COALESCE(nickname, name) FROM users;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "NULL means unknown. NULL = NULL is unknown (not true). Use IS NULL / IS NOT NULL; beware NULL in NOT IN."
   },
   {
     "id": "sql-injection",
@@ -169,7 +180,8 @@
     "answer": "<p>An attack where user input is concatenated into a query, letting an attacker alter it. Prevent it with <strong>parameterized queries / prepared statements</strong> (never string concatenation), least-privilege DB accounts, and input validation.</p>",
     "tip": "Parameterized queries are the fix — the ORM/JDBC binds values safely.",
     "code": "-- safe (bound parameter):\nSELECT * FROM users WHERE email = ?;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Attacker injects SQL via input. Prevent with parameterized queries / prepared statements — never string-concat user input."
   },
   {
     "id": "sql-exists-in",
@@ -183,7 +195,8 @@
     "answer": "<p><strong>IN</strong> — checks if a value matches any value in a list or subquery result. Simple and readable for small sets.</p><p><strong>EXISTS</strong> — returns true if the subquery returns at least one row. Short-circuits on first match — often faster for correlated subqueries and large datasets.</p><p>For NULL safety, EXISTS handles NULLs more predictably than NOT IN.</p>",
     "tip": "NOT IN with NULLs in the subquery returns no rows — use NOT EXISTS instead.",
     "code": "SELECT * FROM users u\nWHERE EXISTS (SELECT 1 FROM orders o WHERE o.user_id = u.id);",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "EXISTS stops at first match (good for existence). IN checks membership; NOT IN + NULLs is a classic trap — prefer NOT EXISTS."
   },
   {
     "id": "sql-case-when",
@@ -197,7 +210,8 @@
     "answer": "<p>Conditional logic in SQL — like if/else in programming:</p><p><strong>Simple CASE</strong> — compare one expression to multiple values.<br><strong>Searched CASE</strong> — evaluate multiple conditions independently.</p><p>Use in SELECT, WHERE, ORDER BY, and aggregations.</p>",
     "tip": "CASE in SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) is the classic conditional aggregation pattern.",
     "code": "SELECT name,\n  CASE status\n    WHEN 'active' THEN 'Active'\n    WHEN 'inactive' THEN 'Inactive'\n    ELSE 'Unknown'\n  END AS status_label\nFROM users;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Conditional expression in SQL — CASE WHEN … THEN … ELSE … END for derived columns and conditional aggregates."
   },
   {
     "id": "sql-union",
@@ -211,7 +225,8 @@
     "answer": "<p><strong>UNION</strong> — combines result sets and <strong>removes duplicates</strong> (requires sort/distinct — slower).</p><p><strong>UNION ALL</strong> — combines without deduplication — faster when you know sets are disjoint or duplicates are acceptable.</p><p>Both require matching column count and compatible types.</p>",
     "tip": "Default to UNION ALL unless you explicitly need duplicate removal.",
     "code": "SELECT email FROM users\nUNION ALL\nSELECT email FROM archived_users;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "UNION merges result sets and dedupes. UNION ALL keeps duplicates and is faster — prefer ALL when dupes are fine."
   },
   {
     "id": "sql-self-join",
@@ -225,7 +240,8 @@
     "answer": "<p>A table joined to <strong>itself</strong> — typically with table aliases. Used for hierarchical data (employee → manager), comparing rows within the same table, or finding duplicates.</p>",
     "tip": "Recursive CTEs (PostgreSQL) often replace deep self-join chains for tree traversal.",
     "code": "SELECT e.name AS employee, m.name AS manager\nFROM employees e\nLEFT JOIN employees m ON e.manager_id = m.id;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Join a table to itself (aliases) — employees↔managers, hierarchical or related rows in one table."
   },
   {
     "id": "sql-views",
@@ -239,7 +255,8 @@
     "answer": "<p>A <strong>saved query</strong> that acts like a virtual table. Simplifies complex joins for consumers, enforces access control, and provides a stable interface even if underlying schema changes.</p><p><strong>Materialized views</strong> store the result physically — faster reads but need refresh. Standard views compute on every query.</p>",
     "tip": "Views don't improve performance by themselves — materialized views do, at the cost of staleness.",
     "code": "CREATE VIEW active_users AS\nSELECT id, name, email FROM users WHERE active = true;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Saved query as a virtual table. Simplifies access/security; usually not stored data (unless materialized)."
   },
   {
     "id": "sql-constraints",
@@ -253,7 +270,8 @@
     "answer": "<ul><li><strong>NOT NULL</strong> — column must have a value.</li><li><strong>UNIQUE</strong> — no duplicate values.</li><li><strong>PRIMARY KEY</strong> — unique + not null.</li><li><strong>FOREIGN KEY</strong> — referential integrity.</li><li><strong>CHECK</strong> — custom validation (e.g. <code class=\"inline\">age &gt;= 18</code>).</li><li><strong>DEFAULT</strong> — value when none provided.</li></ul>",
     "tip": "Enforce business rules at the DB level — don't rely only on application validation.",
     "code": "CREATE TABLE products (\n  price NUMERIC CHECK (price > 0),\n  status TEXT DEFAULT 'draft'\n);",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL, CHECK, DEFAULT — enforce integrity at the database."
   },
   {
     "id": "sql-execution-order",
@@ -267,7 +285,8 @@
     "answer": "<p>Logical order (not written order):</p><ol><li>FROM / JOIN</li><li>WHERE</li><li>GROUP BY</li><li>HAVING</li><li>SELECT</li><li>DISTINCT</li><li>ORDER BY</li><li>LIMIT / OFFSET</li></ol><p>That's why you can't use a SELECT alias in WHERE — it hasn't been computed yet. Use a CTE or subquery instead.</p>",
     "tip": "Interview classic: 'why can't I filter on an alias in WHERE?' — execution order.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "Logical order: FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT/OFFSET."
   },
   {
     "id": "sql-pagination",
@@ -281,7 +300,8 @@
     "answer": "<p><strong>OFFSET/LIMIT</strong> — <code class=\"inline\">LIMIT 20 OFFSET 100</code>. Simple but slow on large offsets (DB still scans skipped rows).</p><p><strong>Cursor (keyset)</strong> — <code class=\"inline\">WHERE id &gt; last_seen_id ORDER BY id LIMIT 20</code>. Consistent performance regardless of page depth; no skipped/duplicate rows when data changes during paging.</p>",
     "tip": "Use cursor pagination for infinite scroll and large datasets; OFFSET is fine for admin UIs with shallow pages.",
     "code": "-- cursor pagination\nSELECT * FROM orders\nWHERE id > 1024\nORDER BY id\nLIMIT 20;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "OFFSET/LIMIT is simple but slow on deep pages. Keyset/cursor pagination (WHERE id > last) scales better."
   },
   {
     "id": "sql-nth-highest-salary",
@@ -297,7 +317,8 @@
     "answer": "<p>The single most-asked SQL coding question. Know three approaches and their trade-offs:</p><ul><li><strong>DENSE_RANK (best)</strong> — handles ties correctly, generalizes to any N, and extends to per-department with <code class=\"inline\">PARTITION BY</code>.</li><li><strong>Subquery with MAX</strong> — classic for exactly 2nd: max of everything below the max.</li><li><strong>LIMIT/OFFSET with DISTINCT</strong> — short but returns nothing (instead of NULL) when N exceeds distinct values, and ties must be deduplicated.</li></ul>",
     "tip": "Say the tie word first: 'with DENSE_RANK, two people on the top salary still make the next one rank 2 — ROW_NUMBER would skip a person'. That sentence is what they're listening for.",
     "code": "-- 1) DENSE_RANK: any N, tie-safe\nSELECT salary FROM (\n  SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) rnk\n  FROM employees\n) t WHERE rnk = 2;\n\n-- 2) Subquery MAX: 2nd only\nSELECT MAX(salary) FROM employees\nWHERE salary < (SELECT MAX(salary) FROM employees);\n\n-- 3) LIMIT/OFFSET\nSELECT DISTINCT salary FROM employees\nORDER BY salary DESC LIMIT 1 OFFSET 1;\n\n-- Follow-up: highest paid PER department\nSELECT * FROM (\n  SELECT e.*, DENSE_RANK() OVER (PARTITION BY dept_id ORDER BY salary DESC) rnk\n  FROM employees e\n) t WHERE rnk = 1;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "DENSE_RANK()/ROW_NUMBER() in a CTE, or subquery with DISTINCT + ORDER BY/LIMIT — know at least two approaches."
   },
   {
     "id": "sql-rank-dense-rank",
@@ -312,7 +333,8 @@
     "answer": "<p>All three number rows within an <code class=\"inline\">OVER (ORDER BY ...)</code> window — they differ only on <strong>ties</strong>:</p><ul><li><strong>ROW_NUMBER</strong> — always unique: 1,2,3,4 — ties broken arbitrarily (add tiebreaker columns to make it deterministic).</li><li><strong>RANK</strong> — ties share a rank, then <strong>gaps</strong>: 1,2,2,<strong>4</strong> — Olympic medals.</li><li><strong>DENSE_RANK</strong> — ties share a rank, <strong>no gaps</strong>: 1,2,2,<strong>3</strong> — \"Nth highest value\" questions.</li></ul>",
     "tip": "Choose by question: 'top 3 rows' → ROW_NUMBER; 'standings/position' → RANK; 'Nth distinct value' → DENSE_RANK. Deduplication uses ROW_NUMBER (keep rn = 1).",
     "code": "SELECT name, salary,\n  ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num,   -- 1,2,3,4\n  RANK()       OVER (ORDER BY salary DESC) AS rnk,       -- 1,2,2,4\n  DENSE_RANK() OVER (ORDER BY salary DESC) AS dense_rnk  -- 1,2,2,3\nFROM employees;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "ROW_NUMBER = unique seq. RANK = gaps after ties. DENSE_RANK = no gaps after ties."
   },
   {
     "id": "sql-find-delete-duplicates",
@@ -327,7 +349,8 @@
     "answer": "<p><strong>Find</strong>: group by the columns defining \"duplicate\" and keep groups with <code class=\"inline\">COUNT(*) &gt; 1</code>.</p><p><strong>Delete keeping one</strong>, two standard patterns:</p><ul><li><strong>Keep the smallest id</strong> — delete rows whose id isn't the MIN of their group (portable, easy to say).</li><li><strong>ROW_NUMBER</strong> — number rows per group, delete everything with <code class=\"inline\">rn &gt; 1</code>; lets you choose <em>which</em> to keep via ORDER BY (e.g. latest updated).</li></ul>",
     "tip": "Always add: 'and then I'd put a UNIQUE constraint on (email) so duplicates can't return'. Prevention after cure is the senior touch.",
     "code": "-- find\nSELECT email, COUNT(*) FROM users\nGROUP BY email HAVING COUNT(*) > 1;\n\n-- delete, keep lowest id (MySQL-style self join)\nDELETE u FROM users u\nJOIN users keep ON keep.email = u.email AND keep.id < u.id;\n\n-- delete via ROW_NUMBER (PostgreSQL / SQL Server), keep newest\nDELETE FROM users WHERE id IN (\n  SELECT id FROM (\n    SELECT id, ROW_NUMBER() OVER (\n      PARTITION BY email ORDER BY updated_at DESC) rn\n    FROM users\n  ) t WHERE rn > 1\n);",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Find with GROUP BY … HAVING COUNT(*) > 1. Delete extras with ROW_NUMBER() PARTITION BY key, keep rn = 1."
   },
   {
     "id": "sql-clustered-index",
@@ -342,7 +365,8 @@
     "answer": "<p><strong>Clustered</strong> — the index <em>is</em> the table: rows are physically stored in index order. One per table (usually the primary key — MySQL/InnoDB always does this; SQL Server by default). Range scans on it are fast because neighbors are adjacent on disk.</p><p><strong>Non-clustered (secondary)</strong> — a separate structure of key → row pointer; lookups find the key, then hop to the row (in InnoDB, via the clustered key — why fat primary keys hurt every index).</p><p><strong>When indexes hurt</strong>: every INSERT/UPDATE/DELETE must maintain <em>all</em> of them (write amplification); low-selectivity columns (status with 3 values) rarely help; unused indexes cost storage and slow writes for nothing.</p>",
     "tip": "PostgreSQL nuance worth knowing: it has no true clustered index — all indexes are secondary over a heap (CLUSTER reorders once but doesn't stay sorted).",
     "code": "-- covering index: query answered entirely from the index, no row hop\nCREATE INDEX idx_orders_cust ON orders (customer_id) INCLUDE (status, total);\nSELECT status, total FROM orders WHERE customer_id = 42;  -- index-only scan",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Clustered = physical row order (usually PK). Non-clustered = separate structure pointing to rows. Too many indexes hurt writes."
   },
   {
     "id": "sql-char-varchar",
@@ -356,7 +380,8 @@
     "answer": "<p><strong>CHAR(n)</strong> — fixed length: always stores n characters, padding with spaces. <strong>VARCHAR(n)</strong> — variable length: stores actual content + a small length prefix, up to n.</p><p>Use CHAR only for genuinely fixed-width codes (country <code class=\"inline\">'IN'</code>, currency <code class=\"inline\">'INR'</code>); VARCHAR for everything else. Gotcha: CHAR's trailing-space padding can make comparisons and app-level equality behave surprisingly across databases.</p>",
     "tip": "PostgreSQL reality check: char(n) has no performance benefit there — the docs themselves recommend text/varchar. The CHAR-is-faster lore is MySQL-era.",
     "code": "country CHAR(2)        -- fixed codes: fine\nemail   VARCHAR(255)   -- variable data: always varchar\n-- 'abc' stored in CHAR(10) is 'abc       ' — padding is real",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "CHAR = fixed length (padded). VARCHAR = variable length — usual choice for most strings."
   },
   {
     "id": "sql-proc-vs-function",
@@ -370,7 +395,8 @@
     "answer": "<ul><li><strong>Function</strong> — must return a value, callable <em>inside</em> queries (<code class=\"inline\">SELECT fn(col) FROM ...</code>), intended to be side-effect-light; can't manage transactions.</li><li><strong>Stored procedure</strong> — invoked standalone (<code class=\"inline\">CALL</code>), may return nothing/result sets/out params, can perform DML batches and (in most engines) <strong>control transactions</strong> (COMMIT/ROLLBACK inside).</li></ul><p>Modern practice keeps business logic in the application (testability, versioning, portability) and reserves procs for data-local batch work where round-trips dominate — worth saying out loud in an interview.</p>",
     "tip": "One-liner: function = expression you can put in a SELECT; procedure = an operation you CALL.",
     "code": "-- function: usable in a query\nCREATE FUNCTION full_name(f TEXT, l TEXT) RETURNS TEXT\n  LANGUAGE sql AS $$ SELECT f || ' ' || l $$;\nSELECT full_name(first_name, last_name) FROM employees;\n\n-- procedure: standalone action, owns its transaction\nCREATE PROCEDURE archive_old_orders() LANGUAGE plpgsql AS $$\nBEGIN\n  INSERT INTO orders_archive SELECT * FROM orders WHERE created < now() - interval '2 years';\n  DELETE FROM orders WHERE created < now() - interval '2 years';\n  COMMIT;\nEND $$;\nCALL archive_old_orders();",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Procedure = can do DML/side effects, no value in SELECT expression. Function = returns a value, tighter rules."
   },
   {
     "id": "sql-coalesce-nullif",
@@ -384,7 +410,8 @@
     "answer": "<p><strong>COALESCE(a, b, c)</strong> — returns the first non-NULL argument; the standard way to supply a default for a possibly-NULL column.</p><p><strong>NULLIF(a, b)</strong> — returns NULL when <code class=\"inline\">a = b</code>, otherwise <code class=\"inline\">a</code>. Its killer use is guarding division: <code class=\"inline\">NULLIF(denominator, 0)</code> turns a divide-by-zero error into a NULL result.</p>",
     "tip": "amount / NULLIF(qty, 0) is the idiomatic 'safe divide' — no CASE needed.",
     "code": "SELECT COALESCE(nickname, name, 'Anonymous') AS display,\n       revenue / NULLIF(orders, 0) AS avg_order_value\nFROM customers;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "COALESCE(a,b,…) = first non-NULL. NULLIF(a,b) = NULL if a equals b — handy to avoid div-by-zero."
   },
   {
     "id": "sql-like-wildcards",
@@ -398,7 +425,8 @@
     "answer": "<p><code class=\"inline\">%</code> matches any sequence of characters (including none); <code class=\"inline\">_</code> matches exactly one. <code class=\"inline\">ILIKE</code> (PostgreSQL) is the case-insensitive variant. Escape a literal <code class=\"inline\">%</code> with <code class=\"inline\">ESCAPE</code>.</p><p>Performance gotcha: a <em>leading</em> wildcard (<code class=\"inline\">LIKE '%term'</code>) can't use a normal B-tree index, forcing a full scan — reach for full-text search or a trigram index instead.</p>",
     "tip": "LIKE 'abc%' is index-friendly; LIKE '%abc' is not — the leading % kills the index.",
     "code": "SELECT * FROM users WHERE email LIKE '%@gmail.com';\nSELECT * FROM products WHERE code LIKE 'A_9%';",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "% = any sequence, _ = one char. LIKE is pattern match; leading % often prevents index use."
   },
   {
     "id": "sql-between-in",
@@ -412,7 +440,8 @@
     "answer": "<p><strong>BETWEEN a AND b</strong> — a range test, <em>inclusive</em> of both bounds. <strong>IN (...)</strong> — membership in an explicit list or subquery result.</p><p>Date gotcha: <code class=\"inline\">BETWEEN '2024-01-01' AND '2024-01-31'</code> excludes almost all of Jan 31 if the column is a timestamp (the bound is midnight). Prefer <code class=\"inline\">&gt;= start AND &lt; next_day</code> for timestamp ranges.</p>",
     "tip": "For timestamps, use half-open ranges (>= lower AND < upper) instead of BETWEEN to avoid the last-day boundary bug.",
     "code": "SELECT * FROM orders WHERE total BETWEEN 100 AND 500;\nSELECT * FROM orders WHERE status IN ('paid', 'shipped');",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "BETWEEN = inclusive range. IN = match any in a list. Prefer IN for discrete sets, BETWEEN for ranges."
   },
   {
     "id": "sql-command-categories",
@@ -427,7 +456,8 @@
     "answer": "<ul><li><strong>DDL</strong> (Data Definition) — <code class=\"inline\">CREATE</code>, <code class=\"inline\">ALTER</code>, <code class=\"inline\">DROP</code>, <code class=\"inline\">TRUNCATE</code>. Often auto-commits.</li><li><strong>DML</strong> (Data Manipulation) — <code class=\"inline\">SELECT</code>, <code class=\"inline\">INSERT</code>, <code class=\"inline\">UPDATE</code>, <code class=\"inline\">DELETE</code>.</li><li><strong>DCL</strong> (Data Control) — <code class=\"inline\">GRANT</code>, <code class=\"inline\">REVOKE</code>.</li><li><strong>TCL</strong> (Transaction Control) — <code class=\"inline\">COMMIT</code>, <code class=\"inline\">ROLLBACK</code>, <code class=\"inline\">SAVEPOINT</code>.</li></ul>",
     "tip": "Key exam point: DDL statements usually auto-commit, so you can't ROLLBACK a DROP in most engines.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "DDL = schema (CREATE/ALTER). DML = data (SELECT/INSERT/UPDATE/DELETE). DCL = rights. TCL = transactions (COMMIT/ROLLBACK)."
   },
   {
     "id": "sql-datetime-functions",
@@ -441,7 +471,8 @@
     "answer": "<p>Common tools: <code class=\"inline\">CURRENT_DATE</code> / <code class=\"inline\">NOW()</code> for the clock, interval arithmetic for offsets, <code class=\"inline\">EXTRACT(part FROM ts)</code> to pull a year/month, and <code class=\"inline\">DATE_TRUNC('month', ts)</code> to bucket rows for reporting.</p><p>Best practice: store timestamps in <strong>UTC</strong> (<code class=\"inline\">timestamptz</code>) and convert to the user's zone at display time — never store local time.</p>",
     "tip": "Grouping by month? DATE_TRUNC('month', created_at) beats EXTRACT because it keeps rows from different years distinct.",
     "code": "SELECT DATE_TRUNC('month', created_at) AS mth, COUNT(*)\nFROM orders\nWHERE created_at >= CURRENT_DATE - INTERVAL '90 days'\nGROUP BY 1 ORDER BY 1;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Know DATE_TRUNC/EXTRACT (or DB equivalents), date arithmetic, and store UTC — formatting is often app-side."
   },
   {
     "id": "sql-cte-recursive",
@@ -457,7 +488,8 @@
     "answer": "<p><code class=\"inline\">WITH RECURSIVE</code> has two parts joined by <code class=\"inline\">UNION ALL</code>: an <strong>anchor</strong> (the starting rows) and a <strong>recursive member</strong> that references the CTE itself. The engine repeats the recursive part, feeding each pass's output back in, until it produces no new rows.</p><p>Use it for tree/graph traversal (org charts, categories, bill-of-materials) and for generating sequences of numbers or dates.</p>",
     "tip": "Always ensure the recursion terminates — a missing join condition gives an infinite loop; many engines let you cap it (e.g. a depth column with a WHERE guard).",
     "code": "WITH RECURSIVE chain AS (\n  SELECT id, name, manager_id, 1 AS lvl\n  FROM employees WHERE id = 1          -- anchor: the CEO\n  UNION ALL\n  SELECT e.id, e.name, e.manager_id, c.lvl + 1\n  FROM employees e\n  JOIN chain c ON e.manager_id = c.id  -- recurse down the tree\n)\nSELECT * FROM chain ORDER BY lvl;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Anchor member UNION ALL recursive member referencing the CTE — walks trees/hierarchies (org charts, graphs)."
   },
   {
     "id": "sql-string-agg",
@@ -471,7 +503,8 @@
     "answer": "<p>An aggregate that collapses many row values into a single delimited string per group — the inverse of splitting.</p><ul><li><strong>PostgreSQL / SQL Server</strong>: <code class=\"inline\">STRING_AGG(expr, ',')</code></li><li><strong>MySQL</strong>: <code class=\"inline\">GROUP_CONCAT(expr SEPARATOR ',')</code></li><li><strong>Oracle</strong>: <code class=\"inline\">LISTAGG(expr, ',')</code></li></ul><p>You can order the elements with <code class=\"inline\">... ORDER BY ...</code> inside the call.</p>",
     "tip": "MySQL's GROUP_CONCAT silently truncates at group_concat_max_len (default 1024 bytes) — raise it for long lists.",
     "code": "SELECT customer_id,\n       STRING_AGG(product, ', ' ORDER BY product) AS items\nFROM order_lines\nGROUP BY customer_id;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "STRING_AGG / GROUP_CONCAT / LISTAGG collapses grouped values into one delimited string."
   },
   {
     "id": "sql-running-total",
@@ -486,7 +519,8 @@
     "answer": "<p>Use an aggregate as a window function with an <code class=\"inline\">ORDER BY</code> in the OVER clause — that turns <code class=\"inline\">SUM()</code> into a cumulative sum up to the current row. The <strong>frame clause</strong> (<code class=\"inline\">ROWS BETWEEN ...</code>) sets exactly which rows are included, letting you also build moving averages.</p>",
     "tip": "Default frame with ORDER BY is RANGE ... UNBOUNDED PRECEDING — fine for running totals, but for a moving window state the ROWS frame explicitly (e.g. last 7 rows).",
     "code": "SELECT day, amount,\n  SUM(amount) OVER (ORDER BY day\n    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total,\n  AVG(amount) OVER (ORDER BY day\n    ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS moving_avg_7d\nFROM daily_sales;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "SUM(amount) OVER (ORDER BY date ROWS UNBOUNDED PRECEDING) — classic window running total."
   },
   {
     "id": "sql-lag-lead",
@@ -500,7 +534,8 @@
     "answer": "<p>Window functions that read a value from a row <em>offset</em> from the current one — <strong>LAG</strong> looks backward, <strong>LEAD</strong> forward — without a self-join. Perfect for period-over-period deltas, detecting gaps, or comparing each row to its neighbour.</p><p>Signature: <code class=\"inline\">LAG(col, offset, default) OVER (PARTITION BY ... ORDER BY ...)</code>. The default fills the first/last row where no neighbour exists.</p>",
     "tip": "Always PARTITION BY the entity (e.g. user) so LAG doesn't bleed the previous user's last value into the next user's first row.",
     "code": "SELECT day, revenue,\n  revenue - LAG(revenue, 1, 0) OVER (ORDER BY day) AS day_over_day\nFROM daily_revenue;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "LAG = previous row value, LEAD = next — compare to prior day/period without self-joins."
   },
   {
     "id": "sql-pivot",
@@ -514,7 +549,8 @@
     "answer": "<p>The portable technique is <strong>conditional aggregation</strong>: wrap a <code class=\"inline\">CASE</code> inside an aggregate, one per target column, so each category becomes its own column.</p><p>Some engines add a dedicated operator — <code class=\"inline\">PIVOT</code> (SQL Server, Oracle) or the <code class=\"inline\">crosstab</code> function (PostgreSQL's tablefunc) — but they need the column list known up front, so the CASE form is the interview-safe answer.</p>",
     "tip": "Say 'the columns must be known at query time' — true dynamic pivots require building SQL as a string, which interviewers like to hear you flag.",
     "code": "SELECT product,\n  SUM(CASE WHEN region = 'US' THEN qty END) AS us,\n  SUM(CASE WHEN region = 'EU' THEN qty END) AS eu,\n  SUM(CASE WHEN region = 'IN' THEN qty END) AS in_\nFROM sales\nGROUP BY product;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Turn row labels into columns with CASE + SUM/COUNT (conditional aggregation) or PIVOT where supported."
   },
   {
     "id": "sql-correlated-subquery",
@@ -528,7 +564,8 @@
     "answer": "<p>A <strong>non-correlated</strong> subquery is self-contained — it runs once and its result is reused (e.g. <code class=\"inline\">WHERE id IN (SELECT ...)</code>).</p><p>A <strong>correlated</strong> subquery references a column from the outer query, so conceptually it re-evaluates <em>for each outer row</em> (e.g. <code class=\"inline\">EXISTS (SELECT 1 ... WHERE o.user_id = u.id)</code>). That can be slow, though modern optimizers often rewrite them into joins.</p>",
     "tip": "If a correlated subquery is a bottleneck, try rewriting it as a JOIN or a window function — usually the planner's happier.",
     "code": "-- correlated: 'users who have at least one order'\nSELECT u.name FROM users u\nWHERE EXISTS (\n  SELECT 1 FROM orders o WHERE o.user_id = u.id\n);",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Correlated = inner query refs outer row (runs per row). Non-correlated = independent, often once."
   },
   {
     "id": "sql-upsert",
@@ -543,7 +580,8 @@
     "answer": "<p>Insert a row, but if it would violate a unique/primary key, update the existing row instead — atomic, no read-then-write race.</p><ul><li><strong>PostgreSQL / SQLite</strong>: <code class=\"inline\">INSERT ... ON CONFLICT (key) DO UPDATE</code></li><li><strong>MySQL</strong>: <code class=\"inline\">INSERT ... ON DUPLICATE KEY UPDATE</code></li><li><strong>SQL Server / Oracle</strong>: <code class=\"inline\">MERGE</code></li></ul><p>It needs a <strong>unique constraint</strong> on the conflict target to know what 'already exists' means.</p>",
     "tip": "In PostgreSQL, EXCLUDED.col refers to the value you tried to insert — that's how you write DO UPDATE SET count = table.count + EXCLUDED.count.",
     "code": "INSERT INTO inventory (sku, qty) VALUES ('A1', 5)\nON CONFLICT (sku)\nDO UPDATE SET qty = inventory.qty + EXCLUDED.qty;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "INSERT … ON CONFLICT / MERGE / ON DUPLICATE KEY — insert or update in one statement for idempotent writes."
   },
   {
     "id": "sql-employees-more-than-manager",
@@ -558,7 +596,8 @@
     "answer": "<p>A self-join classic: join the employee row to its manager row via <code class=\"inline\">manager_id = manager.id</code>, then keep pairs where the employee's salary exceeds the manager's. An INNER JOIN naturally drops employees with no manager (the CEO), which is usually what's wanted.</p>",
     "tip": "Interviewers often follow up with 'now include the CEO' — switch to a LEFT JOIN and decide how to treat the NULL manager salary.",
     "code": "SELECT e.name AS employee, e.salary, m.name AS manager\nFROM employees e\nJOIN employees m ON e.manager_id = m.id\nWHERE e.salary > m.salary;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Self-join employee e to manager m ON e.manager_id = m.id WHERE e.salary > m.salary."
   },
   {
     "id": "sql-consecutive-days",
@@ -573,7 +612,8 @@
     "answer": "<p>The <strong>gaps-and-islands</strong> trick: for each user's ordered dates, subtract a <code class=\"inline\">ROW_NUMBER()</code> (as days) from the date. Consecutive days advance in lockstep with the row number, so the difference is <em>constant</em> within a streak — group by that constant to collapse each run, then filter runs of the required length.</p>",
     "tip": "The one-line intuition to say: 'date minus its row-number is constant only while the dates are consecutive' — that anchor value identifies each island.",
     "code": "WITH marked AS (\n  SELECT user_id, day,\n    day - (ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY day))::int AS grp\n  FROM active_days\n)\nSELECT user_id, MIN(day) AS streak_start, COUNT(*) AS len\nFROM marked\nGROUP BY user_id, grp\nHAVING COUNT(*) >= 3;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Gaps-and-islands: group consecutive dates (date - ROW_NUMBER() trick) then filter groups with COUNT >= N."
   },
   {
     "id": "sql-triggers",
@@ -587,7 +627,8 @@
     "answer": "<p>Procedural code that fires <em>automatically</em> on <code class=\"inline\">INSERT</code>/<code class=\"inline\">UPDATE</code>/<code class=\"inline\">DELETE</code>, timed <strong>BEFORE</strong> or <strong>AFTER</strong> the event, at row or statement level. Common uses: audit logging, maintaining derived/denormalized columns, and enforcing rules a CHECK can't express.</p><p><strong>Downside</strong>: logic is hidden from anyone reading the app code, they run inside the writing transaction (adding latency), and they make bugs hard to trace — many teams prefer explicit application logic.</p>",
     "tip": "Red flag to name: business logic buried in triggers is a debugging nightmare — reserve them for cross-cutting concerns like audit trails.",
     "code": "CREATE TRIGGER set_updated\nBEFORE UPDATE ON orders\nFOR EACH ROW\nEXECUTE FUNCTION touch_updated_at();  -- sets NEW.updated_at = now()",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Auto-run logic on INSERT/UPDATE/DELETE. Easy to hide complexity — prefer app/service layer unless necessary."
   },
   {
     "id": "sql-isolation-levels",
@@ -603,7 +644,8 @@
     "answer": "<p>Four SQL levels, each ruling out one more anomaly at the cost of concurrency:</p><ul><li><strong>Read Uncommitted</strong> — allows <em>dirty reads</em> (seeing another txn's uncommitted data).</li><li><strong>Read Committed</strong> — no dirty reads; still allows <em>non-repeatable reads</em>. (Default in PostgreSQL/Oracle.)</li><li><strong>Repeatable Read</strong> — same rows re-read unchanged; classically still allows <em>phantoms</em> (new rows matching your filter).</li><li><strong>Serializable</strong> — behaves as if transactions ran one at a time; no phantoms.</li></ul>",
     "tip": "Know your engine: MySQL/InnoDB defaults to Repeatable Read (and blocks phantoms via gap locks), PostgreSQL defaults to Read Committed — the same code behaves differently across them.",
     "code": "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;\nBEGIN;\n  -- ... reads/writes see a consistent snapshot ...\nCOMMIT;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "READ UNCOMMITTED → READ COMMITTED → REPEATABLE READ → SERIALIZABLE. Higher = fewer anomalies, more locking."
   },
   {
     "id": "sql-deadlocks",
@@ -618,7 +660,8 @@
     "answer": "<p>A <strong>deadlock</strong> is a circular wait: txn A holds a lock B wants while B holds a lock A wants, so neither can proceed. The database's deadlock detector spots the cycle and kills one transaction (the <em>victim</em>), which must retry.</p><p><strong>Avoid</strong> them by: acquiring locks in a <em>consistent order</em> everywhere, keeping transactions short, touching fewer rows (good indexes narrow lock scope), and using a lower isolation level or optimistic concurrency where safe.</p>",
     "tip": "The single most effective fix is a consistent lock ordering — e.g. always update accounts in ascending id order — which makes a cycle impossible.",
     "code": "-- both sessions lock ids in the SAME order → no cycle\nBEGIN;\n  UPDATE accounts SET bal = bal - 100 WHERE id = 1;\n  UPDATE accounts SET bal = bal + 100 WHERE id = 2;\nCOMMIT;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Two TX wait on each other's locks. Avoid: consistent lock order, short TX, proper indexes, retry on deadlock."
   },
   {
     "id": "sql-explain-plan",
@@ -634,7 +677,8 @@
     "answer": "<p><code class=\"inline\">EXPLAIN</code> shows the planner's chosen strategy; <code class=\"inline\">EXPLAIN ANALYZE</code> actually runs it and reports real times and row counts. Key things to read:</p><ul><li><strong>Scan type</strong> — a <em>Seq Scan</em> over a large, selectively-filtered table usually means a missing index; an <em>Index Scan</em> is what you want.</li><li><strong>Join method</strong> — Nested Loop (small inputs), Hash Join (large unsorted), Merge Join (pre-sorted).</li><li><strong>Estimated vs actual rows</strong> — a big mismatch signals stale statistics; run <code class=\"inline\">ANALYZE</code>.</li></ul>",
     "tip": "Chase the node with the largest actual time, not the top of the tree — plans read bottom-up/inside-out, and cost is relative, not milliseconds.",
     "code": "EXPLAIN ANALYZE\nSELECT * FROM orders\nWHERE customer_id = 42 AND status = 'paid';",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "EXPLAIN shows scan vs seek, join type, cost. Look for seq scans on large tables, missing indexes, bad join order."
   },
   {
     "id": "sql-partitioning-sharding",
@@ -649,7 +693,8 @@
     "answer": "<p><strong>Partitioning</strong> splits one logical table into physical pieces <em>within a single database</em> — by range (dates), list, or hash. The planner <em>prunes</em> irrelevant partitions, and you can drop old ones instantly. It's a maintenance and query-pruning win, not horizontal scale.</p><p><strong>Sharding</strong> spreads data across <em>multiple database servers</em> keyed by a shard key — true horizontal scale for writes/storage. The cost: cross-shard joins and transactions become hard, and a bad shard key creates hotspots.</p>",
     "tip": "One sentence: partitioning is one server, many pieces; sharding is many servers — choose the shard key by your dominant access pattern to avoid cross-shard fan-out.",
     "code": "-- range partitioning (PostgreSQL declarative)\nCREATE TABLE events (id bigint, ts timestamptz) PARTITION BY RANGE (ts);\nCREATE TABLE events_2024 PARTITION OF events\n  FOR VALUES FROM ('2024-01-01') TO ('2025-01-01');",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Partitioning = split one DB table (by range/list). Sharding = split data across databases/servers."
   },
   {
     "id": "sql-materialized-views",
@@ -664,6 +709,7 @@
     "answer": "<p>Unlike a regular view (a saved query recomputed on every access), a <strong>materialized view</strong> stores the result <em>physically</em>, so expensive aggregations/joins read instantly. The trade-off is staleness — the data is a snapshot until you <code class=\"inline\">REFRESH</code> it.</p><p>Use them for dashboards and reports where slightly-old data is acceptable and the underlying query is costly. In PostgreSQL, <code class=\"inline\">REFRESH ... CONCURRENTLY</code> avoids locking readers (but needs a unique index).</p>",
     "tip": "Say the trade-off out loud: materialized view = read speed bought with staleness; schedule the REFRESH (cron/trigger) to match how fresh the data must be.",
     "code": "CREATE MATERIALIZED VIEW daily_revenue AS\nSELECT DATE_TRUNC('day', created_at) AS day, SUM(total) AS revenue\nFROM orders GROUP BY 1;\n\nREFRESH MATERIALIZED VIEW CONCURRENTLY daily_revenue;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Stored query result you refresh — fast reads for heavy aggregations; trade freshness vs compute."
   }
 ]

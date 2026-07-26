@@ -419,8 +419,7 @@
     "difficulty": "intermediate",
     "tags": [
       "types",
-      "assertion",
-      "gotcha"
+      "assertion"
     ],
     "question": "Type assertion (as) vs casting — what are the risks?",
     "answer": "<p><code class=\"inline\">value as T</code> is <strong>not a cast</strong> — nothing is converted or checked at runtime. It's you overruling the compiler: \"trust me, this is a T\". If you're wrong, the error surfaces later as an undefined property somewhere far from the lie.</p><p>Risks: asserting API responses (<code class=\"inline\">res as User</code> validates nothing), and double assertion (<code class=\"inline\">x as unknown as T</code>) which can connect <em>any</em> two types.</p><p>Prefer, in order: proper typing/generics → <strong>type guards / narrowing</strong> (runtime-checked) → <code class=\"inline\">satisfies</code> (checks without widening) → assertion as the last resort at genuine trust boundaries (DOM lookups, JSON you control).</p>",

@@ -193,7 +193,7 @@
       "gitignore",
       "tracking"
     ],
-    "question": ".gitignore — how it works and the common gotcha.",
+    "question": ".gitignore — how it works and the common mistakes.",
     "answer": "<p><code class=\"inline\">.gitignore</code> lists path patterns Git should not track (build output, <code class=\"inline\">node_modules</code>, secrets). It only affects <strong>untracked</strong> files.</p><p>Gotcha: a file <em>already tracked</em> keeps being tracked even after you add it to .gitignore — you must untrack it explicitly.</p>",
     "tip": "Committed a secret then added it to .gitignore? It's still in history — remove it with git rm --cached AND rotate the secret.",
     "code": "git rm --cached .env      # stop tracking, keep the file\necho \".env\" >> .gitignore",

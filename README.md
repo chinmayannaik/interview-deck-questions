@@ -90,6 +90,7 @@ Then add one or more categories that belong to the group.
   "difficulty": "beginner",
   "tags": ["components"],
   "question": "What is a component?",
+  "revise": "1–2 line crisp recap for Revise Mode.",
   "answer": "<p>...</p>",
   "tip": "Optional",
   "code": "",
@@ -97,6 +98,26 @@ Then add one or more categories that belong to the group.
   "deep": "<p>...</p>"
 }
 ```
+
+---
+
+## Revise Mode & the `revise` field
+
+The app/website has two reading modes:
+
+- **Preparation Mode** — first-time / deep learning. Shows everything: `answer`, `deep`, `code`, `tip`, `youtube`.
+- **Revise Mode** — quick refresh before an interview. Tapping a question reveals **only** the `revise` text. Each card also carries a small **Prep / Revise** toggle (the same segmented control as the header): flipping it to **Prep** expands that one card's full `answer` inline, without leaving Revise Mode.
+
+**Writing a good `revise` value:**
+
+- Keep it to **1–2 lines**, plain text, no fluff — the "5-second jolt", not a paragraph.
+- It must be a **genuine compression**, not a sentence copy-pasted from `answer`. Prefer keyword/trigger phrasing.
+  - ❌ *"var is function-scoped, hoisted and initialised to undefined…"* (duplicates `answer`)
+  - ✅ *"var → func-scope, hoist=undefined. let/const → block-scope, hoist=TDZ. const = binding fixed, value mutable."*
+
+**Fallback when `revise` is missing:** Revise Mode falls back to `tip`, then to a truncated `answer` — so existing questions still work and `revise` can be backfilled gradually.
+
+> `revise` is optional. `tip` remains a separate field (surfaced in Preparation Mode) — do **not** merge the two.
 
 ---
 
