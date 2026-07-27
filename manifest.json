@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 49,
-  "updatedAt": "2026-07-27T18:21:17.355Z",
+  "version": 50,
+  "updatedAt": "2026-07-27T18:58:38.288Z",
   "totalQuestions": 1697,
-  "contentHash": "f95d3717e0e32bf13b227aec40893744e03599f2",
+  "contentHash": "3980cd32d0bd461af5a84e293a11023938d9654e",
   "groups": [
     {
       "id": "frontend",
@@ -77,7 +77,7 @@
       "group": "frontend",
       "color": "#C3002F",
       "count": 96,
-      "hash": "1f7830a6c51f"
+      "hash": "f87e94c766b6"
     },
     {
       "id": "react",
@@ -104,7 +104,7 @@
       "group": "frontend",
       "color": "#B4820A",
       "count": 64,
-      "hash": "e70a4b8249ac"
+      "hash": "71abf48dee6c"
     },
     {
       "id": "typescript",
@@ -122,7 +122,7 @@
       "group": "frontend",
       "color": "#D9531E",
       "count": 30,
-      "hash": "050ecef53ec1"
+      "hash": "29a885812adb"
     },
     {
       "id": "css",
@@ -131,7 +131,7 @@
       "group": "frontend",
       "color": "#7A4FD6",
       "count": 35,
-      "hash": "602373f5d128"
+      "hash": "5ef702eafee7"
     },
     {
       "id": "coding",
@@ -185,7 +185,7 @@
       "group": "backend",
       "color": "#9A5B34",
       "count": 174,
-      "hash": "f0e4c7cb7359"
+      "hash": "a721585eba60"
     },
     {
       "id": "leetcode",
@@ -204,7 +204,7 @@
       "group": "backend",
       "color": "#4E8B2C",
       "count": 99,
-      "hash": "18ef1b6858ec"
+      "hash": "3e031f5aaffa"
     },
     {
       "id": "python",
