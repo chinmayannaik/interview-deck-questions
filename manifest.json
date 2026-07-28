@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 52,
-  "updatedAt": "2026-07-28T03:48:56.191Z",
+  "version": 53,
+  "updatedAt": "2026-07-28T04:03:15.549Z",
   "totalQuestions": 1697,
-  "contentHash": "853896ebdaad509afd0dfe018505a93dcff24a1a",
+  "contentHash": "93a939ff16acbb91400d6be40217331a8b06bbce",
   "groups": [
     {
       "id": "frontend",
@@ -77,7 +77,7 @@
       "group": "frontend",
       "color": "#C3002F",
       "count": 96,
-      "hash": "f87e94c766b6"
+      "hash": "8bb2dc96b07b"
     },
     {
       "id": "react",
