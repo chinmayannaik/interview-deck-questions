@@ -11,7 +11,8 @@
     "answer": "<p>Walk the string from the end to the start and build a new one, or convert to an array and back. Time O(n), space O(n).</p>",
     "tip": "The one-liner [...str].reverse().join('') is fine too — but interviewers often want the manual loop.",
     "code": "function reverse(str) {\n  let out = '';\n  for (let i = str.length - 1; i >= 0; i--) out += str[i];\n  return out;\n}\nreverse('hello'); // 'olleh'",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: build a new string end → start (or two-pointer swap on a char array).\n• `[...str].reverse().join('')` works, but interviewers want the manual loop.\n• **Complexity**: `O(n)` time, `O(n)` space."
   },
   {
     "id": "code-palindrome",
@@ -26,7 +27,8 @@
     "tip": "Start with one pointer at the beginning and another at the end. Compare and move inward until both pointers meet.",
     "code": "function isPalindrome(str) {\n  let left = 0;\n  let right = str.length - 1;\n\n  while (left < right) {\n    if (str[left] ! == str[right]) {\n      return false;\n    }\n\n    left++;\n    right--;\n  }\n\n  return true;\n}\n\nconsole.log(isPalindrome('madam'));    // true\nconsole.log(isPalindrome('racecar'));  // true\nconsole.log(isPalindrome('hello'));    // false",
     "lang": "js",
-    "deep": "<h4>Example</h4><p>Input: <code class=\"inline\">madam</code></p><table><thead><tr><th>Left</th><th>Right</th><th>Comparison</th></tr></thead><tbody><tr><td>m</td><td>m</td><td>✓ Match</td></tr><tr><td>a</td><td>a</td><td>✓ Match</td></tr><tr><td>d</td><td>d</td><td>Pointers meet</td></tr></tbody></table><h4>Algorithm</h4><ol><li>Create two pointers: one at the beginning and one at the end.</li><li>Compare both characters.</li><li>If they don't match, return <code class=\"inline\">false</code>.</li><li>If they match, move both pointers toward the center.</li><li>Repeat until the pointers meet.</li><li>If no mismatch is found, return <code class=\"inline\">true</code>.</li></ol><h4>Dry Run</h4><pre><code>Input = \"racecar\"\n\nleft = 0 (r)\nright = 6 (r) ✓\n\nleft = 1 (a)\nright = 5 (a) ✓\n\nleft = 2 (c)\nright = 4 (c) ✓\n\nleft = 3 (e)\nright = 3 (e)\n\nLoop ends → return true</code></pre><h4>Follow-up (Very Common)</h4><p>The interviewer may ask you to ignore spaces, punctuation and uppercase letters.</p><pre><code>// Convert to lowercase\nstr = str.toLowerCase();\n\n// Remove spaces & special characters\nstr = str.replace(/[^a-z0-9]/g, '');</code></pre><p><strong>Regex Explanation:</strong></p><table><thead><tr><th>Part</th><th>Meaning</th></tr></thead><tbody><tr><td><code class=\"inline\">a-z</code></td><td>Letters</td></tr><tr><td><code class=\"inline\">0-9</code></td><td>Numbers</td></tr><tr><td><code class=\"inline\">^</code></td><td>NOT these characters</td></tr><tr><td><code class=\"inline\">g</code></td><td>Replace all occurrences</td></tr></tbody></table><p>Example:</p><pre><code>Input:\n\"A man, a plan, a canal: Panama\"\n\nAfter preprocessing:\n\"amanaplanacanalpanama\"</code></pre><h4>Complexity</h4><ul><li><strong>Time:</strong> O(n)</li><li><strong>Space:</strong> O(1) (excluding optional preprocessing)</li></ul><h4>Interview Answer</h4><p>\"I'll solve the basic palindrome first using the Two Pointer approach. If the interviewer wants to ignore spaces or special characters, I'll preprocess the string by converting it to lowercase and removing non-alphanumeric characters before applying the same algorithm.\"</p>"
+    "deep": "<h4>Example</h4><p>Input: <code class=\"inline\">madam</code></p><table><thead><tr><th>Left</th><th>Right</th><th>Comparison</th></tr></thead><tbody><tr><td>m</td><td>m</td><td>✓ Match</td></tr><tr><td>a</td><td>a</td><td>✓ Match</td></tr><tr><td>d</td><td>d</td><td>Pointers meet</td></tr></tbody></table><h4>Algorithm</h4><ol><li>Create two pointers: one at the beginning and one at the end.</li><li>Compare both characters.</li><li>If they don't match, return <code class=\"inline\">false</code>.</li><li>If they match, move both pointers toward the center.</li><li>Repeat until the pointers meet.</li><li>If no mismatch is found, return <code class=\"inline\">true</code>.</li></ol><h4>Dry Run</h4><pre><code>Input = \"racecar\"\n\nleft = 0 (r)\nright = 6 (r) ✓\n\nleft = 1 (a)\nright = 5 (a) ✓\n\nleft = 2 (c)\nright = 4 (c) ✓\n\nleft = 3 (e)\nright = 3 (e)\n\nLoop ends → return true</code></pre><h4>Follow-up (Very Common)</h4><p>The interviewer may ask you to ignore spaces, punctuation and uppercase letters.</p><pre><code>// Convert to lowercase\nstr = str.toLowerCase();\n\n// Remove spaces & special characters\nstr = str.replace(/[^a-z0-9]/g, '');</code></pre><p><strong>Regex Explanation:</strong></p><table><thead><tr><th>Part</th><th>Meaning</th></tr></thead><tbody><tr><td><code class=\"inline\">a-z</code></td><td>Letters</td></tr><tr><td><code class=\"inline\">0-9</code></td><td>Numbers</td></tr><tr><td><code class=\"inline\">^</code></td><td>NOT these characters</td></tr><tr><td><code class=\"inline\">g</code></td><td>Replace all occurrences</td></tr></tbody></table><p>Example:</p><pre><code>Input:\n\"A man, a plan, a canal: Panama\"\n\nAfter preprocessing:\n\"amanaplanacanalpanama\"</code></pre><h4>Complexity</h4><ul><li><strong>Time:</strong> O(n)</li><li><strong>Space:</strong> O(1) (excluding optional preprocessing)</li></ul><h4>Interview Answer</h4><p>\"I'll solve the basic palindrome first using the Two Pointer approach. If the interviewer wants to ignore spaces or special characters, I'll preprocess the string by converting it to lowercase and removing non-alphanumeric characters before applying the same algorithm.\"</p>",
+    "revise": "**Pattern**: Two Pointers from both ends.\n• Compare outer chars, move inward; mismatch → not a palindrome.\n• **Complexity**: `O(n)` time, `O(1)` space."
   },
   {
     "id": "code-fizzbuzz",
@@ -43,7 +45,8 @@
     "tip": "Always check divisibility by both 3 and 5 first, otherwise 15 will match only the first condition.",
     "code": "function fizzBuzz(n) {\n  for (let i = 1; i <= n; i++) {\n    if (i % 3 === 0 && i % 5 === 0) {\n      console.log('FizzBuzz');\n    } else if (i % 3 === 0) {\n      console.log('Fizz');\n    } else if (i % 5 === 0) {\n      console.log('Buzz');\n    } else {\n      console.log(i);\n    }\n  }\n}\n\nfizzBuzz(15);",
     "lang": "js",
-    "deep": "<h4>What does 'divisible' mean?</h4><p>A number is divisible by another number if the remainder is <code class=\"inline\">0</code>. We use the modulus (<code class=\"inline\">%</code>) operator to check this.</p><pre><code>6 % 3 = 0   ✓ Divisible by 3\n10 % 5 = 0  ✓ Divisible by 5\n7 % 3 = 1   ✗ Not divisible by 3</code></pre><h4>Example (n = 15)</h4><table><thead><tr><th>Number</th><th>Output</th><th>Reason</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>Not divisible by 3 or 5</td></tr><tr><td>2</td><td>2</td><td>Not divisible by 3 or 5</td></tr><tr><td>3</td><td>Fizz</td><td>Divisible by 3</td></tr><tr><td>4</td><td>4</td><td>Not divisible by 3 or 5</td></tr><tr><td>5</td><td>Buzz</td><td>Divisible by 5</td></tr><tr><td>6</td><td>Fizz</td><td>Divisible by 3</td></tr><tr><td>9</td><td>Fizz</td><td>Divisible by 3</td></tr><tr><td>10</td><td>Buzz</td><td>Divisible by 5</td></tr><tr><td>12</td><td>Fizz</td><td>Divisible by 3</td></tr><tr><td>15</td><td>FizzBuzz</td><td>Divisible by both 3 and 5</td></tr></tbody></table><h4>Step-by-Step Algorithm</h4><ol><li>Start a loop from 1 to n.</li><li>Check if the number is divisible by both 3 and 5.</li><li>If yes, print <strong>FizzBuzz</strong>.</li><li>Otherwise, check if divisible by 3.</li><li>If yes, print <strong>Fizz</strong>.</li><li>Otherwise, check if divisible by 5.</li><li>If yes, print <strong>Buzz</strong>.</li><li>Otherwise, print the number.</li></ol><h4>Dry Run (i = 15)</h4><pre><code>15 % 3 == 0 ✓\n15 % 5 == 0 ✓\n\nBoth conditions are true\nOutput → FizzBuzz</code></pre><h4>Common Mistake</h4><pre><code>// Wrong\nif (i % 3 === 0)\nelse if (i % 5 === 0)\nelse if (i % 3 === 0 && i % 5 === 0)</code></pre><p>This will never print <strong>FizzBuzz</strong> because <code class=\"inline\">15</code> already satisfies the first condition (<code class=\"inline\">i % 3 === 0</code>).</p><h4>Complexity</h4><ul><li><strong>Time:</strong> O(n)</li><li><strong>Space:</strong> O(1)</li></ul><h4>Interview Tip</h4><p>After writing the basic solution, you can mention that it can be simplified by building the output string (<code class=\"inline\">'Fizz'</code> + <code class=\"inline\">'Buzz'</code>) to avoid checking the divisible-by-15 case separately. However, the if-else version is clearer and easier to explain in interviews.</p>"
+    "deep": "<h4>What does 'divisible' mean?</h4><p>A number is divisible by another number if the remainder is <code class=\"inline\">0</code>. We use the modulus (<code class=\"inline\">%</code>) operator to check this.</p><pre><code>6 % 3 = 0   ✓ Divisible by 3\n10 % 5 = 0  ✓ Divisible by 5\n7 % 3 = 1   ✗ Not divisible by 3</code></pre><h4>Example (n = 15)</h4><table><thead><tr><th>Number</th><th>Output</th><th>Reason</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>Not divisible by 3 or 5</td></tr><tr><td>2</td><td>2</td><td>Not divisible by 3 or 5</td></tr><tr><td>3</td><td>Fizz</td><td>Divisible by 3</td></tr><tr><td>4</td><td>4</td><td>Not divisible by 3 or 5</td></tr><tr><td>5</td><td>Buzz</td><td>Divisible by 5</td></tr><tr><td>6</td><td>Fizz</td><td>Divisible by 3</td></tr><tr><td>9</td><td>Fizz</td><td>Divisible by 3</td></tr><tr><td>10</td><td>Buzz</td><td>Divisible by 5</td></tr><tr><td>12</td><td>Fizz</td><td>Divisible by 3</td></tr><tr><td>15</td><td>FizzBuzz</td><td>Divisible by both 3 and 5</td></tr></tbody></table><h4>Step-by-Step Algorithm</h4><ol><li>Start a loop from 1 to n.</li><li>Check if the number is divisible by both 3 and 5.</li><li>If yes, print <strong>FizzBuzz</strong>.</li><li>Otherwise, check if divisible by 3.</li><li>If yes, print <strong>Fizz</strong>.</li><li>Otherwise, check if divisible by 5.</li><li>If yes, print <strong>Buzz</strong>.</li><li>Otherwise, print the number.</li></ol><h4>Dry Run (i = 15)</h4><pre><code>15 % 3 == 0 ✓\n15 % 5 == 0 ✓\n\nBoth conditions are true\nOutput → FizzBuzz</code></pre><h4>Common Mistake</h4><pre><code>// Wrong\nif (i % 3 === 0)\nelse if (i % 5 === 0)\nelse if (i % 3 === 0 && i % 5 === 0)</code></pre><p>This will never print <strong>FizzBuzz</strong> because <code class=\"inline\">15</code> already satisfies the first condition (<code class=\"inline\">i % 3 === 0</code>).</p><h4>Complexity</h4><ul><li><strong>Time:</strong> O(n)</li><li><strong>Space:</strong> O(1)</li></ul><h4>Interview Tip</h4><p>After writing the basic solution, you can mention that it can be simplified by building the output string (<code class=\"inline\">'Fizz'</code> + <code class=\"inline\">'Buzz'</code>) to avoid checking the divisible-by-15 case separately. However, the if-else version is clearer and easier to explain in interviews.</p>",
+    "revise": "**Pattern**: simple loop with ordered divisibility checks.\n• Check `15` (both 3 AND 5) FIRST, else 15 only matches the first branch.\n• **Complexity**: `O(n)`."
   },
   {
     "id": "code-two-sum",
@@ -59,7 +62,8 @@
     "tip": "Think 'What number do I need to reach the target?' instead of checking every pair.",
     "code": "function twoSum(nums, target) {\n  const seen = new Map();\n\n  for (let i = 0; i < nums.length; i++) {\n    const current = nums[i];\n    const need = target - current;\n\n    // Have we already seen the required number?\n    if (seen.has(need)) {\n      return [seen.get(need), i];\n    }\n\n    // Store current number and its index\n    seen.set(current, i);\n  }\n}\n\nconsole.log(twoSum([2, 7, 11, 15], 9)); // [0, 1]",
     "lang": "js",
-    "deep": "<h4>Example</h4><p><strong>Input:</strong></p><pre><code>nums = [2, 7, 11, 15]\ntarget = 9</code></pre><h4>Expected Output</h4><pre><code>[0, 1]</code></pre><p>Because <strong>nums[0] + nums[1] = 2 + 7 = 9</strong>.</p><h4>Algorithm</h4><ol><li>Create an empty <strong>Map</strong>.</li><li>Loop through the array.</li><li>For each number, calculate <code class=\"inline\">need = target - current</code>.</li><li>If <code class=\"inline\">need</code> already exists in the Map, return both indices.</li><li>Otherwise, store the current number and its index in the Map.</li><li>Continue until a match is found.</li></ol><h4>Dry Run</h4><table><thead><tr><th>Current</th><th>Need</th><th>Map</th><th>Action</th></tr></thead><tbody><tr><td>2</td><td>7</td><td>{ }</td><td>Store 2 → 0</td></tr><tr><td>7</td><td>2</td><td>{2:0}</td><td>Found 2 ✓ Return [0,1]</td></tr></tbody></table><h4>Why HashMap?</h4><p>Searching an array takes <strong>O(n)</strong> time, but looking up a value in a <strong>Map</strong> takes approximately <strong>O(1)</strong>. This reduces the overall solution from <strong>O(n²)</strong> to <strong>O(n)</strong>.</p><h4>Complexity</h4><ul><li><strong>Time:</strong> O(n)</li><li><strong>Space:</strong> O(n) (for the HashMap)</li></ul><h4>Interview Answer</h4><p>\"Instead of checking every pair, I iterate through the array once. For each element, I calculate the complement (<code class=\"inline\">target - current</code>). If the complement already exists in a HashMap, I've found the answer. Otherwise, I store the current number and continue. This gives an O(n) solution.\"</p>"
+    "deep": "<h4>Example</h4><p><strong>Input:</strong></p><pre><code>nums = [2, 7, 11, 15]\ntarget = 9</code></pre><h4>Expected Output</h4><pre><code>[0, 1]</code></pre><p>Because <strong>nums[0] + nums[1] = 2 + 7 = 9</strong>.</p><h4>Algorithm</h4><ol><li>Create an empty <strong>Map</strong>.</li><li>Loop through the array.</li><li>For each number, calculate <code class=\"inline\">need = target - current</code>.</li><li>If <code class=\"inline\">need</code> already exists in the Map, return both indices.</li><li>Otherwise, store the current number and its index in the Map.</li><li>Continue until a match is found.</li></ol><h4>Dry Run</h4><table><thead><tr><th>Current</th><th>Need</th><th>Map</th><th>Action</th></tr></thead><tbody><tr><td>2</td><td>7</td><td>{ }</td><td>Store 2 → 0</td></tr><tr><td>7</td><td>2</td><td>{2:0}</td><td>Found 2 ✓ Return [0,1]</td></tr></tbody></table><h4>Why HashMap?</h4><p>Searching an array takes <strong>O(n)</strong> time, but looking up a value in a <strong>Map</strong> takes approximately <strong>O(1)</strong>. This reduces the overall solution from <strong>O(n²)</strong> to <strong>O(n)</strong>.</p><h4>Complexity</h4><ul><li><strong>Time:</strong> O(n)</li><li><strong>Space:</strong> O(n) (for the HashMap)</li></ul><h4>Interview Answer</h4><p>\"Instead of checking every pair, I iterate through the array once. For each element, I calculate the complement (<code class=\"inline\">target - current</code>). If the complement already exists in a HashMap, I've found the answer. Otherwise, I store the current number and continue. This gives an O(n) solution.\"</p>",
+    "revise": "**Pattern**: `HashMap` of value → index (one pass).\n• For each `x`, check if `target − x` was already seen; if so, return the pair.\n• Beats the `O(n²)` brute force. Complexity: `O(n)` time, `O(n)` space."
   },
   {
     "id": "code-group-anagrams",
@@ -75,7 +79,8 @@
     "answer": "<p>Sort each word alphabetically and use the sorted string as the key inside a <code class=\"inline\">Map</code>. Words with the same sorted characters belong to the same group.</p>",
     "tip": "Whenever multiple strings can be represented by a common signature, use that signature as a Map key.",
     "code": "function groupAnagrams(strs) {\n  const map = new Map();\n\n  for (const word of strs) {\n    const key = word.split('').sort().join('');\n\n    if (!map.has(key)) {\n      map.set(key, []);\n    }\n\n    map.get(key).push(word);\n  }\n\n  return [...map.values()];\n}\n\nconsole.log(groupAnagrams(['eat','tea','tan','ate','nat','bat']));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: signature key in a Map.\n• Sort each word's letters → identical anagrams share the same sorted key; group by it.\n• Whenever items share a canonical form, use it as the Map key."
   },
   {
     "id": "code-top-k-frequent",
@@ -91,7 +96,8 @@
     "answer": "<p>Count the frequency of every number using a <code class=\"inline\">Map</code>, sort by frequency in descending order, then return the first K elements.</p>",
     "tip": "Interviewers often ask how to improve this solution to O(n) using Bucket Sort.",
     "code": "function topKFrequent(nums, k) {\n  const freq = new Map();\n\n  for (const num of nums) {\n    freq.set(num, (freq.get(num) || 0) + 1);\n  }\n\n  return [...freq.entries()]\n    .sort((a, b) => b[1] - a[1])\n    .slice(0, k)\n    .map(item => item[0]);\n}\n\nconsole.log(topKFrequent([1,1,1,2,2,3],2));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: frequency Map + selection.\n• Count with a Map, then sort by count desc and take K.\n• **Follow-up**: Bucket Sort (index = frequency) gets it to `O(n)`."
   },
   {
     "id": "code-product-except-self",
@@ -107,7 +113,8 @@
     "answer": "<p>Build prefix products from the left and suffix products from the right. Multiply both values to get the answer for each index without using division.</p>",
     "tip": "Prefix & Suffix is one of the most common interview patterns for arrays.",
     "code": "function productExceptSelf(nums) {\n  const result = Array(nums.length).fill(1);\n\n  let prefix = 1;\n  for (let i = 0; i < nums.length; i++) {\n    result[i] = prefix;\n    prefix *= nums[i];\n  }\n\n  let suffix = 1;\n  for (let i = nums.length - 1; i >= 0; i--) {\n    result[i] *= suffix;\n    suffix *= nums[i];\n  }\n\n  return result;\n}\n\nconsole.log(productExceptSelf([1,2,3,4]));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Prefix & Suffix products.\n• Left-to-right prefix × right-to-left suffix = product excluding self, NO division.\n• **Complexity**: `O(n)` time, `O(1)` extra (output aside)."
   },
   {
     "id": "code-longest-consecutive-sequence",
@@ -122,7 +129,8 @@
     "answer": "<p>Store all numbers inside a <code class=\"inline\">Set</code>. Only start counting when the current number is the beginning of a sequence (its previous number doesn't exist). This guarantees O(n) time.</p>",
     "tip": "The key trick is checking <code class=\"inline\">num - 1</code>. If it exists, skip because the sequence has already been counted.",
     "code": "function longestConsecutive(nums) {\n  const set = new Set(nums);\n  let longest = 0;\n\n  for (const num of set) {\n    if (!set.has(num - 1)) {\n      let current = num;\n      let length = 1;\n\n      while (set.has(current + 1)) {\n        current++;\n        length++;\n      }\n\n      longest = Math.max(longest, length);\n    }\n  }\n\n  return longest;\n}\n\nconsole.log(longestConsecutive([100,4,200,1,3,2])); // 4",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: `HashSet` + start-of-run check.\n• Put all in a Set; only begin counting when `num − 1` is absent (a sequence start).\n• That guard makes it `O(n)`, not `O(n²)`."
   },
   {
     "id": "code-three-sum",
@@ -138,7 +146,8 @@
     "answer": "<p>Sort the array first. Fix one number and use two pointers (<code class=\"inline\">left</code> and <code class=\"inline\">right</code>) to find the remaining two numbers. Skip duplicate values to avoid duplicate triplets.</p>",
     "tip": "Whenever a question asks for pairs or triplets in a sorted array, think Two Pointers.",
     "code": "function threeSum(nums) {\n  nums.sort((a,b)=>a-b);\n  const result = [];\n\n  for(let i=0;i<nums.length-2;i++){\n    if(i>0 && nums[i]===nums[i-1]) continue;\n\n    let left=i+1;\n    let right=nums.length-1;\n\n    while(left<right){\n      const sum=nums[i]+nums[left]+nums[right];\n\n      if(sum===0){\n        result.push([nums[i],nums[left],nums[right]]);\n        while(left<right && nums[left]===nums[left+1]) left++;\n        while(left<right && nums[right]===nums[right-1]) right--;\n        left++;\n        right--;\n      }else if(sum<0){\n        left++;\n      }else{\n        right--;\n      }\n    }\n  }\n\n  return result;\n}\n\nconsole.log(threeSum([-1,0,1,2,-1,-4]));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: sort, then fix one + Two Pointers.\n• For each anchor, two pointers find the other two summing to zero; SKIP duplicates.\n• **Complexity**: `O(n²)`. Pairs/triplets in a sorted array → think Two Pointers."
   },
   {
     "id": "code-container-most-water",
@@ -153,7 +162,8 @@
     "answer": "<p>Use two pointers at both ends of the array. Calculate the area and move the pointer with the smaller height inward because moving the taller one cannot increase the area.</p>",
     "tip": "Move the smaller height pointer, never the taller one.",
     "code": "function maxArea(height) {\n  let left=0;\n  let right=height.length-1;\n  let max=0;\n\n  while(left<right){\n    const area=Math.min(height[left],height[right])*(right-left);\n    max=Math.max(max,area);\n\n    if(height[left]<height[right]) left++;\n    else right--;\n  }\n\n  return max;\n}\n\nconsole.log(maxArea([1,8,6,2,5,4,8,3,7]));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Two Pointers at both ends.\n• Area = min(height) × width; move the SHORTER side inward (moving the taller can't help).\n• **Complexity**: `O(n)` time, `O(1)` space."
   },
   {
     "id": "code-longest-substring-without-repeating",
@@ -169,7 +179,8 @@
     "answer": "<p>Maintain a sliding window using two pointers. Store the latest index of every character inside a Map. Whenever a duplicate appears, move the left pointer accordingly.</p>",
     "tip": "Sliding Window + HashMap is one of the most common interview patterns.",
     "code": "function lengthOfLongestSubstring(s){\n  const map=new Map();\n  let left=0;\n  let max=0;\n\n  for(let right=0;right<s.length;right++){\n    if(map.has(s[right])){\n      left=Math.max(left,map.get(s[right])+1);\n    }\n\n    map.set(s[right],right);\n    max=Math.max(max,right-left+1);\n  }\n\n  return max;\n}\n\nconsole.log(lengthOfLongestSubstring('abcabcbb'));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Sliding Window + last-seen Map.\n• Store each char's latest index; on a duplicate, jump the left edge past it.\n• **Complexity**: `O(n)`. (Sliding Window + `HashMap` is a top pattern.)"
   },
   {
     "id": "code-longest-palindromic-substring",
@@ -183,7 +194,8 @@
     "answer": "<p>Expand around every character (and every gap between characters) as the center of a palindrome. Keep track of the longest palindrome found.</p>",
     "tip": "Every palindrome grows outward from its center.",
     "code": "function longestPalindrome(s){\n  let start=0,end=0;\n\n  function expand(left,right){\n    while(left>=0 && right<s.length && s[left]===s[right]){\n      left--;\n      right++;\n    }\n    return [left+1,right-1];\n  }\n\n  for(let i=0;i<s.length;i++){\n    const odd=expand(i,i);\n    const even=expand(i,i+1);\n\n    const longer=(odd[1]-odd[0])>(even[1]-even[0])?odd:even;\n\n    if(longer[1]-longer[0]>end-start){\n      start=longer[0];\n      end=longer[1];\n    }\n  }\n\n  return s.substring(start,end+1);\n}\n\nconsole.log(longestPalindrome('babad'));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: expand around center.\n• Try each char AND each gap as a center; grow outward while chars match; track the longest.\n• **Complexity**: `O(n²)` time, `O(1)` space."
   },
   {
     "id": "code-valid-parentheses",
@@ -198,7 +210,8 @@
     "answer": "<p>Use a Stack. Push every opening bracket. Whenever a closing bracket appears, verify it matches the top of the stack. At the end, the stack must be empty.</p>",
     "tip": "Whenever matching pairs appear, Stack should be your first thought.",
     "code": "function isValid(s){\n  const stack=[];\n  const map={')':'(',']':'[','}':'{'};\n\n  for(const ch of s){\n    if(ch==='('||ch==='['||ch==='{'){\n      stack.push(ch);\n    }else{\n      if(stack.pop()!==map[ch]){\n        return false;\n      }\n    }\n  }\n\n  return stack.length===0;\n}\n\nconsole.log(isValid('()[]{}'));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Stack.\n• Push openers; on a closer, it must match the stack top; the stack must end EMPTY.\n• Matching pairs → reach for a Stack first."
   },
   {
     "id": "code-generate-parentheses",
@@ -213,7 +226,8 @@
     "answer": "<p>Use backtracking. Keep adding '(' until the limit is reached, then add ')' only when it won't make the string invalid. Backtrack after each recursive call.</p>",
     "tip": "Backtracking is about making a choice, exploring it, then undoing that choice.",
     "code": "function generateParenthesis(n) {\n  const result = [];\n\n  function backtrack(str, open, close) {\n    if (str.length === n * 2) {\n      result.push(str);\n      return;\n    }\n\n    if (open < n) {\n      backtrack(str + '(', open + 1, close);\n    }\n\n    if (close < open) {\n      backtrack(str + ')', open, close + 1);\n    }\n  }\n\n  backtrack('', 0, 0);\n  return result;\n}\n\nconsole.log(generateParenthesis(3));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Backtracking.\n• Add `(` while open < n; add `)` only while close < open; record when length = 2n.\n• Backtracking = choose → explore → undo."
   },
   {
     "id": "code-daily-temperatures",
@@ -229,7 +243,8 @@
     "answer": "<p>Maintain a monotonic decreasing stack of indices. Whenever the current temperature is higher than the top of the stack, calculate the waiting days and pop it.</p>",
     "tip": "Questions asking for the 'next greater element' usually use a Monotonic Stack.",
     "code": "function dailyTemperatures(temperatures) {\n  const result = Array(temperatures.length).fill(0);\n  const stack = [];\n\n  for (let i = 0; i < temperatures.length; i++) {\n    while (stack.length && temperatures[i] > temperatures[stack[stack.length - 1]]) {\n      const index = stack.pop();\n      result[index] = i - index;\n    }\n    stack.push(i);\n  }\n\n  return result;\n}\n\nconsole.log(dailyTemperatures([73,74,75,71,69,72,76,73]));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Monotonic (decreasing) Stack of indices.\n• Pop while today is warmer than the stack top; the gap in indices = waiting days.\n• **Complexity**: `O(n)`. 'Next warmer/greater' → Monotonic Stack."
   },
   {
     "id": "code-min-stack",
@@ -244,7 +259,8 @@
     "answer": "<p>Maintain two stacks. One stores all values, while the other stores the current minimum after each push. The minimum is always at the top of the second stack.</p>",
     "tip": "Whenever constant-time minimum or maximum is required, think of maintaining an auxiliary stack.",
     "code": "class MinStack {\n  constructor() {\n    this.stack = [];\n    this.minStack = [];\n  }\n\n  push(val) {\n    this.stack.push(val);\n\n    if (!this.minStack.length || val <= this.getMin()) {\n      this.minStack.push(val);\n    }\n  }\n\n  pop() {\n    if (this.stack.pop() === this.getMin()) {\n      this.minStack.pop();\n    }\n  }\n\n  top() {\n    return this.stack[this.stack.length - 1];\n  }\n\n  getMin() {\n    return this.minStack[this.minStack.length - 1];\n  }\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: an auxiliary min-stack.\n• Second stack tracks the current minimum after each push, so min is always its top.\n• `get`/`push`/`pop`/`min` all `O(1)`."
   },
   {
     "id": "code-evaluate-reverse-polish-notation",
@@ -258,7 +274,8 @@
     "answer": "<p>Traverse the tokens. Push numbers onto the stack. When an operator is found, pop the last two numbers, evaluate them, and push the result back.</p>",
     "tip": "Reverse Polish Notation is a classic Stack problem.",
     "code": "function evalRPN(tokens) {\n  const stack = [];\n\n  for (const token of tokens) {\n    if (!'+-*/'.includes(token)) {\n      stack.push(Number(token));\n    } else {\n      const b = stack.pop();\n      const a = stack.pop();\n\n      switch (token) {\n        case '+': stack.push(a + b); break;\n        case '-': stack.push(a - b); break;\n        case '*': stack.push(a * b); break;\n        case '/': stack.push(Math.trunc(a / b)); break;\n      }\n    }\n  }\n\n  return stack.pop();\n}\n\nconsole.log(evalRPN(['2','1','+','3','*']));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Stack evaluation.\n• Push numbers; on an operator, pop the top TWO, apply, push the result.\n• **Complexity**: `O(n)`. RPN is the classic Stack problem."
   },
   {
     "id": "code-binary-search-rotated-array",
@@ -273,7 +290,8 @@
     "answer": "<p>Apply Binary Search while determining which half of the array is sorted. Decide whether the target lies in the sorted half, then continue searching only that half.</p>",
     "tip": "The trick is identifying the sorted half at every iteration.",
     "code": "function search(nums, target) {\n  let left = 0;\n  let right = nums.length - 1;\n\n  while (left <= right) {\n    const mid = Math.floor((left + right) / 2);\n\n    if (nums[mid] === target) return mid;\n\n    if (nums[left] <= nums[mid]) {\n      if (target >= nums[left] && target < nums[mid]) {\n        right = mid - 1;\n      } else {\n        left = mid + 1;\n      }\n    } else {\n      if (target > nums[mid] && target <= nums[right]) {\n        left = mid + 1;\n      } else {\n        right = mid - 1;\n      }\n    }\n  }\n\n  return -1;\n}\n\nconsole.log(search([4,5,6,7,0,1,2],0));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: modified Binary Search.\n• **Each step, one half is sorted** — decide if target lies in it, then recurse into the right half.\n• **Complexity**: `O(log n)`. The trick: identify the sorted half every iteration."
   },
   {
     "id": "code-find-first-last-position",
@@ -288,7 +306,8 @@
     "answer": "<p>Use Binary Search twice—once to find the leftmost occurrence and once to find the rightmost occurrence. This gives O(log n) time complexity.</p>",
     "tip": "Whenever you need first or last occurrence in a sorted array, think of modified Binary Search.",
     "code": "function searchRange(nums, target) {\n  function find(first) {\n    let left = 0, right = nums.length - 1;\n    let ans = -1;\n\n    while (left <= right) {\n      const mid = Math.floor((left + right) / 2);\n\n      if (nums[mid] === target) {\n        ans = mid;\n        if (first) right = mid - 1;\n        else left = mid + 1;\n      } else if (nums[mid] < target) {\n        left = mid + 1;\n      } else {\n        right = mid - 1;\n      }\n    }\n\n    return ans;\n  }\n\n  return [find(true), find(false)];\n}\n\nconsole.log(searchRange([5,7,7,8,8,10],8));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Binary Search twice.\n• One search biased LEFT (first occurrence), one biased RIGHT (last).\n• **Complexity**: `O(log n)`."
   },
   {
     "id": "code-merge-intervals",
@@ -304,7 +323,8 @@
     "answer": "<p>Sort intervals by start time. Compare each interval with the previous one. If they overlap, merge them; otherwise, add a new interval.</p>",
     "tip": "Almost every interval problem starts with sorting.",
     "code": "function merge(intervals) {\n  intervals.sort((a,b)=>a[0]-b[0]);\n\n  const result=[];\n\n  for(const interval of intervals){\n    if(!result.length || result[result.length-1][1] < interval[0]){\n      result.push(interval);\n    }else{\n      result[result.length-1][1]=Math.max(result[result.length-1][1],interval[1]);\n    }\n  }\n\n  return result;\n}\n\nconsole.log(merge([[1,3],[2,6],[8,10],[15,18]]));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: sort by start, then sweep.\n• Overlap (`cur.start <= prev.end`) → merge by extending the end; else start a new interval.\n• **Complexity**: `O(n log n)`. Interval problems almost always start with a sort."
   },
   {
     "id": "code-insert-interval",
@@ -318,7 +338,8 @@
     "answer": "<p>Add all intervals before the new interval, merge overlapping intervals, then append the remaining intervals.</p>",
     "tip": "This is an extension of Merge Intervals. Master Merge Intervals first.",
     "code": "function insert(intervals,newInterval){\n  const result=[];\n  let i=0;\n\n  while(i<intervals.length && intervals[i][1]<newInterval[0]){\n    result.push(intervals[i++]);\n  }\n\n  while(i<intervals.length && intervals[i][0]<=newInterval[1]){\n    newInterval=[\n      Math.min(newInterval[0],intervals[i][0]),\n      Math.max(newInterval[1],intervals[i][1])\n    ];\n    i++;\n  }\n\n  result.push(newInterval);\n\n  while(i<intervals.length){\n    result.push(intervals[i++]);\n  }\n\n  return result;\n}\n\nconsole.log(insert([[1,3],[6,9]],[2,5]));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: three phases (before / merge / after).\n• Add intervals ending before the new one, merge all overlaps into it, then append the rest.\n• **An extension of Merge Intervals** — master that first. `O(n)`."
   },
   {
     "id": "code-spiral-matrix",
@@ -333,7 +354,8 @@
     "answer": "<p>Maintain four boundaries (top, bottom, left, right). Traverse each boundary and shrink it until every element is visited.</p>",
     "tip": "Most matrix traversal problems use boundary pointers.",
     "code": "function spiralOrder(matrix){\n  const result=[];\n\n  let top=0;\n  let bottom=matrix.length-1;\n  let left=0;\n  let right=matrix[0].length-1;\n\n  while(top<=bottom && left<=right){\n    for(let i=left;i<=right;i++) result.push(matrix[top][i]);\n    top++;\n\n    for(let i=top;i<=bottom;i++) result.push(matrix[i][right]);\n    right--;\n\n    if(top<=bottom){\n      for(let i=right;i>=left;i--) result.push(matrix[bottom][i]);\n      bottom--;\n    }\n\n    if(left<=right){\n      for(let i=bottom;i>=top;i--) result.push(matrix[i][left]);\n      left++;\n    }\n  }\n\n  return result;\n}\n\nconsole.log(spiralOrder([[1,2,3],[4,5,6],[7,8,9]]));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: four shrinking boundaries.\n• Walk top → right → bottom → left, shrinking each boundary after its pass.\n• **Complexity**: `O(m·n)`. Matrix traversals use boundary pointers."
   },
   {
     "id": "code-number-of-islands",
@@ -350,7 +372,8 @@
     "answer": "<p>Traverse every cell. Whenever you find land ('1'), increment the count and perform DFS/BFS to mark the entire island as visited.</p>",
     "tip": "Whenever you need to visit connected cells, think DFS or BFS.",
     "code": "function numIslands(grid){\n  let count=0;\n\n  function dfs(r,c){\n    if(r<0||c<0||r>=grid.length||c>=grid[0].length||grid[r][c]==='0') return;\n\n    grid[r][c]='0';\n\n    dfs(r+1,c);\n    dfs(r-1,c);\n    dfs(r,c+1);\n    dfs(r,c-1);\n  }\n\n  for(let r=0;r<grid.length;r++){\n    for(let c=0;c<grid[0].length;c++){\n      if(grid[r][c]==='1'){\n        count++;\n        dfs(r,c);\n      }\n    }\n  }\n\n  return count;\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: grid DFS/BFS flood fill.\n• On each unvisited '1', increment the count and sink the whole island (mark visited).\n• **Complexity**: `O(m·n)`. Connected cells → DFS/BFS."
   },
   {
     "id": "code-clone-graph",
@@ -366,7 +389,8 @@
     "answer": "<p>Use DFS (or BFS) with a <code class=\"inline\">Map</code> to store already cloned nodes. If a node is visited again, return its clone instead of creating a new one.</p>",
     "tip": "Whenever deep copying objects with cycles, always maintain a visited Map.",
     "code": "function cloneGraph(node) {\n  if (!node) return null;\n\n  const map = new Map();\n\n  function dfs(node) {\n    if (map.has(node)) return map.get(node);\n\n    const clone = { val: node.val, neighbors: [] };\n    map.set(node, clone);\n\n    for (const nei of node.neighbors) {\n      clone.neighbors.push(dfs(nei));\n    }\n\n    return clone;\n  }\n\n  return dfs(node);\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: DFS/BFS + visited Map (original → clone).\n• Clone a node once; on revisit, return the stored clone (handles cycles).\n• Deep-copying anything with cycles → keep a visited Map."
   },
   {
     "id": "code-course-schedule",
@@ -382,7 +406,8 @@
     "answer": "<p>Represent courses as a graph and detect cycles using DFS. If a cycle exists, all courses cannot be completed. Otherwise, return true.</p>",
     "tip": "Course Schedule is the most common Topological Sort interview question.",
     "code": "function canFinish(numCourses, prerequisites) {\n  const graph = Array.from({ length: numCourses }, () => []);\n\n  for (const [a, b] of prerequisites) {\n    graph[a].push(b);\n  }\n\n  const visiting = new Set();\n  const visited = new Set();\n\n  function dfs(course) {\n    if (visiting.has(course)) return false;\n    if (visited.has(course)) return true;\n\n    visiting.add(course);\n\n    for (const next of graph[course]) {\n      if (!dfs(next)) return false;\n    }\n\n    visiting.delete(course);\n    visited.add(course);\n\n    return true;\n  }\n\n  for (let i = 0; i < numCourses; i++) {\n    if (!dfs(i)) return false;\n  }\n\n  return true;\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: cycle detection / Topological Sort.\n• Build a prerequisite graph; a cycle means it's impossible.\n• The canonical Topological Sort interview problem. `O(V + E)`."
   },
   {
     "id": "code-lowest-common-ancestor",
@@ -398,7 +423,8 @@
     "answer": "<p>Traverse recursively. If either node is found, return it. If both left and right recursive calls return non-null values, the current node is the Lowest Common Ancestor.</p>",
     "tip": "The first node where both recursive branches return a value is the answer.",
     "code": "function lowestCommonAncestor(root, p, q) {\n  if (!root || root === p || root === q) return root;\n\n  const left = lowestCommonAncestor(root.left, p, q);\n  const right = lowestCommonAncestor(root.right, p, q);\n\n  if (left && right) return root;\n\n  return left || right;\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: recursive DFS.\n• Return a node if it matches p or q; the first node where BOTH sides return non-null is the LCA.\n• **Complexity**: `O(n)`."
   },
   {
     "id": "code-kth-largest-element",
@@ -414,7 +440,8 @@
     "answer": "<p>Sort the array in descending order and return the Kth element. Interviewers may later ask for an O(n log k) Heap solution or O(n) Quick Select solution.</p>",
     "tip": "Start with sorting, then discuss Heap or Quick Select as optimizations.",
     "code": "function findKthLargest(nums, k) {\n  nums.sort((a, b) => b - a);\n  return nums[k - 1];\n}\n\nconsole.log(findKthLargest([3,2,1,5,6,4],2));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: selection.\n• **Simple**: sort desc, take the Kth.\n• **Optimize**: a size-K Heap → `O(n log k)`, or Quickselect → `O(n)` average."
   },
   {
     "id": "code-letter-combinations-phone-number",
@@ -429,7 +456,8 @@
     "answer": "<p>Use Backtracking to generate all possible combinations. For every digit, iterate through its mapped letters and recursively build the current string.</p>",
     "tip": "Whenever you need all possible combinations, Backtracking is usually the correct approach.",
     "code": "function letterCombinations(digits) {\n  if (!digits.length) return [];\n\n  const map = {\n    '2':'abc','3':'def','4':'ghi','5':'jkl',\n    '6':'mno','7':'pqrs','8':'tuv','9':'wxyz'\n  };\n\n  const result = [];\n\n  function backtrack(index, current) {\n    if (index === digits.length) {\n      result.push(current);\n      return;\n    }\n\n    for (const ch of map[digits[index]]) {\n      backtrack(index + 1, current + ch);\n    }\n  }\n\n  backtrack(0, '');\n  return result;\n}\n\nconsole.log(letterCombinations('23'));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Backtracking over digit→letters.\n• For each digit, try every mapped letter and recurse to build the string.\n• 'All combinations' → Backtracking."
   },
   {
     "id": "code-dedupe",
@@ -443,7 +471,8 @@
     "answer": "<p>Wrap it in a <code class=\"inline\">Set</code> (which keeps unique values) and spread back to an array. For objects by a key, use a Map keyed on that field.</p>",
     "tip": "[...new Set(arr)] is the idiomatic dedupe; use a Map for de-duping objects by id.",
     "code": "const unique = arr => [...new Set(arr)];\nunique([1, 1, 2, 3, 3]); // [1, 2, 3]\n\n// by key:\nconst byId = arr => [...new Map(arr.map(o => [o.id, o])).values()];",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: use a Set.\n• `[...new Set(arr)]` for primitives; a Map keyed on a field to dedupe OBJECTS by id.\n• **Complexity**: `O(n)`."
   },
   {
     "id": "code-flatten-array",
@@ -457,7 +486,8 @@
     "answer": "<p>Reduce over the array; if an element is itself an array, recurse and concat the result, otherwise include it. Or use an explicit stack to avoid recursion.</p>",
     "tip": "Recursion reads cleanly; mention a stack-based version if asked about very deep nesting.",
     "code": "function flatten(arr) {\n  return arr.reduce((acc, v) =>\n    acc.concat(Array.isArray(v) ? flatten(v) : v), []);\n}\nflatten([1, [2, [3, [4]]]]); // [1, 2, 3, 4]",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: recursion (or an explicit stack).\n• Reduce; if an element is an array, recurse and concat, else keep it.\n• Mention a stack-based version for very deep nesting (avoids call-stack limits)."
   },
   {
     "id": "code-debounce",
@@ -472,7 +502,8 @@
     "answer": "<p>Return a function that clears a pending timer and sets a new one on each call, so the wrapped function only runs after calls stop for <code class=\"inline\">ms</code>. The timer id lives in a closure.</p>",
     "tip": "Preserve `this` and args with apply so it works as a method or event handler.",
     "code": "function debounce(fn, ms) {\n  let t;\n  return function (...args) {\n    clearTimeout(t);\n    t = setTimeout(() => fn.apply(this, args), ms);\n  };\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: a trailing timer in a closure.\n• Each call clears the pending timer and sets a new one; the fn runs only after calls STOP for `ms`.\n• Preserve `this`/args with `apply` so it works as a handler."
   },
   {
     "id": "code-throttle",
@@ -487,7 +518,8 @@
     "answer": "<p>Track the last run time; only invoke the wrapped function if at least <code class=\"inline\">ms</code> has elapsed since the previous call. Guarantees a maximum call rate.</p>",
     "tip": "Debounce waits for quiet; throttle enforces a steady rate — know both.",
     "code": "function throttle(fn, ms) {\n  let last = 0;\n  return function (...args) {\n    const now = Date.now();\n    if (now - last >= ms) { last = now; fn.apply(this, args); }\n  };\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: last-run timestamp gate.\n• Only invoke if `≥ ms` has passed since the last run → a steady maximum rate.\n• Debounce waits for quiet; throttle enforces a rate — know both."
   },
   {
     "id": "code-deep-clone",
@@ -502,7 +534,8 @@
     "answer": "<p>Recurse: return primitives as-is, map arrays, and rebuild objects key by key cloning each value. Handle <code class=\"inline\">Date</code>/arrays explicitly. (In real code prefer <code class=\"inline\">structuredClone</code>.)</p>",
     "tip": "Mention structuredClone as the modern built-in, but be able to hand-roll it.",
     "code": "function deepClone(v) {\n  if (v === null || typeof v !== 'object') return v;\n  if (v instanceof Date) return new Date(v);\n  if (Array.isArray(v)) return v.map(deepClone);\n  return Object.fromEntries(\n    Object.entries(v).map(([k, val]) => [k, deepClone(val)])\n  );\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: recursive copy.\n• Primitives as-is; map arrays; rebuild objects key by key; handle `Date`/arrays explicitly.\n• In real code prefer the built-in `structuredClone` — but be able to hand-roll it."
   },
   {
     "id": "code-memoize",
@@ -517,7 +550,8 @@
     "answer": "<p>Cache results in a Map keyed by the serialized arguments; return the cached value on repeat calls. Great for expensive pure functions.</p>",
     "tip": "Keying by JSON.stringify(args) is simple but breaks on functions/circular refs — fine for primitives.",
     "code": "function memoize(fn) {\n  const cache = new Map();\n  return function (...args) {\n    const key = JSON.stringify(args);\n    if (cache.has(key)) return cache.get(key);\n    const result = fn.apply(this, args);\n    cache.set(key, result);\n    return result;\n  };\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: cache results in a Map keyed by args.\n• Return the cached value on repeat calls; ideal for pure, expensive functions.\n• `JSON.stringify(args)` keys are simple but break on functions/circular refs."
   },
   {
     "id": "code-curry",
@@ -532,7 +566,8 @@
     "answer": "<p>Collect arguments across calls; once you have at least <code class=\"inline\">fn.length</code> of them, invoke. Otherwise return a function that keeps gathering. Uses closures + recursion.</p>",
     "tip": "fn.length gives the expected arity — that's how you know when to call.",
     "code": "function curry(fn) {\n  return function curried(...args) {\n    return args.length >= fn.length\n      ? fn.apply(this, args)\n      : (...next) => curried.apply(this, args.concat(next));\n  };\n}\nconst add = (a, b, c) => a + b + c;\ncurry(add)(1)(2)(3); // 6",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: gather args across calls via closures.\n• Once collected args reach `fn.length` (the arity), invoke; else return a collector fn.\n• `fn.length` tells you WHEN to finally call."
   },
   {
     "id": "code-promise-all",
@@ -546,7 +581,8 @@
     "answer": "<p>Return a new Promise. Track a results array and a completion counter; resolve when every input settles, preserving order by index; reject on the first failure.</p>",
     "tip": "Preserve order by writing to results[i], not by push — inputs resolve out of order.",
     "code": "function promiseAll(promises) {\n  return new Promise((resolve, reject) => {\n    const results = []; let done = 0;\n    if (!promises.length) return resolve(results);\n    promises.forEach((p, i) => {\n      Promise.resolve(p).then(v => {\n        results[i] = v;\n        if (++done === promises.length) resolve(results);\n      }, reject);\n    });\n  });\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: counter + results array in a new Promise.\n• Resolve when the completion counter hits the input length; write to `results[i]` to KEEP ORDER; reject on the first failure.\n• **Inputs settle out of order** — index, don't push."
   },
   {
     "id": "code-event-emitter",
@@ -561,7 +597,8 @@
     "answer": "<p>Keep a map of event name → array of listeners. <code class=\"inline\">on</code> pushes, <code class=\"inline\">off</code> filters out, <code class=\"inline\">emit</code> calls each listener with the payload. This is the pub/sub pattern behind RxJS Subjects and Node's EventEmitter.</p>",
     "tip": "This is the pattern behind cross-component communication via a shared service.",
     "code": "class EventEmitter {\n  constructor() { this.map = {}; }\n  on(e, fn) { (this.map[e] ||= []).push(fn); return () => this.off(e, fn); }\n  off(e, fn) { this.map[e] = (this.map[e] || []).filter(f => f !== fn); }\n  emit(e, ...args) { (this.map[e] || []).forEach(fn => fn(...args)); }\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern: pub/sub** — a Map of event → listeners.\n• `on` pushes, `off` filters out, `emit` calls each listener with the payload.\n• The pattern behind RxJS Subjects and a shared-service event bus."
   },
   {
     "id": "code-group-by",
@@ -576,7 +613,8 @@
     "answer": "<p>Reduce into an object whose keys are the group values and whose values are arrays. Modern JS also has <code class=\"inline\">Object.groupBy</code>.</p>",
     "tip": "reduce with an accumulator object is the canonical group-by pattern.",
     "code": "const groupBy = (arr, key) =>\n  arr.reduce((acc, item) => {\n    (acc[item[key]] ||= []).push(item);\n    return acc;\n  }, {});\ngroupBy([{ t: 'a', v: 1 }, { t: 'b', v: 2 }, { t: 'a', v: 3 }], 't');",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: reduce into a keyed object.\n• Accumulator object; key = the group value, value = an array you push into.\n• **Modern JS**: `Object.groupBy`. Complexity: `O(n)`."
   },
   {
     "id": "code-flatten-object",
@@ -590,7 +628,8 @@
     "answer": "<p>Recurse over entries; for nested objects, prefix the parent key with a dot and keep descending; for leaves, assign the flattened key.</p>",
     "tip": "Handy for turning nested config into a flat lookup or query params.",
     "code": "function flatten(obj, prefix = '', out = {}) {\n  for (const [k, v] of Object.entries(obj)) {\n    const key = prefix ? `${prefix}.${k}` : k;\n    if (v && typeof v === 'object' && !Array.isArray(v)) flatten(v, key, out);\n    else out[key] = v;\n  }\n  return out;\n}\nflatten({ a: { b: { c: 1 } } }); // { 'a.b.c': 1 }",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: recurse over entries with a key prefix.\n• Nested object → descend, prefixing the parent key with a dot; leaves → assign the flattened key.\n• Handy for flattening config into dot-notation / query params."
   },
   {
     "id": "code-word-frequency",
@@ -604,7 +643,8 @@
     "answer": "<p>Lowercase, split into words, and tally each in a Map/object. Sort by count if you need the most frequent.</p>",
     "tip": "A frequency map is a building block for anagrams, top-K, and dedupe problems.",
     "code": "function wordFreq(str) {\n  const map = {};\n  for (const w of str.toLowerCase().match(/\\w+/g) || [])\n    map[w] = (map[w] || 0) + 1;\n  return map;\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: frequency Map.\n• Lowercase, split into words, tally in a Map; sort by count for most-frequent.\n• A frequency map underpins anagrams, top-K, and dedupe."
   },
   {
     "id": "code-sleep",
@@ -618,7 +658,8 @@
     "answer": "<p>Return a Promise that resolves via <code class=\"inline\">setTimeout</code>. You can then <code class=\"inline\">await sleep(1000)</code> to pause inside an async function.</p>",
     "tip": "There's no built-in sleep in JS — this Promise wrapper is the idiom.",
     "code": "const sleep = ms => new Promise(res => setTimeout(res, ms));\n\nasync function run() {\n  console.log('start');\n  await sleep(1000);\n  console.log('1s later');\n}",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Promise wrapper over `setTimeout`.\n• `return new Promise(res => setTimeout(res, ms))`, then `await sleep(ms)`.\n• **JS has no built-in sleep** — this is the idiom."
   },
   {
     "id": "code-map-polyfill",
@@ -633,7 +674,8 @@
     "answer": "<p>Add a method to the prototype that loops the array, calls the callback with <code class=\"inline\">(value, index, array)</code>, and pushes each result into a new array — never mutating the original.</p>",
     "tip": "Writing a polyfill proves you understand what the built-in actually does.",
     "code": "Array.prototype.myMap = function (cb) {\n  const out = [];\n  for (let i = 0; i < this.length; i++) out.push(cb(this[i], i, this));\n  return out;\n};\n[1, 2, 3].myMap(x => x * 2); // [2, 4, 6]",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: add to the prototype, build a new array.\n• Loop, call the callback with `(value, index, array)`, push each result; never mutate the original.\n• Writing the polyfill proves you know what `map` actually does."
   },
   {
     "id": "code-anagram",
@@ -647,7 +689,8 @@
     "answer": "<p>Normalise (lowercase, strip non-word chars), then compare sorted characters — or compare character-frequency maps for O(n) instead of O(n log n).</p>",
     "tip": "Frequency-map comparison is O(n); sorting is O(n log n) — mention the tradeoff.",
     "code": "const norm = s => s.toLowerCase().replace(/\\W/g, '').split('').sort().join('');\nconst isAnagram = (a, b) => norm(a) === norm(b);\nisAnagram('listen', 'silent'); // true",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: compare canonical forms.\n• **Normalize, then compare SORTED chars** — `O(n log n)` — or frequency maps for `O(n)`.\n• Mention the sort-vs-frequency-map tradeoff."
   },
   {
     "id": "code-max-subarray",
@@ -662,7 +705,8 @@
     "answer": "<p>Track the best sum ending at the current index (<code class=\"inline\">cur</code>) and the global best. Extend or restart at each element. O(n) time, O(1) space.</p>",
     "tip": "Kadane's algorithm is the classic O(n) DP — restart when the running sum goes negative.",
     "code": "function maxSubArray(nums) {\n  let cur = nums[0], best = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    cur = Math.max(nums[i], cur + nums[i]);\n    best = Math.max(best, cur);\n  }\n  return best;\n}\nmaxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]); // 6",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Kadane's algorithm (DP).\n• Track best-ending-here vs global best; RESTART when the running sum goes negative.\n• **Complexity**: `O(n)` time, `O(1)` space."
   },
   {
     "id": "code-output-order-basic",
@@ -679,7 +723,8 @@
     "tip": "Microtasks (Promises) always run before macrotasks (setTimeout), no matter the delay.",
     "code": "console.log(1);\nsetTimeout(() => console.log(2), 0);\nPromise.resolve().then(() => console.log(3));\nconsole.log(4);\n\n// Output:\n// 1\n// 4\n// 3\n// 2",
     "lang": "js",
-    "deep": "<h4>Step-by-step trace</h4><ol><li><code class=\"inline\">console.log(1)</code> runs synchronously → <strong>1</strong>.</li><li><code class=\"inline\">setTimeout(..., 0)</code> hands its callback to the timer API; when ready it's queued as a <strong>macrotask</strong>.</li><li><code class=\"inline\">Promise.resolve().then(...)</code> queues its callback as a <strong>microtask</strong>.</li><li><code class=\"inline\">console.log(4)</code> runs synchronously → <strong>4</strong>.</li><li>Stack is now empty. The event loop <em>fully drains microtasks first</em> → <strong>3</strong>.</li><li>Only then does it take one macrotask → <strong>2</strong>.</li></ol><h4>The rule to memorise</h4><p>After the synchronous code (and after every macrotask), the engine empties the <em>entire</em> microtask queue before running the next macrotask. So Promise callbacks beat <code class=\"inline\">setTimeout</code> every time.</p>"
+    "deep": "<h4>Step-by-step trace</h4><ol><li><code class=\"inline\">console.log(1)</code> runs synchronously → <strong>1</strong>.</li><li><code class=\"inline\">setTimeout(..., 0)</code> hands its callback to the timer API; when ready it's queued as a <strong>macrotask</strong>.</li><li><code class=\"inline\">Promise.resolve().then(...)</code> queues its callback as a <strong>microtask</strong>.</li><li><code class=\"inline\">console.log(4)</code> runs synchronously → <strong>4</strong>.</li><li>Stack is now empty. The event loop <em>fully drains microtasks first</em> → <strong>3</strong>.</li><li>Only then does it take one macrotask → <strong>2</strong>.</li></ol><h4>The rule to memorise</h4><p>After the synchronous code (and after every macrotask), the engine empties the <em>entire</em> microtask queue before running the next macrotask. So Promise callbacks beat <code class=\"inline\">setTimeout</code> every time.</p>",
+    "revise": "**Event loop**: sync → microtasks → macrotasks.\n• **Output**: `1, 4, 3, 2`. Sync (`1`,`4`) first, then the Promise `.then` (`3`), then `setTimeout` (`2`) last.\n• Microtasks (Promises) ALWAYS beat macrotasks (`setTimeout`), even at 0ms."
   },
   {
     "id": "code-output-async-await",
@@ -696,7 +741,8 @@
     "tip": "Code after an await is a microtask — the surrounding synchronous code always runs first.",
     "code": "async function async1() {\n  console.log('async1 start');\n  await async2();\n  console.log('async1 end');\n}\nasync function async2() {\n  console.log('async2');\n}\n\nconsole.log('start');\nsetTimeout(() => console.log('timeout'), 0);\nasync1();\nPromise.resolve().then(() => console.log('promise'));\nconsole.log('end');\n\n// Output:\n// start\n// async1 start\n// async2\n// end\n// async1 end\n// promise\n// timeout",
     "lang": "js",
-    "deep": "<h4>Why this order</h4><ol><li><code class=\"inline\">'start'</code> — sync.</li><li><code class=\"inline\">setTimeout</code> — its callback becomes a <strong>macrotask</strong> (parked).</li><li><code class=\"inline\">async1()</code> is called: <code class=\"inline\">'async1 start'</code> runs, then <code class=\"inline\">await async2()</code> executes <code class=\"inline\">async2</code>'s body → <code class=\"inline\">'async2'</code>. The <code class=\"inline\">await</code> now <em>suspends</em> async1 and schedules <code class=\"inline\">'async1 end'</code> as a <strong>microtask</strong>.</li><li>Back in the main script: <code class=\"inline\">Promise.resolve().then</code> queues <code class=\"inline\">'promise'</code> as a microtask, then <code class=\"inline\">'end'</code> runs — sync.</li><li>Stack empties. Microtasks drain in FIFO order: <code class=\"inline\">'async1 end'</code> (queued first), then <code class=\"inline\">'promise'</code>.</li><li>Finally the macrotask: <code class=\"inline\">'timeout'</code>.</li></ol><p><strong>Key idea:</strong> <code class=\"inline\">await x</code> ≈ <code class=\"inline\">x.then(rest)</code>. The line before <code class=\"inline\">await</code> is synchronous; everything after it is a microtask.</p>"
+    "deep": "<h4>Why this order</h4><ol><li><code class=\"inline\">'start'</code> — sync.</li><li><code class=\"inline\">setTimeout</code> — its callback becomes a <strong>macrotask</strong> (parked).</li><li><code class=\"inline\">async1()</code> is called: <code class=\"inline\">'async1 start'</code> runs, then <code class=\"inline\">await async2()</code> executes <code class=\"inline\">async2</code>'s body → <code class=\"inline\">'async2'</code>. The <code class=\"inline\">await</code> now <em>suspends</em> async1 and schedules <code class=\"inline\">'async1 end'</code> as a <strong>microtask</strong>.</li><li>Back in the main script: <code class=\"inline\">Promise.resolve().then</code> queues <code class=\"inline\">'promise'</code> as a microtask, then <code class=\"inline\">'end'</code> runs — sync.</li><li>Stack empties. Microtasks drain in FIFO order: <code class=\"inline\">'async1 end'</code> (queued first), then <code class=\"inline\">'promise'</code>.</li><li>Finally the macrotask: <code class=\"inline\">'timeout'</code>.</li></ol><p><strong>Key idea:</strong> <code class=\"inline\">await x</code> ≈ <code class=\"inline\">x.then(rest)</code>. The line before <code class=\"inline\">await</code> is synchronous; everything after it is a microtask.</p>",
+    "revise": "`await` splits a function: everything up to the first `await` runs synchronously; the rest becomes a microtask.\n• **Output**: `start, async1 start, async2, end, async1 end, promise, timeout`.\n• Synchronous script finishes before any microtask; `setTimeout` is last."
   },
   {
     "id": "code-output-loop-settimeout",
@@ -713,7 +759,8 @@
     "tip": "This is the #1 closure Common mistake — the fix is simply let (a new binding per iteration).",
     "code": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}\n// 3, 3, 3\n\nfor (let j = 0; j < 3; j++) {\n  setTimeout(() => console.log(j), 0);\n}\n// 0, 1, 2",
     "lang": "js",
-    "deep": "<h4>Why var logs 3, 3, 3</h4><p>There is only one <code class=\"inline\">i</code> for the whole loop. The three <code class=\"inline\">setTimeout</code> callbacks are macrotasks that run <em>after</em> the synchronous loop completes — by then <code class=\"inline\">i === 3</code>. All three read that same final value.</p><h4>Why let logs 0, 1, 2</h4><p>A <code class=\"inline\">let</code> in the loop head is re-bound on every iteration, so each callback closes over a distinct <code class=\"inline\">j</code> holding the value at that iteration.</p><h4>The pre-let fix (IIFE)</h4><pre><code>for (var i = 0; i &lt; 3; i++) {\n  (function (k) {\n    setTimeout(() =&gt; console.log(k), 0);\n  })(i); // capture current i as k → 0, 1, 2\n}</code></pre>"
+    "deep": "<h4>Why var logs 3, 3, 3</h4><p>There is only one <code class=\"inline\">i</code> for the whole loop. The three <code class=\"inline\">setTimeout</code> callbacks are macrotasks that run <em>after</em> the synchronous loop completes — by then <code class=\"inline\">i === 3</code>. All three read that same final value.</p><h4>Why let logs 0, 1, 2</h4><p>A <code class=\"inline\">let</code> in the loop head is re-bound on every iteration, so each callback closes over a distinct <code class=\"inline\">j</code> holding the value at that iteration.</p><h4>The pre-let fix (IIFE)</h4><pre><code>for (var i = 0; i &lt; 3; i++) {\n  (function (k) {\n    setTimeout(() =&gt; console.log(k), 0);\n  })(i); // capture current i as k → 0, 1, 2\n}</code></pre>",
+    "revise": "Closure-in-loop classic:\n• `var` → `3, 3, 3` (one shared, function-scoped binding; loop ends at 3 before any timer fires).\n• `let` → `0, 1, 2` (a FRESH binding each iteration).\n• The fix is simply `let`."
   },
   {
     "id": "code-output-promise-then-timeout",
@@ -730,7 +777,8 @@
     "tip": "Each .then in a chain is a separate microtask, but they all still run before any setTimeout.",
     "code": "console.log('script start');\n\nsetTimeout(() => console.log('setTimeout'), 0);\n\nPromise.resolve()\n  .then(() => console.log('promise1'))\n  .then(() => console.log('promise2'));\n\nconsole.log('script end');\n\n// Output:\n// script start\n// script end\n// promise1\n// promise2\n// setTimeout",
     "lang": "js",
-    "deep": "<h4>Trace</h4><ol><li><code class=\"inline\">'script start'</code> — sync.</li><li><code class=\"inline\">setTimeout</code> callback parked as a macrotask.</li><li>First <code class=\"inline\">.then</code> queued as a microtask.</li><li><code class=\"inline\">'script end'</code> — sync. Stack empty.</li><li>Microtask runs → <code class=\"inline\">'promise1'</code>; its return schedules the next <code class=\"inline\">.then</code> as a <em>new</em> microtask → <code class=\"inline\">'promise2'</code>. The loop keeps draining microtasks until none remain.</li><li>Now a macrotask runs → <code class=\"inline\">'setTimeout'</code>.</li></ol><p>Even though the chain adds microtasks one at a time, the event loop won't touch the timer until the microtask queue is completely empty.</p>"
+    "deep": "<h4>Trace</h4><ol><li><code class=\"inline\">'script start'</code> — sync.</li><li><code class=\"inline\">setTimeout</code> callback parked as a macrotask.</li><li>First <code class=\"inline\">.then</code> queued as a microtask.</li><li><code class=\"inline\">'script end'</code> — sync. Stack empty.</li><li>Microtask runs → <code class=\"inline\">'promise1'</code>; its return schedules the next <code class=\"inline\">.then</code> as a <em>new</em> microtask → <code class=\"inline\">'promise2'</code>. The loop keeps draining microtasks until none remain.</li><li>Now a macrotask runs → <code class=\"inline\">'setTimeout'</code>.</li></ol><p>Even though the chain adds microtasks one at a time, the event loop won't touch the timer until the microtask queue is completely empty.</p>",
+    "revise": "Whole microtask queue drains before any macrotask.\n• **Output**: `script start, script end, promise1, promise2, setTimeout`.\n• Both `.then`s (microtasks) run before the single `setTimeout` (macrotask)."
   },
   {
     "id": "code-lru-cache",
@@ -745,7 +793,8 @@
     "answer": "<p>The optimal solution combines a <code class=\"inline\">HashMap</code> with a doubly linked list. The HashMap provides O(1) lookup, while the linked list maintains usage order. Recently used items move to the front, and the least recently used item is removed from the tail.</p>",
     "tip": "If an interviewer asks for O(1) get() and put(), HashMap + Doubly Linked List is the expected solution.",
     "code": "class LRUCache {\n  constructor(capacity) {\n    this.capacity = capacity;\n    this.map = new Map();\n  }\n\n  get(key) {\n    if (!this.map.has(key)) return -1;\n\n    const value = this.map.get(key);\n    this.map.delete(key);\n    this.map.set(key, value);\n\n    return value;\n  }\n\n  put(key, value) {\n    if (this.map.has(key)) {\n      this.map.delete(key);\n    }\n\n    this.map.set(key, value);\n\n    if (this.map.size > this.capacity) {\n      const oldest = this.map.keys().next().value;\n      this.map.delete(oldest);\n    }\n  }\n}\n\nconst cache = new LRUCache(2);\ncache.put(1,1);\ncache.put(2,2);\nconsole.log(cache.get(1)); // 1",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: `HashMap` + doubly linked list.\n• Map = `O(1)` lookup; the list keeps usage order — touch → move to front, evict from the tail.\n• `O(1)` get AND put → this combo is the expected answer."
   },
   {
     "id": "code-next-greater-element",
@@ -761,7 +810,8 @@
     "answer": "<p>Use a monotonic decreasing stack. While the current element is greater than the stack top, pop it and map its next greater element. Remaining elements have no greater value and map to -1.</p>",
     "tip": "Whenever you hear 'next greater/smaller', think Monotonic Stack.",
     "code": "function nextGreaterElement(nums1, nums2) {\n  const stack = [];\n  const map = new Map();\n\n  for (const num of nums2) {\n    while (stack.length && num > stack[stack.length - 1]) {\n      map.set(stack.pop(), num);\n    }\n    stack.push(num);\n  }\n\n  while (stack.length) {\n    map.set(stack.pop(), -1);\n  }\n\n  return nums1.map(n => map.get(n));\n}\n\nconsole.log(nextGreaterElement([4,1,2],[1,3,4,2]));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Monotonic (decreasing) Stack.\n• Pop while current > stack top, mapping each popped element to current; leftovers map to `-1`.\n• **Complexity**: `O(n)`. 'Next greater/smaller' → Monotonic Stack."
   },
   {
     "id": "code-permutations",
@@ -776,7 +826,8 @@
     "answer": "<p>Use Backtracking. Choose one unused element at each recursive step, mark it as visited, recurse, then backtrack by removing it and marking it unused again.</p>",
     "tip": "Backtracking problems follow the pattern: Choose → Explore → Undo (Backtrack).",
     "code": "function permute(nums) {\n  const result = [];\n  const used = Array(nums.length).fill(false);\n\n  function backtrack(path) {\n    if (path.length === nums.length) {\n      result.push([...path]);\n      return;\n    }\n\n    for (let i = 0; i < nums.length; i++) {\n      if (used[i]) continue;\n\n      used[i] = true;\n      path.push(nums[i]);\n\n      backtrack(path);\n\n      path.pop();\n      used[i] = false;\n    }\n  }\n\n  backtrack([]);\n  return result;\n}\n\nconsole.log(permute([1,2,3]));",
-    "lang": "js"
+    "lang": "js",
+    "revise": "**Pattern**: Backtracking with a used-set.\n• Pick an unused element, mark used, recurse, then UNDO (unmark).\n• Backtracking = Choose → Explore → Undo."
   },
   {
     "id": "code-output-nested-timeout-promise",
@@ -793,7 +844,8 @@
     "tip": "After EACH macrotask the microtask queue is drained again — not just once at the start.",
     "code": "console.log(1);\n\nsetTimeout(() => {\n  console.log(2);\n  Promise.resolve().then(() => console.log(4));\n}, 0);\n\nPromise.resolve().then(() => console.log(3));\n\nconsole.log(5);\n\n// Output:\n// 1\n// 5\n// 3\n// 2\n// 4",
     "lang": "js",
-    "deep": "<h4>Why 4 comes right after 2</h4><p>The critical rule: the microtask queue is drained <strong>after every single macrotask</strong>, not only once. So:</p><ol><li>Sync → <code class=\"inline\">1</code>, <code class=\"inline\">5</code>.</li><li>Drain microtasks → <code class=\"inline\">3</code>.</li><li>Run one macrotask (the timeout) → <code class=\"inline\">2</code>, which <em>queues a new microtask</em> for <code class=\"inline\">4</code>.</li><li>That macrotask finishes; before taking any further work the loop drains microtasks again → <code class=\"inline\">4</code>.</li></ol><p>If there were a second <code class=\"inline\">setTimeout</code>, its callback would only run after <code class=\"inline\">4</code>, because the microtask from the first timeout jumps ahead of the next macrotask.</p>"
+    "deep": "<h4>Why 4 comes right after 2</h4><p>The critical rule: the microtask queue is drained <strong>after every single macrotask</strong>, not only once. So:</p><ol><li>Sync → <code class=\"inline\">1</code>, <code class=\"inline\">5</code>.</li><li>Drain microtasks → <code class=\"inline\">3</code>.</li><li>Run one macrotask (the timeout) → <code class=\"inline\">2</code>, which <em>queues a new microtask</em> for <code class=\"inline\">4</code>.</li><li>That macrotask finishes; before taking any further work the loop drains microtasks again → <code class=\"inline\">4</code>.</li></ol><p>If there were a second <code class=\"inline\">setTimeout</code>, its callback would only run after <code class=\"inline\">4</code>, because the microtask from the first timeout jumps ahead of the next macrotask.</p>",
+    "revise": "The microtask queue drains after EACH macrotask, not just once.\n• **Output**: `1, 5, 3, 2, 4`. Sync (`1`,`5`), microtask (`3`), the timeout (`2`) queues a microtask, which drains (`4`) before any further macrotask."
   },
   {
     "id": "code-output-async-return-then",
@@ -809,7 +861,8 @@
     "tip": "Calling an async function is synchronous up to its first await/return; the .then runs later as a microtask.",
     "code": "async function f() {\n  console.log('A');\n  return 'done';\n}\n\nf().then((v) => console.log('B', v));\nconsole.log('C');\n\n// Output:\n// A\n// C\n// B done",
     "lang": "js",
-    "deep": "<h4>Key points</h4><ul><li>An <code class=\"inline\">async</code> function <strong>always</strong> returns a Promise; a plain <code class=\"inline\">return x</code> resolves it with <code class=\"inline\">x</code>.</li><li>The body runs synchronously until the first <code class=\"inline\">await</code> or the <code class=\"inline\">return</code> — that's why <code class=\"inline\">A</code> prints during the <code class=\"inline\">f()</code> call.</li><li>The <code class=\"inline\">.then</code> callback is scheduled as a microtask, so it runs after the current synchronous code (<code class=\"inline\">C</code>).</li></ul><p>Corollary: <code class=\"inline\">throw</code> inside an async function rejects its returned Promise — catch it with <code class=\"inline\">.catch()</code> or <code class=\"inline\">try/catch</code> around the <code class=\"inline\">await</code>.</p>"
+    "deep": "<h4>Key points</h4><ul><li>An <code class=\"inline\">async</code> function <strong>always</strong> returns a Promise; a plain <code class=\"inline\">return x</code> resolves it with <code class=\"inline\">x</code>.</li><li>The body runs synchronously until the first <code class=\"inline\">await</code> or the <code class=\"inline\">return</code> — that's why <code class=\"inline\">A</code> prints during the <code class=\"inline\">f()</code> call.</li><li>The <code class=\"inline\">.then</code> callback is scheduled as a microtask, so it runs after the current synchronous code (<code class=\"inline\">C</code>).</li></ul><p>Corollary: <code class=\"inline\">throw</code> inside an async function rejects its returned Promise — catch it with <code class=\"inline\">.catch()</code> or <code class=\"inline\">try/catch</code> around the <code class=\"inline\">await</code>.</p>",
+    "revise": "An async function returns a Promise IMMEDIATELY.\n• **Output**: `A, C, B`. The body runs sync to its return (`A`); the `.then` (`B`) is a microtask; the sync `C` after the call runs before `B`.\n• Calling an async fn is sync up to its first await/return."
   },
   {
     "id": "code-first-non-repeating-char",
@@ -825,7 +878,8 @@
     "answer": "<p>Count frequencies in one pass (LinkedHashMap keeps encounter order), then return the first key with count 1. O(n) time, O(1) space (bounded alphabet).</p><p>Very often asked as a <strong>Java 8 streams</strong> one-liner — practice both forms.</p>",
     "tip": "The streams version with groupingBy + LinkedHashMap::new is a favorite 'write it in streams' follow-up.",
     "code": "// classic\nchar firstUnique(String s) {\n  Map<Character, Integer> freq = new LinkedHashMap<>();\n  for (char c : s.toCharArray()) freq.merge(c, 1, Integer::sum);\n  for (var e : freq.entrySet()) if (e.getValue() == 1) return e.getKey();\n  return 0;\n}\n\n// streams\nCharacter first = s.chars().mapToObj(c -> (char) c)\n  .collect(Collectors.groupingBy(c -> c, LinkedHashMap::new, Collectors.counting()))\n  .entrySet().stream()\n  .filter(e -> e.getValue() == 1)\n  .map(Map.Entry::getKey)\n  .findFirst().orElse(null);   // \"swiss\" -> 'w'",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: frequency map, order-preserving.\n• Count in one pass (`LinkedHashMap` keeps order), return the first key with count 1.\n• **Complexity**: `O(n)`. Practice the Java 8 `groupingBy` streams version too."
   },
   {
     "id": "code-string-compression",
@@ -839,7 +893,8 @@
     "answer": "<p>Walk the string counting runs of the same character; append <code class=\"inline\">char + count</code> when the run breaks. Use StringBuilder — string concatenation in a loop is O(n²). O(n) time.</p>",
     "tip": "Ask the clarifying questions out loud: is a1 kept or dropped? Return original if 'compressed' is longer? That's what they're testing.",
     "code": "String compress(String s) {\n  StringBuilder sb = new StringBuilder();\n  int count = 1;\n  for (int i = 1; i <= s.length(); i++) {\n    if (i < s.length() && s.charAt(i) == s.charAt(i - 1)) count++;\n    else { sb.append(s.charAt(i - 1)).append(count); count = 1; }\n  }\n  return sb.toString();\n}\ncompress(\"aabbbc\"); // \"a2b3c1\"",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: run-length counting with a `StringBuilder`.\n• Count consecutive same chars; append `char + count` when the run breaks.\n• Use `StringBuilder` (loop `+` on String is `O(n²)`). Clarify: keep `a1`? return original if longer?"
   },
   {
     "id": "code-longest-common-prefix",
@@ -853,7 +908,8 @@
     "answer": "<p>Take the first string as candidate; for each other string, shrink the candidate from the end while it isn't a prefix. O(S) where S = total characters.</p><p>Alternative: sort and compare only first vs last string — they're the most different.</p>",
     "tip": "The sort trick (compare first and last after sorting) is a nice one-liner insight to mention even if you code the simple version.",
     "code": "String longestCommonPrefix(String[] strs) {\n  String prefix = strs[0];\n  for (int i = 1; i < strs.length; i++) {\n    while (!strs[i].startsWith(prefix))\n      prefix = prefix.substring(0, prefix.length() - 1);\n    if (prefix.isEmpty()) return \"\";\n  }\n  return prefix;\n}\n// [\"flower\",\"flow\",\"flight\"] -> \"fl\"",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: shrink a candidate prefix.\n• Take string`[0]`; for each other, trim the candidate from the end until it's a prefix.\n• **Slick alternative**: sort, then compare only the FIRST and LAST strings. `O(S)`."
   },
   {
     "id": "code-string-rotation",
@@ -867,7 +923,8 @@
     "answer": "<p>The elegant trick: <code class=\"inline\">b</code> is a rotation of <code class=\"inline\">a</code> iff they're the same length and <strong>b is a substring of a + a</strong>. One line after the length check.</p><p>Rotating by k: <code class=\"inline\">s.substring(k) + s.substring(0, k)</code> (normalize k with modulo first).</p>",
     "tip": "\"waterbottle\" rotated is \"erbottlewat\" — and \"waterbottlewaterbottle\".contains(\"erbottlewat\") is true. Interviewers love hearing WHY: every rotation appears inside the doubled string.",
     "code": "boolean isRotation(String a, String b) {\n  return a.length() == b.length() && (a + a).contains(b);\n}\n\nString rotateLeft(String s, int k) {\n  k %= s.length();\n  return s.substring(k) + s.substring(0, k);\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Trick**: `b` is a rotation of `a` iff same length AND `b` is a substring of `a + a`.\n• One line after the length check.\n• **Rotate by k**: `s.substring(k) + s.substring(0, k)` (normalize k with `% n` first)."
   },
   {
     "id": "code-count-vowels",
@@ -881,7 +938,8 @@
     "answer": "<p>Normalize to lowercase, check membership in the vowel set, count letters only. Trivial logic — what's evaluated is clean code and the streams variant.</p>",
     "tip": "Edge cases to name: ignore digits/spaces/punctuation; decide upfront whether 'y' counts.",
     "code": "int[] countVowelsConsonants(String s) {\n  int v = 0, c = 0;\n  for (char ch : s.toLowerCase().toCharArray()) {\n    if (ch < 'a' || ch > 'z') continue;\n    if (\"aeiou\".indexOf(ch) >= 0) v++; else c++;\n  }\n  return new int[]{v, c};\n}\n\n// streams\nlong vowels = s.toLowerCase().chars()\n    .filter(ch -> \"aeiou\".indexOf(ch) >= 0).count();",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: single pass membership check.\n• Lowercase, test each letter against a vowel set, count.\n• **What's judged**: clean code + a streams variant. Name edge cases: digits/punctuation, does 'y' count?"
   },
   {
     "id": "code-second-largest",
@@ -896,7 +954,8 @@
     "answer": "<p>Single pass with two trackers: when a new max appears, the old max becomes second; else update second when the value fits between. O(n) time, O(1) space — sorting (O(n log n)) is the answer they don't want.</p>",
     "tip": "Handle the traps: duplicates of the max (use strict <), arrays shorter than 2, and all-equal arrays (no second largest — say what you return).",
     "code": "int secondLargest(int[] a) {\n  int max = Integer.MIN_VALUE, second = Integer.MIN_VALUE;\n  for (int x : a) {\n    if (x > max) { second = max; max = x; }\n    else if (x > second && x < max) second = x;\n  }\n  return second; // MIN_VALUE => not found\n}\n// [12, 35, 1, 10, 34, 1] -> 34",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: single pass, two trackers.\n• New max → old max becomes second; else update second if it fits between.\n• `O(n)` (sorting `O(n log n)` is the answer they DON'T want). Handle duplicates / length < 2."
   },
   {
     "id": "code-move-zeros",
@@ -910,7 +969,8 @@
     "answer": "<p>Two pointers: <code class=\"inline\">insertPos</code> tracks where the next non-zero goes; sweep once copying non-zeros forward, then fill the tail with zeros. O(n) time, O(1) space, stable.</p>",
     "tip": "The follow-up is always 'in place, one pass, keep relative order' — the copy-to-new-array answer scores zero.",
     "code": "void moveZeroes(int[] nums) {\n  int insertPos = 0;\n  for (int x : nums) if (x != 0) nums[insertPos++] = x;\n  while (insertPos < nums.length) nums[insertPos++] = 0;\n}\n// [0,1,0,3,12] -> [1,3,12,0,0]",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: Two Pointers, in place.\n• `insertPos` marks the next non-zero slot; sweep copying non-zeros forward, then fill the tail with zeros.\n• `O(n)` time, `O(1)` space, STABLE (keeps order). Copy-to-new-array scores zero."
   },
   {
     "id": "code-remove-duplicates-sorted",
@@ -924,7 +984,8 @@
     "answer": "<p>Because it's sorted, duplicates are adjacent. Slow pointer marks the end of the unique prefix; fast pointer scans — copy forward only when the value differs from the last kept one. O(n) time, O(1) space.</p>",
     "tip": "Say why sorted matters: adjacency is what makes O(1)-space dedup possible; unsorted needs a HashSet (O(n) space) or sorting first.",
     "code": "int removeDuplicates(int[] nums) {\n  if (nums.length == 0) return 0;\n  int k = 1;                       // nums[0..k-1] = unique prefix\n  for (int i = 1; i < nums.length; i++)\n    if (nums[i] != nums[k - 1]) nums[k++] = nums[i];\n  return k;\n}\n// [1,1,2,2,3] -> 3, array starts [1,2,3,...]",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: Two Pointers (slow/fast), in place.\n• Sorted → duplicates are adjacent; slow marks the unique prefix, fast scans, copy forward on a new value.\n• `O(n)` time, `O(1)` space. Unsorted would need a `HashSet`."
   },
   {
     "id": "code-missing-duplicate-number",
@@ -940,7 +1001,8 @@
     "answer": "<p><strong>Missing</strong>: expected sum <code class=\"inline\">n(n+1)/2</code> minus actual sum; or XOR all indices and values (overflow-proof). O(n)/O(1).</p><p><strong>Duplicate</strong>: HashSet catches the first repeat in O(n)/O(n); the O(1)-space follow-up is Floyd's cycle detection treating values as pointers.</p>",
     "tip": "If both a missing AND a duplicate exist together, sum alone can't separate them — that's the harder variant (use XOR bucketing or math with sum + sum of squares).",
     "code": "int missing(int[] a, int n) {          // values 1..n, one absent\n  long sum = (long) n * (n + 1) / 2;\n  for (int x : a) sum -= x;\n  return (int) sum;\n}\n\nint firstDuplicate(int[] a) {\n  Set<Integer> seen = new HashSet<>();\n  for (int x : a) if (!seen.add(x)) return x;\n  return -1;\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "• Missing (1..n): expected sum `n(n+1)/2` − actual, or XOR indices ⊕ values (overflow-proof). `O(n)`/`O(1)`.\n• **Duplicate**: `HashSet` catches the first repeat; the `O(1)`-space follow-up is Floyd's cycle detection (values as pointers).\n• Both together → XOR bucketing."
   },
   {
     "id": "code-rotate-array",
@@ -955,7 +1017,8 @@
     "answer": "<p><strong>Reverse</strong>: two pointers swapping inward. <strong>Rotate right by k</strong> without extra space — the reversal trick: reverse the whole array, then reverse the first k, then the rest. O(n) time, O(1) space.</p>",
     "tip": "Normalize k %= n first (k may exceed n). The three-reversal trick is the expected 'clever' answer; the extra-array version is the warm-up.",
     "code": "void rotate(int[] a, int k) {\n  k %= a.length;\n  reverse(a, 0, a.length - 1);   // [1,2,3,4,5,6,7] k=3\n  reverse(a, 0, k - 1);          // -> [5,6,7,1,2,3,4]\n  reverse(a, k, a.length - 1);\n}\nvoid reverse(int[] a, int i, int j) {\n  while (i < j) { int t = a[i]; a[i++] = a[j]; a[j--] = t; }\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: the three-reversal trick.\n• Reverse whole array → reverse first k → reverse the rest → rotated right by k.\n• Normalize `k %= n` first. `O(n)` time, `O(1)` space."
   },
   {
     "id": "code-sort-012",
@@ -970,7 +1033,8 @@
     "answer": "<p>Three pointers: <code class=\"inline\">low</code> (next slot for 0), <code class=\"inline\">mid</code> (scanner), <code class=\"inline\">high</code> (next slot for 2). Swap 0s down, 2s up, walk past 1s. One pass, O(n) time, O(1) space — no counting, no sorting.</p>",
     "tip": "The subtle bit: after swapping with high, do NOT advance mid — the swapped-in value is unexamined. That line is where most people bug out.",
     "code": "void sortColors(int[] a) {\n  int low = 0, mid = 0, high = a.length - 1;\n  while (mid <= high) {\n    switch (a[mid]) {\n      case 0 -> { swap(a, low++, mid++); }\n      case 1 -> mid++;\n      case 2 -> { swap(a, mid, high--); }  // mid stays!\n    }\n  }\n}\n// [2,0,2,1,1,0] -> [0,0,1,1,2,2]",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern: Dutch National Flag** — three pointers.\n• **low (next 0), mid (scanner), high (next 2)**: push 0s down, 2s up, walk past 1s.\n• One pass, `O(n)`/`O(1)`. Gotcha: after swapping with high, do NOT advance mid."
   },
   {
     "id": "code-array-intersection",
@@ -985,7 +1049,8 @@
     "answer": "<p>Sets do the work: union = add everything to one set; intersection = build a set from the first array, keep elements of the second found in it (<code class=\"inline\">retainAll</code> or a manual contains loop). O(n + m) time — the point is avoiding the O(n·m) nested loop.</p>",
     "tip": "This doubles as 'find common elements of two arrays in O(n)'. If both arrays are sorted, mention the two-pointer alternative with O(1) extra space.",
     "code": "Set<Integer> intersection(int[] a, int[] b) {\n  Set<Integer> setA = new HashSet<>();\n  for (int x : a) setA.add(x);\n  Set<Integer> result = new HashSet<>();\n  for (int x : b) if (setA.contains(x)) result.add(x);\n  return result;\n}\n\n// streams union\nint[] union = IntStream.concat(Arrays.stream(a), Arrays.stream(b))\n    .distinct().toArray();",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: Sets do the work.\n• Union = add all to one set; intersection = set of A, keep B's elements found in it (`retainAll`).\n• `O(n + m)` — avoids the `O(n·m)` nested loop. Sorted inputs → Two Pointers, `O(1)` space."
   },
   {
     "id": "code-majority-element",
@@ -1000,7 +1065,8 @@
     "answer": "<p><strong>Boyer-Moore voting</strong>: keep a candidate and a counter — same element increments, different decrements, zero picks a new candidate. Majority survives all cancellations. O(n) time, O(1) space.</p><p>The HashMap-count version is the obvious O(n)/O(n) warm-up; Boyer-Moore is the answer that impresses.</p>",
     "tip": "If existence isn't guaranteed, a second verification pass counts the candidate. Explain the intuition: every non-majority vote can cancel at most one majority vote — majority still wins.",
     "code": "int majorityElement(int[] nums) {\n  int count = 0, candidate = 0;\n  for (int x : nums) {\n    if (count == 0) candidate = x;\n    count += (x == candidate) ? 1 : -1;\n  }\n  return candidate;\n}\n// [2,2,1,1,1,2,2] -> 2",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: Boyer-Moore voting.\n• A candidate + counter: same increments, different decrements, zero picks a new candidate — the majority survives.\n• `O(n)` time, `O(1)` space (`HashMap` count is the `O(n)`-space warm-up)."
   },
   {
     "id": "code-leaders-array",
@@ -1014,7 +1080,8 @@
     "answer": "<p>Scan <strong>right to left</strong> tracking the running max: an element ≥ max-so-far is a leader. O(n) time, one pass — versus the naive O(n²) 'for each element scan its right side'.</p>",
     "tip": "The rightmost element is always a leader. Reverse the result list at the end if left-to-right order is wanted.",
     "code": "List<Integer> leaders(int[] a) {\n  List<Integer> res = new ArrayList<>();\n  int maxRight = Integer.MIN_VALUE;\n  for (int i = a.length - 1; i >= 0; i--) {\n    if (a[i] >= maxRight) { res.add(a[i]); maxRight = a[i]; }\n  }\n  Collections.reverse(res);\n  return res;\n}\n// [16,17,4,3,5,2] -> [17,5,2]",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: scan RIGHT to LEFT tracking a running max.\n• An element ≥ max-so-far is a leader (greater than everything to its right).\n• `O(n)`, one pass. The rightmost element is always a leader; reverse the result for L→R order."
   },
   {
     "id": "code-subarray-given-sum",
@@ -1029,7 +1096,8 @@
     "answer": "<p><strong>Positive numbers</strong>: sliding window — grow the right edge, shrink from the left while the sum exceeds the target. O(n).</p><p><strong>With negatives</strong> (window breaks): prefix sums + HashMap — at each index look up <code class=\"inline\">prefix − target</code>; if seen before, the slice between is the answer. O(n)/O(n).</p>",
     "tip": "State the constraint question immediately: 'are numbers all positive?' — it decides the technique and shows you know WHY sliding window needs positivity (sum must grow monotonically as the window grows).",
     "code": "// positives: sliding window\nint[] subarraySum(int[] a, int target) {\n  int left = 0, sum = 0;\n  for (int right = 0; right < a.length; right++) {\n    sum += a[right];\n    while (sum > target && left <= right) sum -= a[left++];\n    if (sum == target) return new int[]{left, right};\n  }\n  return new int[]{-1, -1};\n}\n// negatives allowed: prefix + HashMap<prefixSum, index>",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Ask first**: are all numbers positive?\n• Positive → Sliding Window (grow right, shrink left while over target). `O(n)`.\n• **With negatives → prefix sums + HashMap**: look up `prefix − target`. `O(n)`/`O(n)`."
   },
   {
     "id": "code-rotate-matrix",
@@ -1043,7 +1111,8 @@
     "answer": "<p><strong>Transpose</strong>: swap <code class=\"inline\">a[i][j]</code> with <code class=\"inline\">a[j][i]</code> across the diagonal (j starts at i+1 to avoid double-swapping).</p><p><strong>Rotate 90° clockwise</strong> = transpose, then reverse each row. Two clean passes, O(n²) time, O(1) extra space. (Counter-clockwise = transpose + reverse columns.)</p>",
     "tip": "Deriving 'transpose + reverse rows' on the spot beats memorizing index gymnastics — say the composition out loud and the code writes itself.",
     "code": "void rotate90(int[][] m) {\n  int n = m.length;\n  for (int i = 0; i < n; i++)                 // transpose\n    for (int j = i + 1; j < n; j++) {\n      int t = m[i][j]; m[i][j] = m[j][i]; m[j][i] = t;\n    }\n  for (int[] row : m) {                        // reverse each row\n    for (int i = 0, j = n - 1; i < j; i++, j--) {\n      int t = row[i]; row[i] = row[j]; row[j] = t;\n    }\n  }\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: transpose + reverse.\n• Transpose (swap across the diagonal), then reverse each ROW → 90° clockwise.\n• `O(n²)` time, `O(1)` extra. (Counter-clockwise = transpose + reverse columns.)"
   },
   {
     "id": "code-fibonacci",
@@ -1059,7 +1128,8 @@
     "answer": "<p>Three versions, three lessons: naive recursion is O(2ⁿ) (recomputes everything), memoization makes it O(n) by caching, iteration is O(n) time O(1) space and usually the best answer.</p>",
     "tip": "The point of this question is complexity discussion: be ready to explain WHY naive recursion explodes (draw the call tree) and which version you'd actually ship.",
     "code": "// iterative — O(n)/O(1), the answer to give\nlong fib(int n) {\n  long a = 0, b = 1;\n  for (int i = 0; i < n; i++) { long t = a + b; a = b; b = t; }\n  return a;\n}\n\n// memoized — O(n)/O(n)\nMap<Integer, Long> memo = new HashMap<>();\nlong fibMemo(int n) {\n  if (n < 2) return n;\n  return memo.computeIfAbsent(n, k -> fibMemo(k - 1) + fibMemo(k - 2));\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "Three versions = a complexity lesson:\n• **Naive recursion** — `O(2ⁿ)` (recomputes everything).\n• **Memoized** — `O(n)` (cache subresults).\n• **Iterative** — `O(n)` time, `O(1)` space — usually the best answer."
   },
   {
     "id": "code-factorial-trailing-zeros",
@@ -1073,7 +1143,8 @@
     "answer": "<p>Factorial itself: iterative loop (use <code class=\"inline\">long</code>/BigInteger — int overflows at 13!).</p><p><strong>Trailing zeros</strong>: each zero comes from a factor 10 = 2×5, and 5s are rarer than 2s — so count factors of 5: <code class=\"inline\">n/5 + n/25 + n/125 + ...</code>. O(log n), no factorial computed.</p>",
     "tip": "25 contributes TWO fives (25 = 5×5) — that's why you keep dividing by growing powers of 5, and why n/5 alone is wrong for n ≥ 25.",
     "code": "long factorial(int n) {\n  long f = 1;\n  for (int i = 2; i <= n; i++) f *= i;\n  return f;                       // 20! is the long limit\n}\n\nint trailingZeros(int n) {\n  int count = 0;\n  for (int p = 5; p <= n; p *= 5) count += n / p;\n  return count;\n}\ntrailingZeros(100); // 24",
-    "lang": "java"
+    "lang": "java",
+    "revise": "• **Factorial**: iterative loop, use `long`/`BigInteger` (`int` overflows at 13!).\n• **Trailing zeros**: each 10 = 2×5 and 5s are rarer, so COUNT FACTORS OF 5: `n/5 + n/25 + n/125 + ...`. `O(log n)`, no factorial computed.\n• 25 contributes TWO fives."
   },
   {
     "id": "code-prime-sieve",
@@ -1088,7 +1159,8 @@
     "answer": "<p><strong>Single check</strong>: trial division up to √n — a factor above √n implies one below it. O(√n).</p><p><strong>All primes ≤ N</strong>: the sieve — mark multiples of each prime as composite, starting from p². O(N log log N), the expected answer for 'primes up to N'.</p>",
     "tip": "Two details that score: loop condition i*i <= n (not Math.sqrt in the condition), and the sieve inner loop starting at p*p (smaller multiples were already marked).",
     "code": "boolean isPrime(int n) {\n  if (n < 2) return false;\n  for (int i = 2; (long) i * i <= n; i++)\n    if (n % i == 0) return false;\n  return true;\n}\n\nboolean[] sieve(int n) {\n  boolean[] composite = new boolean[n + 1];\n  for (int p = 2; (long) p * p <= n; p++)\n    if (!composite[p])\n      for (int m = p * p; m <= n; m += p) composite[m] = true;\n  return composite;   // !composite[i] && i >= 2 => prime\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "• **Single check**: trial division up to `√n` (a factor above √n implies one below). `O(√n)`.\n• **Primes ≤ N: Sieve of Eratosthenes** — mark multiples starting at `p²`. `O(N log log N)`.\n• Loop with `i*i <= n`, not `Math.sqrt` in the condition."
   },
   {
     "id": "code-armstrong-perfect",
@@ -1102,7 +1174,8 @@
     "answer": "<p><strong>Armstrong</strong>: sum of each digit raised to the power of the digit count equals the number (153 = 1³+5³+3³).</p><p><strong>Perfect</strong>: sum of proper divisors equals the number (28 = 1+2+4+7+14). Collect divisors in pairs up to √n for O(√n).</p>",
     "tip": "Standard warm-up pair — narrate digit extraction (n % 10, n / 10) fluently; that pattern repeats in reverse-integer and sum-of-digits.",
     "code": "boolean isArmstrong(int n) {\n  int digits = String.valueOf(n).length(), sum = 0;\n  for (int t = n; t > 0; t /= 10)\n    sum += (int) Math.pow(t % 10, digits);\n  return sum == n;\n}\n\nboolean isPerfect(int n) {\n  if (n < 2) return false;\n  int sum = 1;\n  for (int i = 2; (long) i * i <= n; i++)\n    if (n % i == 0) { sum += i; if (i != n / i) sum += n / i; }\n  return sum == n;\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "• **Armstrong**: sum of each digit^(digit count) equals n (153 = 1³+5³+3³).\n• **Perfect**: sum of proper divisors equals n (28 = 1+2+4+7+14); collect divisors in pairs up to `√n` → `O(√n)`.\n• Digit peeling `n%10`, `n/=10` recurs everywhere."
   },
   {
     "id": "code-reverse-integer-digits",
@@ -1117,7 +1190,8 @@
     "answer": "<p>Both are the same digit loop: peel with <code class=\"inline\">% 10</code>, shrink with <code class=\"inline\">/ 10</code>. For reversal, build <code class=\"inline\">rev = rev * 10 + digit</code> — and mention <strong>overflow</strong>: reversing 1999999999 exceeds int; check before multiplying or use long.</p>",
     "tip": "Negative numbers work naturally in Java (% keeps the sign) — knowing that saves the special-case branch. The overflow mention is what separates candidates.",
     "code": "int reverse(int n) {\n  long rev = 0;                       // long to detect overflow\n  while (n != 0) {\n    rev = rev * 10 + n % 10;\n    n /= 10;\n  }\n  return (rev < Integer.MIN_VALUE || rev > Integer.MAX_VALUE) ? 0 : (int) rev;\n}\n\nint digitSum(int n) {\n  int sum = 0;\n  for (n = Math.abs(n); n > 0; n /= 10) sum += n % 10;\n  return sum;\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern: the digit loop** — peel `% 10`, shrink `/ 10`.\n• **Reversal**: `rev = rev*10 + digit`; mention OVERFLOW (check before multiply, or use `long`).\n• Negatives work naturally in Java (`%` keeps the sign)."
   },
   {
     "id": "code-gcd-lcm",
@@ -1132,7 +1206,8 @@
     "answer": "<p><strong>Euclid</strong>: gcd(a, b) = gcd(b, a % b) until b is 0 — O(log min(a,b)). Then <code class=\"inline\">lcm = a / gcd * b</code>.</p><p>Divide <em>before</em> multiplying in LCM — <code class=\"inline\">a * b</code> first overflows for large ints.</p>",
     "tip": "Be able to say why Euclid works: any divisor of a and b also divides a % b, so the pair (b, a%b) has the same divisor set.",
     "code": "int gcd(int a, int b) {\n  while (b != 0) { int t = b; b = a % b; a = t; }\n  return a;\n}\n// recursive: gcd(a, b) = b == 0 ? a : gcd(b, a % b)\n\nlong lcm(int a, int b) {\n  return (long) (a / gcd(a, b)) * b;   // divide first: no overflow\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: Euclid's algorithm.\n• `gcd(a, b) = gcd(b, a % b)` until b = 0 → `O(log min(a,b))`.\n• `lcm = a / gcd * b` — DIVIDE before multiplying to avoid overflow."
   },
   {
     "id": "code-bit-tricks",
@@ -1148,7 +1223,8 @@
     "answer": "<ul><li><strong>Power of two</strong>: <code class=\"inline\">n &gt; 0 &amp;&amp; (n &amp; (n − 1)) == 0</code> — a power of two has exactly one set bit, and n−1 flips it plus everything below.</li><li><strong>Count set bits</strong>: Kernighan's loop — <code class=\"inline\">n &amp;= n − 1</code> clears the lowest set bit; iterations = bit count.</li><li><strong>Swap without temp</strong>: XOR three times (or arithmetic a = a + b...). Party trick — in real code use a temp.</li></ul>",
     "tip": "n & (n-1) 'drops the lowest set bit' — one idiom, two answers. Also name Integer.bitCount(n) to show you know the library does it.",
     "code": "boolean isPowerOfTwo(int n) { return n > 0 && (n & (n - 1)) == 0; }\n\nint countSetBits(int n) {\n  int c = 0;\n  while (n != 0) { n &= n - 1; c++; }   // Kernighan\n  return c;\n}\n\n// swap without temp\na ^= b; b ^= a; a ^= b;",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**One idiom, several answers** — `n & (n-1)` drops the lowest set bit:\n• **Power of two**: `n > 0 && (n & (n-1)) == 0`.\n• **Count set bits**: loop `n &= n-1` (iterations = bit count); or `Integer.bitCount(n)`.\n• **Swap without temp**: XOR three times."
   },
   {
     "id": "code-reverse-linked-list",
@@ -1163,7 +1239,8 @@
     "answer": "<p>Three pointers walking the list: <code class=\"inline\">prev</code>, <code class=\"inline\">curr</code>, <code class=\"inline\">next</code>. Save next, point curr backwards, advance. O(n) time, O(1) space; <code class=\"inline\">prev</code> is the new head.</p>",
     "tip": "The #1 linked-list question anywhere. Practice until you can write it while talking — and know the recursive version exists (O(n) stack) if asked.",
     "code": "class ListNode { int val; ListNode next; }\n\nListNode reverse(ListNode head) {\n  ListNode prev = null, curr = head;\n  while (curr != null) {\n    ListNode next = curr.next;   // save\n    curr.next = prev;            // flip\n    prev = curr;                 // advance\n    curr = next;\n  }\n  return prev;                   // new head\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: three pointers `prev`/`curr`/`next`.\n• Save next, point `curr` backward, advance both; `prev` ends as the new head.\n• `O(n)` time, `O(1)` space. The #1 linked-list question — know the recursive form too."
   },
   {
     "id": "code-linked-list-cycle",
@@ -1179,7 +1256,8 @@
     "answer": "<p>Two pointers: slow moves 1, fast moves 2. If there's a cycle they must meet inside it (fast gains one step per iteration); if fast hits null, no cycle. O(n) time, <strong>O(1) space</strong> — the whole point versus the HashSet approach.</p><p>Follow-up: after meeting, reset one pointer to head; both stepping by 1 meet at the <strong>cycle start</strong>.</p>",
     "tip": "Explain the intuition in one line: inside a loop, a runner gaining 1 step per tick must lap the walker. The cycle-start follow-up is pure math (distance argument) — knowing it exists is often enough.",
     "code": "boolean hasCycle(ListNode head) {\n  ListNode slow = head, fast = head;\n  while (fast != null && fast.next != null) {\n    slow = slow.next;\n    fast = fast.next.next;\n    if (slow == fast) return true;\n  }\n  return false;\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: Floyd's tortoise & hare.\n• slow +1, fast +2; if they meet there's a cycle; if fast hits null, none.\n• `O(n)` time, `O(1)` space. Cycle START: reset one pointer to head, step both by 1."
   },
   {
     "id": "code-middle-linked-list",
@@ -1193,7 +1271,8 @@
     "answer": "<p>Slow/fast pointers again: fast moves 2, slow moves 1 — when fast reaches the end, slow is at the middle. One pass, no length count. For even lengths this yields the <em>second</em> middle; adjust the loop condition for the first.</p>",
     "tip": "Same skeleton solves 'kth from the end': advance fast k steps first, then move both — when fast hits null, slow is the answer.",
     "code": "ListNode middle(ListNode head) {\n  ListNode slow = head, fast = head;\n  while (fast != null && fast.next != null) {\n    slow = slow.next;\n    fast = fast.next.next;\n  }\n  return slow;   // 1->2->3->4->5 => 3\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: slow/fast pointers.\n• **fast +2, slow +1** — when fast reaches the end, slow is the middle. One pass, no length count.\n• Same skeleton solves 'kth from the end' (advance fast k first)."
   },
   {
     "id": "code-merge-sorted-lists",
@@ -1207,7 +1286,8 @@
     "answer": "<p>A <strong>dummy head</strong> + tail pointer: repeatedly attach the smaller front node, advance that list; attach the leftover at the end. O(n+m) time, O(1) space — reusing existing nodes, no copies.</p>",
     "tip": "Say 'dummy node' early — it's the idiom that removes all the empty-list/first-node special cases, and interviewers listen for it.",
     "code": "ListNode merge(ListNode a, ListNode b) {\n  ListNode dummy = new ListNode(), tail = dummy;\n  while (a != null && b != null) {\n    if (a.val <= b.val) { tail.next = a; a = a.next; }\n    else                { tail.next = b; b = b.next; }\n    tail = tail.next;\n  }\n  tail.next = (a != null) ? a : b;   // leftover\n  return dummy.next;\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: dummy head + tail pointer.\n• Repeatedly attach the smaller front node; attach the leftover tail at the end.\n• `O(n+m)` time, `O(1)` space, reusing nodes. Say 'dummy node' — it kills the edge cases."
   },
   {
     "id": "code-stack-queue-conversions",
@@ -1222,7 +1302,8 @@
     "answer": "<p><strong>Queue via two stacks</strong>: push into <code class=\"inline\">in</code>; pop from <code class=\"inline\">out</code>, refilling it by draining <code class=\"inline\">in</code> only when empty. Each element moves at most twice → <strong>amortized O(1)</strong> per operation.</p><p><strong>Stack via one queue</strong>: after enqueueing, rotate the queue (dequeue+enqueue n−1 times) so the newest sits at the front — push O(n), pop O(1).</p>",
     "tip": "The word to say is 'amortized': a single pop may move n elements, but across n operations each element transfers once. That's the entire lesson of this question.",
     "code": "class QueueViaStacks {\n  Deque<Integer> in = new ArrayDeque<>(), out = new ArrayDeque<>();\n  void enqueue(int x) { in.push(x); }\n  int dequeue() {\n    if (out.isEmpty())\n      while (!in.isEmpty()) out.push(in.pop());   // reverse once\n    return out.pop();\n  }\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "• **Queue via two stacks**: push to `in`; pop from `out`, refilling from `in` only when empty → AMORTIZED `O(1)`.\n• **Stack via one queue**: after enqueue, rotate n−1 times so the newest is at the front (push `O(n)`, pop `O(1)`).\n• The keyword is 'amortized'."
   },
   {
     "id": "code-binary-search",
@@ -1237,7 +1318,8 @@
     "answer": "<p>On a <strong>sorted</strong> array, halve the search space each step: compare the middle, discard the wrong half. O(log n) time; iterative is O(1) space, recursive O(log n) stack.</p><p>The two classic bugs: <code class=\"inline\">mid = lo + (hi − lo) / 2</code> (not <code class=\"inline\">(lo+hi)/2</code> — overflow), and getting <code class=\"inline\">lo &lt;= hi</code> / boundary updates right.</p>",
     "tip": "Mid-computation overflow is a legendary real bug (it sat in the JDK's own binarySearch for years) — mentioning that is an easy credibility point.",
     "code": "int binarySearch(int[] a, int target) {\n  int lo = 0, hi = a.length - 1;\n  while (lo <= hi) {\n    int mid = lo + (hi - lo) / 2;      // overflow-safe\n    if (a[mid] == target) return mid;\n    if (a[mid] < target) lo = mid + 1;\n    else hi = mid - 1;\n  }\n  return -1;\n}\n// recursive: search(a, t, lo, mid-1) / (a, t, mid+1, hi)",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern**: halve the sorted search space each step.\n• `O(log n)` time; iterative `O(1)` space, recursive `O(log n)` stack.\n• **Two classic bugs**: `mid = lo + (hi-lo)/2` (avoid overflow) and the `lo <= hi` / boundary updates."
   },
   {
     "id": "code-tower-of-hanoi",
@@ -1251,6 +1333,7 @@
     "answer": "<p>Move n disks A→C using B: recursively move <strong>n−1 disks A→B</strong>, move the largest disk A→C, then move <strong>n−1 disks B→C</strong>. The recursion IS the answer — three lines.</p><p>Moves: T(n) = 2T(n−1) + 1 = <strong>2ⁿ − 1</strong>, so O(2ⁿ) — the standard example of exponential growth from an innocent recurrence.</p>",
     "tip": "This is asked as an 'explain recursion' question, not a coding race — narrate the three steps and derive 2ⁿ−1 (64 disks ≈ 5.8×10¹⁹ moves) and you're done.",
     "code": "void hanoi(int n, char from, char via, char to) {\n  if (n == 0) return;\n  hanoi(n - 1, from, to, via);            // n-1 out of the way\n  System.out.println(\"disk \" + n + \": \" + from + \" -> \" + to);\n  hanoi(n - 1, via, from, to);            // n-1 onto the big one\n}\nhanoi(3, 'A', 'B', 'C');   // 7 moves",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Pattern: recursion** — the recurrence IS the answer.\n• Move n−1 A→B, move the largest A→C, move n−1 B→C.\n• `T(n) = 2T(n−1) + 1 = 2ⁿ − 1` → `O(2ⁿ)`. It's an 'explain recursion' question, not a race."
   }
 ]

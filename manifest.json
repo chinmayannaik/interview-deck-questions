@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 51,
-  "updatedAt": "2026-07-28T03:38:13.684Z",
+  "version": 52,
+  "updatedAt": "2026-07-28T03:48:56.191Z",
   "totalQuestions": 1697,
-  "contentHash": "1daef4b95714d88fe74722320a50ad8432168fb8",
+  "contentHash": "853896ebdaad509afd0dfe018505a93dcff24a1a",
   "groups": [
     {
       "id": "frontend",
@@ -95,7 +95,7 @@
       "group": "frontend",
       "color": "#B0335F",
       "count": 21,
-      "hash": "9aa254dd30bf"
+      "hash": "3adfcb578d4e"
     },
     {
       "id": "javascript",
@@ -140,7 +140,7 @@
       "group": "frontend",
       "color": "#0B7285",
       "count": 83,
-      "hash": "9a53f38d93e3"
+      "hash": "b1e840c1f1a2"
     },
     {
       "id": "rxjs",
