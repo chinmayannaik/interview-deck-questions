@@ -39,7 +39,7 @@
       "V.Imp"
     ],
     "question": "Explain the Virtual DOM and reconciliation.",
-    "answer": "<p>The <strong>Virtual DOM</strong> is a lightweight in-memory tree of React elements. When state changes, React builds a new virtual tree, <strong>diffs</strong> it against the previous one (reconciliation), and applies the minimal set of real DOM updates.</p><p>This lets you write declarative UI (\"UI = f(state)\") while React batches and optimizes imperative DOM work. Keys help React match list items across updates so it reuses DOM nodes instead of remounting them.</p>",
+    "answer": "<p>The <strong>Virtual DOM</strong> is a lightweight in-memory tree of React elements. On a state change, React:</p><ul><li>builds a <strong>new</strong> virtual tree,</li><li><strong>diffs</strong> it against the previous one (<em>reconciliation</em>),</li><li>and applies the <strong>minimal</strong> set of real-DOM updates.</li></ul><p>This lets you write declarative UI (\"UI = f(state)\") while React batches the costly DOM work. <strong>Keys</strong> help it match list items across renders so it reuses nodes instead of remounting them. The win is predictable updates and productivity — not always being faster than hand-tuned DOM.</p>",
     "tip": "Don't claim Virtual DOM is always faster than hand-tuned DOM — the win is predictable updates and developer productivity.",
     "code": "",
     "lang": "",
@@ -55,7 +55,7 @@
       "basics"
     ],
     "question": "Functional components vs class components — which should you use today?",
-    "answer": "<p><strong>Functional components</strong> are plain functions that take props and return JSX. With Hooks they handle state, effects, and context — this is the modern default.</p><p><strong>Class components</strong> use <code class=\"inline\">extends React.Component</code>, lifecycle methods (<code class=\"inline\">componentDidMount</code>, etc.), and <code class=\"inline\">this.state</code>. Still work, but new code and docs focus on functions + Hooks.</p><p>Prefer functional components unless maintaining a legacy class codebase.</p>",
+    "answer": "<p>Two ways to write a component:</p><ul><li><strong>Functional</strong> — a plain function that takes props and returns JSX; with <strong>Hooks</strong> it handles state, effects, and context. The modern default.</li><li><strong>Class</strong> — <code class=\"inline\">extends React.Component</code> with lifecycle methods (<code class=\"inline\">componentDidMount</code>) and <code class=\"inline\">this.state</code>. Still supported, but legacy.</li></ul><p>Prefer functional components + Hooks for all new code; reach for a class only in an older codebase (or an Error Boundary, which still requires one).</p>",
     "tip": "Map lifecycles to Hooks: DidMount/DidUpdate → useEffect; getDerivedStateFromProps is rarely needed.",
     "code": "function Greeting({ name }) {\n  return <h1>Hello, {name}</h1>;\n}",
     "lang": "javascript",
@@ -215,7 +215,7 @@
       "uncontrolled"
     ],
     "question": "Controlled vs uncontrolled components in forms.",
-    "answer": "<p><strong>Controlled</strong> — form value lives in React state; the input's <code class=\"inline\">value</code> + <code class=\"inline\">onChange</code> keep the DOM in sync. Full control for validation, disable submit, format-as-you-type.</p><p><strong>Uncontrolled</strong> — the DOM owns the value; you read it via a ref (or FormData) on submit. Less re-renders; fine for simple forms.</p><p>Libraries like React Hook Form lean uncontrolled under the hood for performance, with controlled APIs when needed.</p>",
+    "answer": "<p>Two ways a form input can hold its value:</p><ul><li><strong>Controlled</strong> — the value lives in React <strong>state</strong> (<code class=\"inline\">value</code> + <code class=\"inline\">onChange</code> keep the DOM in sync). Full control for validation, disabling submit, and format-as-you-type.</li><li><strong>Uncontrolled</strong> — the <strong>DOM</strong> owns the value; you read it via a <code class=\"inline\">ref</code> (or <code class=\"inline\">FormData</code>) on submit. Fewer re-renders; fine for simple forms.</li></ul><p>Gotcha: if you set <code class=\"inline\">value={x}</code> you <em>must</em> update <code class=\"inline\">x</code> in <code class=\"inline\">onChange</code>, or the input appears frozen. Libraries like React Hook Form lean uncontrolled for performance.</p>",
     "tip": "If you set value={x} you must also update x on change — otherwise the input appears frozen.",
     "code": "// Controlled\nconst [name, setName] = useState('');\n<input value={name} onChange={e => setName(e.target.value)} />;\n\n// Uncontrolled\nconst ref = useRef();\n<input ref={ref} defaultValue=\"Ada\" />;",
     "lang": "javascript",
@@ -292,7 +292,7 @@
       "error-boundaries"
     ],
     "question": "What are Error Boundaries?",
-    "answer": "<p><strong>Error Boundaries</strong> are React components that catch JavaScript errors in their child tree during render/lifecycle, log them, and show a fallback UI instead of crashing the whole app.</p><p>They must be class components (or a library wrapper) implementing <code class=\"inline\">getDerivedStateFromError</code> / <code class=\"inline\">componentDidCatch</code>. They do <strong>not</strong> catch errors in event handlers, async code, or SSR — use try/catch there.</p>",
+    "answer": "<p><strong>Error Boundaries</strong> catch JavaScript errors in their child tree during render/lifecycle, log them, and show a <strong>fallback UI</strong> instead of crashing the whole app.</p><ul><li>They must be <strong>class</strong> components (or a library wrapper) implementing <code class=\"inline\">getDerivedStateFromError</code> / <code class=\"inline\">componentDidCatch</code>.</li><li>They do <strong>not</strong> catch errors in event handlers, async code, or SSR — use <code class=\"inline\">try/catch</code> there.</li></ul><p>Place them around route- or widget-level chunks so one failing widget doesn't blank the whole page.</p>",
     "tip": "Place boundaries around route-level or widget-level chunks so one failing widget doesn't blank the page.",
     "code": "class ErrorBoundary extends React.Component {\n  state = { hasError: false };\n  static getDerivedStateFromError() {\n    return { hasError: true };\n  }\n  render() {\n    if (this.state.hasError) return <h2>Something went wrong.</h2>;\n    return this.props.children;\n  }\n}",
     "lang": "javascript",
@@ -324,7 +324,7 @@
       "react-router"
     ],
     "question": "How does client-side routing work with React Router?",
-    "answer": "<p><strong>React Router</strong> maps URL paths to components without full page reloads. The browser History API updates the URL; React swaps the matched route element.</p><p>Core ideas: <code class=\"inline\">BrowserRouter</code>, route config / <code class=\"inline\">Routes</code>+<code class=\"inline\">Route</code>, nested routes with <code class=\"inline\">Outlet</code>, <code class=\"inline\">Link</code>/<code class=\"inline\">NavLink</code>, loaders/actions (data APIs in v6.4+), and protected routes via layout routes or loaders that check auth.</p>",
+    "answer": "<p><strong>React Router</strong> maps URL paths to components without full page reloads — the History API updates the URL and React swaps the matched route element.</p><p>Core pieces:</p><ul><li><code class=\"inline\">BrowserRouter</code> at the root; <code class=\"inline\">Routes</code> + <code class=\"inline\">Route</code> for the config.</li><li>Nested routes rendered through <code class=\"inline\">&lt;Outlet /&gt;</code>.</li><li><code class=\"inline\">Link</code> / <code class=\"inline\">NavLink</code> for navigation.</li><li>Data <code class=\"inline\">loaders</code> / <code class=\"inline\">actions</code> (v6.4+); protected routes via layout routes or a loader that checks auth.</li></ul><p>The modern interview focus is nested routes and <code class=\"inline\">Outlet</code>.</p>",
     "tip": "Know nested routes and Outlet — that's the modern React Router interview focus.",
     "code": "import { Routes, Route, Outlet } from 'react-router-dom';\n\nfunction Layout() {\n  return (\n    <>\n      <Nav />\n      <Outlet />\n    </>\n  );\n}\n\n<Routes>\n  <Route element={<Layout />}>\n    <Route path=\"/\" element={<Home />} />\n    <Route path=\"users/:id\" element={<User />} />\n  </Route>\n</Routes>",
     "lang": "javascript",
@@ -357,7 +357,7 @@
       "basics"
     ],
     "question": "What are Synthetic Events in React?",
-    "answer": "<p>React wraps native browser events in a <strong>SyntheticEvent</strong> for cross-browser consistency. You attach handlers with camelCase props (<code class=\"inline\">onClick</code>, <code class=\"inline\">onChange</code>).</p><p>In modern React, pooling is largely gone — you can use the event asynchronously. Still call <code class=\"inline\">e.preventDefault()</code> / <code class=\"inline\">e.stopPropagation()</code> as with native events. React delegates many events at the root for performance.</p>",
+    "answer": "<p>React wraps native browser events in a <strong>SyntheticEvent</strong> — a consistent, cross-browser wrapper. You attach handlers with camelCase props (<code class=\"inline\">onClick</code>, <code class=\"inline\">onChange</code>).</p><ul><li>Pooling is gone in modern React, so you can use the event asynchronously.</li><li><code class=\"inline\">e.preventDefault()</code> / <code class=\"inline\">e.stopPropagation()</code> work as usual.</li><li>React delegates events at the root for performance.</li></ul>",
     "tip": "Pass the function reference: onClick={handler}, not onClick={handler()} unless you intentionally call it.",
     "code": "function Button() {\n  function handleClick(e) {\n    e.preventDefault();\n    console.log(e.type);\n  }\n  return <button onClick={handleClick}>Save</button>;\n}",
     "lang": "javascript",
@@ -427,7 +427,7 @@
   {
     "id": "react-hoc-vs-hooks",
     "category": "react",
-    "difficulty": "intermediate",
+    "difficulty": "advanced",
     "tags": [
       "hoc",
       "hooks",
@@ -497,7 +497,7 @@
       "rtl"
     ],
     "question": "How do you typically test React components?",
-    "answer": "<p>Prefer <strong>React Testing Library (RTL)</strong> with Jest/Vitest: render the component, query by role/label/text (how users see the UI), fire events, assert outcomes.</p><p>Avoid testing implementation details (internal state, CSS classes) when possible. Use MSW for API mocking. For E2E, Playwright or Cypress cover full flows.</p>",
+    "answer": "<p>Prefer <strong>React Testing Library (RTL)</strong> with Jest or Vitest — test behaviour the way a user experiences it, not internals:</p><ul><li><strong>Render</strong> the component, <strong>query</strong> by role/label/text, <strong>fire</strong> events, then <strong>assert</strong> the outcome.</li><li>Avoid asserting implementation details (internal state, CSS classes).</li><li>Mock APIs with <strong>MSW</strong>; use <strong>Playwright/Cypress</strong> for end-to-end flows.</li></ul><p>Query priority: <code class=\"inline\">getByRole</code> → <code class=\"inline\">getByLabelText</code> → <code class=\"inline\">getByText</code>; avoid <code class=\"inline\">data-testid</code> unless necessary.</p>",
     "tip": "Query priority: getByRole → getByLabelText → getByText. Avoid data-testid unless necessary.",
     "code": "import { render, screen } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\n\ntest('increments', async () => {\n  render(<Counter />);\n  await userEvent.click(screen.getByRole('button', { name: /add/i }));\n  expect(screen.getByText('1')).toBeInTheDocument();\n});",
     "lang": "javascript",
@@ -528,7 +528,7 @@
       "patterns"
     ],
     "question": "Why is composition preferred over inheritance in React?",
-    "answer": "<p>React favors <strong>composition</strong>: nest components, pass <code class=\"inline\">children</code>, or use named slots/props that accept JSX. You reuse UI and behavior by combining pieces, not by extending class hierarchies.</p><p>Inheritance couples components and fights the function-component model. Patterns like compound components (<code class=\"inline\">Select</code> + <code class=\"inline\">Select.Option</code>) and children-as-API keep APIs flexible.</p>",
+    "answer": "<p>React favours <strong>composition over inheritance</strong>: you reuse UI and behaviour by <em>combining</em> components, not extending class hierarchies.</p><ul><li>Nest components and pass <code class=\"inline\">children</code>, or accept JSX through named props/slots.</li><li>Patterns: compound components (<code class=\"inline\">Select</code> + <code class=\"inline\">Select.Option</code>) and children-as-API keep components flexible.</li></ul><p>Inheritance couples components and fights the function-component model — if you reach for <code class=\"inline\">extends</code>, extract a Hook or wrap with <code class=\"inline\">children</code> instead.</p>",
     "tip": "If you reach for extends, stop — extract a Hook or wrap with children instead.",
     "code": "function Card({ title, children, actions }) {\n  return (\n    <section>\n      <h2>{title}</h2>\n      <div>{children}</div>\n      <footer>{actions}</footer>\n    </section>\n  );\n}",
     "lang": "javascript",

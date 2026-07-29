@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 55,
-  "updatedAt": "2026-07-29T06:10:06.132Z",
+  "version": 56,
+  "updatedAt": "2026-07-29T06:31:23.465Z",
   "totalQuestions": 1704,
-  "contentHash": "0a916c694175dd94fab657cde3a7e99c0bd42e50",
+  "contentHash": "04b684758d10b90109b2b6c63db899d3ac092b1f",
   "groups": [
     {
       "id": "frontend",
@@ -86,7 +86,7 @@
       "group": "frontend",
       "color": "#61DAFB",
       "count": 34,
-      "hash": "f32d18c5e175"
+      "hash": "debba0adfea9"
     },
     {
       "id": "ngcoding",
