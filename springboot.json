@@ -10,7 +10,7 @@
       "V.Imp"
     ],
     "question": "What is Spring Boot and how does it differ from the Spring Framework?",
-    "answer": "<p>Spring Boot is an <strong>opinionated layer on top of Spring</strong>. Spring gives you the IoC container, DI, and MVC but leaves assembly to you (XML, servlet config, dependency versions, a servlet container to deploy into). Spring Boot removes that assembly work with four things:</p><ul><li><strong>Auto-configuration</strong> — it inspects the classpath and configures sensible beans automatically (see a DataSource driver, get a DataSource).</li><li><strong>Starters</strong> — one dependency (<code class=\"inline\">spring-boot-starter-web</code>) pulls a curated, version-aligned set.</li><li><strong>Embedded server</strong> — Tomcat/Jetty/Undertow ship inside the jar, so it's <code class=\"inline\">java -jar</code>, not a WAR deployed to an external container.</li><li><strong>Production-ready features</strong> — Actuator health, metrics, and externalized config out of the box.</li></ul><p>Spring Boot does not replace Spring — every bean, proxy, and annotation is still core Spring underneath.</p>",
+    "answer": "<p><strong>Spring Boot makes building a Spring app fast and easy.</strong> Plain Spring is powerful, but you have to wire up a lot yourself — XML, configuration, and a separate server. Spring Boot does that setup for you so you can start writing features immediately.</p><ul><li><strong>Auto-configuration</strong> — it looks at the libraries you added and configures sensible defaults automatically.</li><li><strong>Starters</strong> — one dependency pulls in everything a feature needs (e.g. <code class=\"inline\">spring-boot-starter-web</code> for web apps).</li><li><strong>Built-in server</strong> — Tomcat is bundled inside, so you just run <code class=\"inline\">java -jar app.jar</code> — nothing to install.</li></ul><p>It doesn't replace Spring; it's Spring with the boring setup already done.</p>",
     "tip": "'Convention over configuration.' The strongest version of this answer names auto-configuration as the core idea and adds that Boot is not a new framework — it's Spring with the assembly pre-done.",
     "code": "@SpringBootApplication\npublic class App {\n  public static void main(String[] args) {\n    SpringApplication.run(App.class, args);\n  }\n}",
     "lang": "java",
@@ -27,7 +27,7 @@
       "component-scan"
     ],
     "question": "Explain the core stereotype annotations.",
-    "answer": "<ul><li><code class=\"inline\">@Component</code> — the generic Spring-managed bean; the other three are specialisations of it.</li><li><code class=\"inline\">@Service</code> — business logic. Semantically identical to <code class=\"inline\">@Component</code>; it documents intent.</li><li><code class=\"inline\">@Repository</code> — data access. <strong>Not</strong> just a marker: it enables exception translation, converting vendor-specific <code class=\"inline\">SQLException</code>s into Spring's <code class=\"inline\">DataAccessException</code> hierarchy.</li><li><code class=\"inline\">@Controller</code> / <code class=\"inline\">@RestController</code> — web endpoints. <code class=\"inline\">@RestController</code> = <code class=\"inline\">@Controller</code> + <code class=\"inline\">@ResponseBody</code>, so returns are serialised to JSON instead of resolved as view names.</li><li><code class=\"inline\">@Configuration</code> — a class declaring <code class=\"inline\">@Bean</code> methods.</li></ul><p>All are picked up by component scanning and registered in the ApplicationContext.</p>",
+    "answer": "<p>These tell Spring to create and manage a class as a <strong>bean</strong> (an object Spring owns and injects for you). They all do the same core job — the different names just describe the class's <em>role</em>:</p><ul><li><code class=\"inline\">@Component</code> — any general Spring-managed class.</li><li><code class=\"inline\">@Service</code> — a class that holds business logic.</li><li><code class=\"inline\">@Repository</code> — a class that talks to the database.</li><li><code class=\"inline\">@Controller</code> / <code class=\"inline\">@RestController</code> — a class that handles web requests.</li></ul><p>Spring finds them all automatically through component scanning.</p>",
     "tip": "The trap: 'are @Service and @Component the same?' Yes functionally — but @Repository genuinely adds exception translation, so it's the one that isn't purely cosmetic.",
     "code": "@Service\npublic class UserService { }\n\n@Repository\npublic class UserDao { }   // + SQLException -> DataAccessException\n\n@RestController          // = @Controller + @ResponseBody\npublic class UserController { }",
     "lang": "java",
@@ -45,7 +45,7 @@
       "V.Imp"
     ],
     "question": "What does @SpringBootApplication do?",
-    "answer": "<p>It's a convenience meta-annotation combining three:</p><ul><li><code class=\"inline\">@SpringBootConfiguration</code> — a <code class=\"inline\">@Configuration</code> class; the primary source of bean definitions.</li><li><code class=\"inline\">@EnableAutoConfiguration</code> — turns on the classpath-driven auto-configuration machinery.</li><li><code class=\"inline\">@ComponentScan</code> — scans the annotated class's <strong>package and all sub-packages</strong> for components.</li></ul><p>That last point has a practical consequence: the main class's package placement defines your scanning root.</p>",
+    "answer": "<p>It's the one annotation on your main class that starts the whole app. It's really <strong>three annotations combined into one</strong>:</p><ul><li><code class=\"inline\">@Configuration</code> — lets the class define beans.</li><li><code class=\"inline\">@EnableAutoConfiguration</code> — turns on Spring Boot's automatic setup.</li><li><code class=\"inline\">@ComponentScan</code> — scans this class's package (and everything below it) for your components.</li></ul><p>Because of that scan, keep your main class in a <strong>top-level package</strong> so it finds all your code.</p>",
     "tip": "Very common follow-up: 'why isn't my bean being injected?' — usually the class sits outside the main class's package tree, so it was never scanned.",
     "code": "package com.example.app;   // <- scan root\n\n@SpringBootApplication\npublic class App {\n  public static void main(String[] a) { SpringApplication.run(App.class, a); }\n}\n// com.example.app.service.*  -> scanned\n// com.other.util.*           -> NOT scanned",
     "lang": "java",
@@ -62,7 +62,7 @@
       "maven"
     ],
     "question": "What are Spring Boot starters?",
-    "answer": "<p>Starters are <strong>curated dependency descriptors</strong> — a single POM that transitively pulls in a coherent, version-compatible set of libraries for one capability. <code class=\"inline\">spring-boot-starter-web</code> brings Spring MVC, Jackson, validation, and embedded Tomcat in one line.</p><p>They solve two problems: you stop hunting for the right artifacts, and the <strong>parent BOM</strong> guarantees the versions actually work together, so you never specify a version yourself.</p>",
+    "answer": "<p>A starter is a <strong>ready-made bundle of dependencies</strong> for one job. Instead of hunting for the right libraries and matching versions, you add one line and get everything that works together.</p><p>For example, <code class=\"inline\">spring-boot-starter-web</code> brings in Spring MVC, JSON support, validation, and an embedded Tomcat — all version-matched. You never pick versions yourself; Spring Boot guarantees they fit.</p>",
     "tip": "Starters are mostly empty — they're pure dependency aggregators containing almost no code. Naming convention: official ones are spring-boot-starter-*, third-party ones use *-spring-boot-starter.",
     "code": "<parent>\n  <groupId>org.springframework.boot</groupId>\n  <artifactId>spring-boot-starter-parent</artifactId>\n  <version>3.2.0</version>\n</parent>\n\n<dependency>\n  <groupId>org.springframework.boot</groupId>\n  <artifactId>spring-boot-starter-web</artifactId>\n  <!-- no version: the parent BOM decides -->\n</dependency>",
     "lang": "xml",
@@ -79,7 +79,7 @@
       "V.Imp"
     ],
     "question": "What is auto-configuration and how does Spring Boot decide what to configure?",
-    "answer": "<p>Auto-configuration means Boot registers beans for you based on <strong>what it finds on the classpath and in your config</strong>, rather than you declaring them. Add H2 and it configures an in-memory <code class=\"inline\">DataSource</code>; add <code class=\"inline\">spring-boot-starter-web</code> and it configures a <code class=\"inline\">DispatcherServlet</code> and embedded Tomcat.</p><p>The decisions are made by <code class=\"inline\">@Conditional</code> annotations on auto-configuration classes:</p><ul><li><code class=\"inline\">@ConditionalOnClass</code> — is this type on the classpath?</li><li><code class=\"inline\">@ConditionalOnMissingBean</code> — has the user not defined their own?</li><li><code class=\"inline\">@ConditionalOnProperty</code> — is this property set?</li></ul>",
+    "answer": "<p>Auto-configuration means <strong>Spring Boot sets up beans for you based on what's on the classpath</strong>, instead of you configuring everything by hand.</p><p>Add a database driver → it configures a database connection. Add the web starter → it configures a web server. It checks conditions like \"is this library present?\" or \"has the user already defined this bean?\", and only steps in when needed. Your own configuration always wins.</p>",
     "tip": "The magic word is @ConditionalOnMissingBean — it's why your own bean always wins over Boot's default. Run with --debug to print the auto-configuration report showing matches and why others didn't.",
     "code": "@AutoConfiguration\n@ConditionalOnClass(DataSource.class)\npublic class DataSourceAutoConfiguration {\n  @Bean\n  @ConditionalOnMissingBean       // backs off if you define one\n  public DataSource dataSource() { /* ... */ }\n}",
     "lang": "java",
@@ -96,7 +96,7 @@
       "yaml"
     ],
     "question": "application.properties vs application.yml — what's the difference?",
-    "answer": "<p>Purely a <strong>format</strong> choice; both feed the same <code class=\"inline\">Environment</code>. Properties are flat <code class=\"inline\">key=value</code>; YAML is hierarchical, less repetitive, and supports lists and multiple documents (profile blocks) in one file.</p><p>Two practical notes: if both exist, <code class=\"inline\">.properties</code> wins for conflicting keys; and YAML is whitespace-sensitive, so indentation bugs are a real cost. Neither format supports the other's edge cases perfectly — YAML has surprises like <code class=\"inline\">on</code>/<code class=\"inline\">off</code> parsing as booleans.</p>",
+    "answer": "<p>They're just <strong>two file formats for the same settings</strong> — both configure your app the same way.</p><ul><li><code class=\"inline\">application.properties</code> — flat <code class=\"inline\">key=value</code> lines.</li><li><code class=\"inline\">application.yml</code> — nested and indented, less repetitive, and supports lists.</li></ul><p>YAML is nicer for lots of grouped settings, but it's whitespace-sensitive (indentation matters). Pick one style per app.</p>",
     "tip": "YAML is the norm on real projects because profile-specific blocks live in one file. Know that .properties takes precedence if both are present — that's the gotcha they're fishing for.",
     "code": "# application.yml\nspring:\n  datasource:\n    url: jdbc:postgresql://localhost/db\n    username: app\nserver:\n  port: 8081\n\n# equivalent .properties\nspring.datasource.url=jdbc:postgresql://localhost/db\nspring.datasource.username=app\nserver.port=8081",
     "lang": "yaml",
@@ -149,7 +149,7 @@
       "V.Imp"
     ],
     "question": "What are bean scopes, and why is the singleton default dangerous?",
-    "answer": "<p>The scope controls how many instances the container creates:</p><ul><li><strong>singleton</strong> (default) — one instance per container, shared by every injection point.</li><li><strong>prototype</strong> — a new instance on every injection/lookup.</li><li><strong>request</strong>, <strong>session</strong>, <strong>application</strong>, <strong>websocket</strong> — web-aware scopes.</li></ul><p>The danger: a singleton is shared across <strong>all concurrent request threads</strong>. Any mutable instance field on a <code class=\"inline\">@Service</code> is shared state and a race condition. Spring beans must be stateless — that's the rule the scope default silently depends on.</p>",
+    "answer": "<p>A scope decides <strong>how many copies of a bean Spring creates</strong>:</p><ul><li><strong>singleton</strong> (the default) — one shared instance for the whole app.</li><li><strong>prototype</strong> — a new instance every time it's used.</li><li><strong>request</strong> / <strong>session</strong> — one per web request or user session.</li></ul><p>Because the default singleton is <em>shared by all requests at once</em>, never store per-request data in a field on a <code class=\"inline\">@Service</code> — keep beans stateless, or two users' data can collide.</p>",
     "tip": "This is the question behind the question: 'are Spring singletons thread-safe?' No — Spring guarantees one instance, not safety. Your stateless design is what makes it safe.",
     "code": "@Service\npublic class BadService {\n  private int counter;            // SHARED across every request thread!\n  public void handle() { counter++; }   // race condition\n}\n\n@Service\npublic class GoodService {\n  public int handle(int input) { return input + 1; }  // stateless\n}",
     "lang": "java",
@@ -177,7 +177,7 @@
   {
     "id": "sb-di",
     "category": "springboot",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "dependency-injection",
       "ioc",
@@ -185,7 +185,7 @@
       "V.Imp"
     ],
     "question": "How does dependency injection work in Spring, and why is constructor injection preferred?",
-    "answer": "<p>The <strong>IoC container</strong> owns object creation: it reads bean definitions, resolves the dependency graph, instantiates beans, and injects collaborators — you never <code class=\"inline\">new</code> a service. Injection comes in three forms: constructor, setter, and field.</p><p><strong>Constructor injection is the recommendation</strong>, because it makes dependencies explicit in the signature, allows <code class=\"inline\">final</code> fields (immutable, thread-safe), fails fast at startup on a missing bean, exposes design smells (a 10-arg constructor screams that the class does too much), and lets you instantiate the class in a plain unit test with <code class=\"inline\">new</code> — no Spring, no reflection.</p><p>Since Spring 4.3, a single constructor needs no <code class=\"inline\">@Autowired</code> at all.</p>",
+    "answer": "<p><strong>Dependency Injection means Spring creates the objects your class needs and hands them to you</strong> — you never write <code class=\"inline\">new</code> for your services. This keeps classes loosely coupled and easy to test (you can pass in a fake in a test).</p><p>You can inject through the constructor, a setter, or a field. <strong>Constructor injection is preferred</strong> because the dependencies are obvious, the fields can be <code class=\"inline\">final</code>, and you can create the class in a plain unit test with <code class=\"inline\">new</code>. With a single constructor you don't even need <code class=\"inline\">@Autowired</code>.</p>",
     "tip": "The killer argument against field injection: you cannot construct the object in a unit test without reflection or a Spring context. Also note @Autowired on a lone constructor is redundant — omitting it shows current knowledge.",
     "code": "@Service\npublic class UserService {\n  private final UserRepo repo;          // final = immutable\n  private final MailClient mail;\n\n  public UserService(UserRepo repo, MailClient mail) {   // no @Autowired needed\n    this.repo = repo;\n    this.mail = mail;\n  }\n}\n\n// unit test — no Spring context at all\nvar svc = new UserService(mockRepo, mockMail);",
     "lang": "java",
@@ -221,7 +221,7 @@
       "V.Imp"
     ],
     "question": "How do you build a REST endpoint, and how do you bind inputs?",
-    "answer": "<p>Annotate the class <code class=\"inline\">@RestController</code>, map methods with <code class=\"inline\">@GetMapping</code>/<code class=\"inline\">@PostMapping</code>/<code class=\"inline\">@PutMapping</code>/<code class=\"inline\">@PatchMapping</code>/<code class=\"inline\">@DeleteMapping</code> (all shorthands for <code class=\"inline\">@RequestMapping(method=...)</code>), and put the shared prefix on the class.</p><p>Input binding:</p><ul><li><code class=\"inline\">@PathVariable</code> — part of the path (<code class=\"inline\">/users/42</code>): identifies a resource.</li><li><code class=\"inline\">@RequestParam</code> — query string (<code class=\"inline\">?page=2</code>): filters, paging, optional bits.</li><li><code class=\"inline\">@RequestBody</code> — the JSON body, deserialised by Jackson.</li><li><code class=\"inline\">@RequestHeader</code>, <code class=\"inline\">@CookieValue</code> — headers and cookies.</li></ul><p>Return a DTO (auto-serialised to JSON) or <code class=\"inline\">ResponseEntity</code> when you need to control status and headers.</p>",
+    "answer": "<p>Put <code class=\"inline\">@RestController</code> on the class, then map each method to a URL and HTTP verb:</p><ul><li><code class=\"inline\">@GetMapping</code>, <code class=\"inline\">@PostMapping</code>, <code class=\"inline\">@PutMapping</code>, <code class=\"inline\">@DeleteMapping</code>.</li></ul><p>To read the inputs:</p><ul><li><code class=\"inline\">@PathVariable</code> — a value in the URL path (<code class=\"inline\">/users/42</code>).</li><li><code class=\"inline\">@RequestParam</code> — a query parameter (<code class=\"inline\">?page=2</code>).</li><li><code class=\"inline\">@RequestBody</code> — the JSON body of the request.</li></ul><p>Return an object and Spring turns it into JSON automatically.</p>",
     "tip": "The distinction they want: path variable = which resource, request param = how to filter/shape it. Also, POST should return 201 Created with a Location header — a detail most candidates skip.",
     "code": "@RestController\n@RequestMapping(\"/api/users\")\npublic class UserController {\n  private final UserService service;\n  UserController(UserService s) { this.service = s; }\n\n  @GetMapping(\"/{id}\")\n  UserDto get(@PathVariable Long id) { return service.find(id); }\n\n  @GetMapping\n  Page<UserDto> list(@RequestParam(defaultValue = \"0\") int page,\n                     @RequestParam(required = false) String name) {\n    return service.search(name, PageRequest.of(page, 20));\n  }\n\n  @PostMapping\n  ResponseEntity<UserDto> create(@Valid @RequestBody CreateUserRequest req) {\n    UserDto saved = service.create(req);\n    return ResponseEntity.created(URI.create(\"/api/users/\" + saved.id())).body(saved);\n  }\n}",
     "lang": "java",
@@ -291,7 +291,7 @@
       "V.Imp"
     ],
     "question": "What does Spring Boot Actuator provide?",
-    "answer": "<p>Production-ready HTTP (and JMX) endpoints for operating the app:</p><ul><li><code class=\"inline\">/actuator/health</code> — aggregated health, with liveness/readiness probes for Kubernetes.</li><li><code class=\"inline\">/actuator/metrics</code> and <code class=\"inline\">/actuator/prometheus</code> — Micrometer metrics for scraping.</li><li><code class=\"inline\">/actuator/info</code>, <code class=\"inline\">/env</code>, <code class=\"inline\">/configprops</code>, <code class=\"inline\">/beans</code>, <code class=\"inline\">/mappings</code>, <code class=\"inline\">/loggers</code> (change log levels at runtime, no restart), <code class=\"inline\">/threaddump</code>, <code class=\"inline\">/heapdump</code>.</li></ul><p>Only <code class=\"inline\">health</code> is exposed over HTTP by default — you opt the rest in explicitly.</p>",
+    "answer": "<p>Actuator adds <strong>ready-made endpoints to monitor and manage your running app</strong> — no code needed, just add the dependency.</p><ul><li><code class=\"inline\">/actuator/health</code> — is the app up? (used by Kubernetes health checks)</li><li><code class=\"inline\">/actuator/metrics</code> — performance numbers.</li><li><code class=\"inline\">/actuator/info</code>, <code class=\"inline\">/loggers</code> (change log levels live), and more.</li></ul><p>Only <code class=\"inline\">health</code> is exposed by default — you turn on the rest explicitly, and should secure them.</p>",
     "tip": "The security point is the real question: /env and /configprops can expose secrets, /heapdump dumps memory. Expose deliberately and protect them — never expose * on a public port.",
     "code": "management:\n  endpoints:\n    web:\n      exposure:\n        include: health,info,prometheus   # explicit allow-list, never '*'\n  endpoint:\n    health:\n      show-details: when-authorized\n      probes:\n        enabled: true                     # /health/liveness, /health/readiness\n  server:\n    port: 9090                            # separate port, not publicly routed",
     "lang": "yaml",
@@ -354,7 +354,7 @@
   {
     "id": "sb-n-plus-one",
     "category": "springboot",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "jpa",
       "performance",
@@ -535,7 +535,7 @@
   {
     "id": "sb-security-jwt",
     "category": "springboot",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "security",
       "jwt",
@@ -980,7 +980,7 @@
   {
     "id": "sb-ioc-container",
     "category": "springboot",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "ioc",
       "container",
@@ -988,7 +988,7 @@
       "beanfactory"
     ],
     "question": "What is the IoC container? BeanFactory vs ApplicationContext.",
-    "answer": "<p><strong>Inversion of Control</strong> means the framework, not your code, creates objects and wires them together. The container reads bean definitions, resolves the dependency graph, and injects collaborators. DI is the mechanism; IoC is the principle.</p><ul><li><strong>BeanFactory</strong> — the basic container: bean instantiation and wiring, <strong>lazy</strong> by default.</li><li><strong>ApplicationContext</strong> — a superset and what you always actually use: it adds event publishing, i18n, resource loading, <code class=\"inline\">BeanPostProcessor</code>/<code class=\"inline\">BeanFactoryPostProcessor</code> auto-registration, annotation config, and AOP integration. It <strong>eagerly instantiates singletons at startup</strong>.</li></ul><p>That eagerness is the point: configuration errors fail the deploy rather than the first request that touches a broken bean.</p>",
+    "answer": "<p><strong>Inversion of Control (IoC) means the framework, not your code, creates and connects your objects.</strong> You just declare what you need; the container (Spring) builds the objects and injects them. DI is <em>how</em> it does that.</p><ul><li><strong>BeanFactory</strong> — the basic container.</li><li><strong>ApplicationContext</strong> — the one you actually use; it's a BeanFactory plus extras (events, messages, annotations, AOP) and it creates all singleton beans at startup, so config mistakes fail fast.</li></ul>",
     "tip": "The 'why does it matter' answer: eager singleton creation means a missing bean or bad config crashes at startup — fail fast. That's the practical difference, not the API surface.",
     "code": "// Spring Boot gives you an ApplicationContext:\nConfigurableApplicationContext ctx = SpringApplication.run(App.class, args);\nUserService svc = ctx.getBean(UserService.class);\n\n// what IoC replaces:\nclass OrderService {\n  private final UserRepo repo = new JdbcUserRepo(new HikariDataSource(...));\n  // hardcoded, untestable, and every caller rebuilds the world\n}",
     "lang": "java",
@@ -1024,7 +1024,7 @@
       "jar"
     ],
     "question": "How does the embedded server work, and what is a fat jar?",
-    "answer": "<p>Instead of deploying a WAR into an installed Tomcat, Boot puts the servlet container <strong>inside your application</strong> as a library. <code class=\"inline\">SpringApplication.run</code> starts it programmatically, so the app is a self-contained process: <code class=\"inline\">java -jar app.jar</code>.</p><p>The <strong>fat (uber) jar</strong> packages your classes plus every dependency jar. Boot uses a nested-jar layout with its own <code class=\"inline\">JarLauncher</code> as the manifest <code class=\"inline\">Main-Class</code>, because standard Java can't load a jar-inside-a-jar.</p><p>Why it matters: <strong>the artifact is the deployable</strong>. No container to install, version, or configure; identical execution locally, in CI, and in prod. It's also what makes Boot fit containers so naturally — <code class=\"inline\">FROM eclipse-temurin:21-jre</code> plus one jar.</p>",
+    "answer": "<p>Instead of installing Tomcat separately and deploying a WAR into it, Spring Boot <strong>puts the web server inside your app</strong> as a library. So your app is just a normal program you start with <code class=\"inline\">java -jar app.jar</code>.</p><p>A <strong>fat jar</strong> (or uber jar) is a single jar that contains your code <em>plus</em> all its dependencies and the server — everything needed to run. That's why Spring Boot apps are so easy to deploy and put in containers.</p>",
     "tip": "Swap Tomcat for Undertow/Jetty by excluding one starter and adding another — auto-configuration follows the classpath. That's the clearest demonstration of how starters and auto-config work together.",
     "code": "<plugin>\n  <groupId>org.springframework.boot</groupId>\n  <artifactId>spring-boot-maven-plugin</artifactId>\n</plugin>\n<!-- mvn package -> app.jar with a nested BOOT-INF/lib/*.jar layout -->\n\n<!-- app.jar\n     ├── META-INF/MANIFEST.MF        Main-Class: org.sf.boot.loader.JarLauncher\n     │                               Start-Class: com.example.App\n     ├── org/springframework/boot/loader/   (the launcher)\n     └── BOOT-INF/\n         ├── classes/                (your code)\n         └── lib/                    (every dependency jar, nested)\n-->",
     "lang": "xml",
@@ -1041,7 +1041,7 @@
       "lifecycle"
     ],
     "question": "How do you run code at startup?",
-    "answer": "<p>Several hooks, each firing at a different point:</p><ul><li><code class=\"inline\">CommandLineRunner</code> / <code class=\"inline\">ApplicationRunner</code> — run <strong>after the context is fully initialised</strong>. The difference is only the argument type: raw <code class=\"inline\">String...</code> vs parsed <code class=\"inline\">ApplicationArguments</code> (which understands <code class=\"inline\">--key=value</code> options).</li><li><code class=\"inline\">@EventListener(ApplicationReadyEvent.class)</code> — after runners, when the app is genuinely ready to serve traffic.</li><li><code class=\"inline\">@PostConstruct</code> — per-bean, right after that bean is initialised. <strong>Too early</strong> for anything needing proxies or other beans to be ready.</li></ul><p>For anything that touches the database, calls a service, or needs <code class=\"inline\">@Transactional</code>, use a runner or <code class=\"inline\">ApplicationReadyEvent</code> — never <code class=\"inline\">@PostConstruct</code>, where AOP proxies don't exist yet.</p>",
+    "answer": "<p>Use a <strong>runner</strong> to run some code once, right after the app starts:</p><ul><li><code class=\"inline\">CommandLineRunner</code> / <code class=\"inline\">ApplicationRunner</code> — run after the app is fully started (seed data, warm a cache).</li><li><code class=\"inline\">@EventListener(ApplicationReadyEvent.class)</code> — run when the app is ready to serve traffic.</li></ul><p>For anything that touches the database or other beans, use a runner — not <code class=\"inline\">@PostConstruct</code>, which runs too early.</p>",
     "tip": "The distinction that matters: @PostConstruct runs before the bean is proxied, so @Transactional/@Async inside it silently do nothing. Runners run after the whole context is built, so everything works.",
     "code": "@Component\n@Order(1)                                    // runners execute in @Order sequence\npublic class DataSeeder implements ApplicationRunner {\n  private final UserRepo repo;\n\n  @Override\n  @Transactional                             // works here — context fully built\n  public void run(ApplicationArguments args) {\n    if (args.containsOption(\"seed\")) {       // --seed --count=10\n      repo.save(new User(\"admin@example.com\"));\n    }\n  }\n}\n\n@EventListener(ApplicationReadyEvent.class)  // last — server is accepting traffic\npublic void warmUp() { cache.preload(); }",
     "lang": "java",
@@ -1058,7 +1058,7 @@
       "slf4j"
     ],
     "question": "How does logging work in Spring Boot?",
-    "answer": "<p>Boot uses <strong>SLF4J</strong> as the API and <strong>Logback</strong> as the default implementation (via <code class=\"inline\">spring-boot-starter-logging</code>, included in every starter). You code against SLF4J, so the backend is swappable — <code class=\"inline\">spring-boot-starter-log4j2</code> replaces it without touching code.</p><p>Configure levels per package in properties, or drop in <code class=\"inline\">logback-spring.xml</code> for full control. Use <code class=\"inline\">logback-spring.xml</code> rather than <code class=\"inline\">logback.xml</code> — the Boot-prefixed name is loaded by Boot, so it can use <code class=\"inline\">&lt;springProfile&gt;</code> and <code class=\"inline\">&lt;springProperty&gt;</code>.</p><p>Two rules that matter more than config: always use <strong>parameterised messages</strong> (<code class=\"inline\">{}</code>) not string concatenation, and <strong>never log secrets or PII</strong>.</p>",
+    "answer": "<p>Spring Boot logs through <strong>SLF4J</strong> (the API you write against) with <strong>Logback</strong> as the default engine — included in every starter, so it just works.</p><p>Set how much each package logs in your config, e.g. <code class=\"inline\">logging.level.com.myapp=DEBUG</code>. For full control, add a <code class=\"inline\">logback-spring.xml</code> file. Two habits: use placeholders (<code class=\"inline\">log.info(\"user {}\", id)</code>) instead of string joining, and <strong>never log passwords or personal data</strong>.</p>",
     "tip": "log.debug(\"user \" + user) builds the string even when debug is off. log.debug(\"user {}\", user) doesn't. In a hot path that's a real, measurable cost for zero benefit.",
     "code": "private static final Logger log = LoggerFactory.getLogger(OrderService.class);\n// or @Slf4j with Lombok\n\nlog.debug(\"processing order {} for user {}\", orderId, userId);   // lazy — no cost when off\nlog.error(\"payment failed for order {}\", orderId, exception);    // exception LAST, no {}\n\n// application.yml\nlogging:\n  level:\n    root: INFO\n    com.example.orders: DEBUG\n    org.hibernate.SQL: DEBUG              # see generated SQL (dev only)\n    org.springframework.web: INFO\n  file:\n    name: /var/log/app.log",
     "lang": "java",
@@ -1075,7 +1075,7 @@
       "development"
     ],
     "question": "What does Spring Boot DevTools do?",
-    "answer": "<p>Developer-experience tooling, active only at development time:</p><ul><li><strong>Automatic restart</strong> — the context restarts when classpath files change (much faster than a manual restart thanks to a two-classloader trick).</li><li><strong>LiveReload</strong> — an embedded server that refreshes the browser automatically.</li><li><strong>Sensible dev defaults</strong> — disables template and static-resource caching, so a Thymeleaf edit shows up on refresh.</li><li><strong>Global settings</strong> in <code class=\"inline\">~/.config/spring-boot/</code> shared across projects.</li></ul><p>Crucially, it <strong>disables itself automatically</strong> when running from a fat jar (<code class=\"inline\">java -jar</code>) or a fully-packaged app, and the Maven/Gradle plugin marks it non-transitive so it never leaks into downstream projects.</p>",
+    "answer": "<p>DevTools is a <strong>developer convenience tool</strong> that makes local coding faster. Add it and you get:</p><ul><li><strong>Automatic restart</strong> — the app reloads when you change code.</li><li><strong>LiveReload</strong> — the browser refreshes by itself.</li><li>Dev-friendly defaults (like turning off template caching).</li></ul><p>It automatically switches off in a real/packaged build, so it never affects production.</p>",
     "tip": "The restart speed trick is worth knowing: two classloaders — one for jars (never reloaded), one for your classes (thrown away and rebuilt). Your code changes; the 200 dependency jars don't get re-read.",
     "code": "<dependency>\n  <groupId>org.springframework.boot</groupId>\n  <artifactId>spring-boot-devtools</artifactId>\n  <optional>true</optional>          <!-- non-transitive -->\n  <scope>runtime</scope>\n</dependency>\n\n# tuning\nspring:\n  devtools:\n    restart:\n      enabled: true\n      exclude: static/**,public/**   # asset changes shouldn't restart\n      poll-interval: 2s\n    livereload:\n      enabled: true",
     "lang": "xml",
@@ -1288,7 +1288,7 @@
       "api-design"
     ],
     "question": "How do you control the HTTP status and headers of a response?",
-    "answer": "<p>Three ways, in increasing explicitness:</p><ul><li><strong>Return the object</strong> — 200 OK automatically. Cleanest when the status never varies.</li><li><code class=\"inline\">@ResponseStatus(HttpStatus.CREATED)</code> — a fixed non-200 status on the method (or on an exception class).</li><li><code class=\"inline\">ResponseEntity&lt;T&gt;</code> — full control over status, headers, and body. Use it when the status varies or you must set headers like <code class=\"inline\">Location</code>.</li></ul><p>Status codes carry real meaning — clients, proxies, caches, and monitoring all act on them. Returning <code class=\"inline\">200 OK</code> with <code class=\"inline\">{\"success\": false}</code> in the body is the anti-pattern: it throws away everything HTTP gives you for free.</p>",
+    "answer": "<p>By default, returning an object gives a <strong>200 OK</strong> with that object as JSON. When you need to control the status code or headers, use <code class=\"inline\">ResponseEntity</code>:</p><ul><li>Return the object → automatic 200 OK.</li><li><code class=\"inline\">@ResponseStatus(HttpStatus.CREATED)</code> → a fixed non-200 status.</li><li><code class=\"inline\">ResponseEntity&lt;T&gt;</code> → full control of status, headers (like <code class=\"inline\">Location</code>), and body.</li></ul><p>Use the right status code — don't return 200 with an error message inside.</p>",
     "tip": "Know 201-with-Location for POST, 204 for DELETE, and 401 vs 403 (unauthenticated vs unauthorised). Those three distinctions catch most candidates out.",
     "code": "// 1. plain object -> 200\n@GetMapping(\"/{id}\")\nUserDto get(@PathVariable Long id) { return service.find(id); }\n\n// 2. fixed status\n@PostMapping\n@ResponseStatus(HttpStatus.CREATED)\nUserDto create(@RequestBody @Valid CreateUserRequest r) { return service.create(r); }\n\n// 3. full control — status varies + Location header\n@PostMapping\nResponseEntity<UserDto> create(@RequestBody @Valid CreateUserRequest r) {\n  UserDto saved = service.create(r);\n  return ResponseEntity\n      .created(URI.create(\"/api/users/\" + saved.id()))   // 201 + Location\n      .body(saved);\n}\n\n// exceptions carry status too\n@ResponseStatus(HttpStatus.NOT_FOUND)\npublic class NotFoundException extends RuntimeException { }",
     "lang": "java",
@@ -1338,7 +1338,7 @@
       "annotations"
     ],
     "question": "@RestController vs @Controller?",
-    "answer": "<p><code class=\"inline\">@RestController</code> = <code class=\"inline\">@Controller</code> + <code class=\"inline\">@ResponseBody</code> on every handler: return values are serialized straight into the response body (JSON via Jackson) — no view resolution.</p><p><code class=\"inline\">@Controller</code> alone is MVC-style: a returned String is a <strong>view name</strong> resolved to a template (Thymeleaf/JSP). To return data from it you'd annotate individual methods with <code class=\"inline\">@ResponseBody</code>.</p>",
+    "answer": "<p>The difference is what the return value means:</p><ul><li><code class=\"inline\">@RestController</code> — return values are sent back <strong>as data (JSON)</strong>. This is what you use for REST APIs. It equals <code class=\"inline\">@Controller</code> + <code class=\"inline\">@ResponseBody</code>.</li><li><code class=\"inline\">@Controller</code> — a returned String is treated as a <strong>view/page name</strong> (for server-rendered HTML with Thymeleaf/JSP).</li></ul>",
     "tip": "Symptom of mixing them up: a @Controller returning \"userList\" gives a 404/500 looking for a template called userList instead of returning JSON.",
     "code": "@RestController                 // JSON API\n@RequestMapping(\"/api/users\")\nclass UserApi {\n  @GetMapping List<UserDto> all() { return service.all(); } // -> JSON array\n}\n\n@Controller                     // server-rendered pages\nclass UserPages {\n  @GetMapping(\"/users\") String page(Model m) { return \"users\"; } // -> users.html\n}",
     "lang": "java",
@@ -1348,14 +1348,14 @@
   {
     "id": "sb-rest-constraints",
     "category": "springboot",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "rest",
       "architecture",
       "V.Imp"
     ],
     "question": "What is REST? What are its constraints?",
-    "answer": "<p>REST (Representational State Transfer) is an architectural style for APIs where <strong>resources</strong> (nouns, identified by URIs) are manipulated through <strong>uniform HTTP methods</strong>, exchanging representations (usually JSON).</p><p>The six constraints:</p><ul><li><strong>Client–server</strong> — separated concerns.</li><li><strong>Stateless</strong> — every request carries all context; no server session.</li><li><strong>Cacheable</strong> — responses declare cacheability.</li><li><strong>Uniform interface</strong> — resource URIs + standard methods + self-descriptive messages (+ HATEOAS in the full definition).</li><li><strong>Layered system</strong> — clients can't tell if they hit a proxy, gateway or origin.</li><li><strong>Code on demand</strong> (optional).</li></ul>",
+    "answer": "<p><strong>REST is a style for building web APIs</strong> around <em>resources</em> — things like users or orders — each with its own URL, acted on using standard HTTP methods (GET, POST, PUT, DELETE), usually exchanging JSON.</p><p>Its main rules:</p><ul><li><strong>Client–server</strong> — the two are separate.</li><li><strong>Stateless</strong> — each request carries everything it needs; the server keeps no session.</li><li><strong>Cacheable</strong> — responses can be cached.</li><li><strong>Uniform interface</strong> — resource URLs + standard methods, used consistently.</li><li><strong>Layered</strong> — proxies/gateways can sit in between invisibly.</li></ul>",
     "tip": "Statelessness is the constraint interviewers dig into: it's what makes horizontal scaling trivial — any instance can serve any request.",
     "code": "GET    /orders          # list (collection resource)\nPOST   /orders          # create\nGET    /orders/42       # read one\nPUT    /orders/42       # replace\nDELETE /orders/42       # delete\n# verbs live in the METHOD, never the path (/getOrders is RPC, not REST)",
     "lang": "bash",
@@ -1365,14 +1365,14 @@
   {
     "id": "sb-http-methods",
     "category": "springboot",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "rest",
       "http",
       "V.Imp"
     ],
     "question": "GET/POST/PUT/PATCH/DELETE — and PUT vs PATCH vs POST?",
-    "answer": "<ul><li><strong>GET</strong> — read; safe (no side effects) and idempotent.</li><li><strong>POST</strong> — create / non-idempotent action; two identical POSTs = two resources.</li><li><strong>PUT</strong> — <strong>full replace</strong> at a known URI; idempotent — repeating it yields the same final state.</li><li><strong>PATCH</strong> — <strong>partial update</strong> (only the fields sent); not guaranteed idempotent by spec, though field-set patches usually are.</li><li><strong>DELETE</strong> — remove; idempotent (second call: state unchanged, often 404).</li></ul><p><strong>PUT vs POST</strong>: PUT when the client knows the resource URI (<code class=\"inline\">PUT /users/42</code>); POST to a collection when the server assigns identity (<code class=\"inline\">POST /users</code> → 201 + Location).</p>",
+    "answer": "<p>Each HTTP method has a job:</p><ul><li><strong>GET</strong> — read data (no changes).</li><li><strong>POST</strong> — create something new.</li><li><strong>PUT</strong> — replace an existing thing entirely.</li><li><strong>PATCH</strong> — update part of a thing.</li><li><strong>DELETE</strong> — remove it.</li></ul><p>GET, PUT and DELETE are <strong>idempotent</strong> — repeating the same call leaves the same result. POST isn't: two identical POSTs create two records.</p>",
     "tip": "The trap: PUT with a missing field means 'replace with a version that lacks that field' — nulling it out. PATCH means 'leave unsent fields alone'.",
     "code": "PUT /users/42\n{ \"name\": \"Chinmaya\", \"email\": \"c@x.com\" }   # full document\n\nPATCH /users/42\n{ \"email\": \"new@x.com\" }                      # only what changes",
     "lang": "bash",
@@ -1382,14 +1382,14 @@
   {
     "id": "sb-status-codes",
     "category": "springboot",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "rest",
       "http",
       "V.Imp"
     ],
     "question": "Which HTTP status code do you return when? (incl. 401 vs 403, 502 vs 503)",
-    "answer": "<p><strong>2xx</strong>: 200 OK; 201 Created (+Location); 204 No Content (successful DELETE/PUT with no body).</p><p><strong>4xx (client's fault)</strong>: 400 malformed/invalid request; <strong>401 Unauthorized = not authenticated</strong> (missing/expired credentials); <strong>403 Forbidden = authenticated but not allowed</strong>; 404 not found; 405 method not allowed; 409 conflict (duplicate, version clash); 415 unsupported media type; 429 too many requests.</p><p><strong>5xx (server's fault)</strong>: 500 unhandled error; <strong>502 Bad Gateway = upstream returned garbage/refused</strong>; <strong>503 Service Unavailable = server itself overloaded/down for maintenance</strong>; 504 upstream timeout.</p>",
+    "answer": "<p>Status codes tell the client how the request went:</p><ul><li><strong>2xx success</strong> — 200 OK, 201 Created, 204 No Content.</li><li><strong>4xx the client's fault</strong> — 400 bad request, <strong>401 not logged in</strong>, <strong>403 logged in but not allowed</strong>, 404 not found, 409 conflict, 429 too many requests.</li><li><strong>5xx the server's fault</strong> — 500 error, 502 bad gateway, 503 unavailable.</li></ul><p>The classic trap: <strong>401</strong> = who are you? vs <strong>403</strong> = you can't do that.</p>",
     "tip": "401 vs 403 is the single most asked pair: 401 = \"who are you?\" (fix: log in), 403 = \"I know you, and no\" (fix: get permission). Pedantically 401 is misnamed — it's about authentication.",
     "code": "// Spring: pick codes deliberately\n@PostMapping ResponseEntity<UserDto> create(@Valid @RequestBody UserReq r) {\n  UserDto u = service.create(r);                       // duplicate -> throw -> 409\n  return ResponseEntity.created(URI.create(\"/users/\" + u.id())).body(u);\n}",
     "lang": "java",
@@ -1399,7 +1399,7 @@
   {
     "id": "sb-content-negotiation",
     "category": "springboot",
-    "difficulty": "beginner",
+    "difficulty": "intermediate",
     "tags": [
       "rest",
       "http"
@@ -1415,7 +1415,7 @@
   {
     "id": "sb-hateoas",
     "category": "springboot",
-    "difficulty": "intermediate",
+    "difficulty": "advanced",
     "tags": [
       "rest",
       "architecture"
@@ -1454,7 +1454,7 @@
       "V.Imp"
     ],
     "question": "Authentication vs authorization?",
-    "answer": "<p><strong>Authentication (authn)</strong> — proving <em>who you are</em>: credentials, JWT validation, OAuth login. Fails with <strong>401</strong>.</p><p><strong>Authorization (authz)</strong> — deciding <em>what you may do</em>, evaluated after identity is known: roles, permissions, resource ownership. Fails with <strong>403</strong>.</p><p>In Spring Security: authentication happens in the filter chain (e.g. a JWT filter builds the <code class=\"inline\">Authentication</code> in the <code class=\"inline\">SecurityContext</code>); authorization happens in <code class=\"inline\">authorizeHttpRequests</code> rules and <code class=\"inline\">@PreAuthorize</code> checks against it.</p>",
+    "answer": "<p>Two steps that sound alike but are different:</p><ul><li><strong>Authentication</strong> — proving <em>who you are</em> (login, a valid token). Fails with <strong>401</strong>.</li><li><strong>Authorization</strong> — deciding <em>what you're allowed to do</em>, once your identity is known (roles, permissions). Fails with <strong>403</strong>.</li></ul><p>Authentication always comes first, then authorization.</p>",
     "tip": "Airport analogy that lands: passport check = authentication; boarding pass for THIS flight = authorization.",
     "code": "http.authorizeHttpRequests(a -> a\n    .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")   // authorization rule\n    .anyRequest().authenticated())                     // authentication required\n  .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // authn",
     "lang": "java",
@@ -1636,7 +1636,7 @@
   {
     "id": "sb-tls-handshake",
     "category": "springboot",
-    "difficulty": "intermediate",
+    "difficulty": "advanced",
     "tags": [
       "security",
       "https",
@@ -1736,5 +1736,96 @@
     "lang": "",
     "deep": "<h4>Finding boundaries in practice</h4><ul><li><strong>Event storming</strong> — map domain events on a wall with domain experts; clusters of events + the language changing (\"order\" becomes \"shipment\") reveal context borders.</li><li><strong>Team topology</strong> — Conway's law is real: a service should fit one team's ownership (the 'two-pizza' framing is about teams, not lines of code).</li><li><strong>Rate of change & scaling asymmetry</strong> — things that deploy or scale on different rhythms are natural split candidates (search vs checkout).</li></ul><h4>Context mapping (relationships between contexts)</h4><ul><li><strong>Customer–supplier</strong> — downstream negotiates needs with upstream.</li><li><strong>Anti-corruption layer</strong> — an adapter translating a legacy/external model so it doesn't pollute yours; the standard pattern when strangling a monolith.</li><li><strong>Shared kernel</strong> — a deliberately shared small model; minimize it.</li></ul><h4>Smells of wrong boundaries</h4><ul><li>Distributed monolith: every release train ships 5 services together.</li><li>One 'entity service' per table (UserService, OrderService, AddressService) doing CRUD — boundaries by noun instead of capability.</li><li>Sagas everywhere for basic flows — transactional coupling that wants to be one service.</li></ul>",
     "revise": "Size a service by the DOMAIN, not by 'small':\n• Split along DDD bounded contexts / business capabilities.\n• **Good boundaries**: independent data, team ownership, and change rate.\n• Too fine → distributed-monolith chatter; too coarse → a mini-monolith."
+  },
+  {
+    "id": "sb-soap-vs-rest",
+    "category": "springboot",
+    "difficulty": "intermediate",
+    "tags": [
+      "rest",
+      "soap",
+      "web-services",
+      "api"
+    ],
+    "question": "What is the difference between SOAP and REST?",
+    "answer": "<p>Both let two systems talk over the network, but they're very different in style:</p><ul><li><strong>SOAP</strong> is a strict <em>protocol</em>. Messages are always XML, wrapped in a fixed envelope, and the service is described by a WSDL contract. It's heavy but has built-in standards for security and reliability (WS-Security). Common in older enterprise/banking systems.</li><li><strong>REST</strong> is a lightweight <em>style</em>. It uses plain HTTP methods (GET/POST/PUT/DELETE) on resource URLs and usually exchanges JSON. It's simpler, faster, and browser/mobile friendly — the default for modern APIs.</li></ul><p>Quick rule: choose <strong>REST</strong> for most new web/mobile APIs; you'll mostly meet <strong>SOAP</strong> when integrating with legacy enterprise services.</p>",
+    "tip": "One line: SOAP = strict XML protocol with built-in standards; REST = simple HTTP + JSON style. REST wins for modern apps.",
+    "revise": "Two ways for systems to talk:\n• **SOAP** — a strict PROTOCOL: always XML, fixed envelope, WSDL contract, built-in security (WS-Security). Heavy; legacy/enterprise.\n• **REST** — a lightweight STYLE: plain HTTP verbs on resource URLs, usually JSON. Simple, fast, mobile-friendly.\nDefault to REST for new APIs; SOAP mainly for legacy integration."
+  },
+  {
+    "id": "sb-run-app",
+    "category": "springboot",
+    "difficulty": "beginner",
+    "tags": [
+      "run",
+      "maven",
+      "build",
+      "basics"
+    ],
+    "question": "How do you run a Spring Boot application?",
+    "answer": "<p>A Spring Boot app is just a normal Java program with a <code class=\"inline\">main</code> method, so there are a few easy ways to start it:</p><ul><li><strong>From the build tool</strong> — <code class=\"inline\">mvn spring-boot:run</code> (Maven) or <code class=\"inline\">./gradlew bootRun</code> (Gradle). Best during development.</li><li><strong>As a jar</strong> — build it with <code class=\"inline\">mvn clean package</code>, then run <code class=\"inline\">java -jar target/app.jar</code>. This is how it runs in production.</li><li><strong>From your IDE</strong> — just run the <code class=\"inline\">@SpringBootApplication</code> main class.</li></ul><p>Because the web server (Tomcat) is bundled inside, you don't install or deploy to anything separately.</p>",
+    "code": "# during development\nmvn spring-boot:run\n\n# build a runnable jar, then run it\nmvn clean package\njava -jar target/app.jar\n\n# pass config at runtime\njava -jar target/app.jar --server.port=9090",
+    "lang": "bash",
+    "tip": "mvn spring-boot:run for dev; mvn clean package then java -jar for prod. The server is built in.",
+    "revise": "A Spring Boot app has a normal `main` method, so:\n• **Dev** — `mvn spring-boot:run` (or `./gradlew bootRun`), or run the main class in your IDE.\n• **Prod** — `mvn clean package` to build a jar, then `java -jar app.jar`.\nThe Tomcat server is bundled inside — nothing separate to deploy."
+  },
+  {
+    "id": "sb-create-microservice",
+    "category": "springboot",
+    "difficulty": "intermediate",
+    "tags": [
+      "microservices",
+      "architecture",
+      "steps"
+    ],
+    "question": "What are the steps to create a microservice in Spring Boot?",
+    "answer": "<p>A microservice is just a small, focused Spring Boot app that owns one business capability. Typical steps:</p><ol><li><strong>Create the project</strong> — from <code class=\"inline\">start.spring.io</code> with starters like Web, JPA, and a database driver.</li><li><strong>Build the layers</strong> — Controller (REST endpoints) → Service (business logic) → Repository (database).</li><li><strong>Give it its own database</strong> — each service owns its data; others talk to it through its API, not its tables.</li><li><strong>Externalize config</strong> — use profiles / environment variables so it runs anywhere.</li><li><strong>Add cross-cutting basics</strong> — validation, global exception handling, and Actuator health checks.</li><li><strong>Let it talk to others</strong> — synchronously via REST (RestClient) or asynchronously via messaging (Kafka/RabbitMQ).</li><li><strong>Containerize &amp; deploy</strong> — package as a jar, put it in a Docker image, deploy (often to Kubernetes).</li></ol>",
+    "tip": "Small focused Boot app + its own DB + REST/messaging + config + health checks, packaged in Docker.",
+    "revise": "A microservice = a small Boot app owning one capability. Steps:\n• Create with start.spring.io (Web, JPA, DB starters).\n• Layer it: Controller → Service → Repository.\n• Give it its OWN database; others use its API, not its tables.\n• Externalize config (profiles/env vars); add validation + global error handling + Actuator health.\n• Communicate via REST or messaging; then containerize (Docker) and deploy (Kubernetes)."
+  },
+  {
+    "id": "sb-test-coverage",
+    "category": "springboot",
+    "difficulty": "intermediate",
+    "tags": [
+      "testing",
+      "coverage",
+      "jacoco",
+      "junit"
+    ],
+    "question": "How do you measure test coverage, and is 100% coverage realistic?",
+    "answer": "<p><strong>Test coverage</strong> is the percentage of your code that runs during tests. In Spring Boot you measure it with <strong>JaCoCo</strong>, added as a Maven/Gradle plugin — it produces an HTML report and can fail the build if coverage drops below a threshold.</p><p>To raise it, use the right test types: fast <strong>unit tests</strong> (JUnit + Mockito) for services, and <strong>slice tests</strong> (<code class=\"inline\">@WebMvcTest</code>, <code class=\"inline\">@DataJpaTest</code>) for controllers and repositories.</p><p>Is <strong>100% realistic?</strong> Usually no — and it's not the goal. Chasing 100% wastes time testing trivial getters and config. Aim for <strong>high coverage on important business logic</strong> (often ~80%); coverage shows what you <em>didn't</em> test, not that your tests are good.</p>",
+    "tip": "Measure with JaCoCo; aim for high coverage on business logic (~80%), not a meaningless 100%.",
+    "revise": "**Coverage** = % of code exercised by tests.\n• Measure with **JaCoCo** (Maven/Gradle plugin) — HTML report + build threshold.\n• Raise it with unit tests (JUnit + Mockito) + slice tests (`@WebMvcTest`, `@DataJpaTest`).\n• 100% is usually NOT the goal — aim for high coverage on business logic (~80%); coverage shows what you missed, not test quality."
+  },
+  {
+    "id": "sb-find-errors",
+    "category": "springboot",
+    "difficulty": "beginner",
+    "tags": [
+      "debugging",
+      "logging",
+      "troubleshooting",
+      "actuator"
+    ],
+    "question": "How do you find and debug an error in a Spring Boot application?",
+    "answer": "<p>Work from the symptom back to the cause:</p><ul><li><strong>Read the logs first</strong> — the console/log shows the exception and a <strong>stack trace</strong>; the top line usually names the exact class and line.</li><li><strong>Turn up logging</strong> — set <code class=\"inline\">logging.level.com.myapp=DEBUG</code> (or <code class=\"inline\">DEBUG</code> on Spring/Hibernate) to see more detail, including the SQL being run.</li><li><strong>Use the debugger</strong> — set a breakpoint in your IDE and step through to inspect variable values.</li><li><strong>Check Actuator</strong> — <code class=\"inline\">/actuator/health</code> and <code class=\"inline\">/actuator/loggers</code> help diagnose a running app.</li><li><strong>Read the HTTP status</strong> — a 4xx means a bad request from the client; a 5xx means the server threw an error (check the logs).</li></ul>",
+    "tip": "Start with the stack trace in the logs (top line = where it failed), raise the log level, then use the debugger.",
+    "revise": "Find errors from symptom → cause:\n• **Logs first** — the stack trace's top line names the class + line that failed.\n• **Raise logging** — `logging.level.com.myapp=DEBUG` (see detail + SQL).\n• **Debugger** — breakpoint + step through to inspect values.\n• **Actuator** health/loggers for a running app; and read the HTTP status (4xx = client, 5xx = server)."
+  },
+  {
+    "id": "sb-agile-sdlc",
+    "category": "springboot",
+    "difficulty": "beginner",
+    "tags": [
+      "agile",
+      "sdlc",
+      "process",
+      "general"
+    ],
+    "question": "What is SDLC and what is Agile?",
+    "answer": "<p><strong>SDLC (Software Development Life Cycle)</strong> is the overall process of building software, in stages: <em>requirements → design → development → testing → deployment → maintenance</em>. It's just a name for \"how software goes from idea to running product.\"</p><p><strong>Agile</strong> is a <em>way</em> of doing the SDLC. Instead of building everything at once (the old \"Waterfall\" approach), you work in short cycles called <strong>sprints</strong> (usually 2 weeks), deliver a small working piece each time, get feedback, and adapt.</p><p><strong>Scrum</strong> is the most common Agile framework — with daily stand-ups, sprint planning, and a review/retrospective at the end. The point of Agile: ship small, get feedback fast, and change direction easily.</p>",
+    "tip": "SDLC = the stages of building software. Agile = doing it in short 2-week sprints with feedback (Scrum is the common framework).",
+    "revise": "• **SDLC** — the stages of building software: requirements → design → development → testing → deployment → maintenance.\n• **Agile** — a way to run the SDLC in short **sprints** (~2 weeks): ship a small working piece, get feedback, adapt (vs building everything at once in Waterfall).\n• **Scrum** — the common Agile framework: stand-ups, sprint planning, review + retrospective."
   }
 ]

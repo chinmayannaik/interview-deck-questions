@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 53,
-  "updatedAt": "2026-07-28T04:03:15.549Z",
-  "totalQuestions": 1697,
-  "contentHash": "93a939ff16acbb91400d6be40217331a8b06bbce",
+  "version": 54,
+  "updatedAt": "2026-07-29T05:23:42.362Z",
+  "totalQuestions": 1704,
+  "contentHash": "f62ea66119b521f3993ea12f5c4162dcd5b2b507",
   "groups": [
     {
       "id": "frontend",
@@ -51,7 +51,7 @@
       "id": "java-angular",
       "file": "packs/java-angular.json",
       "label": "Java + Angular",
-      "count": 988,
+      "count": 995,
       "hash": "ae5da0dfd601"
     },
     {
@@ -65,7 +65,7 @@
       "id": "java-backend",
       "file": "packs/java-backend.json",
       "label": "Java Backend Developer",
-      "count": 580,
+      "count": 587,
       "hash": "ef4083c12fbd"
     }
   ],
@@ -184,8 +184,8 @@
       "label": "Java",
       "group": "backend",
       "color": "#9A5B34",
-      "count": 174,
-      "hash": "a721585eba60"
+      "count": 175,
+      "hash": "a222d91c478e"
     },
     {
       "id": "leetcode",
@@ -203,8 +203,8 @@
       "label": "Spring Boot",
       "group": "backend",
       "color": "#4E8B2C",
-      "count": 99,
-      "hash": "3e031f5aaffa"
+      "count": 105,
+      "hash": "42e5242811ff"
     },
     {
       "id": "python",

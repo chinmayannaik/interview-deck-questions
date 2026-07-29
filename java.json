@@ -34,7 +34,7 @@
   {
     "id": "java-abstract-interface",
     "category": "java",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "interface",
       "abstract-class",
@@ -50,7 +50,7 @@
   {
     "id": "java-equals-hashcode",
     "category": "java",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "equals",
       "hashcode",
@@ -67,7 +67,7 @@
   {
     "id": "java-collections",
     "category": "java",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "collections",
       "list",
@@ -83,7 +83,7 @@
   {
     "id": "java-checked-unchecked",
     "category": "java",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "exceptions"
     ],
@@ -97,7 +97,7 @@
   {
     "id": "java-string-immutable",
     "category": "java",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "string",
       "immutability",
@@ -143,7 +143,7 @@
   {
     "id": "java-streams",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "streams",
       "functional",
@@ -159,7 +159,7 @@
   {
     "id": "java-optional",
     "category": "java",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "optional",
       "null-safety",
@@ -175,7 +175,7 @@
   {
     "id": "java-threads",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "concurrency",
       "threads"
@@ -190,7 +190,7 @@
   {
     "id": "java-jvm",
     "category": "java",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "jvm",
       "memory",
@@ -541,7 +541,7 @@
   {
     "id": "java-stringbuilder-vs-buffer",
     "category": "java",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "string",
       "stringbuilder",
@@ -588,7 +588,7 @@
   {
     "id": "java-object-methods",
     "category": "java",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "object",
       "equals",
@@ -605,7 +605,7 @@
   {
     "id": "java-equals-contract",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "equals",
       "contract",
@@ -622,7 +622,7 @@
   {
     "id": "java-hashcode-contract",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "hashcode",
       "contract",
@@ -656,7 +656,7 @@
   {
     "id": "java-shallow-deep-copy",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "clone",
       "copy",
@@ -672,7 +672,7 @@
   {
     "id": "java-serialization",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "serialization",
       "io",
@@ -829,7 +829,7 @@
   {
     "id": "java-hashmap-internals",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "hashmap",
       "internals",
@@ -912,7 +912,7 @@
   {
     "id": "java-arraylist-internals",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "arraylist",
       "internals",
@@ -944,7 +944,7 @@
   {
     "id": "java-fail-fast",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "iterator",
       "concurrentmodification",
@@ -1136,7 +1136,7 @@
   {
     "id": "java-exception-hierarchy",
     "category": "java",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "exceptions",
       "hierarchy"
@@ -1305,7 +1305,7 @@
   {
     "id": "java-stream-intermediate-terminal",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "streams",
       "laziness",
@@ -1323,7 +1323,7 @@
   {
     "id": "java-map-vs-flatmap",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "streams",
       "flatmap",
@@ -1340,7 +1340,7 @@
   {
     "id": "java-collectors",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "streams",
       "collectors",
@@ -1358,7 +1358,7 @@
   {
     "id": "java-stream-reduce",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "streams",
       "reduce",
@@ -1390,7 +1390,7 @@
   {
     "id": "java-optional-pitfalls",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "optional",
       "null-safety",
@@ -1406,7 +1406,7 @@
   {
     "id": "java-optional-orelse",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "optional"
     ],
@@ -1483,7 +1483,7 @@
   {
     "id": "java-synchronized",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "concurrency",
       "synchronized",
@@ -1500,7 +1500,7 @@
   {
     "id": "java-volatile",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "concurrency",
       "volatile",
@@ -1568,7 +1568,7 @@
   {
     "id": "java-executorservice",
     "category": "java",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "concurrency",
       "executor",
@@ -2256,7 +2256,7 @@
   {
     "id": "java-covariant-return-type",
     "category": "java",
-    "difficulty": "intermediate",
+    "difficulty": "advanced",
     "tags": [
       "overriding",
       "inheritance",
@@ -2630,7 +2630,7 @@
   {
     "id": "java-permgen-metaspace",
     "category": "java",
-    "difficulty": "intermediate",
+    "difficulty": "advanced",
     "tags": [
       "jvm",
       "memory",
@@ -2789,5 +2789,22 @@
     "code": "System.out.println(\"abc\" + 1 + 2);  // abc12\nSystem.out.println(1 + 2 + \"abc\");  // 3abc\nSystem.out.println(\"\" + (1 + 2));   // 3\nSystem.out.println('a' + 1);        // 98 — char + int is arithmetic!",
     "lang": "java",
     "revise": "`+` with strings evaluates LEFT to RIGHT:\n• `\"abc\" + 1 + 2` → `\"abc12\"` (string first, so numbers are appended as text).\n• `1 + 2 + \"abc\"` → `\"3abc\"` (numbers add first, then concatenate).\n**It's sequential, not algebraic** — parenthesise to force order."
+  },
+  {
+    "id": "java-static-block-exception",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "static",
+      "class-loading",
+      "exception",
+      "initialization"
+    ],
+    "question": "What happens if a static block (static initializer) throws an exception?",
+    "answer": "<p>A static block runs <strong>once</strong>, when the class is first loaded. If it throws, the class <strong>fails to initialize</strong> and the JVM wraps the original exception in an <code class=\"inline\">ExceptionInInitializerError</code>.</p><p>The important part: that class is now <strong>permanently unusable</strong> for the rest of the program. Any later attempt to use it doesn't re-run the block — it fails immediately with <code class=\"inline\">NoClassDefFoundError</code>, which can be confusing because the real cause happened earlier.</p><p>Note a checked exception isn't even allowed to escape a static block — you must handle it or wrap it in an unchecked one.</p>",
+    "code": "class Config {\n    static final int VALUE;\n    static {\n        VALUE = Integer.parseInt(System.getProperty(\"x\")); // NumberFormatException if unset\n    }\n}\n// First use of Config -> ExceptionInInitializerError\n// Every use after that -> NoClassDefFoundError",
+    "lang": "java",
+    "tip": "A throwing static block => ExceptionInInitializerError, and the class stays broken (later use => NoClassDefFoundError).",
+    "revise": "A static block runs ONCE at class load. If it throws:\n• The class **fails to initialize** → the JVM throws `ExceptionInInitializerError` (wrapping your exception).\n• The class is then **permanently unusable** — later access gives `NoClassDefFoundError` (not a re-run), which hides the real cause.\n• Checked exceptions can't escape a static block — handle or wrap them."
   }
 ]
