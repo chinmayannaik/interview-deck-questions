@@ -12,7 +12,8 @@
     "answer": "<p><strong>Merge</strong> combines branches with a merge commit — preserves the true history, non-destructive.</p><p><strong>Rebase</strong> replays your commits on top of another branch — a linear, clean history, but rewrites commits. Never rebase branches others have pulled.</p>",
     "tip": "Golden rule: don't rebase shared/public branches.",
     "code": "git rebase main   # replay feature commits onto main",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "• **Merge** — combines branches with a MERGE COMMIT; preserves true history, non-destructive.\n• **Rebase** — REPLAYS your commits on top of another branch; clean linear history, but rewrites commits.\nGolden rule: never rebase branches others have already pulled."
   },
   {
     "id": "git-fetch-pull",
@@ -26,7 +27,8 @@
     "answer": "<p><strong>fetch</strong> downloads remote changes but doesn't touch your working branch — you can inspect first. <strong>pull</strong> = fetch + merge (or rebase) into your current branch in one step.</p>",
     "tip": "Use fetch + review before merging when you want to see what changed.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "• `git fetch` — downloads remote changes but does NOT touch your branch (inspect first).\n• `git pull` — `fetch` + `merge` (or rebase) into your current branch in one step.\nPrefer `fetch` then review when unsure."
   },
   {
     "id": "git-reset-revert",
@@ -41,7 +43,8 @@
     "answer": "<ul><li><strong>revert</strong> — creates a new commit that undoes a previous one; safe on shared branches.</li><li><strong>reset</strong> — moves the branch pointer (soft/mixed/hard); rewrites history, use locally.</li><li><strong>checkout / switch / restore</strong> — move between branches or restore files.</li></ul>",
     "tip": "On a shared branch, undo with revert (safe), not reset (rewrites history).",
     "code": "git revert <hash>   # safe undo\ngit reset --hard HEAD~1  # local-only",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "• `revert` — makes a NEW commit that undoes a previous one; SAFE on shared branches.\n• `reset` — moves the branch pointer (`--soft`/`--mixed`/`--hard`); rewrites history — use LOCALLY.\n• `checkout`/`switch`/`restore` — move between branches or restore files."
   },
   {
     "id": "git-stash",
@@ -54,7 +57,8 @@
     "answer": "<p>Temporarily shelves uncommitted changes so you can switch context (e.g. fix an urgent bug on another branch), then reapply them with <code class=\"inline\">git stash pop</code>.</p>",
     "tip": "git stash pop applies and drops; git stash apply keeps the stash.",
     "code": "git stash\ngit switch main\n# ... later ...\ngit switch feature && git stash pop",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "`git stash` temporarily SHELVES uncommitted changes so you can switch context (e.g. an urgent fix).\n• Reapply with `git stash pop` (or `apply` to keep the stash).\nHandy for a clean working tree without committing half-done work."
   },
   {
     "id": "git-cherry-pick",
@@ -67,7 +71,8 @@
     "answer": "<p>Applies a single specific commit from one branch onto another — useful for hotfixes you need on multiple branches without merging everything.</p>",
     "tip": "Great for porting one bug-fix commit to a release branch.",
     "code": "git cherry-pick <hash>",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "`git cherry-pick` applies a SINGLE specific commit from one branch onto another.\n• Great for hotfixes you need on multiple branches without merging everything.\nCreates a new commit (new hash) with the same changes."
   },
   {
     "id": "git-gitflow",
@@ -82,7 +87,8 @@
     "answer": "<p><strong>GitFlow</strong> — long-lived <code class=\"inline\">main</code> and <code class=\"inline\">develop</code>, plus <code class=\"inline\">feature/*</code>, <code class=\"inline\">release/*</code>, and <code class=\"inline\">hotfix/*</code> branches. Simpler alternative: <strong>trunk-based</strong> / <strong>GitHub Flow</strong> — short-lived feature branches merged to main via pull requests.</p>",
     "tip": "Most modern teams favour short-lived branches + PRs over full GitFlow.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "• **GitFlow** — long-lived `main` + `develop`, plus `feature/*`, `release/*`, `hotfix/*` branches.\n• **Trunk-based / GitHub Flow** — short-lived feature branches merged to `main` via PRs.\nMost modern teams prefer trunk-based for continuous delivery."
   },
   {
     "id": "git-conflict",
@@ -95,7 +101,8 @@
     "answer": "<p>Git marks conflicting regions with <code class=\"inline\">&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> / <code class=\"inline\">=======</code> / <code class=\"inline\">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>. Edit to the desired result, remove the markers, <code class=\"inline\">git add</code> the files, then commit (or <code class=\"inline\">git rebase --continue</code>).</p>",
     "tip": "Pull/rebase frequently to keep conflicts small and manageable.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "A merge conflict marks clashing regions with `<<<<<<<` / `=======` / `>>>>>>>`.\n• Edit to the desired result, REMOVE the markers.\n• `git add` the files, then `commit` (or `git rebase --continue`)."
   },
   {
     "id": "git-reflog",
@@ -109,7 +116,8 @@
     "answer": "<p><code class=\"inline\">git reflog</code> logs where HEAD has been, including commits orphaned by a reset/rebase. Find the hash and <code class=\"inline\">git checkout</code> or <code class=\"inline\">git reset</code> back to it.</p>",
     "tip": "reflog is the safety net after a bad reset — commits aren't truly gone immediately.",
     "code": "git reflog\ngit reset --hard <hash>",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "`git reflog` logs everywhere HEAD has been — INCLUDING commits orphaned by a reset/rebase.\n• Find the lost commit's hash there, then `git checkout` or `git reset` back to it.\nThe safety net for 'I lost my commits'."
   },
   {
     "id": "git-squash",
@@ -123,7 +131,8 @@
     "answer": "<p>Combining several commits into one (via interactive rebase or a squash-merge) to keep the main branch history clean — one logical change = one commit.</p>",
     "tip": "Squash-merge on PRs keeps main's history readable without losing branch detail.",
     "code": "git rebase -i HEAD~3   # mark commits as 'squash'",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "**Squashing** combines several commits into ONE (interactive rebase or squash-merge).\n• Keeps `main` history clean: one logical change = one commit.\nDo it before merging, not on shared history."
   },
   {
     "id": "git-head",
@@ -137,7 +146,8 @@
     "answer": "<p><strong>HEAD</strong> points to your current commit/branch. A <strong>detached HEAD</strong> means you've checked out a specific commit rather than a branch — new commits there aren't on any branch and can be lost unless you create one.</p>",
     "tip": "If you commit in detached HEAD, make a branch before switching away.",
     "code": "git switch -c new-branch  # save detached-HEAD work",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "**HEAD** points to your current commit/branch.\n• A **detached HEAD** means you checked out a specific COMMIT, not a branch.\n• New commits there aren't on any branch and can be lost — create a branch to keep them."
   },
   {
     "id": "git-code-review",
@@ -152,7 +162,8 @@
     "answer": "<p>A layered checklist, most important first:</p><ul><li><strong>Correctness</strong> — does it do what the ticket says; edge cases (null/empty/concurrent); error handling.</li><li><strong>Design</strong> — right layer for the logic, no duplication of existing utilities, sane API shapes, backward compatibility.</li><li><strong>Safety</strong> — SQL injection/XSS, secrets in code, N+1 queries, missing indexes on new queries, transaction boundaries.</li><li><strong>Tests</strong> — meaningful cases (not just coverage), failure paths tested.</li><li><strong>Readability last</strong> — naming, dead code; style nits belong to the linter, not humans.</li></ul><p>Process: small PRs (&lt; ~400 lines review well), a description that says <em>why</em>, CI green before human eyes, comments phrased as questions, and approval means <em>I'd maintain this</em>.</p>",
     "tip": "Have one story ready: a bug you caught in review (concurrency, missing rollback) and one piece of pushback you accepted gracefully — review questions are always secretly behavioral.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "A layered PR checklist, most important first:\n• **Correctness** — does it meet the ticket; edge cases; error handling.\n• **Design** — right layer, no duplication, sane API, backward compatible.\n• **Safety** — injection/XSS, secrets, N+1 queries, missing indexes.\n• **Tests + readability**. Keep PRs small and focused."
   },
   {
     "id": "git-staging-area",
@@ -168,7 +179,8 @@
     "answer": "<p>Git has three 'trees':</p><ul><li><strong>Working directory</strong> — the actual files you edit.</li><li><strong>Staging area (index)</strong> — a snapshot you're preparing; <code class=\"inline\">git add</code> moves changes here.</li><li><strong>Repository</strong> — committed history; <code class=\"inline\">git commit</code> records the staged snapshot permanently.</li></ul><p>The staging area is what lets you commit only <em>some</em> of your changes.</p>",
     "tip": "git add -p stages hunks selectively — the key to small, logical commits from a messy working tree.",
     "code": "git add file.js      # working dir -> staging\ngit commit -m \"msg\"  # staging -> repository",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "Git has three trees:\n• **Working directory** — the files you edit.\n• **Staging area (index)** — the snapshot you're preparing (`git add` moves changes here).\n• **Repository** — committed history (`git commit` records the staged snapshot).\nThe staging area lets you commit only SOME changes."
   },
   {
     "id": "git-clone-vs-fork",
@@ -183,7 +195,8 @@
     "answer": "<p><strong>clone</strong> — a Git operation that makes a local copy of a repository (with full history) that you can pull from and, with access, push to.</p><p><strong>fork</strong> — a hosting-platform (GitHub/GitLab) concept: a server-side copy of a repo under <em>your</em> account. You fork a project you can't push to, clone your fork, then open a pull request back to the original.</p>",
     "tip": "Fork is the open-source contribution model; clone is just getting the code locally. Fork lives on the server, clone on your machine.",
     "code": "git clone https://github.com/user/repo.git",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "• **clone** — a Git operation making a LOCAL copy (full history) you pull from and (with access) push to.\n• **fork** — a hosting-platform (GitHub) server-side copy under YOUR account.\nYou fork a repo you can't push to, clone your fork, then open a PR back to the original."
   },
   {
     "id": "git-gitignore",
@@ -197,7 +210,8 @@
     "answer": "<p><code class=\"inline\">.gitignore</code> lists path patterns Git should not track (build output, <code class=\"inline\">node_modules</code>, secrets). It only affects <strong>untracked</strong> files.</p><p>Gotcha: a file <em>already tracked</em> keeps being tracked even after you add it to .gitignore — you must untrack it explicitly.</p>",
     "tip": "Committed a secret then added it to .gitignore? It's still in history — remove it with git rm --cached AND rotate the secret.",
     "code": "git rm --cached .env      # stop tracking, keep the file\necho \".env\" >> .gitignore",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "`.gitignore` lists path patterns Git shouldn't track (build output, `node_modules`, secrets).\n• It only affects UNTRACKED files.\n• Gotcha: a file already TRACKED keeps being tracked after you ignore it — untrack it with `git rm --cached`."
   },
   {
     "id": "git-log-diff",
@@ -212,7 +226,8 @@
     "answer": "<ul><li><strong>git log</strong> — commit history; <code class=\"inline\">--oneline --graph</code> for a compact branch view.</li><li><strong>git diff</strong> — unstaged changes; <code class=\"inline\">--staged</code> for what's about to commit; <code class=\"inline\">A..B</code> to compare commits/branches.</li><li><strong>git show &lt;commit&gt;</strong> — the full patch and metadata of one commit.</li></ul>",
     "tip": "git log --oneline --graph --all is the fastest way to see how your branches actually relate.",
     "code": "git log --oneline --graph --all\ngit diff --staged\ngit show HEAD~2",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "Inspect history:\n• `git log` — commits; `--oneline --graph` for a compact branch view.\n• `git diff` — unstaged changes; `--staged` for what's about to commit; `A..B` to compare.\n• `git show <commit>` — the full patch + metadata of one commit."
   },
   {
     "id": "git-tags",
@@ -226,7 +241,8 @@
     "answer": "<p>A <strong>tag</strong> is a named pointer to a specific commit, typically marking a release.</p><ul><li><strong>Lightweight</strong> — just a name → commit pointer.</li><li><strong>Annotated</strong> (<code class=\"inline\">-a</code>) — a full object storing tagger, date, message, and can be signed. Recommended for releases.</li></ul><p>Tags aren't pushed by default — you must push them explicitly.</p>",
     "tip": "Use annotated tags for releases (they carry who/when/why); push with git push --tags or git push origin v1.0.",
     "code": "git tag -a v1.2.0 -m \"Release 1.2.0\"\ngit push origin v1.2.0",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "A **tag** is a named pointer to a commit, usually marking a release:\n• **Lightweight** — just a name → commit pointer.\n• **Annotated** (`-a`) — a full object with tagger/date/message, can be signed (use for releases).\nTags aren't pushed by default — `git push --tags`."
   },
   {
     "id": "git-amend",
@@ -241,7 +257,8 @@
     "answer": "<p>It <strong>replaces</strong> the most recent commit with a new one — letting you fix the commit message or fold in additional staged changes you forgot. Technically it creates a brand-new commit (new hash) and moves the branch to it.</p>",
     "tip": "Because it rewrites history, never amend a commit you've already pushed to a shared branch — you'd force others to reconcile.",
     "code": "git add forgotten.js\ngit commit --amend --no-edit   # fold in, keep message",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "`git commit --amend` replaces the MOST RECENT commit with a new one.\n• Fix the message, or fold in staged changes you forgot.\n• It creates a brand-new commit (new hash) — don't amend commits already pushed/shared."
   },
   {
     "id": "git-rebase-interactive",
@@ -257,7 +274,8 @@
     "answer": "<p><code class=\"inline\">git rebase -i</code> opens an editable list of commits so you can rewrite a series before merging:</p><ul><li><strong>reword</strong> — change a message</li><li><strong>squash / fixup</strong> — combine commits (fixup discards the message)</li><li><strong>edit</strong> — stop to amend a specific commit</li><li><strong>reorder / drop</strong> — rearrange or delete commits</li></ul>",
     "tip": "Clean up your messy WIP commits into a tidy story right before opening the PR — but only on your own un-pushed branch.",
     "code": "git rebase -i HEAD~4   # curate the last 4 commits",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "`git rebase -i` opens an editable list to rewrite a series of commits before merging:\n• `reword` — change a message.\n• `squash` / `fixup` — combine commits (fixup drops the message).\n• `edit` — stop to amend a commit; reorder / `drop` — rearrange or delete."
   },
   {
     "id": "git-fast-forward",
@@ -271,7 +289,8 @@
     "answer": "<p>A <strong>fast-forward</strong> merge happens when the target branch hasn't diverged — Git just moves the branch pointer forward, no merge commit, a perfectly linear history.</p><p><code class=\"inline\">--no-ff</code> forces a merge commit even when a fast-forward is possible, preserving the fact that a feature branch existed as a distinct group of commits.</p>",
     "tip": "Many teams merge PRs with --no-ff so each feature is one revertable merge commit in main's history.",
     "code": "git merge --no-ff feature   # always create a merge commit",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "• **Fast-forward** — when the target branch hasn't diverged, Git just moves the pointer forward: no merge commit, linear history.\n• `--no-ff` — forces a merge commit even when a fast-forward is possible, preserving that a feature branch existed."
   },
   {
     "id": "git-pull-rebase",
@@ -286,7 +305,8 @@
     "answer": "<p>A default <code class=\"inline\">git pull</code> does fetch + <strong>merge</strong>, which can litter history with 'Merge branch main' commits when you and the remote both moved.</p><p><code class=\"inline\">git pull --rebase</code> instead <strong>replays your local commits on top</strong> of the fetched remote — a clean, linear history with no extra merge commits.</p>",
     "tip": "Set it once and forget it: git config --global pull.rebase true.",
     "code": "git pull --rebase origin main",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "• A plain `git pull` does `fetch` + `merge` — which can litter history with 'Merge branch main' commits.\n• `git pull --rebase` replays your local commits on top of the fetched remote — clean, linear, no extra merge commits."
   },
   {
     "id": "git-bisect",
@@ -300,7 +320,8 @@
     "answer": "<p>A <strong>binary search</strong> through history for the commit that introduced a bug. You mark a known-<code class=\"inline\">bad</code> commit and a known-<code class=\"inline\">good</code> one; Git checks out the midpoint, you test and mark it good/bad, and it halves the range each step until it pinpoints the culprit.</p>",
     "tip": "Automate it: git bisect run ./test.sh lets Git find the breaking commit hands-free across hundreds of commits.",
     "code": "git bisect start\ngit bisect bad            # current is broken\ngit bisect good v1.0     # this tag worked\n# test each checkout, then:  git bisect good|bad\ngit bisect reset",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "`git bisect` BINARY-SEARCHES history for the commit that introduced a bug.\n• Mark a known-`bad` and a known-`good` commit; Git checks out the midpoint.\n• You test and mark good/bad; it halves the range each step until it pinpoints the culprit."
   },
   {
     "id": "git-blame",
@@ -314,7 +335,8 @@
     "answer": "<p><code class=\"inline\">git blame</code> annotates each line of a file with the commit, author, and date that <strong>last changed it</strong> — the way to find <em>when</em> and <em>why</em> a specific line came to be, then read that commit's message/PR for context.</p>",
     "tip": "Blame tells you the last change, not the origin — use git log -L to follow a line's full evolution.",
     "code": "git blame -L 40,60 src/app.js   # who touched lines 40-60",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "`git blame` annotates each LINE of a file with the commit, author, and date that last changed it.\n• The way to find WHEN and WHY a specific line came to be.\nThen read that commit's message/PR for context."
   },
   {
     "id": "git-hooks",
@@ -328,7 +350,8 @@
     "answer": "<p>Scripts Git runs automatically on events: <strong>pre-commit</strong> (lint/format), <strong>commit-msg</strong> (enforce message format), <strong>pre-push</strong> (run tests), <strong>post-merge</strong>, etc.</p><p>They live in <code class=\"inline\">.git/hooks</code> and are <em>not</em> committed — so teams use tools like <strong>Husky</strong> or <strong>pre-commit</strong> to share and version them.</p>",
     "tip": "Hooks are local-only by design; to guarantee a check for everyone, enforce it in CI too — a dev can always skip a hook with --no-verify.",
     "code": "# .husky/pre-commit\nnpm run lint && npm test",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "**Git hooks** are scripts Git runs on events:\n• `pre-commit` (lint/format), `commit-msg` (message format), `pre-push` (tests), `post-merge`.\n• They live in `.git/hooks` and aren't committed — teams share them with **Husky** / **pre-commit**."
   },
   {
     "id": "git-reset-modes",
@@ -343,7 +366,8 @@
     "answer": "<p>All three move <code class=\"inline\">HEAD</code> to a target commit; they differ in what else they touch:</p><ul><li><strong>--soft</strong> — moves HEAD only; changes stay <em>staged</em>.</li><li><strong>--mixed</strong> (default) — moves HEAD and unstages; changes remain in the working directory.</li><li><strong>--hard</strong> — moves HEAD and <em>discards</em> both staged and working changes.</li></ul>",
     "tip": "--soft is the 'uncommit but keep everything' undo; --hard is destructive — recover only via reflog if you regret it.",
     "code": "git reset --soft HEAD~1   # undo last commit, keep changes staged\ngit reset --hard HEAD~1   # undo last commit, throw changes away",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "All three move HEAD to a target commit; they differ in what else they touch:\n• `--soft` — moves HEAD only; changes stay STAGED.\n• `--mixed` (default) — moves HEAD + unstages; changes stay in the working directory.\n• `--hard` — moves HEAD and DISCARDS staged + working changes (destructive)."
   },
   {
     "id": "git-submodules",
@@ -357,7 +381,8 @@
     "answer": "<p>A submodule embeds one repository inside another, pinned to a <strong>specific commit</strong> of the child. The parent tracks only that pointer, not the child's files.</p><p>Pros: share a library across projects with exact version control. Cons: extra ceremony — clones need <code class=\"inline\">--recurse-submodules</code>, and it's easy to forget to commit an updated pointer.</p>",
     "tip": "Fresh clone missing submodule files? Run git submodule update --init --recursive.",
     "code": "git clone --recurse-submodules <url>\ngit submodule update --init --recursive",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "A **submodule** embeds one repo inside another, pinned to a specific COMMIT of the child.\n• The parent tracks only that pointer, not the child's files.\n• Pros: share a library with exact version control. Cons: clones need `--recurse-submodules`; easy to forget to commit an updated pointer."
   },
   {
     "id": "git-filter-repo",
@@ -372,7 +397,8 @@
     "answer": "<p>Deleting it in a new commit isn't enough — it's still in every prior commit. Use <strong>git filter-repo</strong> (the modern replacement for <code class=\"inline\">filter-branch</code>, or the <strong>BFG</strong> tool) to rewrite <em>every</em> commit and purge the file/string.</p><p>This changes all commit hashes, so you must force-push and everyone must re-clone — and you should <strong>rotate the leaked secret regardless</strong>, since it may already be cloned.</p>",
     "tip": "Rewriting history is the cleanup; rotating the credential is the actual fix — assume any pushed secret is already compromised.",
     "code": "git filter-repo --path secrets.env --invert-paths\ngit push --force --all",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "Deleting a secret in a new commit isn't enough — it's still in EVERY prior commit.\n• Use `git filter-repo` (modern replacement for `filter-branch`, or the BFG tool) to rewrite all commits and purge it.\n• This changes all hashes → force-push + everyone re-clones. Rotate the leaked secret regardless."
   },
   {
     "id": "git-worktree",
@@ -386,7 +412,8 @@
     "answer": "<p><code class=\"inline\">git worktree</code> checks out multiple branches into <strong>separate directories</strong> backed by a single repository (shared <code class=\"inline\">.git</code>). You can work on an urgent hotfix in one folder without stashing or disturbing your half-done feature in another.</p>",
     "tip": "Worktrees beat stashing when you need to build/run two branches at once — each has its own working files and index.",
     "code": "git worktree add ../hotfix main\n# fix, commit, then:\ngit worktree remove ../hotfix",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "`git worktree` checks out MULTIPLE branches into separate directories, backed by one repository (shared `.git`).\n• Work on an urgent hotfix in one folder without stashing your half-done feature in another.\nCleaner than juggling stashes."
   },
   {
     "id": "git-internals",
@@ -401,6 +428,7 @@
     "answer": "<p>Git is a content-addressable store of four object types, each keyed by a hash of its content:</p><ul><li><strong>blob</strong> — file contents.</li><li><strong>tree</strong> — a directory listing (names → blobs/trees).</li><li><strong>commit</strong> — a snapshot: root tree + parent commit(s) + author/message.</li><li><strong>tag</strong> — an annotated pointer to a commit.</li></ul><p><strong>Refs</strong> (branches) are just movable pointers to commit hashes.</p>",
     "tip": "The killer insight: a branch is merely a pointer to a commit — that's why creating/switching branches is instant and cheap.",
     "code": "git cat-file -t HEAD    # commit\ngit cat-file -p HEAD    # inspect the object graph",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "Git is a content-addressable store of four object types, each keyed by a hash of its content:\n• **blob** — file contents.\n• **tree** — a directory listing.\n• **commit** — a snapshot (root tree + parent(s) + author/message).\n• **tag** — an annotated pointer.\nBranches are just movable pointers to commit hashes."
   }
 ]

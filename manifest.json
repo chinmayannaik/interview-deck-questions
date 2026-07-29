@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 57,
-  "updatedAt": "2026-07-29T07:25:16.665Z",
+  "version": 58,
+  "updatedAt": "2026-07-29T07:49:21.173Z",
   "totalQuestions": 1704,
-  "contentHash": "50fe947cb3e13e84f2c2b416172ed39ed54f8348",
+  "contentHash": "37d9105f7038f35f9dc14c0258d9b007521d9a39",
   "groups": [
     {
       "id": "frontend",
@@ -213,7 +213,7 @@
       "group": "backend",
       "color": "#3776AB",
       "count": 35,
-      "hash": "ad0662e84269"
+      "hash": "2e314ab42038"
     },
     {
       "id": "nodejs",
@@ -222,7 +222,7 @@
       "group": "backend",
       "color": "#339933",
       "count": 35,
-      "hash": "a99da6c49a22"
+      "hash": "b9c88c56705f"
     },
     {
       "id": "c",
@@ -258,7 +258,7 @@
       "group": "backend",
       "color": "#231F20",
       "count": 22,
-      "hash": "af8eeec4eb83"
+      "hash": "8e53a7296b00"
     },
     {
       "id": "rabbitmq",
@@ -276,7 +276,7 @@
       "group": "backend",
       "color": "#DC382D",
       "count": 23,
-      "hash": "e5c372433c9a"
+      "hash": "6a273cfa8526"
     },
     {
       "id": "graphql",
@@ -285,7 +285,7 @@
       "group": "backend",
       "color": "#E10098",
       "count": 28,
-      "hash": "3da8ab8cdf00"
+      "hash": "f9ffd3048d00"
     },
     {
       "id": "sql",
@@ -312,7 +312,7 @@
       "group": "devops",
       "color": "#D9491F",
       "count": 28,
-      "hash": "d763383ab0ef"
+      "hash": "1bed24dcf707"
     },
     {
       "id": "docker-kubernetes",
@@ -321,7 +321,7 @@
       "group": "devops",
       "color": "#326CE5",
       "count": 23,
-      "hash": "7ace69533fc3"
+      "hash": "6ca1636d2c72"
     },
     {
       "id": "behavioral",
