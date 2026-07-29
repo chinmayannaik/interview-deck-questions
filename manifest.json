@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 54,
-  "updatedAt": "2026-07-29T05:23:42.362Z",
+  "version": 55,
+  "updatedAt": "2026-07-29T06:10:06.132Z",
   "totalQuestions": 1704,
-  "contentHash": "f62ea66119b521f3993ea12f5c4162dcd5b2b507",
+  "contentHash": "0a916c694175dd94fab657cde3a7e99c0bd42e50",
   "groups": [
     {
       "id": "frontend",
@@ -149,7 +149,7 @@
       "group": "frontend",
       "color": "#1E8E57",
       "count": 29,
-      "hash": "d76ac3bf5f7b"
+      "hash": "b6b71172a983"
     },
     {
       "id": "ngrx",
