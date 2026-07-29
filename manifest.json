@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 56,
-  "updatedAt": "2026-07-29T06:31:23.465Z",
+  "version": 57,
+  "updatedAt": "2026-07-29T07:25:16.665Z",
   "totalQuestions": 1704,
-  "contentHash": "04b684758d10b90109b2b6c63db899d3ac092b1f",
+  "contentHash": "50fe947cb3e13e84f2c2b416172ed39ed54f8348",
   "groups": [
     {
       "id": "frontend",
@@ -104,7 +104,7 @@
       "group": "frontend",
       "color": "#B4820A",
       "count": 64,
-      "hash": "71abf48dee6c"
+      "hash": "96cd64c46993"
     },
     {
       "id": "typescript",
@@ -113,7 +113,7 @@
       "group": "frontend",
       "color": "#2F6FB0",
       "count": 27,
-      "hash": "dedb43f769ac"
+      "hash": "13d45aa3671d"
     },
     {
       "id": "html",
@@ -167,7 +167,7 @@
       "group": "frontend",
       "color": "#BE185D",
       "count": 18,
-      "hash": "0bd094a30e01"
+      "hash": "72b8e0a01372"
     },
     {
       "id": "general",

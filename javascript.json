@@ -114,7 +114,7 @@
       "throttle"
     ],
     "question": "Debounce vs throttle — what and when?",
-    "answer": "<p><strong>Debounce</strong> delays execution until events stop firing for a specified time. If another event occurs before the delay ends, the timer resets. It is ideal for search boxes, autocomplete, and validation.</p><p><strong>Throttle</strong> limits execution to at most once every specified interval, regardless of how many events occur. It is ideal for scroll, resize, drag, and mouse movement events.</p>",
+    "answer": "<p>Both limit how often a function runs, but differently:</p><ul><li><strong>Debounce</strong> — waits until events <strong>stop</strong> for N ms, then runs once (each new event resets the timer). Best for search boxes, autocomplete, validation.</li><li><strong>Throttle</strong> — runs at most <strong>once every</strong> N ms, no matter how many events fire. Best for scroll, resize, drag, mousemove.</li></ul>",
     "tip": "Think: <strong>Debounce = Wait until the user stops.</strong> <strong>Throttle = Execute at a fixed rate.</strong>",
     "code": "// Debounce\nfunction debounce(fn, delay) {\n  let timer;\n\n  return (...args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => {\n      fn(...args);\n    }, delay);\n  };\n}\n\n// Throttle\nfunction throttle(fn, delay) {\n  let lastCall = 0;\n\n  return (...args) => {\n    const now = Date.now();\n\n    if (now - lastCall >= delay) {\n      lastCall = now;\n      fn(...args);\n    }\n  };\n}",
     "deep": "<h4>Why do we need Debounce and Throttle?</h4><p>Browser events like <code class=\"inline\">scroll</code>, <code class=\"inline\">mousemove</code>, <code class=\"inline\">resize</code>, and <code class=\"inline\">keyup</code> can fire hundreds of times per second. Executing expensive logic for every event can slow down the application and increase unnecessary API calls.</p><h4>Debounce</h4><p>Debounce waits until the user stops triggering events for a specified duration before executing the function. Every new event resets the timer.</p><pre><code>User typing:\nH\nHe\nHel\nHell\nHello\n\nTimer resets each time\n\nAfter user stops typing (300ms)\n        ↓\nAPI Call</code></pre><p><strong>Real-world uses:</strong></p><ul><li>Search autocomplete</li><li>Username availability check</li><li>Form validation</li><li>Saving drafts after typing stops</li></ul><pre><code>searchInput.addEventListener(\n  'input',\n  debounce(() => {\n    searchProducts();\n  }, 300)\n);</code></pre><h4>Throttle</h4><p>Throttle ensures a function executes at most once during a specified interval, even if events continue firing.</p><pre><code>Scroll Events\n||||||||||||||||||||||\n\nThrottle (500ms)\n↓       ↓       ↓\nRun     Run     Run</code></pre><p><strong>Real-world uses:</strong></p><ul><li>Scroll events</li><li>Window resize</li><li>Mouse movement</li><li>Infinite scrolling</li><li>Drag & Drop</li></ul><pre><code>window.addEventListener(\n  'scroll',\n  throttle(() => {\n    updateProgressBar();\n  }, 200)\n);</code></pre><h4>Comparison</h4><table><tr><th>Feature</th><th>Debounce</th><th>Throttle</th></tr><tr><td>Execution</td><td>After events stop</td><td>At fixed intervals</td></tr><tr><td>Best For</td><td>Search, Validation</td><td>Scroll, Resize, Mouse Move</td></tr><tr><td>API Calls</td><td>Usually One</td><td>Multiple (Rate Limited)</td></tr><tr><td>Goal</td><td>Avoid unnecessary executions</td><td>Limit execution frequency</td></tr></table><h4>Angular Example</h4><p>RxJS provides built-in operators for these patterns.</p><pre><code>// Debounce\nsearchControl.valueChanges.pipe(\n  debounceTime(300)\n);\n\n// Throttle\nfromEvent(window, 'scroll').pipe(\n  throttleTime(200)\n);</code></pre><h4>Interview Tip</h4><p>If asked which one to use for a search bar, answer <strong>Debounce</strong> because you only want to call the API after the user finishes typing. If asked about scroll or resize events, answer <strong>Throttle</strong> because you still want periodic updates while the event continues.</p><h4>Interview Answer</h4><p><strong>\"Debounce delays execution until events stop occurring, making it ideal for search boxes and form validation. Throttle limits execution to once every specified interval, making it ideal for continuous events like scrolling, resizing, and mouse movement. Debounce reduces unnecessary work, while throttle controls the execution rate.\"</strong></p>",
@@ -132,7 +132,7 @@
       "reduce"
     ],
     "question": "map vs forEach vs reduce.",
-    "answer": "<p><strong>map</strong> returns a new transformed array. <strong>forEach</strong> just iterates and returns nothing. <strong>reduce</strong> folds an array into a single value (sum, group-by, flatten, etc.).</p>",
+    "answer": "<p>All three iterate an array, but return different things:</p><ul><li><strong>map</strong> — returns a <strong>new array</strong> of the same length with each item transformed.</li><li><strong>forEach</strong> — just runs a function per item and returns <code class=\"inline\">undefined</code> (used for side effects).</li><li><strong>reduce</strong> — folds the whole array into a <strong>single value</strong> (a sum, an object, a grouped map).</li></ul><p>Rule of thumb: transforming → <code class=\"inline\">map</code>; just doing something → <code class=\"inline\">forEach</code>; combining into one result → <code class=\"inline\">reduce</code>.</p>",
     "tip": "Use map when you need a result; forEach only for side effects.",
     "code": "const nums = [1, 2, 3];\nnums.map(n => n * 2);           // [2, 4, 6]\nnums.reduce((a, b) => a + b, 0); // 6",
     "lang": "js",
@@ -148,7 +148,7 @@
       "reference"
     ],
     "question": "Shallow copy vs deep copy.",
-    "answer": "<p><strong>Shallow copy</strong> creates a new object but copies only the first level. Nested objects and arrays are still shared references, so modifying them affects both the original and the copied object.</p><p><strong>Deep copy</strong> creates a completely independent clone, including all nested objects and arrays. Modern JavaScript provides <code class=\"inline\">structuredClone()</code> for deep cloning. The older <code class=\"inline\">JSON.parse(JSON.stringify())</code> approach works only for simple JSON data and loses Dates, Maps, Sets, functions, undefined values, and class instances.</p>",
+    "answer": "<ul><li><strong>Shallow copy</strong> — a new object, but only the top level is copied; nested objects/arrays are still <strong>shared references</strong>, so changing them affects both. Made with <code class=\"inline\">{...obj}</code>, <code class=\"inline\">Object.assign</code>, <code class=\"inline\">arr.slice()</code>.</li><li><strong>Deep copy</strong> — a fully independent clone, nested values included.</li></ul><p>Use <code class=\"inline\">structuredClone(obj)</code> for a real deep copy. The old <code class=\"inline\">JSON.parse(JSON.stringify(obj))</code> trick works only for plain JSON and drops Dates, Maps, Sets, functions, and <code class=\"inline\">undefined</code>.</p>",
     "tip": "Remember: <strong>Spread operator creates a shallow copy.</strong> For true deep cloning, prefer <code class=\"inline\">structuredClone()</code>.",
     "code": "const original = {\n  name: 'John',\n  address: {\n    city: 'Bangalore'\n  }\n};\n\n// Shallow Copy\nconst shallow = { ...original };\nshallow.address.city = 'Mumbai';\n\nconsole.log(original.address.city); // Mumbai\n\n// Deep Copy\nconst deep = structuredClone(original);\ndeep.address.city = 'Delhi';\n\nconsole.log(original.address.city); // Mumbai\nconsole.log(deep.address.city);     // Delhi",
     "deep": "<h4>Why do we need Copying?</h4><p>Objects and arrays in JavaScript are <strong>reference types</strong>. Assigning one object to another variable copies only the reference, not the actual object.</p><pre><code>const user1 = { name: 'John' };\nconst user2 = user1;\n\nuser2.name = 'David';\n\nconsole.log(user1.name); // David</code></pre><p>Both variables point to the same object in memory.</p><h4>Shallow Copy</h4><p>A shallow copy creates a new object but copies only the first level. Nested objects are still shared.</p><pre><code>const original = {\n  name: 'John',\n  address: {\n    city: 'Bangalore'\n  }\n};\n\nconst copy = { ...original };\n\ncopy.address.city = 'Mumbai';\n\nconsole.log(original.address.city); // Mumbai</code></pre><pre><code>Memory\n\noriginal ─────┐\n              │\n              ▼\n         address {}\n              ▲\n              │\ncopy ─────────┘</code></pre><p>The outer object is new, but the nested <code class=\"inline\">address</code> object is shared.</p><h4>Ways to Create a Shallow Copy</h4><ul><li><code class=\"inline\">{ ...obj }</code></li><li><code class=\"inline\">Object.assign({}, obj)</code></li><li><code class=\"inline\">array.slice()</code></li><li><code class=\"inline\">Array.from()</code></li></ul><h4>Deep Copy</h4><p>A deep copy recursively clones every nested object and array, producing a completely independent object.</p><pre><code>const deep = structuredClone(original);\n\ndeep.address.city = 'Delhi';\n\nconsole.log(original.address.city); // Bangalore</code></pre><pre><code>Memory\n\noriginal ──► address {}\n\ndeep ─────► address {}</code></pre><p>Each object has its own nested data.</p><h4>structuredClone()</h4><p><code class=\"inline\">structuredClone()</code> is the recommended modern API for deep cloning. It supports nested objects, arrays, Dates, Maps, Sets, ArrayBuffers, and many other built-in types.</p><pre><code>const clone = structuredClone(original);</code></pre><h4>JSON.parse(JSON.stringify())</h4><p>This older technique performs a deep copy only for JSON-compatible data.</p><pre><code>const clone = JSON.parse(JSON.stringify(original));</code></pre><p>Limitations:</p><ul><li>❌ Removes functions.</li><li>❌ Removes undefined values.</li><li>❌ Converts Date to string.</li><li>❌ Loses Map and Set.</li><li>❌ Cannot clone circular references.</li><li>❌ Loses class instances and prototypes.</li></ul><h4>Comparison</h4><table><tr><th>Feature</th><th>Shallow Copy</th><th>Deep Copy</th></tr><tr><td>Top-level properties</td><td>Copied</td><td>Copied</td></tr><tr><td>Nested objects</td><td>Shared</td><td>Independent</td></tr><tr><td>Performance</td><td>Fast</td><td>Slower</td></tr><tr><td>Memory Usage</td><td>Low</td><td>Higher</td></tr><tr><td>Best For</td><td>Simple objects</td><td>Nested structures</td></tr></table><h4>Real-world Example</h4><p>NgRx and Redux require immutable state updates.</p><pre><code>// ❌ Wrong\nstate.user.name = 'John';\n\n// ✅ Correct\nreturn {\n  ...state,\n  user: {\n    ...state.user,\n    name: 'John'\n  }\n};</code></pre><p>Using shallow copies of each changed level preserves immutability while avoiding unnecessary deep cloning.</p><h4>Interview Tip</h4><p>Interviewers often ask whether the spread operator performs a deep copy. The answer is <strong>No</strong>. It creates only a shallow copy. Mention that <code class=\"inline\">structuredClone()</code> is the preferred modern solution for deep cloning, but in frameworks like Angular and React, we usually avoid deep cloning entire objects for performance reasons and instead update only the necessary nested properties immutably.</p><h4>Interview Answer</h4><p><strong>\"A shallow copy duplicates only the first level of an object, so nested objects remain shared references. A deep copy recursively clones all nested objects, making the clone completely independent. The spread operator and Object.assign() create shallow copies, while structuredClone() performs a true deep copy. In Angular and NgRx, we typically use shallow copies with immutable updates instead of deep cloning entire state objects for better performance.\"</strong></p>",
@@ -158,7 +158,7 @@
   {
     "id": "js-prototype",
     "category": "javascript",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "V.Imp",
       "prototype",
@@ -166,7 +166,7 @@
       "oop"
     ],
     "question": "Explain prototypal inheritance.",
-    "answer": "<p><strong>Prototypal inheritance</strong> is JavaScript's way of sharing properties and methods between objects. Every object has a hidden link called a <code class=\"inline\">[[Prototype]]</code>. If a property or method is not found on an object, JavaScript automatically looks for it in its prototype, then continues searching up the <strong>prototype chain</strong> until it finds it or reaches <code class=\"inline\">null</code>.</p>",
+    "answer": "<p><strong>Prototypal inheritance</strong> is how JavaScript objects share properties and methods. Every object has a hidden link (<code class=\"inline\">[[Prototype]]</code>) to another object.</p><ul><li>When you read a property, JS looks on the object first, then walks up the <strong>prototype chain</strong> until it finds it or reaches <code class=\"inline\">null</code>.</li><li>Shared methods live on the prototype, so all instances reuse one copy.</li></ul><p><code class=\"inline\">class</code> syntax is just sugar over this prototype mechanism.</p>",
     "tip": "Remember: JavaScript objects inherit from other objects, not classes. The <code class=\"inline\">class</code> keyword is just a cleaner syntax built on top of prototypes.",
     "code": "class Animal {\n  speak() {\n    return 'Some sound';\n  }\n}\n\nclass Dog extends Animal {\n  bark() {\n    return 'Woof!';\n  }\n}\n\nconst dog = new Dog();\n\nconsole.log(dog.bark());\nconsole.log(dog.speak());",
     "lang": "js",
@@ -335,7 +335,7 @@
       "map"
     ],
     "question": "When would you use a Set or a Map?",
-    "answer": "<p>Use a <strong>Set</strong> when you need to store <strong>unique values</strong> or quickly check if a value exists. Use a <strong>Map</strong> when you need to store <strong>key/value pairs</strong> where keys can be of <em>any data type</em> (including objects), while preserving insertion order.</p>",
+    "answer": "<ul><li><strong>Set</strong> — a collection of <strong>unique</strong> values; great for de-duping (<code class=\"inline\">[...new Set(arr)]</code>) and fast membership checks.</li><li><strong>Map</strong> — <strong>key/value</strong> pairs where keys can be <strong>any type</strong> (objects included), preserving insertion order and exposing <code class=\"inline\">.size</code>.</li></ul><p>Prefer <code class=\"inline\">Map</code> over a plain object when keys are dynamic or non-string.</p>",
     "tip": "Set removes duplicates. Map stores key/value pairs with any type of key.",
     "code": "const unique = [...new Set([1, 1, 2, 3])];\n// [1, 2, 3]\n\nconst map = new Map();\nmap.set('name', 'John');\nmap.set(1, 'One');\nmap.set({ id: 1 }, 'Object Key');",
     "lang": "js",
@@ -417,7 +417,7 @@
       "es2017"
     ],
     "question": "Object.keys(), Object.values(), Object.entries() and Object.fromEntries().",
-    "answer": "<p>These methods help you work with JavaScript objects. <code class=\"inline\">Object.keys()</code> returns an array of property names, <code class=\"inline\">Object.values()</code> returns an array of values, <code class=\"inline\">Object.entries()</code> returns key-value pairs, and <code class=\"inline\">Object.fromEntries()</code> converts key-value pairs back into an object.</p>",
+    "answer": "<p>Four helpers for turning objects into arrays and back:</p><ul><li><code class=\"inline\">Object.keys(obj)</code> — an array of the keys.</li><li><code class=\"inline\">Object.values(obj)</code> — an array of the values.</li><li><code class=\"inline\">Object.entries(obj)</code> — an array of <code class=\"inline\">[key, value]</code> pairs.</li><li><code class=\"inline\">Object.fromEntries(pairs)</code> — rebuilds an object from those pairs.</li></ul><p>Common combo: <code class=\"inline\">entries</code> → <code class=\"inline\">map</code>/<code class=\"inline\">filter</code> → <code class=\"inline\">fromEntries</code> to transform an object.</p>",
     "tip": "A common interview pattern is <code class=\"inline\">Object.entries() → map() → Object.fromEntries()</code> to transform an object's values.",
     "code": "const user = {\n  name: 'John',\n  age: 25\n};\n\nconsole.log(Object.keys(user));\n// ['name', 'age']\n\nconsole.log(Object.values(user));\n// ['John', 25]\n\nconsole.log(Object.entries(user));\n// [['name', 'John'], ['age', 25]]\n\nconst updated = Object.fromEntries(\n  Object.entries(user).map(([key, value]) => [key, String(value)])\n);\n\nconsole.log(updated);\n// { name: 'John', age: '25' }",
     "lang": "js",
@@ -461,14 +461,14 @@
   {
     "id": "js-promise-combinators",
     "category": "javascript",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "V.Imp",
       "promise",
       "async"
     ],
     "question": "Promise.all() vs Promise.allSettled() vs Promise.race() vs Promise.any().",
-    "answer": "<p>These Promise methods are used to handle multiple asynchronous operations. <code class=\"inline\">Promise.all()</code> waits for all promises to succeed, <code class=\"inline\">Promise.allSettled()</code> waits for all promises regardless of success or failure, <code class=\"inline\">Promise.race()</code> returns the first promise that settles, and <code class=\"inline\">Promise.any()</code> returns the first promise that successfully resolves.</p>",
+    "answer": "<p>Four ways to run multiple promises together:</p><ul><li><code class=\"inline\">Promise.all</code> — waits for <strong>all</strong> to succeed; rejects as soon as <strong>one</strong> fails (fail-fast).</li><li><code class=\"inline\">Promise.allSettled</code> — waits for <strong>all</strong> and returns each one's status (never short-circuits).</li><li><code class=\"inline\">Promise.race</code> — settles with the <strong>first</strong> to finish, success or failure.</li><li><code class=\"inline\">Promise.any</code> — resolves with the first <strong>success</strong> (ignores failures until all fail).</li></ul>",
     "tip": "Remember: <strong>all = all success</strong>, <strong>allSettled = wait for everything</strong>, <strong>race = first finished</strong>, <strong>any = first successful</strong>.",
     "code": "const p1 = Promise.resolve('A');\nconst p2 = Promise.reject('Failed');\nconst p3 = Promise.resolve('C');\n\nPromise.all([p1, p3]);\nPromise.allSettled([p1, p2, p3]);\nPromise.race([p1, p2, p3]);\nPromise.any([p2, p3]);",
     "lang": "js",
@@ -528,7 +528,7 @@
   {
     "id": "js-loop-closure",
     "category": "javascript",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "V.Imp",
       "closures",
@@ -554,7 +554,7 @@
       "instanceof"
     ],
     "question": "typeof vs instanceof.",
-    "answer": "<p>Use <code class=\"inline\">typeof</code> to check the <strong>type of primitive values</strong> like strings, numbers, booleans, undefined, and functions. Use <code class=\"inline\">instanceof</code> to check whether an <strong>object was created from a particular class or constructor</strong>, such as <code class=\"inline\">Array</code>, <code class=\"inline\">Date</code>, or custom classes.</p>",
+    "answer": "<ul><li><code class=\"inline\">typeof</code> — checks the type of a <strong>primitive</strong> (<code class=\"inline\">'string'</code>, <code class=\"inline\">'number'</code>, <code class=\"inline\">'boolean'</code>, <code class=\"inline\">'function'</code>). Quirk: <code class=\"inline\">typeof null</code> is <code class=\"inline\">'object'</code>.</li><li><code class=\"inline\">instanceof</code> — checks whether an <strong>object</strong> was built from a given constructor/class by walking the prototype chain (<code class=\"inline\">x instanceof Array</code>).</li></ul><p>For arrays specifically, prefer <code class=\"inline\">Array.isArray(x)</code>.</p>",
     "tip": "Remember: <code class=\"inline\">typeof</code> is mainly for primitives, while <code class=\"inline\">instanceof</code> is for objects. Use <code class=\"inline\">Array.isArray()</code> to detect arrays.",
     "code": "typeof 'Hello';          // 'string'\ntypeof 123;              // 'number'\ntypeof true;             // 'boolean'\ntypeof undefined;        // 'undefined'\ntypeof function() {};    // 'function'\n\ntypeof [];               // 'object'\nArray.isArray([]);       // true\n[] instanceof Array;     // true\nnew Date() instanceof Date; // true",
     "lang": "js",
@@ -581,7 +581,7 @@
   {
     "id": "js-dom-perf",
     "category": "javascript",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "dom",
       "performance",
@@ -697,14 +697,14 @@
   {
     "id": "js-slice-splice",
     "category": "javascript",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "tags": [
       "V.Imp",
       "arrays",
       "methods"
     ],
     "question": "slice() vs splice().",
-    "answer": "<p><code class=\"inline\">slice()</code> returns a <strong>new array</strong> without changing the original array. <code class=\"inline\">splice()</code> <strong>modifies the original array</strong> by adding, removing, or replacing elements, and returns the removed elements.</p>",
+    "answer": "<ul><li><code class=\"inline\">slice(start, end)</code> — returns a <strong>new</strong> array (a copy of a section); does <strong>not</strong> change the original.</li><li><code class=\"inline\">splice(start, count, ...items)</code> — <strong>mutates</strong> the original by adding/removing/replacing, and returns the removed items.</li></ul><p>Memory hook: spli<strong>ce</strong> <strong>c</strong>hanges the array.</p>",
     "tip": "Remember: <strong>slice = copy</strong>, <strong>splice = change the original array</strong>.",
     "code": "const arr = ['a', 'b', 'c', 'd'];\n\nconst copied = arr.slice(1, 3);\nconsole.log(copied); // ['b', 'c']\nconsole.log(arr);    // ['a', 'b', 'c', 'd']\n\nconst removed = arr.splice(1, 2);\nconsole.log(removed); // ['b', 'c']\nconsole.log(arr);     // ['a', 'd']",
     "lang": "js",
@@ -721,7 +721,7 @@
       "binding"
     ],
     "question": "call() vs apply() vs bind().",
-    "answer": "<p>All set <code class=\"inline\">this</code> explicitly. <strong>call</strong> invokes immediately with arguments listed individually; <strong>apply</strong> invokes immediately with arguments as an array; <strong>bind</strong> returns a <em>new</em> function with <code class=\"inline\">this</code> permanently bound (call it later).</p>",
+    "answer": "<p>All three set <code class=\"inline\">this</code> explicitly, differing in how/when they invoke:</p><ul><li><code class=\"inline\">call(thisArg, a, b)</code> — invoke <strong>now</strong>, arguments listed.</li><li><code class=\"inline\">apply(thisArg, [a, b])</code> — invoke <strong>now</strong>, arguments as an <strong>array</strong>.</li><li><code class=\"inline\">bind(thisArg)</code> — returns a <strong>new function</strong> with <code class=\"inline\">this</code> fixed, to call later.</li></ul>",
     "tip": "call/apply invoke now; bind returns a function to invoke later. apply takes an Array.",
     "code": "greet.call(obj, 'hi', '!');\ngreet.apply(obj, ['hi', '!']);\nconst bound = greet.bind(obj); bound('hi', '!');",
     "lang": "js",
@@ -786,7 +786,7 @@
       "iteration"
     ],
     "question": "for...of vs for...in.",
-    "answer": "<p><strong>for...of</strong> loops through the <strong>values</strong> of an iterable like an Array, String, Map, or Set. <strong>for...in</strong> loops through the <strong>keys (property names)</strong> of an object. Use <code class=\"inline\">for...of</code> for arrays and <code class=\"inline\">for...in</code> for objects.</p>",
+    "answer": "<ul><li><code class=\"inline\">for...of</code> — loops over the <strong>values</strong> of an iterable (array, string, Map, Set).</li><li><code class=\"inline\">for...in</code> — loops over the <strong>keys</strong> (property names) of an object, including inherited ones.</li></ul><p>Use <code class=\"inline\">for...of</code> for arrays and <code class=\"inline\">for...in</code> for plain objects — never <code class=\"inline\">for...in</code> on an array.</p>",
     "tip": "Remember: <strong>for...of → values</strong>, <strong>for...in → keys</strong>. Avoid using <code class=\"inline\">for...in</code> with arrays.",
     "code": "const fruits = ['Apple', 'Banana', 'Orange'];\n\n// for...of (values)\nfor (const fruit of fruits) {\n  console.log(fruit);\n}\n// Apple\n// Banana\n// Orange\n\nconst user = {\n  name: 'John',\n  age: 25\n};\n\n// for...in (keys)\nfor (const key in user) {\n  console.log(key, user[key]);\n}\n// name John\n// age 25",
     "lang": "js",
@@ -802,7 +802,7 @@
       "async"
     ],
     "question": "setTimeout() vs setInterval().",
-    "answer": "<p><code class=\"inline\">setTimeout()</code> executes a function <strong>once</strong> after a specified delay. <code class=\"inline\">setInterval()</code> executes a function <strong>repeatedly</strong> at a fixed time interval until it is stopped.</p>",
+    "answer": "<ul><li><code class=\"inline\">setTimeout(fn, ms)</code> — runs the function <strong>once</strong> after a delay; cancel with <code class=\"inline\">clearTimeout(id)</code>.</li><li><code class=\"inline\">setInterval(fn, ms)</code> — runs the function <strong>repeatedly</strong> every interval until you <code class=\"inline\">clearInterval(id)</code>.</li></ul><p>The delay is a <em>minimum</em> — the callback waits for a free spot on the event loop.</p>",
     "tip": "Use <code class=\"inline\">clearTimeout()</code> to cancel a timeout and <code class=\"inline\">clearInterval()</code> to stop an interval.",
     "code": "// Runs once after 2 seconds\nconst timeoutId = setTimeout(() => {\n  console.log('Executed once');\n}, 2000);\n\n// Cancel if needed\nclearTimeout(timeoutId);\n\n// Runs every 2 seconds\nconst intervalId = setInterval(() => {\n  console.log('Runs repeatedly');\n}, 2000);\n\n// Stop the interval\nclearInterval(intervalId);",
     "lang": "js",
@@ -834,7 +834,7 @@
       "functions"
     ],
     "question": "Generator function vs normal function.",
-    "answer": "<p>A <strong>normal function</strong> runs from start to finish and returns a single value. A <strong>generator function</strong> (written using <code class=\"inline\">function*</code>) can pause its execution using <code class=\"inline\">yield</code> and continue later. Instead of returning a value directly, it returns an <strong>iterator</strong> that produces values one at a time.</p>",
+    "answer": "<ul><li><strong>Normal function</strong> — runs start to finish and returns a single value.</li><li><strong>Generator</strong> (<code class=\"inline\">function*</code>) — can <strong>pause</strong> at each <code class=\"inline\">yield</code> and <strong>resume</strong> on <code class=\"inline\">next()</code>, keeping its state between calls.</li></ul><p>A generator returns an <strong>iterator</strong> that produces values one at a time — ideal for lazy or infinite sequences.</p>",
     "tip": "Remember: <strong>return</strong> ends a normal function, while <strong>yield</strong> pauses a generator and resumes when <code class=\"inline\">next()</code> is called.",
     "code": "function* numbers() {\n  yield 1;\n  yield 2;\n  yield 3;\n}\n\nconst iterator = numbers();\n\nconsole.log(iterator.next());\n// { value: 1, done: false }\n\nconsole.log(iterator.next());\n// { value: 2, done: false }\n\nconsole.log(iterator.next());\n// { value: 3, done: false }\n\nconsole.log(iterator.next());\n// { value: undefined, done: true }",
     "lang": "js",
@@ -908,7 +908,7 @@
   {
     "id": "js-execution-context",
     "category": "javascript",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "V.Imp",
       "execution-context",
@@ -953,7 +953,7 @@
       "browser"
     ],
     "question": "What is the difference between localStorage, sessionStorage, and Cookies?",
-    "answer": "<p><strong>localStorage</strong>, <strong>sessionStorage</strong>, and <strong>Cookies</strong> are browser storage mechanisms used to store data on the client side. <strong>localStorage</strong> stores data permanently until it is manually removed, <strong>sessionStorage</strong> stores data only for the current browser tab, while <strong>Cookies</strong> are small pieces of data that can automatically be sent to the server with every HTTP request.</p>",
+    "answer": "<p>Three client-side storage options:</p><ul><li><strong>localStorage</strong> — persists until cleared; per-origin; ~5MB; <strong>not</strong> sent to the server.</li><li><strong>sessionStorage</strong> — same API, but cleared when the <strong>tab</strong> closes.</li><li><strong>Cookies</strong> — tiny (~4KB), and <strong>automatically sent</strong> with every HTTP request; used for auth/session (set <code class=\"inline\">HttpOnly</code> + <code class=\"inline\">Secure</code>).</li></ul>",
     "tip": "Use <strong>localStorage</strong> for user preferences, <strong>sessionStorage</strong> for temporary session data, and <strong>Cookies</strong> only when the server needs the stored information.",
     "code": "// localStorage\nlocalStorage.setItem('theme', 'dark');\nconsole.log(localStorage.getItem('theme'));\n\n// sessionStorage\nsessionStorage.setItem('user', 'John');\nconsole.log(sessionStorage.getItem('user'));\n\n// Cookie\ndocument.cookie = 'language=en; max-age=3600';",
     "lang": "js",
@@ -979,7 +979,7 @@
   {
     "id": "js-flat-flatmap",
     "category": "javascript",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "arrays",
       "es2019"
@@ -1010,7 +1010,7 @@
   {
     "id": "js-esm-commonjs",
     "category": "javascript",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "modules",
       "esm",
@@ -1026,7 +1026,7 @@
   {
     "id": "js-polyfill-transpile",
     "category": "javascript",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "tooling",
       "compatibility",
@@ -1059,7 +1059,7 @@
   {
     "id": "js-es6-features",
     "category": "javascript",
-    "difficulty": "advanced",
+    "difficulty": "intermediate",
     "tags": [
       "es6",
       "features",
