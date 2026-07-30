@@ -2806,5 +2806,53 @@
     "lang": "java",
     "tip": "A throwing static block => ExceptionInInitializerError, and the class stays broken (later use => NoClassDefFoundError).",
     "revise": "A static block runs ONCE at class load. If it throws:\n• The class **fails to initialize** → the JVM throws `ExceptionInInitializerError` (wrapping your exception).\n• The class is then **permanently unusable** — later access gives `NoClassDefFoundError` (not a re-run), which hides the real cause.\n• Checked exceptions can't escape a static block — handle or wrap them."
+  },
+  {
+    "id": "java-priorityqueue",
+    "category": "java",
+    "difficulty": "intermediate",
+    "tags": [
+      "priorityqueue",
+      "heap",
+      "collections"
+    ],
+    "question": "How does PriorityQueue work internally (the heap)?",
+    "answer": "<p><code class=\"inline\">PriorityQueue</code> is a <strong>binary min-heap</strong> backed by an array. The smallest element (by natural ordering, or by a <code class=\"inline\">Comparator</code> you pass in) is always at index 0 — that's what <code class=\"inline\">peek()</code> returns.</p><ul><li><strong>Costs:</strong> <code class=\"inline\">offer()</code>/<code class=\"inline\">poll()</code> are <strong>O(log n)</strong> (sift-up / sift-down to restore the heap); <code class=\"inline\">peek()</code> is O(1). Arbitrary <code class=\"inline\">remove(Object)</code>/<code class=\"inline\">contains()</code> are O(n).</li><li><strong>Not fully sorted:</strong> only the head is ordered — iterating (or <code class=\"inline\">toString()</code>) gives heap array order, <strong>not</strong> sorted order. To drain in order you must keep calling <code class=\"inline\">poll()</code>.</li><li><strong>Not thread-safe</strong> (use <code class=\"inline\">PriorityBlockingQueue</code>); <strong>no nulls</strong>; array grows automatically like <code class=\"inline\">ArrayList</code>.</li></ul><p>For a max-heap, pass a reversed comparator: <code class=\"inline\">new PriorityQueue&lt;&gt;(Comparator.reverseOrder())</code>.</p>",
+    "tip": "The classic gotcha: iterating a PriorityQueue does NOT give sorted order — only poll() does. Interviewers love catching people who assume the iterator is sorted.",
+    "code": "PriorityQueue<Integer> pq = new PriorityQueue<>();      // min-heap\npq.offer(5); pq.offer(1); pq.offer(3);\npq.peek();     // 1  (smallest, O(1))\npq.poll();     // 1  (removes head, O(log n))\n\n// Max-heap / custom order\nPriorityQueue<Employee> bySalaryDesc =\n    new PriorityQueue<>(Comparator.comparingInt(Employee::salary).reversed());\n\n// Top-K pattern: keep a size-K min-heap of the largest seen\nPriorityQueue<Integer> topK = new PriorityQueue<>();\nfor (int n : nums) { topK.offer(n); if (topK.size() > k) topK.poll(); }",
+    "lang": "java",
+    "revise": "**PriorityQueue** = array-backed **binary min-heap**; head (index 0) is the smallest.\n• offer/poll **O(log n)**, peek O(1), remove(Object)/contains O(n).\n• **Iteration is NOT sorted** — only poll() drains in order.\n• Not thread-safe (→ PriorityBlockingQueue), no nulls, auto-grows.\n• Max-heap: Comparator.reverseOrder(). Great for Top-K problems."
+  },
+  {
+    "id": "java-try-without-catch",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "exceptions",
+      "try-finally",
+      "try-with-resources"
+    ],
+    "question": "Can you have a try without a catch?",
+    "answer": "<p><strong>Yes.</strong> A <code class=\"inline\">try</code> needs <strong>either</strong> a <code class=\"inline\">catch</code> <strong>or</strong> a <code class=\"inline\">finally</code> (or both) — it just can't stand alone.</p><ul><li><strong>try–finally</strong> — run cleanup no matter what, but let the exception propagate to the caller (you're not handling it here, only guaranteeing cleanup).</li><li><strong>try-with-resources</strong> — also valid with no <code class=\"inline\">catch</code>; the resource's <code class=\"inline\">close()</code> runs automatically, and any exception still propagates.</li></ul><p>What's <em>not</em> allowed: a bare <code class=\"inline\">try</code> block by itself.</p>",
+    "tip": "Rule in one line: try must be followed by catch, finally, or both. try-finally (no catch) is common for 'always clean up, but I don't handle the error here'.",
+    "code": "// try-finally: no catch, cleanup still runs, exception propagates\ntry {\n    doWork();\n} finally {\n    releaseLock();\n}\n\n// try-with-resources: no catch needed\ntry (var in = new FileInputStream(\"f.txt\")) {\n    in.read();\n}   // close() called automatically\n\n// try { ... }            // COMPILE ERROR — needs catch or finally",
+    "lang": "java",
+    "revise": "**Yes** — try needs catch OR finally (or both), never alone.\n• **try-finally** — guarantee cleanup, let the exception propagate.\n• **try-with-resources** — valid with no catch; close() runs automatically.\n• Bare `try {}` alone = compile error."
+  },
+  {
+    "id": "java-default-capacities",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "collections",
+      "capacity",
+      "trivia"
+    ],
+    "question": "What are the default initial capacities — ArrayList, HashMap, StringBuilder?",
+    "answer": "<ul><li><strong>ArrayList</strong> — backing array is created <strong>lazily</strong>: empty until the first <code class=\"inline\">add()</code>, which allocates capacity <strong>10</strong>. Grows ~1.5× when full.</li><li><strong>HashMap</strong> — <strong>16</strong> buckets, load factor <strong>0.75</strong> (resizes/doubles at 12 entries). Also lazy — the table is allocated on first <code class=\"inline\">put()</code>.</li><li><strong>StringBuilder / StringBuffer</strong> — <strong>16</strong> characters. <code class=\"inline\">new StringBuilder(str)</code> uses <code class=\"inline\">str.length() + 16</code>. Grows to <code class=\"inline\">2×old + 2</code> when full.</li></ul><p>All three grow automatically, so these numbers only matter when you pre-size for performance (pass an initial capacity to avoid repeated resizes on large loads).</p>",
+    "tip": "The three magic numbers: ArrayList 10, HashMap 16 (LF 0.75), StringBuilder 16. Both ArrayList and HashMap allocate lazily on first use.",
+    "code": "new ArrayList<>();          // capacity 10 on first add()\nnew HashMap<>();            // 16 buckets, resize at 16*0.75 = 12\nnew StringBuilder();       // 16 chars\nnew StringBuilder(\"hi\");  // 2 + 16 = 18\n\n// Pre-size to skip resizing when you know the load:\nnew ArrayList<>(10_000);\nnew HashMap<>(1 << 16);",
+    "lang": "java",
+    "revise": "**Defaults**: ArrayList **10** (lazy, on first add, grows 1.5×), HashMap **16** buckets LF **0.75** (lazy, doubles at 12), StringBuilder/Buffer **16** chars (grows 2×+2).\n• Pre-size via constructor arg to avoid resizes on large data."
   }
 ]

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 63,
-  "updatedAt": "2026-07-30T07:40:12.951Z",
-  "totalQuestions": 1706,
-  "contentHash": "fba7e7b1721195deb7fd9bf9c8939dccaa6f6683",
+  "version": 67,
+  "updatedAt": "2026-07-30T09:32:27.157Z",
+  "totalQuestions": 1712,
+  "contentHash": "4227e5cdf5e783efe8ccc5bc5e807884087f1f18",
   "groups": [
     {
       "id": "frontend",
@@ -51,21 +51,21 @@
       "id": "java-angular",
       "file": "packs/java-angular.json",
       "label": "Java + Angular",
-      "count": 997,
+      "count": 1003,
       "hash": "ae5da0dfd601"
     },
     {
       "id": "angular-developer",
       "file": "packs/angular-developer.json",
       "label": "Angular Developer",
-      "count": 552,
+      "count": 553,
       "hash": "0c5721f80805"
     },
     {
       "id": "java-backend",
       "file": "packs/java-backend.json",
       "label": "Java Backend Developer",
-      "count": 589,
+      "count": 594,
       "hash": "ef4083c12fbd"
     }
   ],
@@ -76,8 +76,8 @@
       "label": "Angular",
       "group": "frontend",
       "color": "#C3002F",
-      "count": 96,
-      "hash": "8bb2dc96b07b"
+      "count": 97,
+      "hash": "224861efef66"
     },
     {
       "id": "react",
@@ -184,8 +184,8 @@
       "label": "Java",
       "group": "backend",
       "color": "#9A5B34",
-      "count": 175,
-      "hash": "a222d91c478e"
+      "count": 178,
+      "hash": "850855d0d4d8"
     },
     {
       "id": "leetcode",
@@ -203,8 +203,8 @@
       "label": "Spring Boot",
       "group": "backend",
       "color": "#4E8B2C",
-      "count": 107,
-      "hash": "5c1c790ce25f"
+      "count": 109,
+      "hash": "eb17dac64da6"
     },
     {
       "id": "python",

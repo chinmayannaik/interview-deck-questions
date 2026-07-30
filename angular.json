@@ -1626,5 +1626,21 @@
     "code": "// directive grabs its OWN ngModel, not an ancestor's:\nconstructor(@Self() private ngControl: NgControl) {}\n\n// guard against double forRoot():\nconstructor(@Optional() @SkipSelf() parent?: CoreModule) {\n  if (parent) throw new Error('CoreModule imported twice');\n}",
     "lang": "typescript",
     "revise": "DI lookup modifiers (on constructor params):\n• **@Optional()** — inject null instead of erroring if missing.\n• **@Self()** — resolve ONLY from this element's own injector.\n• **@SkipSelf()** — skip this injector, start at the parent.\n• **@Host()** — search up to the host component and stop there."
+  },
+  {
+    "id": "ng-i18n",
+    "category": "angular",
+    "difficulty": "intermediate",
+    "tags": [
+      "i18n",
+      "localization",
+      "tooling"
+    ],
+    "question": "What are the approaches to internationalization (i18n) in Angular?",
+    "answer": "<p>Two main routes:</p><ul><li><strong>Built-in <code class=\"inline\">@angular/localize</code></strong> — mark text with the <code class=\"inline\">i18n</code> attribute in templates (and <code class=\"inline\">$localize</code> in code), extract with <code class=\"inline\">ng extract-i18n</code> into an XLIFF/XMB file, hand it to translators, then build <strong>one bundle per locale</strong> (compile-time). Zero runtime lookup cost, but switching language means loading a different build/URL.</li><li><strong>Runtime libraries</strong> — <code class=\"inline\">@ngx-translate/core</code> or <code class=\"inline\">Transloco</code> load JSON translation files and swap language <strong>live</strong> via a pipe/directive (<code class=\"inline\">{{ 'KEY' | translate }}</code>), no rebuild needed.</li></ul><p>Both handle <strong>pluralization</strong> (ICU <code class=\"inline\">{count, plural, ...}</code>) and interpolation. Locale-aware <code class=\"inline\">DatePipe</code>/<code class=\"inline\">CurrencyPipe</code>/<code class=\"inline\">DecimalPipe</code> come from <code class=\"inline\">LOCALE_ID</code> plus registered locale data.</p>",
+    "tip": "The trade-off in one line: native @angular/localize = one build per language (fastest, SEO-friendly); ngx-translate/Transloco = one build, switch language at runtime.",
+    "code": "<!-- native @angular/localize -->\n<h1 i18n=\"@@homeTitle\">Welcome</h1>\n<span i18n>{count, plural, =0 {no items} =1 {one item} other {{{count}} items}}</span>\n\n// runtime (ngx-translate / Transloco)\n{{ 'HOME.TITLE' | translate }}\nthis.translate.use('fr');",
+    "lang": "html",
+    "revise": "**i18n approaches**:\n• **@angular/localize** (built-in) — i18n attr + ng extract-i18n → XLIFF → one build per locale (compile-time, fastest).\n• **ngx-translate / Transloco** — JSON files, translate pipe, switch language at runtime (no rebuild).\n• Both do ICU plurals; LOCALE_ID drives Date/Currency/Number pipes."
   }
 ]
