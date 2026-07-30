@@ -454,5 +454,58 @@
     "code": "// APQ: client first tries just the hash\n{ \"extensions\": { \"persistedQuery\": {\n  \"version\": 1, \"sha256Hash\": \"a1b2c3...\" } } }",
     "lang": "javascript",
     "revise": "**Persisted queries**: the client sends a HASH mapping to a pre-registered query instead of the full string.\n• Smaller payloads; enables GET + CDN/edge caching.\n• Security allowlist — only registered queries run.\nApollo's **APQ** negotiates the hash automatically."
+  },
+  {
+    "id": "gql-complex-input-types",
+    "category": "graphql",
+    "difficulty": "intermediate",
+    "tags": [
+      "graphql",
+      "input-types",
+      "mutations",
+      "asked"
+    ],
+    "question": "How do you structure a complex/nested input type for a mutation (e.g. place an order with many products)?",
+    "answer": "<p>GraphQL mutations take arguments via dedicated <code class=\"inline\">input</code> types (not <code class=\"inline\">type</code> — outputs and inputs are separate kinds). For a variable-length collection of nested objects, nest an <code class=\"inline\">input</code> inside a list: <code class=\"inline\">[ProductInput!]!</code>.</p><ul><li>Inner <code class=\"inline\">!</code> — no null items in the list.</li><li>Outer <code class=\"inline\">!</code> — the list itself is required.</li><li>Use scalar types that match intent: <code class=\"inline\">ID!</code> for the product id, <code class=\"inline\">Int!</code> for quantity (not <code class=\"inline\">Float</code>).</li></ul><p>Never model a mutation argument with an output <code class=\"inline\">type</code> — that's a schema error; inputs must be <code class=\"inline\">input</code> types.</p>",
+    "tip": "Interview trap: the wrong options use `type Product` (an OUTPUT type) or Float for a count. Mutation arguments are always `input` types, and a quantity is an Int.",
+    "code": "input PlaceOrderInput {\n  products: [ProductInput!]!\n}\ninput ProductInput {\n  productId: ID!\n  quantity: Int!\n}\n\ntype Mutation {\n  placeOrder(order: PlaceOrderInput!): Order!\n}",
+    "lang": "graphql",
+    "revise": "**Nested mutation input** = list of an `input` type: `[ProductInput!]!`.\n• Inner `!` = no null items, outer `!` = list required.\n• Use `input` (not `type`) for arguments; `ID!` for ids, `Int!` for counts."
+  },
+  {
+    "id": "gql-field-level-auth",
+    "category": "graphql",
+    "difficulty": "advanced",
+    "tags": [
+      "graphql",
+      "authorization",
+      "directives",
+      "security",
+      "asked"
+    ],
+    "question": "How do you implement field-level authorization in a GraphQL schema (e.g. hide accountBalance from non-admins)?",
+    "answer": "<p>Declare a schema <strong>directive</strong> and apply it to the sensitive field. A directive on <code class=\"inline\">FIELD_DEFINITION</code> lets the server run an auth check before resolving that specific field:</p><pre><code>directive @auth(requires: Role) on FIELD_DEFINITION\n\ntype User {\n  id: ID!\n  name: String!\n  accountBalance: Float! @auth(requires: ADMIN)\n}</code></pre><p>The directive's implementation (a <code class=\"inline\">SchemaDirectiveVisitor</code> / field middleware) wraps the field resolver and throws/returns null if the caller's role is insufficient. This is finer-grained than guarding the whole query — <code class=\"inline\">name</code> stays public while <code class=\"inline\">accountBalance</code> is gated.</p>",
+    "tip": "Field-level > query-level: put @auth on the field, not on the top-level Query, so public fields on the same type still resolve for everyone.",
+    "code": "type User {\n  id: ID!\n  name: String!\n  accountBalance: Float! @auth(requires: ADMIN)\n}\ndirective @auth(requires: Role) on FIELD_DEFINITION",
+    "lang": "graphql",
+    "revise": "**Field-level auth** = a schema `directive @auth(requires: Role) on FIELD_DEFINITION` on the sensitive field.\n• Directive impl wraps the resolver, checks role, throws/nulls if unauthorized.\n• Finer-grained than guarding the whole Query."
+  },
+  {
+    "id": "gql-mutation-validation",
+    "category": "graphql",
+    "difficulty": "intermediate",
+    "tags": [
+      "graphql",
+      "validation",
+      "custom-scalars",
+      "mutations",
+      "asked"
+    ],
+    "question": "How (and where) do you validate mutation inputs in GraphQL?",
+    "answer": "<p>Layered, from cheapest to richest:</p><ul><li><strong>Type system</strong> — <code class=\"inline\">input</code> types + non-null (<code class=\"inline\">!</code>) reject missing/wrong-typed fields before any resolver runs.</li><li><strong>Custom scalars</strong> — e.g. <code class=\"inline\">Email</code>, <code class=\"inline\">PositiveInt</code>: their <code class=\"inline\">parseValue</code>/<code class=\"inline\">parseLiteral</code> validate format at parse time, declaratively and reusably.</li><li><strong>Resolver / middleware checks</strong> — for dynamic, field-context or cross-field rules (\"discount only if role=PREMIUM\"). Validate at the start of the resolver, or in field middleware, and throw a typed error.</li></ul><p>Client-side validation isn't sufficient — always enforce on the server.</p>",
+    "tip": "Say it as a hierarchy: input types & non-null -> custom scalars for formats -> resolver/middleware for dynamic rules. Never trust client-side checks alone.",
+    "code": "scalar Email\ninput SignupInput { email: Email!, age: PositiveInt! }\n\n// dynamic/context rules -> in the resolver\nsignup: (_, { input }) => {\n  if (input.age < 18) throw new GraphQLError('Must be 18+');\n}",
+    "lang": "graphql",
+    "revise": "**Validate mutation inputs** in layers: input types + `!` → **custom scalars** (format) → **resolver/middleware** (dynamic/cross-field rules).\n• Always server-side; client checks aren't enough."
   }
 ]

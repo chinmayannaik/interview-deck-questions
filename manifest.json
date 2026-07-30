@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 67,
-  "updatedAt": "2026-07-30T09:32:27.157Z",
-  "totalQuestions": 1712,
-  "contentHash": "4227e5cdf5e783efe8ccc5bc5e807884087f1f18",
+  "version": 69,
+  "updatedAt": "2026-07-30T12:43:04.748Z",
+  "totalQuestions": 1755,
+  "contentHash": "4a830e2707c3d30c7a4e072d76dfd3993fa777cc",
   "groups": [
     {
       "id": "frontend",
@@ -51,21 +51,21 @@
       "id": "java-angular",
       "file": "packs/java-angular.json",
       "label": "Java + Angular",
-      "count": 1003,
+      "count": 1014,
       "hash": "ae5da0dfd601"
     },
     {
       "id": "angular-developer",
       "file": "packs/angular-developer.json",
       "label": "Angular Developer",
-      "count": 553,
+      "count": 559,
       "hash": "0c5721f80805"
     },
     {
       "id": "java-backend",
       "file": "packs/java-backend.json",
       "label": "Java Backend Developer",
-      "count": 594,
+      "count": 601,
       "hash": "ef4083c12fbd"
     }
   ],
@@ -112,8 +112,8 @@
       "label": "TypeScript",
       "group": "frontend",
       "color": "#2F6FB0",
-      "count": 27,
-      "hash": "13d45aa3671d"
+      "count": 31,
+      "hash": "a535d826b53c"
     },
     {
       "id": "html",
@@ -184,8 +184,8 @@
       "label": "Java",
       "group": "backend",
       "color": "#9A5B34",
-      "count": 178,
-      "hash": "850855d0d4d8"
+      "count": 179,
+      "hash": "24ec56f70610"
     },
     {
       "id": "leetcode",
@@ -203,8 +203,8 @@
       "label": "Spring Boot",
       "group": "backend",
       "color": "#4E8B2C",
-      "count": 109,
-      "hash": "eb17dac64da6"
+      "count": 110,
+      "hash": "41210c862b21"
     },
     {
       "id": "python",
@@ -284,8 +284,8 @@
       "label": "GraphQL",
       "group": "backend",
       "color": "#E10098",
-      "count": 28,
-      "hash": "f9ffd3048d00"
+      "count": 31,
+      "hash": "cad5f24ce908"
     },
     {
       "id": "sql",
@@ -311,8 +311,8 @@
       "label": "Git",
       "group": "devops",
       "color": "#D9491F",
-      "count": 28,
-      "hash": "1bed24dcf707"
+      "count": 30,
+      "hash": "813ec060fdf5"
     },
     {
       "id": "docker-kubernetes",
@@ -322,6 +322,15 @@
       "color": "#326CE5",
       "count": 23,
       "hash": "6ca1636d2c72"
+    },
+    {
+      "id": "aws",
+      "file": "aws.json",
+      "label": "AWS",
+      "group": "devops",
+      "color": "#FF9900",
+      "count": 32,
+      "hash": "527e1a4ff677"
     },
     {
       "id": "behavioral",

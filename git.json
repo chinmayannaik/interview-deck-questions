@@ -430,5 +430,39 @@
     "code": "git cat-file -t HEAD    # commit\ngit cat-file -p HEAD    # inspect the object graph",
     "lang": "bash",
     "revise": "Git is a content-addressable store of four object types, each keyed by a hash of its content:\n• **blob** — file contents.\n• **tree** — a directory listing.\n• **commit** — a snapshot (root tree + parent(s) + author/message).\n• **tag** — an annotated pointer.\nBranches are just movable pointers to commit hashes."
+  },
+  {
+    "id": "git-sync-feature-with-main",
+    "category": "git",
+    "difficulty": "beginner",
+    "tags": [
+      "merge",
+      "workflow",
+      "branches",
+      "asked"
+    ],
+    "question": "How do you bring the latest changes from main into your feature branch?",
+    "answer": "<p>Be on the feature branch, get the newest <code class=\"inline\">main</code> from the remote, then merge <code class=\"inline\">main</code> into your branch:</p><pre><code>git checkout feature\ngit pull origin main   # fetch + merge origin/main into feature</code></pre><p>Common wrong sequences: merging <code class=\"inline\">feature</code> into itself (<code class=\"inline\">git merge feature</code>) does nothing, and pulling <code class=\"inline\">origin feature</code> brings the wrong branch. Note <code class=\"inline\">git pull origin main</code> = <code class=\"inline\">git fetch</code> + <code class=\"inline\">git merge origin/main</code>. Prefer <code class=\"inline\">git pull --rebase origin main</code> if your team keeps a linear history. Resolve any conflicts, then commit.</p>",
+    "tip": "On the feature branch, `git pull origin main` (= fetch + merge). Merging `feature` into `feature`, or pulling the wrong branch, are the classic distractor answers.",
+    "code": "git checkout feature\ngit pull origin main          # merge latest main in\n# linear history instead:\ngit pull --rebase origin main",
+    "lang": "bash",
+    "revise": "**Update feature from main**: on `feature`, `git pull origin main` (fetch + merge origin/main).\n• `pull` = `fetch` + `merge`.\n• `--rebase` for linear history; then resolve conflicts + commit."
+  },
+  {
+    "id": "git-create-repo-visual-studio",
+    "category": "git",
+    "difficulty": "beginner",
+    "tags": [
+      "git",
+      "tooling",
+      "visual-studio",
+      "asked"
+    ],
+    "question": "How do you create a LOCAL Git repository from Visual Studio?",
+    "answer": "<p>Use <strong>Git → Create Git Repository</strong> from the Visual Studio menu, then choose <strong>Local only</strong>, verify the local path, and click <strong>Create</strong>. That initialises a repo on disk (equivalent to <code class=\"inline\">git init</code>) without pushing anywhere.</p><p>The distractor options all involve \"Push to Git service\" or picking GitHub/Azure DevOps — those create/connect a <em>remote</em>, which is a different action. For a purely local repo you pick <strong>Local only</strong>; you can add and push to a remote later.</p>",
+    "tip": "Local-only repo in VS = Git > Create Git Repository > Local only > Create. Anything that says 'Push to Git service' / picks GitHub is creating a remote, not a local repo.",
+    "code": "# CLI equivalent of what VS does for 'Local only':\ngit init\ngit add .\ngit commit -m \"Initial commit\"",
+    "lang": "bash",
+    "revise": "**VS local repo**: Git > Create Git Repository > **Local only** > verify path > Create (= `git init`).\n• 'Push to Git service'/GitHub options create a **remote**, not a local repo."
   }
 ]

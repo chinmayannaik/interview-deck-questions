@@ -1896,5 +1896,22 @@
     "code": "// Idiomatic GET — params in the URL\n@GetMapping(\"/users\")\nList<User> search(@RequestParam String name,\n                  @RequestParam(defaultValue = \"0\") int page) { ... }\n\n// Complex filter too big for a URL? Use POST, not a GET body.\n@PostMapping(\"/users/search\")\nList<User> search(@RequestBody UserFilter filter) { ... }",
     "lang": "java",
     "revise": "**GET body**: allowed by RFC 9110 but **no defined semantics** — proxies/caches/browsers may drop it, breaks caching & idempotency.\n• Use **query params** for GET.\n• Payload too big for a URL → use **POST /search**, not a GET body."
+  },
+  {
+    "id": "sb-jwt-endpoints-unsecured",
+    "category": "springboot",
+    "difficulty": "intermediate",
+    "tags": [
+      "security",
+      "jwt",
+      "debugging",
+      "asked"
+    ],
+    "question": "Users reach protected endpoints without a valid JWT. What's the most likely cause?",
+    "answer": "<p>The endpoints aren't actually behind the authentication filter — i.e. <strong>the security config doesn't require auth on those routes</strong> (missing <code class=\"inline\">authenticated()</code> matcher, a stray <code class=\"inline\">permitAll()</code>, or the JWT filter isn't in the chain for that path). The token check never runs, so requests pass through.</p><p>Contrast the near-miss distractors: a <em>long token expiry</em> is a weakness but doesn't let a request through with <strong>no</strong> token; an unvalidated signature or a non-secure cookie are real bugs but wouldn't explain access with a missing/invalid token as directly as <strong>endpoints that were never secured</strong> in the first place. Fix: require authentication on protected matchers and ensure the JWT filter runs before the endpoint.</p>",
+    "tip": "If unauthenticated requests reach protected routes, first suspect the security config - the routes aren't matched by `.authenticated()` or the JWT filter isn't wired into the chain for that path.",
+    "code": "http\n  .authorizeHttpRequests(reg -> reg\n      .requestMatchers(\"/api/public/**\").permitAll()\n      .anyRequest().authenticated())          // <-- protect everything else\n  .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);",
+    "lang": "java",
+    "revise": "Bypass usually = **endpoints not secured** in config (no `.authenticated()` matcher / stray `permitAll()` / JWT filter not in chain).\n• Fix: `.anyRequest().authenticated()` + add JWT filter before the auth filter."
   }
 ]
