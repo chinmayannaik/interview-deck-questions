@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 69,
-  "updatedAt": "2026-07-30T12:43:04.748Z",
-  "totalQuestions": 1755,
-  "contentHash": "4a830e2707c3d30c7a4e072d76dfd3993fa777cc",
+  "version": 71,
+  "updatedAt": "2026-07-30T15:04:51.910Z",
+  "totalQuestions": 1775,
+  "contentHash": "3f1c06f7922256629d8511415564cac460283c4a",
   "groups": [
     {
       "id": "frontend",
@@ -51,7 +51,7 @@
       "id": "java-angular",
       "file": "packs/java-angular.json",
       "label": "Java + Angular",
-      "count": 1014,
+      "count": 1020,
       "hash": "ae5da0dfd601"
     },
     {
@@ -65,7 +65,7 @@
       "id": "java-backend",
       "file": "packs/java-backend.json",
       "label": "Java Backend Developer",
-      "count": 601,
+      "count": 607,
       "hash": "ef4083c12fbd"
     }
   ],
@@ -184,8 +184,8 @@
       "label": "Java",
       "group": "backend",
       "color": "#9A5B34",
-      "count": 179,
-      "hash": "24ec56f70610"
+      "count": 181,
+      "hash": "531b4f66b096"
     },
     {
       "id": "leetcode",
@@ -203,8 +203,8 @@
       "label": "Spring Boot",
       "group": "backend",
       "color": "#4E8B2C",
-      "count": 110,
-      "hash": "41210c862b21"
+      "count": 112,
+      "hash": "d04e4426533d"
     },
     {
       "id": "python",
@@ -293,8 +293,8 @@
       "label": "SQL",
       "group": "backend",
       "color": "#0E7C93",
-      "count": 46,
-      "hash": "122f03eee2d2"
+      "count": 48,
+      "hash": "03e0e0ac4cc7"
     },
     {
       "id": "postgresql",
@@ -330,7 +330,7 @@
       "group": "devops",
       "color": "#FF9900",
       "count": 32,
-      "hash": "527e1a4ff677"
+      "hash": "ada49df3ca28"
     },
     {
       "id": "behavioral",
@@ -448,6 +448,15 @@
       "color": "#8B5CF6",
       "count": 26,
       "hash": "c06f20f36551"
+    },
+    {
+      "id": "ai-assisted-dev",
+      "file": "ai-assisted-dev.json",
+      "label": "AI-Assisted Dev",
+      "group": "ai",
+      "color": "#8B5CF6",
+      "count": 14,
+      "hash": "fcd3e5cff267"
     },
     {
       "id": "ml-fundamentals",

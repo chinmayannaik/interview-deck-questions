@@ -1913,5 +1913,41 @@
     "code": "http\n  .authorizeHttpRequests(reg -> reg\n      .requestMatchers(\"/api/public/**\").permitAll()\n      .anyRequest().authenticated())          // <-- protect everything else\n  .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);",
     "lang": "java",
     "revise": "Bypass usually = **endpoints not secured** in config (no `.authenticated()` matcher / stray `permitAll()` / JWT filter not in chain).\n• Fix: `.anyRequest().authenticated()` + add JWT filter before the auth filter."
+  },
+  {
+    "id": "sb-distributed-tracing",
+    "category": "springboot",
+    "difficulty": "intermediate",
+    "tags": [
+      "microservices",
+      "observability",
+      "tracing",
+      "zipkin",
+      "jaeger",
+      "asked"
+    ],
+    "question": "What is distributed tracing, and why is it important in microservices? (Zipkin / Jaeger)",
+    "answer": "<p>A single user request can hop through many services; <strong>distributed tracing</strong> follows it end-to-end by propagating a <strong>trace id</strong> across every service call, with a <strong>span</strong> timing each hop. The backend stitches the spans into one timeline so you can see the full path, where time was spent, and where it failed.</p><p><strong>Why it matters:</strong> in microservices you can't debug by reading one service's logs — tracing gives cross-service latency breakdown and root-cause analysis for a request.</p><p><strong>Tools:</strong> <strong>Zipkin</strong> and <strong>Jaeger</strong> are tracing backends that collect, store, and <strong>visualise</strong> traces. <strong>OpenTelemetry</strong> is the vendor-neutral instrumentation standard that exports to either. In Spring, <strong>Micrometer Tracing</strong> (formerly Spring Cloud Sleuth) auto-propagates the ids and exports to Zipkin/Jaeger.</p>",
+    "tip": "A trace id follows the request across services; spans time each hop. Zipkin/Jaeger visualise the trace; OpenTelemetry/Micrometer Tracing instrument it.",
+    "code": "Request --[trace=abc]--> Gateway --> Order-svc --> Payment-svc --> DB\n  each hop = a span (start/end); backend stitches spans into one trace\n  Spring: Micrometer Tracing -> export to Zipkin / Jaeger",
+    "lang": "text",
+    "revise": "**Distributed tracing** = propagate a **trace id** across services, **spans** time each hop → one end-to-end timeline.\n• Why: cross-service latency + root-cause you can't get from one service's logs.\n• **Zipkin/Jaeger** = trace backends (visualise); **OpenTelemetry** = instrumentation standard; **Micrometer Tracing/Sleuth** in Spring."
+  },
+  {
+    "id": "sb-dispatcherservlet",
+    "category": "springboot",
+    "difficulty": "intermediate",
+    "tags": [
+      "spring-mvc",
+      "dispatcherservlet",
+      "front-controller",
+      "asked"
+    ],
+    "question": "What is the role of DispatcherServlet in Spring MVC?",
+    "answer": "<p><strong>DispatcherServlet</strong> is Spring MVC's <strong>front controller</strong> — a single servlet that receives <em>every</em> HTTP request and orchestrates the request-handling pipeline:</p><ol><li><strong>HandlerMapping</strong> — find the controller method for the URL.</li><li><strong>HandlerAdapter</strong> — invoke it (binding params, running interceptors).</li><li><strong>Produce the response</strong> — <code class=\"inline\">HttpMessageConverter</code> for REST (JSON) or a <code class=\"inline\">ViewResolver</code> for MVC views.</li><li><strong>HandlerExceptionResolver</strong> — route exceptions (e.g. to <code class=\"inline\">@ControllerAdvice</code>).</li></ol><p>Spring Boot auto-registers and configures it. In short, it's the single entry point that ties routing, invocation, serialization, and error handling together.</p>",
+    "tip": "DispatcherServlet = front controller: one servlet routes every request to the right handler and back. HandlerMapping finds the controller; HandlerAdapter invokes it.",
+    "code": "Request -> DispatcherServlet\n  -> HandlerMapping (which controller?)\n  -> HandlerAdapter (invoke @RequestMapping method)\n  -> HttpMessageConverter / ViewResolver (build response)\n  -> HandlerExceptionResolver (on error)",
+    "lang": "text",
+    "revise": "**DispatcherServlet** = Spring MVC **front controller**: one servlet handles every request.\n• HandlerMapping (find controller) → HandlerAdapter (invoke) → MessageConverter/ViewResolver (response) → ExceptionResolver (errors).\n• Auto-registered by Spring Boot."
   }
 ]

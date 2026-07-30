@@ -711,5 +711,39 @@
     "code": "CREATE MATERIALIZED VIEW daily_revenue AS\nSELECT DATE_TRUNC('day', created_at) AS day, SUM(total) AS revenue\nFROM orders GROUP BY 1;\n\nREFRESH MATERIALIZED VIEW CONCURRENTLY daily_revenue;",
     "lang": "sql",
     "revise": "A materialized view STORES the query result (unlike a plain view).\n• Fast reads for expensive aggregations/joins.\n• **Data can be STALE** — you must `REFRESH` it (scheduled or on demand).\nTrade freshness for read speed."
+  },
+  {
+    "id": "sql-optimize-slow-query",
+    "category": "sql",
+    "difficulty": "intermediate",
+    "tags": [
+      "performance",
+      "index",
+      "explain",
+      "asked"
+    ],
+    "question": "How do you optimize a slow-running SQL query?",
+    "answer": "<p>Work methodically, driven by the plan — don't guess:</p><ol><li><strong>EXPLAIN / EXPLAIN ANALYZE</strong> first — look for full table scans, bad join order, and unused indexes.</li><li><strong>Index</strong> the columns in <code class=\"inline\">WHERE</code>, <code class=\"inline\">JOIN</code>, and <code class=\"inline\">ORDER BY</code> (composite indexes matching the query shape); avoid wrapping indexed columns in functions, which defeats the index.</li><li><strong>Select only needed columns</strong> — not <code class=\"inline\">SELECT *</code>.</li><li><strong>Kill N+1</strong> — join or batch instead of a query per row.</li><li><strong>Reduce rows early</strong> — filter, and paginate (keyset/<code class=\"inline\">LIMIT</code>) instead of returning everything.</li><li>Rewrite correlated subqueries as joins; avoid needless <code class=\"inline\">DISTINCT</code>/<code class=\"inline\">OR</code>; keep <strong>statistics</strong> fresh.</li><li>For very large tables, consider <strong>partitioning</strong>, denormalisation, or caching.</li></ol><p>Re-check the plan to confirm the win.</p>",
+    "tip": "Start with EXPLAIN. Most slow queries = missing/unused index, SELECT *, or N+1. Measure the plan before and after — never guess.",
+    "code": "EXPLAIN ANALYZE\nSELECT id, name FROM orders\nWHERE customer_id = 42 AND status = 'OPEN'\nORDER BY created_at DESC\nLIMIT 20;\n-- index: (customer_id, status, created_at)",
+    "lang": "sql",
+    "revise": "**Optimize a slow query**: 1) **EXPLAIN** the plan. 2) index WHERE/JOIN/ORDER BY (composite, no funcs on the column). 3) select needed columns only. 4) fix **N+1**. 5) filter/paginate early. 6) rewrite subqueries, refresh stats. 7) partition/cache huge tables.\n• Measure the plan before/after."
+  },
+  {
+    "id": "sql-index-vs-partition",
+    "category": "sql",
+    "difficulty": "intermediate",
+    "tags": [
+      "index",
+      "partitioning",
+      "performance",
+      "asked"
+    ],
+    "question": "What is the difference between indexing and partitioning in a database?",
+    "answer": "<p>They solve different problems and are complementary:</p><ul><li><strong>Indexing</strong> — a secondary structure (usually a B-tree) that gives the engine a <strong>fast access path</strong> to rows so it doesn't scan the whole table. It doesn't change how the table is stored; it adds lookup speed at the cost of extra storage and slightly slower writes.</li><li><strong>Partitioning</strong> — <strong>physically splits one large table</strong> into smaller pieces by a key (range / list / hash). Queries then touch only relevant partitions (<em>partition pruning</em>), and maintenance (archiving, vacuum, dropping old data) works per-partition.</li></ul><p>Index = faster lookups <em>within</em> a table; partitioning = divide a huge table for scalability and manageability. You often index within partitions.</p>",
+    "tip": "Index = a fast access path INTO a table (no storage change). Partition = physically SPLIT the table into chunks. Complementary, not alternatives.",
+    "code": "-- Index: fast lookup path\nCREATE INDEX idx_orders_customer ON orders(customer_id);\n\n-- Partition: split the table by range\nCREATE TABLE orders (...) PARTITION BY RANGE (created_at);",
+    "lang": "sql",
+    "revise": "**Index vs Partition**: **Index** = secondary B-tree, fast access path into a table (no storage change; slower writes). **Partition** = physically split a big table by key (range/list/hash) → partition pruning + per-partition maintenance.\n• Complementary — often index within partitions."
   }
 ]

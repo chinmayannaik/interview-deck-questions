@@ -2872,5 +2872,38 @@
     "code": "class B extends A {\n  public void B() { System.out.println(\"first class\"); } // METHOD, not ctor (has void)\n}\nclass C extends B {\n  public void C() { System.out.println(\"second class\"); } // METHOD, not ctor\n}\nnew C(); // runs default ctors C->B->A; the void B()/C() are never invoked -> no output",
     "lang": "java",
     "revise": "`public void C()` has a **return type** → it's a **method**, not a constructor.\n• `new C()` runs implicit default ctors (C->B->A), which print nothing.\n• The name-matching methods are never called → **no output**."
+  },
+  {
+    "id": "java-memory-model",
+    "category": "java",
+    "difficulty": "advanced",
+    "tags": [
+      "concurrency",
+      "jmm",
+      "volatile",
+      "visibility"
+    ],
+    "question": "What is the Java Memory Model (JMM)?",
+    "answer": "<p>The <strong>JMM</strong> defines how threads interact through memory — specifically which writes made by one thread become <strong>visible</strong> to reads in another, and in what <strong>order</strong>. It's needed because CPUs and the compiler cache values in registers/per-core caches and <strong>reorder</strong> instructions for speed; without rules, a write in one thread might never be seen by another.</p><p>The core rule is <strong>happens-before</strong>: if action A happens-before B, A's effects are guaranteed visible to B. You establish happens-before edges with:</p><ul><li><strong>volatile</strong> — reads/writes are visible immediately and can't be reordered across the access.</li><li><strong>synchronized</strong> — unlock happens-before the next lock (mutual exclusion + visibility).</li><li><strong>final</strong> fields — safe publication once the constructor completes.</li></ul>",
+    "tip": "JMM is about visibility + ordering across threads. happens-before is the guarantee; volatile / synchronized / final are how you create it.",
+    "code": "// Without volatile, thread B may loop forever (never sees the write)\nvolatile boolean running = true;\n// thread A: running = false;   -> visible to B immediately (happens-before)",
+    "lang": "java",
+    "revise": "**JMM** = rules for **visibility + ordering** of memory between threads (CPUs cache & reorder).\n• Core rule: **happens-before** → A's effects visible to B.\n• Established by **volatile** (visibility/no-reorder), **synchronized** (lock/unlock), **final** (safe publication)."
+  },
+  {
+    "id": "java-set-vs-list",
+    "category": "java",
+    "difficulty": "beginner",
+    "tags": [
+      "collections",
+      "set",
+      "list"
+    ],
+    "question": "What is the difference between Set and List in Java?",
+    "answer": "<table><thead><tr><th></th><th>List</th><th>Set</th></tr></thead><tbody><tr><td>Order</td><td>Ordered / positional (insertion order)</td><td>No positional order*</td></tr><tr><td>Duplicates</td><td>Allowed</td><td>Not allowed (unique)</td></tr><tr><td>Index access</td><td>Yes (<code class=\"inline\">get(i)</code>)</td><td>No</td></tr><tr><td>Impls</td><td>ArrayList, LinkedList</td><td>HashSet, LinkedHashSet, TreeSet</td></tr></tbody></table><p>A <strong>Set</strong> rejects duplicates using <code class=\"inline\">equals()</code>/<code class=\"inline\">hashCode()</code> (or the comparator for <code class=\"inline\">TreeSet</code>). *Ordering varies by impl: <code class=\"inline\">HashSet</code> unordered, <code class=\"inline\">LinkedHashSet</code> insertion order, <code class=\"inline\">TreeSet</code> sorted.</p><p>Use a <strong>List</strong> when order/position/duplicates matter; a <strong>Set</strong> when you need uniqueness or fast membership tests.</p>",
+    "tip": "List = ordered + indexed + duplicates. Set = unique, no index (dedupes via equals/hashCode). Order/position matters -> List; uniqueness -> Set.",
+    "code": "List<String> l = new ArrayList<>(); l.add(\"a\"); l.add(\"a\"); // size 2\nSet<String>  s = new HashSet<>();   s.add(\"a\"); s.add(\"a\"); // size 1",
+    "lang": "java",
+    "revise": "**List vs Set**: List = ordered, indexed, **allows duplicates** (ArrayList/LinkedList). Set = **unique**, no index (HashSet/LinkedHashSet/TreeSet).\n• Set dedupes via equals/hashCode.\n• Order/position → List; uniqueness/membership → Set."
   }
 ]

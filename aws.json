@@ -258,7 +258,7 @@
     "tip": "DynamoDB = managed NoSQL, millisecond latency, serverless. No joins — model your table around access patterns. Need relations/complex queries? Use RDS.",
     "code": "Table: Orders\n  PartitionKey = userId   (where the item lives)\n  SortKey      = orderId   (ordering within a user)\n-> query 'all orders for user X' is fast & cheap",
     "lang": "text",
-    "revise": "**DynamoDB** = managed serverless **NoSQL**, single-digit-ms latency, any scale.\n• Partition key (+ optional sort key); no joins → design around access patterns.\n• Great for sessions/carts/IoT; relational needs → RDS. See [[aws-dynamodb-autoscaling]]."
+    "revise": "**DynamoDB** = managed serverless **NoSQL**, single-digit-ms latency, any scale.\n• Partition key (+ optional sort key); no joins → design around access patterns.\n• Great for sessions/carts/IoT; relational needs → RDS."
   },
   {
     "id": "aws-elb",
@@ -290,7 +290,7 @@
     "tip": "ASG keeps min/desired/max instances, scales on a metric/schedule, and replaces unhealthy instances — elasticity + self-healing. Usually sits behind an ELB.",
     "code": "ASG: min=2, desired=2, max=10\n  CPU > 60% for 5m -> add instances\n  CPU < 30%        -> remove\n  unhealthy        -> terminate + replace",
     "lang": "text",
-    "revise": "**ASG** = auto add/remove EC2 to match demand (min/desired/max).\n• Triggers: target metric, schedule, health.\n• Gives elasticity + self-healing; pairs with an ELB. See [[aws-elb]]."
+    "revise": "**ASG** = auto add/remove EC2 to match demand (min/desired/max).\n• Triggers: target metric, schedule, health.\n• Gives elasticity + self-healing; pairs with an ELB."
   },
   {
     "id": "aws-lambda",
@@ -306,7 +306,7 @@
     "tip": "Lambda = event-driven functions, auto-scaling, pay-per-invocation, max 15 min, stateless. Watch for cold starts. 'Serverless' = no servers YOU manage.",
     "code": "S3 upload / API call / SQS msg / cron\n        |\n        v  (event triggers)\n   Lambda function  -> scales automatically, pay per run",
     "lang": "text",
-    "revise": "**Lambda** = run code on **events**, no servers to manage, auto-scaling, pay per invocation+duration.\n• Stateless, max 15 min, cold starts.\n• Great for event glue / APIs / cron. See [[aws-api-gateway]]."
+    "revise": "**Lambda** = run code on **events**, no servers to manage, auto-scaling, pay per invocation+duration.\n• Stateless, max 15 min, cold starts.\n• Great for event glue / APIs / cron."
   },
   {
     "id": "aws-api-gateway",
@@ -322,7 +322,7 @@
     "tip": "API Gateway = managed API front door: routing, throttling, auth, caching. Typical serverless stack = API Gateway -> Lambda -> DynamoDB.",
     "code": "Client -> API Gateway (auth, throttle, route)\n              -> Lambda -> DynamoDB",
     "lang": "text",
-    "revise": "**API Gateway** = managed front door for REST/HTTP/WebSocket APIs.\n• Handles routing, throttling/rate-limit, auth, caching.\n• Classic serverless: API Gateway → Lambda → DynamoDB. See [[aws-lambda]]."
+    "revise": "**API Gateway** = managed front door for REST/HTTP/WebSocket APIs.\n• Handles routing, throttling/rate-limit, auth, caching.\n• Classic serverless: API Gateway → Lambda → DynamoDB."
   },
   {
     "id": "aws-sqs-vs-sns",
@@ -354,7 +354,7 @@
     "tip": "CloudFront = CDN: cache at edge locations near users, offload the origin, add HTTPS + DDoS protection. Great in front of S3 or an ALB.",
     "code": "User -> nearest Edge Location (cached?)\n           hit  -> serve instantly\n           miss -> fetch from Origin (S3/ALB) + cache",
     "lang": "text",
-    "revise": "**CloudFront** = CDN caching at **edge locations** near users.\n• Low latency, offloads origin (S3/ALB/EC2), HTTPS, DDoS (Shield/WAF).\n• Signed URLs + edge functions. See [[aws-regions-az]]."
+    "revise": "**CloudFront** = CDN caching at **edge locations** near users.\n• Low latency, offloads origin (S3/ALB/EC2), HTTPS, DDoS (Shield/WAF).\n• Signed URLs + edge functions."
   },
   {
     "id": "aws-route53",
@@ -421,7 +421,7 @@
     "tip": "IaC = declare infra in a template; CloudFormation provisions it as a 'stack', repeatably. Alternatives: Terraform (multi-cloud), CDK (code).",
     "code": "template.yaml (YAML/JSON)\n  -> CloudFormation -> Stack (all resources, managed together)\nBenefits: reproducible, versioned, easy teardown, drift detection",
     "lang": "text",
-    "revise": "**IaC** = declare resources in a template, not click-ops.\n• **CloudFormation** provisions them as a **stack** (YAML/JSON), repeatable + versioned.\n• Alternatives: Terraform (multi-cloud), CDK (code). See [[aws-cloudformation-nested-stacks]]."
+    "revise": "**IaC** = declare resources in a template, not click-ops.\n• **CloudFormation** provisions them as a **stack** (YAML/JSON), repeatable + versioned.\n• Alternatives: Terraform (multi-cloud), CDK (code)."
   },
   {
     "id": "aws-decouple-spiky-writes",

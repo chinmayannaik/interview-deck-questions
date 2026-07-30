@@ -1,0 +1,225 @@
+[
+  {
+    "id": "aid-what-is",
+    "category": "ai-assisted-dev",
+    "difficulty": "beginner",
+    "tags": [
+      "ai-assisted",
+      "copilot",
+      "sdlc",
+      "basics"
+    ],
+    "question": "What is AI-assisted software engineering, and where does it help across the SDLC?",
+    "answer": "<p>Using LLM-based tools (GitHub Copilot, Cursor, ChatGPT/Claude) to accelerate everyday dev work: scaffolding and boilerplate, inline code completion, generating unit tests, writing docs, explaining or refactoring unfamiliar code, drafting debugging hypotheses, and assisting code review.</p><p>It <strong>augments</strong> the developer — you remain responsible for design, correctness, security, and maintainability. It helps most on well-understood, repetitive, or boilerplate tasks and on onboarding to a new codebase; least on novel architecture and domain-critical business logic.</p>",
+    "tip": "Frame it as augmentation, not replacement: the AI drafts, you own design, correctness, and security. Best ROI on boilerplate/tests/docs.",
+    "code": "Helps: boilerplate, tests, docs, refactors, explaining code, debug hints\nYou own: architecture, correctness, security, review",
+    "lang": "text",
+    "revise": "**AI-assisted engineering** = LLM tools (Copilot/Cursor/chat) speed up boilerplate, tests, docs, refactors, explaining code, debugging.\n• **Augments**, doesn't replace — you own design/correctness/security.\n• Best on repetitive/boilerplate + onboarding; weakest on novel architecture."
+  },
+  {
+    "id": "aid-how-it-works",
+    "category": "ai-assisted-dev",
+    "difficulty": "intermediate",
+    "tags": [
+      "copilot",
+      "cursor",
+      "how-it-works"
+    ],
+    "question": "How does an AI coding assistant (Copilot / Cursor) actually work under the hood?",
+    "answer": "<p>It assembles a <strong>prompt from context</strong> — your current file, cursor position, open tabs, and (for repo-aware tools) snippets retrieved from your codebase via embeddings/RAG — and sends it to a code-tuned LLM that <strong>predicts the completion</strong>.</p><p><strong>Copilot</strong> gives inline completions plus a chat panel. <strong>Cursor</strong> is an AI-first editor that indexes your whole repo for codebase-aware chat and multi-file/agentic edits. The output is a <em>probabilistic suggestion</em>, not verified-correct code — it doesn't compile or test it for you.</p>",
+    "tip": "It's context-driven next-token prediction, not a compiler. Repo-aware tools use embeddings/RAG over your code. Always review the suggestion.",
+    "code": "your file + cursor + open tabs + retrieved repo snippets (RAG)\n        -> code LLM -> predicted completion (unverified)",
+    "lang": "text",
+    "revise": "**Under the hood**: builds a prompt from your file/tabs/cursor (+ repo snippets via embeddings/RAG) → code LLM predicts completion.\n• Copilot = inline + chat; Cursor = repo-indexed, multi-file/agentic edits.\n• Output is probabilistic, not verified."
+  },
+  {
+    "id": "aid-tools-compare",
+    "category": "ai-assisted-dev",
+    "difficulty": "beginner",
+    "tags": [
+      "copilot",
+      "cursor",
+      "tools"
+    ],
+    "question": "GitHub Copilot vs Cursor vs chat assistants (ChatGPT/Claude) — how do they differ?",
+    "answer": "<ul><li><strong>GitHub Copilot</strong> — inline autocomplete + chat embedded in your existing IDE; lightweight, stays in your flow.</li><li><strong>Cursor</strong> — an AI-first editor with deep <strong>codebase indexing</strong>, multi-file and agentic edits, and repo-aware chat.</li><li><strong>Chat assistants (ChatGPT / Claude)</strong> — general reasoning, explanations, and design discussion; not wired into your repo.</li></ul><p>Rule of thumb: inline completion for flow, Cursor for repo-wide changes, a chat assistant for design/learning.</p>",
+    "tip": "Copilot = inline in your IDE; Cursor = repo-aware editor for multi-file changes; ChatGPT/Claude = general reasoning outside your repo.",
+    "code": "Copilot : inline completions + chat (your IDE)\nCursor  : AI editor, repo index, multi-file/agentic edits\nChatGPT/Claude : general reasoning, not repo-integrated",
+    "lang": "text",
+    "revise": "**Copilot** = inline autocomplete+chat in your IDE. **Cursor** = repo-indexed AI editor, multi-file edits. **Chat (ChatGPT/Claude)** = general reasoning, not repo-wired.\n• Inline for flow, Cursor for repo-wide, chat for design/learning."
+  },
+  {
+    "id": "aid-benefits",
+    "category": "ai-assisted-dev",
+    "difficulty": "beginner",
+    "tags": [
+      "productivity",
+      "benefits"
+    ],
+    "question": "What are the benefits of AI-assisted coding, and where does it help most?",
+    "answer": "<p>Faster boilerplate and scaffolding, unit-test generation, documentation, regex/SQL, translating between languages or frameworks, explaining unfamiliar code, and quick debugging hypotheses. It removes the blank-page problem and cuts context-switching to look things up.</p><p>The biggest wins are on <strong>repetitive, well-specified tasks</strong> and when <strong>onboarding to a new codebase</strong> — freeing your time for design and the genuinely hard problems.</p>",
+    "tip": "Wins: boilerplate, tests, docs, regex/SQL, language translation, code explanation, onboarding. It buys you time for design and hard problems.",
+    "code": "",
+    "lang": "",
+    "revise": "**Benefits**: boilerplate/scaffolding, tests, docs, regex/SQL, lang translation, explaining code, fast debug ideas.\n• Best on repetitive/well-specified work + onboarding; frees time for design."
+  },
+  {
+    "id": "aid-risks",
+    "category": "ai-assisted-dev",
+    "difficulty": "intermediate",
+    "tags": [
+      "risks",
+      "limitations",
+      "security"
+    ],
+    "question": "What are the risks and limitations of AI-generated code?",
+    "answer": "<ul><li><strong>Hallucinated APIs</strong> — plausible calls to methods/libraries that don't exist.</li><li><strong>Subtly wrong logic</strong> that looks correct and passes a happy-path glance.</li><li><strong>Security vulnerabilities</strong> — injection, weak crypto, missing validation.</li><li><strong>Outdated patterns</strong> from stale training data.</li><li><strong>License / IP contamination</strong> from memorised code.</li><li><strong>Over-reliance</strong> that erodes your own understanding.</li></ul><p>It has no true grasp of your domain or architecture and can't guarantee correctness — treat every suggestion as a draft to verify.</p>",
+    "tip": "The dangerous failure mode is plausible-but-wrong code. Hallucinated APIs, subtle logic bugs, and security holes are the big three — always verify.",
+    "code": "",
+    "lang": "",
+    "revise": "**Risks**: hallucinated APIs, subtly wrong logic, security vulns, outdated patterns, license/IP issues, over-reliance.\n• No real domain/architecture understanding; can't guarantee correctness → verify everything."
+  },
+  {
+    "id": "aid-quality",
+    "category": "ai-assisted-dev",
+    "difficulty": "intermediate",
+    "tags": [
+      "quality",
+      "review",
+      "security",
+      "testing"
+    ],
+    "question": "How do you ensure the quality and security of AI-generated code?",
+    "answer": "<p>Never merge it blindly. Treat it like a junior developer's PR:</p><ul><li><strong>Review</strong> every line and make sure you understand it.</li><li><strong>Test</strong> — run and extend unit/integration tests; don't trust AI-written tests that only assert the happy path.</li><li><strong>Static analysis / SAST + linters</strong> and dependency/secret scanning.</li><li><strong>Verify APIs exist</strong> and are used correctly; check for secrets, PII, and license issues.</li><li>Keep a <strong>human accountable</strong> in code review.</li></ul><p>AI accelerates <em>writing</em> the code, not the responsibility for its correctness.</p>",
+    "tip": "Review it like a junior's PR: read it, test it, scan it (SAST/lint/secret+dependency), verify the APIs are real. Ownership stays with you.",
+    "code": "",
+    "lang": "",
+    "revise": "**Ensure quality**: review like a junior PR + run/extend tests + SAST/lint + secret/dependency scan + verify APIs are real.\n• AI speeds writing, not responsibility."
+  },
+  {
+    "id": "aid-prompting",
+    "category": "ai-assisted-dev",
+    "difficulty": "intermediate",
+    "tags": [
+      "prompting",
+      "code-generation"
+    ],
+    "question": "How do you write effective prompts for code generation?",
+    "answer": "<p>Give the model what it needs to match your intent and conventions:</p><ul><li><strong>Context</strong> — language, framework + version, and the surrounding code/types.</li><li><strong>A precise goal</strong> and constraints (performance, style, libraries allowed).</li><li><strong>Examples</strong> of the desired output/style and the <strong>edge cases</strong> and error handling to cover.</li><li>Ask for <strong>tests</strong> alongside the code.</li></ul><p>Iterate: feed back the compiler error or wrong output to refine. Small, well-scoped asks beat a vague \"build me X\".</p>",
+    "tip": "Context + precise goal + constraints + examples + edge cases + 'write tests too', then iterate on the error. Scoped asks beat 'build me X'.",
+    "code": "// Weak:  'write a user service'\n// Strong: 'Spring Boot 3 @Service for User CRUD over UserRepository,\n//          constructor injection, throw NotFoundException on miss,\n//          return DTOs, and include JUnit 5 tests for not-found.'",
+    "lang": "text",
+    "revise": "**Prompt for code**: context (lang/framework/version + surrounding code) + precise goal + constraints + examples + edge cases + ask for tests; then iterate on errors.\n• Small scoped asks > 'build me X'."
+  },
+  {
+    "id": "aid-debugging",
+    "category": "ai-assisted-dev",
+    "difficulty": "beginner",
+    "tags": [
+      "debugging",
+      "workflow"
+    ],
+    "question": "How do you use AI assistants for debugging, and what are the pitfalls?",
+    "answer": "<p>Paste the <strong>error, stack trace, and the relevant code</strong> and ask for likely causes and fixes; ask it to explain unfamiliar code or suggest where to add logging. It's great at pattern-matching common errors quickly.</p><p><strong>Pitfalls</strong>: it can invent a plausible-sounding cause, \"fix\" a symptom rather than the root cause, or hallucinate an API. Always verify its hypothesis against the actual code, reproduce the bug, and never apply a fix you don't understand.</p>",
+    "tip": "Give it the error + stack + code and ask for causes. But verify against the real code and reproduce — it may fix symptoms or invent causes.",
+    "code": "",
+    "lang": "",
+    "revise": "**AI debugging**: give error + stack + code → ask for causes/fixes/logging spots.\n• Pitfalls: plausible-but-wrong cause, symptom (not root) fixes, hallucinated APIs → verify + reproduce; don't apply fixes you don't understand."
+  },
+  {
+    "id": "aid-docs-tests",
+    "category": "ai-assisted-dev",
+    "difficulty": "beginner",
+    "tags": [
+      "documentation",
+      "testing",
+      "workflow"
+    ],
+    "question": "How do you use AI for documentation and test generation effectively?",
+    "answer": "<p>It's excellent for drafting docstrings, READMEs, and API docs, and for generating unit-test skeletons plus edge cases from a function signature — removing the blank-page problem.</p><p>But <strong>curate the output</strong>: docs can drift from what the code actually does, and generated tests may just assert that the code runs rather than that it's <em>correct</em>. Make tests assert meaningful behaviour, add the cases the AI missed, and re-read docs against the real implementation.</p>",
+    "tip": "Great first draft for docstrings/READMEs and test scaffolds — then curate: ensure tests assert real behaviour and docs match the code.",
+    "code": "",
+    "lang": "",
+    "revise": "**Docs/tests with AI**: draft docstrings/README/API docs + test scaffolds & edge cases.\n• Curate: tests must assert real behaviour (not just pass); docs must match the code."
+  },
+  {
+    "id": "aid-when-not",
+    "category": "ai-assisted-dev",
+    "difficulty": "intermediate",
+    "tags": [
+      "limitations",
+      "judgement"
+    ],
+    "question": "When should you NOT rely on an AI coding assistant?",
+    "answer": "<ul><li>Novel or complex <strong>architecture</strong> and domain-critical business logic.</li><li><strong>Security-sensitive code</strong> (crypto, authentication) without expert review.</li><li>Anything where you <strong>can't verify correctness</strong>.</li><li>When it would send <strong>proprietary code or secrets</strong> to a non-approved service.</li><li>While <strong>learning fundamentals</strong> — over-reliance stunts skill.</li><li>Blindly accepting large multi-file edits you haven't read.</li></ul>",
+    "tip": "Avoid it for novel architecture, security-critical code without review, unverifiable output, proprietary data on non-approved tools, and while learning basics.",
+    "code": "",
+    "lang": "",
+    "revise": "**Don't rely on AI for**: novel architecture, security-critical code (no review), unverifiable output, proprietary code on non-approved tools, learning fundamentals, unread multi-file edits."
+  },
+  {
+    "id": "aid-integrate-service",
+    "category": "ai-assisted-dev",
+    "difficulty": "intermediate",
+    "tags": [
+      "integration",
+      "api",
+      "enterprise",
+      "architecture"
+    ],
+    "question": "How do you integrate a pre-built AI service/API (OpenAI, Bedrock, Azure OpenAI) into an enterprise app?",
+    "answer": "<p>Call it <strong>server-side</strong> via the SDK/REST — never expose API keys to the browser. Then treat it like any external dependency:</p><ul><li><strong>Secrets</strong> in a vault / env, not in code.</li><li><strong>Resilience</strong>: timeouts, retries with backoff, rate-limit handling, and a fallback path.</li><li><strong>UX</strong>: stream responses (SSE) for perceived speed.</li><li><strong>Cost control</strong>: token budgeting, caching, and right-sizing the model.</li><li><strong>Safety</strong>: validate/guardrail inputs and outputs; log and monitor usage.</li></ul>",
+    "tip": "Server-side only (protect keys), then handle it like any external API: secrets, retries/timeouts, streaming, cost caps, guardrails, monitoring.",
+    "code": "// server-side\nconst res = await client.chat.completions.create({ model, messages });\n// keys in vault, retry w/ backoff on 429, stream to client via SSE,\n// cache + token budget for cost, validate output before use",
+    "lang": "javascript",
+    "revise": "**Integrate an AI API**: call **server-side** (keys never client), + secrets vault, retries/timeouts/rate-limits, SSE streaming, cost caps (cache/token budget/model choice), input+output guardrails, monitoring."
+  },
+  {
+    "id": "aid-rag-feature",
+    "category": "ai-assisted-dev",
+    "difficulty": "intermediate",
+    "tags": [
+      "rag",
+      "integration",
+      "enterprise"
+    ],
+    "question": "How would you implement a RAG-based feature in an enterprise app?",
+    "answer": "<p>Ground the LLM in your own data so answers are current and cite sources instead of hallucinating:</p><ol><li><strong>Ingest</strong> your documents and <strong>chunk</strong> them.</li><li><strong>Embed</strong> the chunks and store vectors in a vector DB (pgvector, Pinecone, OpenSearch).</li><li>At query time, <strong>embed the question</strong>, <strong>retrieve</strong> the top-k relevant chunks, and <strong>inject</strong> them into the prompt.</li><li>The LLM answers grounded in that context; return <strong>citations</strong>.</li></ol><p>Add access control on the corpus, and re-ranking/eval to improve quality. RAG keeps answers fresh <em>without</em> fine-tuning.</p>",
+    "tip": "RAG = ingest -> chunk -> embed -> vector store -> retrieve top-k -> stuff into the prompt -> grounded, cited answer. Fresh data without fine-tuning.",
+    "code": "query -> embed -> vector search (top-k chunks)\n      -> prompt = system + retrieved context + question\n      -> LLM answer (+ citations)",
+    "lang": "text",
+    "revise": "**RAG feature**: ingest → chunk → embed → vector DB → retrieve top-k → inject into prompt → grounded, cited answer.\n• Add corpus access-control + re-ranking/eval. Fresh data, no fine-tuning."
+  },
+  {
+    "id": "aid-data-security",
+    "category": "ai-assisted-dev",
+    "difficulty": "intermediate",
+    "tags": [
+      "security",
+      "privacy",
+      "compliance"
+    ],
+    "question": "What data-privacy and security concerns apply when using AI tools at work?",
+    "answer": "<p>Prompts and code you paste may <strong>leave your network</strong> and be logged or used for training. So:</p><ul><li>Never paste <strong>secrets, credentials, PII, or proprietary code</strong> into public/consumer tiers.</li><li>Use <strong>enterprise / zero-retention</strong> offerings or self-hosted models; respect data-residency and compliance.</li><li>Scan AI output for accidentally injected secrets.</li><li>Follow your org's <strong>approved-tool policy</strong>.</li></ul><p>And when <em>your app</em> feeds untrusted content to an LLM, defend against <strong>prompt injection</strong>.</p>",
+    "tip": "Assume prompts leave your network: no secrets/PII/proprietary code in consumer tiers. Use enterprise/zero-retention/self-hosted, and follow the approved-tool policy.",
+    "code": "",
+    "lang": "",
+    "revise": "**AI data security**: prompts may leave the network/be trained on → no secrets/PII/proprietary code in consumer tiers.\n• Use enterprise/zero-retention/self-hosted; respect residency; follow approved-tool policy; guard against."
+  },
+  {
+    "id": "aid-measure",
+    "category": "ai-assisted-dev",
+    "difficulty": "advanced",
+    "tags": [
+      "productivity",
+      "metrics",
+      "delivery"
+    ],
+    "question": "How do you measure the impact of AI-assisted development, and what are the caveats?",
+    "answer": "<p>Track <strong>delivery outcomes</strong> — cycle time, PR throughput, DORA metrics (lead time, deploy frequency, change-fail rate) — plus suggestion acceptance rate and developer-experience surveys.</p><p><strong>Caveats</strong>: lines written or suggestions accepted is a <em>vanity metric</em> — more code isn't better. Watch quality signals (defect/escape rate, review load, rework) so raw speed doesn't quietly trade off maintainability. Measure <strong>outcomes, not keystrokes</strong>.</p>",
+    "tip": "Use delivery/DORA + DX surveys, not lines-of-code. The trap is speed metrics that hide falling quality — watch defect rate and review load.",
+    "code": "",
+    "lang": "",
+    "revise": "**Measure AI impact**: cycle time, PR throughput, DORA, acceptance rate, DX surveys.\n• Caveat: lines/accepted-suggestions = vanity; watch defect rate + review load. Outcomes, not keystrokes."
+  }
+]
