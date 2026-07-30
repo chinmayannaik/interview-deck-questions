@@ -13,7 +13,8 @@
     "tip": "Say: testing reduces risk and informs release decisions — it does not guarantee zero bugs.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Beginner framing</h4><p>Think of testing like checking a car before a long trip: you are not trying to invent a perfect car in the garage — you are finding what is broken or risky before customers drive it.</p><h4>What testing is (and is not)</h4><ul><li><strong>Is</strong>: a process of evaluating software against expected behaviour and risk.</li><li><strong>Is not</strong>: a promise that every bug is found. Exhaustive testing of real systems is impossible.</li></ul><h4>Why interviews love this</h4><p>Junior answers stop at \"to find bugs\". Stronger answers add: cost of late defects, regression safety, and helping product/business decide release readiness.</p><h4>How to say it in an interview</h4><p>“We test to find defects early, confirm the product matches requirements, and give the team evidence to ship with acceptable risk. Testing never proves zero bugs — it reduces uncertainty.”</p>"
+    "deep": "<h4>Beginner framing</h4><p>Think of testing like checking a car before a long trip: you are not trying to invent a perfect car in the garage — you are finding what is broken or risky before customers drive it.</p><h4>What testing is (and is not)</h4><ul><li><strong>Is</strong>: a process of evaluating software against expected behaviour and risk.</li><li><strong>Is not</strong>: a promise that every bug is found. Exhaustive testing of real systems is impossible.</li></ul><h4>Why interviews love this</h4><p>Junior answers stop at \"to find bugs\". Stronger answers add: cost of late defects, regression safety, and helping product/business decide release readiness.</p><h4>How to say it in an interview</h4><p>“We test to find defects early, confirm the product matches requirements, and give the team evidence to ship with acceptable risk. Testing never proves zero bugs — it reduces uncertainty.”</p>",
+    "revise": "Testing **finds defects before users do**, reduces risk, and builds confidence the product meets requirements.\n• Goal is **information about quality** for a release decision — NOT proving zero bugs.\n• Catch bugs early (cheaper), verify vs requirements, prevent regressions.\n• **Interview tip**: say testing **reduces risk and informs release decisions** — it doesn't guarantee a perfect product."
   },
   {
     "id": "tf-verification-validation",
@@ -29,7 +30,8 @@
     "tip": "Memory aid: Verification = specs; Validation = user/business need.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Simple example</h4><ul><li><strong>Verification</strong>: requirement says checkout must apply a 10% coupon — your test confirms the discount math and API response.</li><li><strong>Validation</strong>: users in UAT say the coupon field is confusing and they abandon checkout — product is \"correct\" but not the right experience.</li></ul><h4>Where each happens</h4><table><thead><tr><th></th><th>Verification</th><th>Validation</th></tr></thead><tbody><tr><td>Question</td><td>Built correctly?</td><td>Useful / acceptable?</td></tr><tr><td>Against</td><td>Requirements, design, code standards</td><td>User needs, business goals</td></tr><tr><td>Examples</td><td>Code review, unit/API tests, walkthroughs</td><td>UAT, beta, usability testing</td></tr></tbody></table><h4>How to say it in an interview</h4><p>“Verification checks we implemented the spec correctly; validation checks we solved the real user problem. A feature can pass verification and still fail validation.”</p>"
+    "deep": "<h4>Simple example</h4><ul><li><strong>Verification</strong>: requirement says checkout must apply a 10% coupon — your test confirms the discount math and API response.</li><li><strong>Validation</strong>: users in UAT say the coupon field is confusing and they abandon checkout — product is \"correct\" but not the right experience.</li></ul><h4>Where each happens</h4><table><thead><tr><th></th><th>Verification</th><th>Validation</th></tr></thead><tbody><tr><td>Question</td><td>Built correctly?</td><td>Useful / acceptable?</td></tr><tr><td>Against</td><td>Requirements, design, code standards</td><td>User needs, business goals</td></tr><tr><td>Examples</td><td>Code review, unit/API tests, walkthroughs</td><td>UAT, beta, usability testing</td></tr></tbody></table><h4>How to say it in an interview</h4><p>“Verification checks we implemented the spec correctly; validation checks we solved the real user problem. A feature can pass verification and still fail validation.”</p>",
+    "revise": "**Verification vs Validation**:\n• **Verification** — *are we building the product right?* Against specs/design (reviews, static analysis, unit tests).\n• **Validation** — *are we building the right product?* Against the real user need (UAT, usability, acceptance).\n• **Interview tip**: memory aid — **Verification = specs, Validation = user/business need**."
   },
   {
     "id": "tf-functional-nonfunctional",
@@ -45,7 +47,8 @@
     "tip": "Functional = correct behaviour; non-functional = quality attributes under real conditions.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Examples you can name</h4><ul><li><strong>Functional</strong>: place order, apply coupon, cancel subscription, role-based access to a page.</li><li><strong>Non-functional</strong>: page loads under 2s for 1k users, password storage is hashed, app works on Chrome/Firefox, system recovers after crash.</li></ul><h4>Why SDETs care</h4><p>Many teams automate functional API/UI flows first. Non-functional work (load, security) often needs specialised tools and environments — mention that you know the difference even if your current role is mostly functional automation.</p><h4>How to say it in an interview</h4><p>“Functional testing verifies features against business rules. Non-functional testing verifies quality attributes like speed, security, and usability. Both are needed for release confidence.”</p>"
+    "deep": "<h4>Examples you can name</h4><ul><li><strong>Functional</strong>: place order, apply coupon, cancel subscription, role-based access to a page.</li><li><strong>Non-functional</strong>: page loads under 2s for 1k users, password storage is hashed, app works on Chrome/Firefox, system recovers after crash.</li></ul><h4>Why SDETs care</h4><p>Many teams automate functional API/UI flows first. Non-functional work (load, security) often needs specialised tools and environments — mention that you know the difference even if your current role is mostly functional automation.</p><h4>How to say it in an interview</h4><p>“Functional testing verifies features against business rules. Non-functional testing verifies quality attributes like speed, security, and usability. Both are needed for release confidence.”</p>",
+    "revise": "**Functional vs non-functional**:\n• **Functional** — *what* the system does (features, business rules, inputs/outputs).\n• **Non-functional** — *how* it behaves (performance, security, usability, reliability, compatibility).\n• **Interview tip**: functional = correct behaviour; non-functional = quality attributes under real conditions."
   },
   {
     "id": "tf-test-levels",
@@ -61,7 +64,8 @@
     "tip": "Map each bug to the lowest level that could have caught it — that is seniority.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Who usually owns what</h4><table><thead><tr><th>Level</th><th>Typical owner</th><th>Example</th></tr></thead><tbody><tr><td>Unit</td><td>Developer</td><td>Discount calculator returns 10%</td></tr><tr><td>Integration</td><td>Dev / SDET</td><td>Order API writes a row in DB</td></tr><tr><td>System / E2E</td><td>SDET / QA</td><td>User completes checkout in UI</td></tr><tr><td>Acceptance</td><td>Business / UAT users</td><td>Client signs off release</td></tr></tbody></table><h4>Common anti-pattern</h4><p>Only E2E UI tests: suite is slow, flaky, and hard to debug. Better: many fast lower-level checks + fewer critical E2E paths.</p><h4>How to say it in an interview</h4><p>“Unit catches logic bugs cheaply, integration catches wiring bugs, system confirms the whole product, and acceptance confirms business readiness. As an SDET I automate heavily at API/UI system level, but I still push for unit coverage on complex rules.”</p>"
+    "deep": "<h4>Who usually owns what</h4><table><thead><tr><th>Level</th><th>Typical owner</th><th>Example</th></tr></thead><tbody><tr><td>Unit</td><td>Developer</td><td>Discount calculator returns 10%</td></tr><tr><td>Integration</td><td>Dev / SDET</td><td>Order API writes a row in DB</td></tr><tr><td>System / E2E</td><td>SDET / QA</td><td>User completes checkout in UI</td></tr><tr><td>Acceptance</td><td>Business / UAT users</td><td>Client signs off release</td></tr></tbody></table><h4>Common anti-pattern</h4><p>Only E2E UI tests: suite is slow, flaky, and hard to debug. Better: many fast lower-level checks + fewer critical E2E paths.</p><h4>How to say it in an interview</h4><p>“Unit catches logic bugs cheaply, integration catches wiring bugs, system confirms the whole product, and acceptance confirms business readiness. As an SDET I automate heavily at API/UI system level, but I still push for unit coverage on complex rules.”</p>",
+    "revise": "**Four test levels** (all needed):\n• **Unit** — one method/class in isolation, fast, by devs.\n• **Integration** — modules/services together (API+DB).\n• **System** — the full app vs requirements.\n• **Acceptance (UAT)** — business confirms it's ready.\n• **Interview tip**: mapping a bug to the **lowest level that could've caught it** signals seniority."
   },
   {
     "id": "tf-shift-left",
@@ -77,7 +81,8 @@
     "tip": "Finding a requirement bug in planning is cheaper than finding it in UAT.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Why it matters</h4><p>Defect cost grows over time. A missing requirement found in production can mean hotfixes, data repair, and lost trust. Shift-left moves feedback closer to the change.</p><h4>Concrete SDET behaviours</h4><ul><li>Ask clarifying questions in grooming (\"What if payment fails mid-order?\").</li><li>Add API tests for new endpoints in the same sprint.</li><li>Block merges when critical automated checks fail (CI).</li><li>Share bug patterns so developers prevent repeats.</li></ul><h4>How to say it in an interview</h4><p>“Shift-left means I don’t wait for a ‘QA phase’. I get involved in requirements, automate early, and put fast checks in CI so defects are found when they are cheapest to fix.”</p>"
+    "deep": "<h4>Why it matters</h4><p>Defect cost grows over time. A missing requirement found in production can mean hotfixes, data repair, and lost trust. Shift-left moves feedback closer to the change.</p><h4>Concrete SDET behaviours</h4><ul><li>Ask clarifying questions in grooming (\"What if payment fails mid-order?\").</li><li>Add API tests for new endpoints in the same sprint.</li><li>Block merges when critical automated checks fail (CI).</li><li>Share bug patterns so developers prevent repeats.</li></ul><h4>How to say it in an interview</h4><p>“Shift-left means I don’t wait for a ‘QA phase’. I get involved in requirements, automate early, and put fast checks in CI so defects are found when they are cheapest to fix.”</p>",
+    "revise": "**Shift-left** = start quality activities **earlier** (requirements, design, dev) instead of only at the end.\n• Review requirements for testability, write acceptance criteria with the story, automate unit/API tests in the PR pipeline.\n• **Interview tip**: a requirement bug caught in **planning** is far cheaper than one found in **UAT**."
   },
   {
     "id": "tf-positive-negative",
@@ -93,7 +98,8 @@
     "tip": "Interviewers expect both: prove it works, and prove it fails gracefully.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Examples</h4><ul><li><strong>Positive</strong>: valid user + correct password → dashboard.</li><li><strong>Negative</strong>: valid user + wrong password → clear error, no session created.</li><li><strong>Negative</strong>: quantity = -1 or \"abc\" → validation error, no order placed.</li></ul><h4>Why negative tests catch expensive bugs</h4><p>Many production incidents are edge cases: empty payloads, timeouts, duplicate submit clicks, expired tokens. Negative testing is how you design those scenarios on purpose.</p><h4>How to say it in an interview</h4><p>“Positive tests confirm the happy path. Negative tests confirm invalid input is rejected safely — with the right message, status code, and no bad side effects like partial orders.”</p>"
+    "deep": "<h4>Examples</h4><ul><li><strong>Positive</strong>: valid user + correct password → dashboard.</li><li><strong>Negative</strong>: valid user + wrong password → clear error, no session created.</li><li><strong>Negative</strong>: quantity = -1 or \"abc\" → validation error, no order placed.</li></ul><h4>Why negative tests catch expensive bugs</h4><p>Many production incidents are edge cases: empty payloads, timeouts, duplicate submit clicks, expired tokens. Negative testing is how you design those scenarios on purpose.</p><h4>How to say it in an interview</h4><p>“Positive tests confirm the happy path. Negative tests confirm invalid input is rejected safely — with the right message, status code, and no bad side effects like partial orders.”</p>",
+    "revise": "**Positive vs negative testing**:\n• **Positive** — valid inputs / happy path confirm it **works**.\n• **Negative** — invalid/unexpected inputs confirm it **fails safely** (wrong password, missing field, injection attempt).\n• **Interview tip**: interviewers expect **both** — prove it works AND prove it fails gracefully."
   },
   {
     "id": "tf-stlc",
@@ -109,7 +115,8 @@
     "tip": "STLC runs alongside SDLC — testing is not only an end phase.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Phases with a simple example (ecommerce login)</h4><ol><li><strong>Requirement analysis</strong> — login must support email/password and lock after 5 failures.</li><li><strong>Planning</strong> — scope, tools (Postman/Selenium), entry/exit criteria.</li><li><strong>Design</strong> — write positive/negative cases, prepare data.</li><li><strong>Environment</strong> — QA URL, test users, browser matrix.</li><li><strong>Execution</strong> — run manual + automated packs.</li><li><strong>Closure</strong> — summary report, open risks, lessons learned.</li></ol><h4>How to say it in an interview</h4><p>“STLC is how testing is organised end-to-end. I start from requirements, plan risk-based coverage, design cases, execute, track defects, and close with a release quality summary.”</p>"
+    "deep": "<h4>Phases with a simple example (ecommerce login)</h4><ol><li><strong>Requirement analysis</strong> — login must support email/password and lock after 5 failures.</li><li><strong>Planning</strong> — scope, tools (Postman/Selenium), entry/exit criteria.</li><li><strong>Design</strong> — write positive/negative cases, prepare data.</li><li><strong>Environment</strong> — QA URL, test users, browser matrix.</li><li><strong>Execution</strong> — run manual + automated packs.</li><li><strong>Closure</strong> — summary report, open risks, lessons learned.</li></ol><h4>How to say it in an interview</h4><p>“STLC is how testing is organised end-to-end. I start from requirements, plan risk-based coverage, design cases, execute, track defects, and close with a release quality summary.”</p>",
+    "revise": "**STLC** = the structured QA process from planning to closure.\n• Phases: Requirement Analysis → Test Planning → Test Case Design → Environment Setup → Execution → Defect Reporting/Retest → **Closure**.\n• **Interview tip**: STLC runs **alongside SDLC** — testing isn't only an end phase."
   },
   {
     "id": "tf-sdlc-models",
@@ -125,7 +132,8 @@
     "tip": "For 4–5 YOE roles, emphasise Agile collaboration, not only end-phase QA.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Practical difference</h4><ul><li><strong>Waterfall</strong>: long test cycle, heavy documentation, late feedback.</li><li><strong>Agile</strong>: Definition of Done includes testing, daily collaboration with devs, automate early, demo every sprint.</li></ul><h4>Example</h4><p>In Agile, a \"Place Order\" story is tested in the same sprint with API checks + critical UI path, not waiting for a final QA month.</p><h4>How to say it in an interview</h4><p>“In Agile I’m embedded with the team each sprint — clarifying acceptance criteria, testing increments, and automating critical paths so regression stays cheap.”</p>"
+    "deep": "<h4>Practical difference</h4><ul><li><strong>Waterfall</strong>: long test cycle, heavy documentation, late feedback.</li><li><strong>Agile</strong>: Definition of Done includes testing, daily collaboration with devs, automate early, demo every sprint.</li></ul><h4>Example</h4><p>In Agile, a \"Place Order\" story is tested in the same sprint with API checks + critical UI path, not waiting for a final QA month.</p><h4>How to say it in an interview</h4><p>“In Agile I’m embedded with the team each sprint — clarifying acceptance criteria, testing increments, and automating critical paths so regression stays cheap.”</p>",
+    "revise": "**Testing in Waterfall vs Agile**:\n• **Waterfall** — testing is a **late phase** after dev is 'done'.\n• **Agile** — testing is **continuous** every sprint, with automation + frequent regression.\n• **Interview tip**: for 4–5 YOE roles, emphasise **Agile collaboration**, not end-phase QA."
   },
   {
     "id": "tf-test-types",
@@ -141,7 +149,8 @@
     "tip": "Retest the bug; regress the neighbourhood and critical paths.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Example</h4><p>Bug: coupon 10% not applied. After fix:</p><ul><li><strong>Retest</strong>: apply coupon CODE10 → total reduced correctly.</li><li><strong>Regression</strong>: checkout without coupon, expired coupon, stack with free-shipping still behaves correctly.</li></ul><h4>How to say it in an interview</h4><p>“Retesting confirms the fix. Regression confirms we didn’t break nearby behaviour. I always do both before closing a defect.”</p>"
+    "deep": "<h4>Example</h4><p>Bug: coupon 10% not applied. After fix:</p><ul><li><strong>Retest</strong>: apply coupon CODE10 → total reduced correctly.</li><li><strong>Regression</strong>: checkout without coupon, expired coupon, stack with free-shipping still behaves correctly.</li></ul><h4>How to say it in an interview</h4><p>“Retesting confirms the fix. Regression confirms we didn’t break nearby behaviour. I always do both before closing a defect.”</p>",
+    "revise": "**Retesting vs Regression**:\n• **Retesting** — re-run the **specific failed case** to confirm a fix works.\n• **Regression** — check the fix/change **didn't break** existing features.\n• **Interview tip**: retest the **bug**; regress the **neighbourhood** and critical paths."
   },
   {
     "id": "tf-static-dynamic",
@@ -157,7 +166,8 @@
     "tip": "Reviewing a vague requirement is static testing and often prevents expensive bugs.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Examples</h4><ul><li><strong>Static</strong>: requirement says \"user can upload files\" but no size/type limit — raise ambiguity before coding.</li><li><strong>Dynamic</strong>: upload 25MB exe and verify rejection.</li></ul><h4>How to say it in an interview</h4><p>“Static testing catches defects in documents and design early. Dynamic testing validates running behaviour. I do both — especially requirement reviews before automation.”</p>"
+    "deep": "<h4>Examples</h4><ul><li><strong>Static</strong>: requirement says \"user can upload files\" but no size/type limit — raise ambiguity before coding.</li><li><strong>Dynamic</strong>: upload 25MB exe and verify rejection.</li></ul><h4>How to say it in an interview</h4><p>“Static testing catches defects in documents and design early. Dynamic testing validates running behaviour. I do both — especially requirement reviews before automation.”</p>",
+    "revise": "**Static vs Dynamic testing**:\n• **Static** — find issues **without executing** code (reviews of requirements/design/test cases, walkthroughs).\n• **Dynamic** — **execute** the software (manual/automated functional, API, UI).\n• **Interview tip**: reviewing a **vague requirement** is static testing and often prevents expensive bugs."
   },
   {
     "id": "tf-black-white-box",
@@ -174,7 +184,8 @@
     "tip": "Most SDET work is grey-box: UI/API tests guided by system knowledge.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Ecommerce example</h4><ul><li><strong>Black-box</strong>: place order in UI, check confirmation page.</li><li><strong>White-box</strong>: unit-test discount calculation branches.</li><li><strong>Grey-box</strong>: place order via API, then SQL-check order + payment rows.</li></ul><h4>How to say it in an interview</h4><p>“I often work grey-box — I design scenarios from requirements but validate with API responses and DB state, not only what the UI shows.”</p>"
+    "deep": "<h4>Ecommerce example</h4><ul><li><strong>Black-box</strong>: place order in UI, check confirmation page.</li><li><strong>White-box</strong>: unit-test discount calculation branches.</li><li><strong>Grey-box</strong>: place order via API, then SQL-check order + payment rows.</li></ul><h4>How to say it in an interview</h4><p>“I often work grey-box — I design scenarios from requirements but validate with API responses and DB state, not only what the UI shows.”</p>",
+    "revise": "**Black / White / Grey box**:\n• **Black-box** — test via requirements/UI/API only, no code knowledge.\n• **White-box** — test with code knowledge (branches, paths, unit tests).\n• **Grey-box** — mix (know architecture/DB/API, test like a user).\n• **Interview tip**: most **SDET** work is **grey-box** — UI/API tests guided by system knowledge."
   },
   {
     "id": "tf-entry-exit",
@@ -190,7 +201,8 @@
     "tip": "Exit criteria protect you from \"we tested forever\" and from shipping with open blockers.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Example entry</h4><ul><li>QA environment stable.</li><li>Build version known.</li><li>Critical configs/feature flags set.</li></ul><h4>Example exit</h4><ul><li>100% smoke + 95% high-priority cases executed.</li><li>No open Sev-1/Sev-2 defects (or formally waived).</li><li>Regression pack green.</li></ul><h4>How to say it in an interview</h4><p>“Entry criteria tell me the build is testable. Exit criteria tell stakeholders when quality is good enough to release, based on risk — not just a calendar date.”</p>"
+    "deep": "<h4>Example entry</h4><ul><li>QA environment stable.</li><li>Build version known.</li><li>Critical configs/feature flags set.</li></ul><h4>Example exit</h4><ul><li>100% smoke + 95% high-priority cases executed.</li><li>No open Sev-1/Sev-2 defects (or formally waived).</li><li>Regression pack green.</li></ul><h4>How to say it in an interview</h4><p>“Entry criteria tell me the build is testable. Exit criteria tell stakeholders when quality is good enough to release, based on risk — not just a calendar date.”</p>",
+    "revise": "**Entry vs Exit criteria**:\n• **Entry** — conditions before testing starts (build deployed, smoke passed, data ready).\n• **Exit** — conditions to stop (planned cases run, critical bugs closed, risk accepted).\n• **Interview tip**: exit criteria protect you from 'testing forever' AND from shipping with open blockers."
   },
   {
     "id": "tf-test-plan-strategy",
@@ -206,7 +218,8 @@
     "tip": "Strategy = approach; Plan = schedule and specifics for this release.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Tiny examples</h4><ul><li><strong>Strategy</strong>: \"API-first automation, UI for critical journeys, SQL validation for billing.\"</li><li><strong>Plan</strong>: \"Release 24.6 — test Order Management module, 3 SDETs, Jenkins smoke on every build, UAT window Fri–Mon.\"</li></ul><h4>How to say it in an interview</h4><p>“Strategy defines how we assure quality. The plan applies that strategy to a specific release with scope, owners, and exit criteria.”</p>"
+    "deep": "<h4>Tiny examples</h4><ul><li><strong>Strategy</strong>: \"API-first automation, UI for critical journeys, SQL validation for billing.\"</li><li><strong>Plan</strong>: \"Release 24.6 — test Order Management module, 3 SDETs, Jenkins smoke on every build, UAT window Fri–Mon.\"</li></ul><h4>How to say it in an interview</h4><p>“Strategy defines how we assure quality. The plan applies that strategy to a specific release with scope, owners, and exit criteria.”</p>",
+    "revise": "**Test Strategy vs Test Plan**:\n• **Strategy** — high-level approach (test types, tools, environments, risk focus), often org/project-wide.\n• **Plan** — concrete for a release/sprint (scope, schedule, resources, entry/exit).\n• **Interview tip**: Strategy = **approach**; Plan = **schedule + specifics** for this release."
   },
   {
     "id": "tf-risk-based",
@@ -222,7 +235,8 @@
     "tip": "With limited time, risk-based testing is how seniors decide what to test first.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Simple scoring example</h4><table><thead><tr><th>Area</th><th>Impact</th><th>Likelihood</th><th>Priority</th></tr></thead><tbody><tr><td>Checkout payment</td><td>High</td><td>Medium</td><td>Test deeply + automate</td></tr><tr><td>Order cancel</td><td>High</td><td>Medium</td><td>High</td></tr><tr><td>Profile avatar crop</td><td>Low</td><td>Low</td><td>Light/manual</td></tr></tbody></table><h4>How to say it in an interview</h4><p>“I prioritise by business risk. For ecommerce order management I protect money and fulfillment paths first, then secondary UX polish if time remains.”</p>"
+    "deep": "<h4>Simple scoring example</h4><table><thead><tr><th>Area</th><th>Impact</th><th>Likelihood</th><th>Priority</th></tr></thead><tbody><tr><td>Checkout payment</td><td>High</td><td>Medium</td><td>Test deeply + automate</td></tr><tr><td>Order cancel</td><td>High</td><td>Medium</td><td>High</td></tr><tr><td>Profile avatar crop</td><td>Low</td><td>Low</td><td>Light/manual</td></tr></tbody></table><h4>How to say it in an interview</h4><p>“I prioritise by business risk. For ecommerce order management I protect money and fulfillment paths first, then secondary UX polish if time remains.”</p>",
+    "revise": "**Risk-based testing** prioritises effort where failure hurts most = **business impact × likelihood**.\n• Test payment/order paths deeper than a rarely used settings tooltip.\n• **Interview tip**: with limited time, risk-based testing is **how seniors decide what to test first**."
   },
   {
     "id": "tf-compatibility",
@@ -238,7 +252,8 @@
     "tip": "Always test against the agreed support matrix, not every browser ever made.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Example matrix</h4><ul><li>Chrome + Windows (primary)</li><li>Edge + Windows</li><li>Safari + macOS (if required)</li></ul><p>You might automate critical paths on primary browser and spot-check secondary ones.</p><h4>How to say it in an interview</h4><p>“I validate against the supported matrix. Critical journeys run on primary browsers in CI; secondary browsers get smoke/sanity based on risk.”</p>"
+    "deep": "<h4>Example matrix</h4><ul><li>Chrome + Windows (primary)</li><li>Edge + Windows</li><li>Safari + macOS (if required)</li></ul><p>You might automate critical paths on primary browser and spot-check secondary ones.</p><h4>How to say it in an interview</h4><p>“I validate against the supported matrix. Critical journeys run on primary browsers in CI; secondary browsers get smoke/sanity based on risk.”</p>",
+    "revise": "**Compatibility testing** = product works across the **supported** combinations — browsers, OS versions, devices, integrated systems.\n• **Interview tip**: test against the **agreed support matrix**, not every browser ever made."
   },
   {
     "id": "tf-exploratory",
@@ -253,7 +268,8 @@
     "tip": "Exploratory complements scripted tests — it does not replace regression packs.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Example charter</h4><p>\"Explore coupon stacking on checkout for 45 minutes; focus on combining percentage + free shipping; note any total mismatches.\"</p><h4>How to say it in an interview</h4><p>“I use exploratory testing to discover edge cases scripts miss, then convert valuable findings into reusable regression cases or automation.”</p>"
+    "deep": "<h4>Example charter</h4><p>\"Explore coupon stacking on checkout for 45 minutes; focus on combining percentage + free shipping; note any total mismatches.\"</p><h4>How to say it in an interview</h4><p>“I use exploratory testing to discover edge cases scripts miss, then convert valuable findings into reusable regression cases or automation.”</p>",
+    "revise": "**Exploratory testing** = simultaneous **learning + test design + execution**, guided by a charter (not scripts).\n• Use for new features, weak requirements, or after major UI changes.\n• **Interview tip**: it **complements** scripted tests — it doesn't replace the regression pack."
   },
   {
     "id": "tf-defect-density",
@@ -269,7 +285,8 @@
     "tip": "Metrics should drive decisions, not gaming.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Good metric example</h4><p>\"Sev-1 escaped to prod this quarter: 1 → investigate root cause (missing API negative test).\"</p><h4>Bad metric example</h4><p>\"We executed 2000 cases\" — says nothing about risk covered.</p><h4>How to say it in an interview</h4><p>“I track defect leakage and stability of critical automated packs. I avoid optimising for case count or fake coverage percentages.”</p>"
+    "deep": "<h4>Good metric example</h4><p>\"Sev-1 escaped to prod this quarter: 1 → investigate root cause (missing API negative test).\"</p><h4>Bad metric example</h4><p>\"We executed 2000 cases\" — says nothing about risk covered.</p><h4>How to say it in an interview</h4><p>“I track defect leakage and stability of critical automated packs. I avoid optimising for case count or fake coverage percentages.”</p>",
+    "revise": "**Useful vs misleading metrics**:\n• **Useful** — escaped defects, leakage by severity, automation pass-rate trends, critical-path coverage, MTTD/MTTR.\n• **Misleading alone** — raw cases executed, vanity 100% coverage, 'bugs found' without context.\n• **Interview tip**: metrics should **drive decisions, not be gamed**."
   },
   {
     "id": "tf-test-environment",
@@ -285,7 +302,8 @@
     "tip": "Many \"product bugs\" are environment/config issues — verify build + config first.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Checklist</h4><ul><li>Known build number.</li><li>Test users/roles ready.</li><li>Payment/email stubs configured if needed.</li><li>DB access for validation.</li><li>Monitoring/logs available.</li></ul><h4>How to say it in an interview</h4><p>“Before deep testing I confirm environment readiness — build, config, data, and integrations. Otherwise failures are noisy and hard to trust.”</p>"
+    "deep": "<h4>Checklist</h4><ul><li>Known build number.</li><li>Test users/roles ready.</li><li>Payment/email stubs configured if needed.</li><li>DB access for validation.</li><li>Monitoring/logs available.</li></ul><h4>How to say it in an interview</h4><p>“Before deep testing I confirm environment readiness — build, config, data, and integrations. Otherwise failures are noisy and hard to trust.”</p>",
+    "revise": "A good **test environment** is stable, versioned, and **prod-like enough** for the risks you care about.\n• Correct configs, integrated deps (or reliable mocks), known test data, access to logs/DB.\n• **Interview tip**: many 'product bugs' are **environment/config** issues — verify build + config first."
   },
   {
     "id": "tf-rtm",
@@ -301,7 +319,8 @@
     "tip": "RTM answers: \"Are we testing what matters?\"",
     "code": "Req-Login-01 → TC-01, TC-02, TC-03\nReq-Order-05 → TC-40, API-12 (missing UI e2e? → gap)",
     "lang": "text",
-    "deep": "<h4>Example</h4><p>Story: \"User can cancel order within 1 hour.\" RTM links to cases: cancel via UI, cancel via API, cancel after 61 minutes rejected, payment refund status validated in DB.</p><h4>How to say it in an interview</h4><p>“I use traceability to ensure critical requirements aren’t missed and to show stakeholders exactly what evidence covers each story.”</p>"
+    "deep": "<h4>Example</h4><p>Story: \"User can cancel order within 1 hour.\" RTM links to cases: cancel via UI, cancel via API, cancel after 61 minutes rejected, payment refund status validated in DB.</p><h4>How to say it in an interview</h4><p>“I use traceability to ensure critical requirements aren’t missed and to show stakeholders exactly what evidence covers each story.”</p>",
+    "revise": "An **RTM (Requirements Traceability Matrix)** maps requirements/stories → test cases (and defects).\n• Shows **coverage gaps**: every critical requirement has ≥1 test; every test traces to a need.\n• **Interview tip**: the RTM answers *'are we testing what matters?'*"
   },
   {
     "id": "tf-qa-vs-qc",
@@ -317,7 +336,8 @@
     "tip": "Testing is largely QC; improving how the team builds quality is QA.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Examples</h4><ul><li><strong>QA</strong>: add acceptance criteria template; require API tests in PR.</li><li><strong>QC</strong>: execute regression and log defects.</li></ul><h4>How to say it in an interview</h4><p>“QC finds defects in the product. QA improves the process so fewer defects are created. As an SDET I do both — execute tests and strengthen automation/CI quality gates.”</p>"
+    "deep": "<h4>Examples</h4><ul><li><strong>QA</strong>: add acceptance criteria template; require API tests in PR.</li><li><strong>QC</strong>: execute regression and log defects.</li></ul><h4>How to say it in an interview</h4><p>“QC finds defects in the product. QA improves the process so fewer defects are created. As an SDET I do both — execute tests and strengthen automation/CI quality gates.”</p>",
+    "revise": "**QA vs QC**:\n• **QA** — **process**-oriented, **prevents** defects (standards, reviews, shift-left, good DoD).\n• **QC** — **product**-oriented, **detects** defects in the build (test execution, inspections).\n• **Interview tip**: testing is largely **QC**; improving how the team builds quality is **QA**."
   },
   {
     "id": "tf-tdd",
@@ -332,7 +352,8 @@
     "answer": "<p>Test-Driven Development: write the test <strong>before</strong> the code, in a tight loop:</p><ol><li><strong>Red</strong> — write a small failing test for the next behavior (failing proves the test can fail).</li><li><strong>Green</strong> — write the <em>minimum</em> code to pass.</li><li><strong>Refactor</strong> — clean up with the tests as a safety net; repeat.</li></ol><p>Real benefits: design pressure (hard-to-test code reveals coupling early), executable specs, fearless refactoring, and by construction everything is covered. Costs: slower start, and tests welded to implementation details make refactoring <em>harder</em> — test behavior, not internals.</p>",
     "tip": "Interviewers respect honesty: 'strict TDD for tricky pure logic (parsers, calculations, bug reproductions — write the failing test first), test-alongside for CRUD plumbing' is a credible real-world answer.",
     "code": "// 1 RED\n@Test void emptyCartTotalsZero() { assertEquals(0, new Cart().total()); }\n// 2 GREEN: int total() { return 0; }\n// 3 next RED forces real logic:\n@Test void totalSumsLinePrices() { cart.add(item(100), item(50)); assertEquals(150, cart.total()); }",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**TDD** = write the test **before** the code in a tight loop.\n• **Red** — a small failing test (proves it can fail) → **Green** — minimum code to pass → **Refactor** — clean up with tests as a safety net.\n• Benefits: design pressure (reveals coupling), living regression net.\n• **Interview tip**: be honest — strict TDD shines for **tricky pure logic** (parsers, calculations, bug repros)."
   },
   {
     "id": "tf-good-unit-test",
@@ -347,7 +368,8 @@
     "answer": "<p><strong>FIRST</strong>:</p><ul><li><strong>F</strong>ast — milliseconds; slow suites stop being run.</li><li><strong>I</strong>ndependent — any order, no shared mutable state between tests.</li><li><strong>R</strong>epeatable — same result everywhere: no real clock, network, or randomness (inject them).</li><li><strong>S</strong>elf-validating — asserts pass/fail by itself; no reading logs.</li><li><strong>T</strong>imely — written with (or before) the code.</li></ul><p>Plus the structural habits: one behavior per test, Arrange-Act-Assert shape, names that state the scenario (<code class=\"inline\">withdraw_insufficientBalance_throws</code>), and asserting <strong>behavior</strong> not implementation (over-mocked tests that break on every refactor are the classic smell).</p>",
     "tip": "Flaky tests are the FIRST-violation interviewers probe: the causes are almost always time, order dependence, async waits, or shared state — name those four.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "A good unit test is **FIRST**:\n• **Fast**, **Independent** (any order, no shared state), **Repeatable** (no real clock/network/randomness — inject them), **Self-validating** (asserts pass/fail), **Timely** (written with/before the code).\n• **Interview tip**: flaky tests are the FIRST-violation interviewers probe — causes are almost always **time, order dependence, or async waits**."
   },
   {
     "id": "tf-code-coverage",
@@ -361,7 +383,8 @@
     "answer": "<p>The percentage of code executed by tests — line, branch (each if-outcome), and condition coverage; measured by JaCoCo (Java) or Istanbul (JS), usually gated in CI (e.g. 80% on changed code).</p><p><strong>100% is not a good goal</strong>: coverage proves code <em>ran</em>, not that anything was <em>asserted</em> — a suite with zero assertions can hit 100%. Chasing the last percent produces brittle tests of getters and framework glue, while a covered-but-wrong edge case still ships broken.</p><p>Healthy use: coverage as a <strong>detector of untested areas</strong> (a critical service at 30% is a real signal), branch coverage over line coverage, and mutation testing (PIT) if you want to measure test <em>quality</em>.</p>",
     "tip": "The sound bite: 'high coverage doesn't prove good tests, but low coverage proves missing ones' — coverage is a smoke alarm, not a quality certificate.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "**Code coverage** = % of code executed by tests (line, **branch**, condition; JaCoCo/Istanbul, gated in CI).\n• **100% is not a good goal** — coverage proves code **ran**, not that anything was **asserted** (a zero-assert suite can hit 100%).\n• **Interview tip**: the sound bite — *'high coverage doesn't prove good tests, but low coverage proves missing ones.'*"
   },
   {
     "id": "tf-static-analysis",
@@ -376,6 +399,7 @@
     "answer": "<p><strong>Static analysis</strong> inspects code without running it:</p><ul><li><strong>ESLint</strong> (JS/TS, + Angular rules) — bugs and style at lint speed: unused vars, unsafe any, missing lifecycle interfaces; auto-fixable, runs in the editor and CI.</li><li><strong>SonarQube</strong> — deeper multi-language analysis: bug patterns (possible NPEs, resource leaks), <strong>security hotspots</strong> (injection, weak crypto), code smells, duplication, complexity — tracked over time per branch/PR.</li></ul><p>A <strong>quality gate</strong> fails the pipeline on thresholds — the sane pattern is gating on <strong>new code only</strong> (\"clean as you code\"): no new critical issues, coverage on changed lines ≥ X% — so legacy debt doesn't block today's PR but nothing new rots.</p>",
     "tip": "Mention the triad in CI order: linter (seconds, every save) → tests → Sonar gate on the PR. And one real rule that caught something for you — e.g. rxjs/no-unsafe-subscribe or a Sonar NPE path.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "**Static analysis** inspects code **without running it**:\n• **ESLint** (JS/TS + Angular) — lint-speed bugs/style (unused vars, unsafe `any`), auto-fixable.\n• **SonarQube** — deeper bug patterns, security hotspots, coverage/duplication gates.\n• **Interview tip**: name the CI order — **linter (every save) → tests → Sonar gate on the PR**."
   }
 ]

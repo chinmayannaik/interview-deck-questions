@@ -3,243 +3,341 @@
     "id": "qk-what-is",
     "category": "quarkus",
     "difficulty": "beginner",
-    "tags": ["basics", "cloud-native"],
+    "tags": [
+      "basics",
+      "cloud-native"
+    ],
     "question": "What is Quarkus and how does it differ from Spring Boot?",
     "answer": "<p>Quarkus is a <strong>Kubernetes-native Java framework</strong> optimised for GraalVM native compilation and fast startup. Key differences from Spring Boot:</p><ul><li><strong>Build-time processing</strong> — much configuration and classpath scanning happens at build time, not runtime.</li><li><strong>Lower memory footprint</strong> — especially in native mode (tens of MB vs hundreds).</li><li><strong>Faster startup</strong> — JVM mode is fast; native mode starts in milliseconds.</li><li><strong>Reactive-first</strong> — built on Vert.x and RESTEasy Reactive; imperative style also supported.</li><li><strong>Extensions</strong> — modular add-ons (like Boot starters) for Hibernate, Kafka, Redis, etc.</li></ul><p>Both use CDI-style dependency injection; Quarkus targets cloud/serverless, Spring Boot has the larger enterprise ecosystem.</p>",
     "tip": "Quarkus doesn't replace Spring knowledge — many concepts (JPA, REST, CDI) transfer directly.",
     "code": "@QuarkusMain\npublic class App {\n  public static void main(String[] args) {\n    Quarkus.run(args);\n  }\n}",
     "lang": "java",
-    "deep": "<h4>Why build-time matters</h4><p>Spring discovers beans at runtime via classpath scanning — flexible but slow and memory-heavy. Quarkus moves reflection, proxy generation, and config resolution to the build phase, producing a leaner runtime artifact.</p><h4>When to pick Quarkus</h4><ul><li>Serverless / scale-to-zero (Lambda, Knative)</li><li>Kubernetes with many small pods</li><li>Microservices where startup time and memory cost matter</li></ul><h4>When Spring Boot still wins</h4><ul><li>Large existing Spring codebases</li><li>Broad third-party integration needs</li><li>Teams already invested in Spring ecosystem</li></ul><h4>How to say it in an interview</h4><p>“Quarkus is a cloud-native Java stack optimised for fast startup and low memory via build-time augmentation and optional native compilation. I'd pick it for serverless or dense K8s deployments; Spring Boot for large enterprise monoliths with deep Spring integration needs.”</p>"
+    "deep": "<h4>Why build-time matters</h4><p>Spring discovers beans at runtime via classpath scanning — flexible but slow and memory-heavy. Quarkus moves reflection, proxy generation, and config resolution to the build phase, producing a leaner runtime artifact.</p><h4>When to pick Quarkus</h4><ul><li>Serverless / scale-to-zero (Lambda, Knative)</li><li>Kubernetes with many small pods</li><li>Microservices where startup time and memory cost matter</li></ul><h4>When Spring Boot still wins</h4><ul><li>Large existing Spring codebases</li><li>Broad third-party integration needs</li><li>Teams already invested in Spring ecosystem</li></ul><h4>How to say it in an interview</h4><p>“Quarkus is a cloud-native Java stack optimised for fast startup and low memory via build-time augmentation and optional native compilation. I'd pick it for serverless or dense K8s deployments; Spring Boot for large enterprise monoliths with deep Spring integration needs.”</p>",
+    "revise": "Quarkus = **Kubernetes-native Java** framework tuned for GraalVM native + fast startup.\n• **Build-time processing**: scanning/wiring done at build, not runtime → less startup work.\n• **Low memory + ms startup** (native ~tens of MB), reactive-first on `Vert.x`.\n• **Extensions** = Boot-starter equivalents; CDI-style DI throughout.\n• **Interview tip**: JPA/REST/CDI knowledge transfers directly — Quarkus targets cloud/serverless, Boot has the bigger ecosystem."
   },
   {
     "id": "qk-native-graalvm",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["native", "graalvm", "compilation"],
+    "tags": [
+      "native",
+      "graalvm",
+      "compilation"
+    ],
     "question": "What is Quarkus native compilation and GraalVM?",
     "answer": "<p><strong>GraalVM Native Image</strong> compiles Java bytecode ahead-of-time (AOT) into a standalone native binary — no JVM needed at runtime. Benefits: ~10ms startup, ~20–50MB RSS, instant scale-up.</p><p>Tradeoffs: longer build times, no dynamic class loading at runtime, reflection must be declared (Quarkus handles most via build-time analysis). Build with <code class=\"inline\">./mvnw package -Pnative</code>.</p><p>Quarkus JVM mode is already fast — native is for extreme startup/memory requirements.</p>",
     "tip": "Native compilation fails if code uses unregistered reflection — Quarkus extensions pre-configure this for supported libraries.",
     "code": "./mvnw package -Pnative -Dquarkus.native.container-build=true",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "**GraalVM Native Image** = AOT-compile bytecode into a standalone binary, no JVM at runtime.\n• **Wins**: ~10ms startup, ~20–50MB RSS, instant scale-up.\n• **Costs**: slow builds, no dynamic classloading, reflection must be **declared**.\n• Build with `./mvnw package -Pnative`.\n• **Interview tip**: JVM mode is already fast — go native only for extreme startup/memory needs (serverless, scale-to-zero)."
   },
   {
     "id": "qk-cdi-injection",
     "category": "quarkus",
     "difficulty": "beginner",
-    "tags": ["cdi", "dependency-injection"],
+    "tags": [
+      "cdi",
+      "dependency-injection"
+    ],
     "question": "How does dependency injection work in Quarkus?",
     "answer": "<p>Quarkus uses <strong>CDI (Contexts and Dependency Injection)</strong> — the Jakarta EE standard. Inject dependencies with <code class=\"inline\">@Inject</code> on fields, constructors, or methods.</p><p>Bean scopes: <code class=\"inline\">@ApplicationScoped</code> (singleton), <code class=\"inline\">@RequestScoped</code>, <code class=\"inline\">@Dependent</code>. Define beans with <code class=\"inline\">@ApplicationScoped</code> on the class — no <code class=\"inline\">@Component</code> equivalent needed.</p><p>Quarkus resolves the dependency graph at <strong>build time</strong>, eliminating runtime CDI container overhead.</p>",
     "tip": "Constructor injection is preferred — makes dependencies explicit and eases testing.",
     "code": "@ApplicationScoped\npublic class OrderService {\n  private final OrderRepository repo;\n\n  @Inject\n  public OrderService(OrderRepository repo) {\n    this.repo = repo;\n  }\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "Quarkus DI = **CDI** (Jakarta standard), resolved at **build time** (no runtime container overhead).\n• Inject with `@Inject` (field/constructor/method).\n• **Scopes**: `@ApplicationScoped` (singleton), `@RequestScoped`, `@Dependent`.\n• Declare a bean by putting a scope annotation on the class — no `@Component`.\n• **Interview tip**: prefer constructor injection — explicit deps, easier testing."
   },
   {
     "id": "qk-rest-endpoints",
     "category": "quarkus",
     "difficulty": "beginner",
-    "tags": ["rest", "jax-rs", "api"],
+    "tags": [
+      "rest",
+      "jax-rs",
+      "api"
+    ],
     "question": "How do you create REST endpoints in Quarkus?",
     "answer": "<p>Use <strong>JAX-RS</strong> annotations via RESTEasy Reactive (default) or RESTEasy Classic:</p><ul><li><code class=\"inline\">@Path</code> — base URI</li><li><code class=\"inline\">@GET</code>, <code class=\"inline\">@POST</code>, <code class=\"inline\">@PUT</code>, <code class=\"inline\">@DELETE</code></li><li><code class=\"inline\">@PathParam</code>, <code class=\"inline\">@QueryParam</code>, <code class=\"inline\">@HeaderParam</code></li><li><code class=\"inline\">@Produces</code> / <code class=\"inline\">@Consumes</code> — content types</li></ul><p>Return types can be synchronous or <code class=\"inline\">Uni&lt;T&gt;</code> / <code class=\"inline\">Multi&lt;T&gt;</code> for reactive endpoints.</p>",
     "tip": "RESTEasy Reactive runs on the Vert.x event loop — blocking calls on the event loop thread will stall the server.",
     "code": "@Path(\"/orders\")\n@ApplicationScoped\npublic class OrderResource {\n  @GET\n  @Path(\"/{id}\")\n  public Order get(@PathParam(\"id\") Long id) {\n    return orderService.find(id);\n  }\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "REST via **JAX-RS** on RESTEasy Reactive (default).\n• `@Path` (base URI) + `@GET/@POST/@PUT/@DELETE`.\n• Params: `@PathParam`, `@QueryParam`, `@HeaderParam`; `@Produces`/`@Consumes` for content types.\n• Return sync objects **or** `Uni<T>`/`Multi<T>` for reactive.\n• **Interview tip**: RESTEasy Reactive runs on the Vert.x event loop — a blocking call there stalls the whole server (mark it `@Blocking`)."
   },
   {
     "id": "qk-reactive-uni-multi",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["reactive", "mutiny", "vertx"],
+    "tags": [
+      "reactive",
+      "mutiny",
+      "vertx"
+    ],
     "question": "What are Uni and Multi in Quarkus?",
     "answer": "<p>Quarkus uses <strong>Mutiny</strong> for reactive programming:</p><ul><li><code class=\"inline\">Uni&lt;T&gt;</code> — emits 0 or 1 item (like a Promise/Single). Use for single async results.</li><li><code class=\"inline\">Multi&lt;T&gt;</code> — emits 0 to N items (like a Stream). Use for event streams or paginated results.</li></ul><p>Composable with <code class=\"inline\">.onItem().transform()</code>, <code class=\"inline\">.onFailure().recover()</code>, <code class=\"inline\">.combine()</code>. Non-blocking I/O on the Vert.x event loop.</p>",
     "tip": "Mark blocking work with @Blocking or @RunOnVirtualThread (Java 21+) so it doesn't block the event loop.",
     "code": "@GET\npublic Uni<Order> get(@PathParam(\"id\") Long id) {\n  return orderService.findAsync(id);\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "Reactive types come from **Mutiny**.\n• **`Uni<T>`** = 0 or 1 item (Promise/Single) — a single async result.\n• **`Multi<T>`** = 0..N items (Stream) — event streams / pagination.\n• Compose: `.onItem().transform()`, `.onFailure().recover()`, `.combine()`.\n• **Interview tip**: wrap blocking work in `@Blocking` or `@RunOnVirtualThread` (Java 21+) so it never blocks the event loop."
   },
   {
     "id": "qk-hibernate-panache",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["hibernate", "panache", "jpa"],
+    "tags": [
+      "hibernate",
+      "panache",
+      "jpa"
+    ],
     "question": "What is Hibernate Panache?",
     "answer": "<p>Panache is Quarkus's simplified ORM layer on top of Hibernate ORM. Two styles:</p><ul><li><strong>Active Record</strong> — entity extends <code class=\"inline\">PanacheEntity</code>; call <code class=\"inline\">Person.findById(1)</code> directly on the entity.</li><li><strong>Repository</strong> — entity is a plain JPA class; repository extends <code class=\"inline\">PanacheRepository&lt;Person&gt;</code>.</li></ul><p>Provides concise query methods, pagination, and integrates with reactive PostgreSQL drivers.</p>",
     "tip": "Repository pattern is preferred in larger apps — keeps persistence logic out of domain entities.",
     "code": "@Entity\npublic class Person extends PanacheEntity {\n  public String name;\n  public static List<Person> findByName(String name) {\n    return find(\"name\", name).list();\n  }\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**Panache** = Quarkus's thin, ergonomic layer over Hibernate ORM.\n• **Active Record**: entity extends `PanacheEntity` → `Person.findById(1)` on the entity itself.\n• **Repository**: plain JPA entity + `PanacheRepository<Person>`.\n• Gives concise queries + pagination; works with reactive drivers.\n• **Interview tip**: prefer the Repository style in larger apps — keeps persistence logic out of domain entities."
   },
   {
     "id": "qk-configuration",
     "category": "quarkus",
     "difficulty": "beginner",
-    "tags": ["config", "properties"],
+    "tags": [
+      "config",
+      "properties"
+    ],
     "question": "How does configuration work in Quarkus?",
     "answer": "<p>Config via <code class=\"inline\">application.properties</code> or <code class=\"inline\">application.yaml</code>. Inject with <code class=\"inline\">@ConfigProperty</code>:</p><p>Supports profiles (<code class=\"inline\">%dev</code>, <code class=\"inline\">%prod</code>), environment variables (automatic mapping), and type-safe config interfaces with <code class=\"inline\">@ConfigMapping</code>.</p><p>External config via env vars is the standard for containers — no config baked into the image.</p>",
     "tip": "QUARKUS_DATASOURCE_JDBC_URL env var maps to quarkus.datasource.jdbc.url automatically.",
     "code": "@ConfigProperty(name = \"greeting.message\")\nString message;\n\n# application.properties\n%dev.greeting.message=Hello Dev\n%prod.greeting.message=Hello",
-    "lang": "java"
+    "lang": "java",
+    "revise": "Config via `application.properties`/`.yaml`, injected with `@ConfigProperty`.\n• **Profiles** with `%dev`/`%prod` prefixes.\n• **Env vars** map automatically (`QUARKUS_DATASOURCE_JDBC_URL` → `quarkus.datasource.jdbc.url`).\n• Type-safe groups via `@ConfigMapping`.\n• **Interview tip**: in containers, externalise everything through env vars — never bake config into the image."
   },
   {
     "id": "qk-dev-mode",
     "category": "quarkus",
     "difficulty": "beginner",
-    "tags": ["dev-mode", "live-reload"],
+    "tags": [
+      "dev-mode",
+      "live-reload"
+    ],
     "question": "What is Quarkus dev mode?",
     "answer": "<p>Run with <code class=\"inline\">./mvnw quarkus:dev</code> for a development experience with:</p><ul><li><strong>Live reload</strong> — code changes picked up without restart.</li><li><strong>Dev UI</strong> — browser dashboard at <code class=\"inline\">/q/dev</code> for config, extensions, continuous testing.</li><li><strong>H2 dev services</strong> — auto-starts a test database if no datasource configured.</li><li><strong>Test continuous testing</strong> — tests re-run on file save.</li></ul>",
     "tip": "Dev mode is dramatically faster iteration than traditional Java redeploy cycles.",
     "code": "./mvnw quarkus:dev",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "`./mvnw quarkus:dev` = fast inner-loop.\n• **Live reload** — code changes picked up with no restart.\n• **Dev UI** at `/q/dev` (config, extensions, continuous testing).\n• **Dev Services** auto-start a DB/Kafka if none configured.\n• **Continuous testing** re-runs tests on save.\n• **Interview tip**: this loop is the headline reason Quarkus *feels* faster than classic Java redeploy cycles."
   },
   {
     "id": "qk-extensions",
     "category": "quarkus",
     "difficulty": "beginner",
-    "tags": ["extensions", "modules"],
+    "tags": [
+      "extensions",
+      "modules"
+    ],
     "question": "What are Quarkus extensions?",
     "answer": "<p>Extensions are <strong>modular add-ons</strong> that bring capabilities and auto-configuration — analogous to Spring Boot starters. Add via CLI or pom.xml:</p><p><code class=\"inline\">quarkus extension add hibernate-orm-panache jdbc-postgresql smallrye-openapi</code></p><p>Each extension contributes build steps, runtime config, and dev services. Only included extensions are in the final binary — no bloat from unused features.</p>",
     "tip": "Browse extensions at quarkus.io/extensions — over 300 available.",
     "code": "<dependency>\n  <groupId>io.quarkus</groupId>\n  <artifactId>quarkus-hibernate-orm-panache</artifactId>\n</dependency>",
-    "lang": "xml"
+    "lang": "xml",
+    "revise": "**Extensions** = modular add-ons (build steps + runtime config + dev services), like Boot starters.\n• Add via `quarkus extension add ...` or `pom.xml`.\n• Only included extensions land in the final binary → **no bloat**.\n• 300+ available (Hibernate, Kafka, Redis, OIDC...).\n• **Interview tip**: each extension does build-time analysis so native + fast startup 'just work' for supported libs."
   },
   {
     "id": "qk-health-metrics",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["health", "metrics", "observability"],
+    "tags": [
+      "health",
+      "metrics",
+      "observability"
+    ],
     "question": "Health checks and metrics in Quarkus.",
     "answer": "<p><strong>SmallRye Health</strong> — <code class=\"inline\">/q/health</code> (aggregated), <code class=\"inline\">/q/health/live</code> (liveness), <code class=\"inline\">/q/health/ready</code> (readiness). Implement custom checks with <code class=\"inline\">@Readiness</code> / <code class=\"inline\">@Liveness</code> on <code class=\"inline\">HealthCheck</code>.</p><p><strong>SmallRye Metrics</strong> — MicroProfile Metrics at <code class=\"inline\">/q/metrics</code>. Annotate with <code class=\"inline\">@Counted</code>, <code class=\"inline\">@Timed</code>. Integrates with Prometheus via Micrometer.</p>",
     "tip": "Kubernetes uses liveness to restart pods and readiness to route traffic — implement both correctly.",
     "code": "@Readiness\n@ApplicationScoped\npublic class DatabaseCheck implements HealthCheck {\n  public HealthCheckResponse call() {\n    return isDbUp() ? up(\"db\") : down(\"db\");\n  }\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "K8s-ready observability out of the box.\n• **SmallRye Health**: `/q/health/live` (restart) + `/q/health/ready` (route traffic); custom `@Liveness`/`@Readiness` checks.\n• **Metrics** at `/q/metrics` (`@Counted`, `@Timed`), Prometheus via Micrometer.\n• **Interview tip**: implement liveness AND readiness — K8s uses liveness to restart pods and readiness to decide when to send traffic."
   },
   {
     "id": "qk-security",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["security", "jwt", "oidc"],
+    "tags": [
+      "security",
+      "jwt",
+      "oidc"
+    ],
     "question": "How do you secure REST endpoints in Quarkus?",
     "answer": "<p><strong>Quarkus Security</strong> with extensions:</p><ul><li><code class=\"inline\">quarkus-oidc</code> — OpenID Connect / OAuth2 integration.</li><li><code class=\"inline\">quarkus-smallrye-jwt</code> — JWT bearer token validation.</li><li><code class=\"inline\">@RolesAllowed(\"admin\")</code> — restrict by role.</li><li><code class=\"inline\">@Authenticated</code> — require any authenticated user.</li></ul><p>Configure issuer, client, and JWKS URL in application.properties.</p>",
     "tip": "Use OIDC extension for Keycloak/Auth0 integration — it handles token validation and role extraction.",
     "code": "@GET\n@RolesAllowed(\"admin\")\n@Path(\"/admin/users\")\npublic List<User> listUsers() { ... }",
-    "lang": "java"
+    "lang": "java",
+    "revise": "Secure endpoints with the security extensions.\n• **`quarkus-oidc`** — OpenID Connect/OAuth2 (Keycloak, Auth0).\n• **`quarkus-smallrye-jwt`** — validate JWT bearer tokens.\n• Guards: `@RolesAllowed(\"admin\")`, `@Authenticated`.\n• **Interview tip**: OIDC handles token validation + role extraction for you — you just configure issuer/JWKS URL."
   },
   {
     "id": "qk-testing",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["testing", "junit"],
+    "tags": [
+      "testing",
+      "junit"
+    ],
     "question": "How do you test Quarkus applications?",
     "answer": "<p><code class=\"inline\">@QuarkusTest</code> — boots the full application in test mode (fast thanks to build-time setup). Use <code class=\"inline\">@TestHTTPResource</code> for injected test URLs.</p><p><strong>RestAssured</strong> for HTTP testing. <strong>@InjectMock</strong> to replace CDI beans with mocks. <strong>Testcontainers</strong> for real PostgreSQL/Kafka in integration tests.</p><p>Dev services auto-provision databases in dev/test without manual Docker setup.</p>",
     "tip": "@QuarkusTest starts faster than @SpringBootTest because Quarkus already did build-time wiring.",
     "code": "@QuarkusTest\nclass OrderResourceTest {\n  @Test\n  void testGet() {\n    given().when().get(\"/orders/1\")\n      .then().statusCode(200);\n  }\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**`@QuarkusTest`** boots the app in test mode — fast thanks to build-time wiring.\n• `RestAssured` for HTTP, `@TestHTTPResource` for injected URLs.\n• `@InjectMock` swaps CDI beans; **Testcontainers**/Dev Services give a real Postgres/Kafka.\n• **Interview tip**: it starts faster than `@SpringBootTest` because Quarkus already did the wiring at build time."
   },
   {
     "id": "qk-flyway-migrations",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["flyway", "database", "migrations"],
+    "tags": [
+      "flyway",
+      "database",
+      "migrations"
+    ],
     "question": "Database migrations with Flyway in Quarkus.",
     "answer": "<p>Add <code class=\"inline\">quarkus-flyway</code> extension. Place SQL scripts in <code class=\"inline\">src/main/resources/db/migration/</code> named <code class=\"inline\">V1__create_orders.sql</code>, <code class=\"inline\">V2__add_status.sql</code>.</p><p>Flyway runs migrations on startup automatically. Configure with <code class=\"inline\">quarkus.flyway.migrate-at-start=true</code>.</p>",
     "tip": "Never modify a migration that's already been applied to production — add a new versioned script instead.",
     "code": "# application.properties\nquarkus.flyway.migrate-at-start=true\nquarkus.datasource.jdbc.url=jdbc:postgresql://localhost/orders",
-    "lang": "properties"
+    "lang": "properties",
+    "revise": "**Flyway** = versioned SQL migrations via `quarkus-flyway`.\n• Scripts in `src/main/resources/db/migration/` named `V1__create_orders.sql`, `V2__...`.\n• Run on startup (`quarkus.flyway.migrate-at-start=true`).\n• **Interview tip**: never edit an already-applied migration — add a new versioned script (Flyway tracks a checksum and will refuse a changed one)."
   },
   {
     "id": "qk-scheduler",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["scheduler", "cron"],
+    "tags": [
+      "scheduler",
+      "cron"
+    ],
     "question": "How do you schedule tasks in Quarkus?",
     "answer": "<p><strong>Quarkus Scheduler</strong> extension — annotate methods with <code class=\"inline\">@Scheduled</code>:</p><ul><li><code class=\"inline\">every = \"10s\"</code> — fixed interval</li><li><code class=\"inline\">cron = \"0 0 1 * * ?\"</code> — cron expression</li><li><code class=\"inline\">delay = 5</code> — initial delay</li></ul><p>Runs on worker threads by default — safe for blocking operations.</p>",
     "tip": "For distributed scheduling across multiple pods, use an external scheduler or Kafka — @Scheduled runs on every instance.",
     "code": "@Scheduled(every = \"1h\")\nvoid cleanupExpiredSessions() {\n  sessionService.deleteExpired();\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**`@Scheduled`** (Quarkus Scheduler extension) on a method.\n• `every=\"10s\"` (interval), `cron=\"0 0 1 * * ?\"`, `delay=5` (initial).\n• Runs on **worker threads** → blocking-safe.\n• **Interview tip**: it fires on *every* instance — for one-run-across-the-cluster use an external scheduler, a lock, or Kafka."
   },
   {
     "id": "qk-caching",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["caching", "performance"],
+    "tags": [
+      "caching",
+      "performance"
+    ],
     "question": "Caching in Quarkus.",
     "answer": "<p>Add <code class=\"inline\">quarkus-cache</code> extension. Annotate methods with <code class=\"inline\">@CacheResult(cacheName = \"users\")</code> to cache return values. <code class=\"inline\">@CacheInvalidate</code> evicts entries.</p><p>Backends: Caffeine (in-memory, default) or Redis (<code class=\"inline\">quarkus-redis-cache</code>) for distributed caching across pods.</p>",
     "tip": "Cache keys are derived from method parameters by default — customise with @CacheKey on specific params.",
     "code": "@CacheResult(cacheName = \"product-by-id\")\npublic Product findById(Long id) {\n  return productRepo.findById(id);\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "Method-level caching via `quarkus-cache`.\n• `@CacheResult(cacheName=\"users\")` caches the return; `@CacheInvalidate` evicts.\n• **Caffeine** in-memory by default; **Redis** for shared cache across pods.\n• Key derived from method params; override with `@CacheKey`.\n• **Interview tip**: in-memory cache doesn't share across pods — reach for Redis once you scale horizontally."
   },
   {
     "id": "qk-openapi",
     "category": "quarkus",
     "difficulty": "beginner",
-    "tags": ["openapi", "swagger", "documentation"],
+    "tags": [
+      "openapi",
+      "swagger",
+      "documentation"
+    ],
     "question": "How does Quarkus generate OpenAPI documentation?",
     "answer": "<p>Add <code class=\"inline\">quarkus-smallrye-openapi</code>. Scans JAX-RS endpoints and generates an OpenAPI 3 spec automatically.</p><p>Access at <code class=\"inline\">/q/openapi</code> (JSON/YAML). Swagger UI at <code class=\"inline\">/q/swagger-ui</code>. Enrich with <code class=\"inline\">@Operation</code>, <code class=\"inline\">@APIResponse</code>, <code class=\"inline\">@Schema</code> annotations.</p>",
     "tip": "OpenAPI spec is generated at build time in Quarkus — no runtime scanning overhead.",
     "code": "@Operation(summary = \"Get order by ID\")\n@APIResponse(responseCode = \"200\", description = \"Order found\")\n@GET @Path(\"/{id}\")\npublic Order get(@PathParam(\"id\") Long id) { ... }",
-    "lang": "java"
+    "lang": "java",
+    "revise": "`quarkus-smallrye-openapi` auto-generates an **OpenAPI 3** spec from JAX-RS endpoints.\n• Spec at `/q/openapi`, Swagger UI at `/q/swagger-ui`.\n• Enrich with `@Operation`, `@APIResponse`, `@Schema`.\n• **Interview tip**: generated at **build time** in Quarkus — no runtime scanning cost."
   },
   {
     "id": "qk-exception-handling",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["exceptions", "error-handling"],
+    "tags": [
+      "exceptions",
+      "error-handling"
+    ],
     "question": "Global exception handling in Quarkus.",
     "answer": "<p>Implement <code class=\"inline\">ExceptionMapper&lt;T extends Exception&gt;</code> — a JAX-RS provider that converts exceptions to HTTP responses:</p><p>Annotate with <code class=\"inline\">@Provider</code> and implement <code class=\"inline\">toResponse(T exception)</code>. Quarkus discovers it via CDI.</p><p>For validation errors, <code class=\"inline\">quarkus-hibernate-validator</code> returns 400 with constraint violation details automatically.</p>",
     "tip": "Map business exceptions (OrderNotFoundException) to 404, validation to 400, unknown to 500 without exposing internals.",
     "code": "@Provider\npublic class NotFoundMapper implements ExceptionMapper<NotFoundException> {\n  public Response toResponse(NotFoundException e) {\n    return Response.status(404).entity(Map.of(\"error\", e.getMessage())).build();\n  }\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "Global handling = implement **`ExceptionMapper<T>`** + `@Provider`.\n• `toResponse(T e)` turns an exception into an HTTP response; Quarkus discovers it via CDI.\n• `quarkus-hibernate-validator` auto-returns 400 with constraint details.\n• **Interview tip**: map business exceptions to 404, validation to 400, unknown to 500 — never leak internals/stack traces."
   },
   {
     "id": "qk-transactions",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["transactions", "jta"],
+    "tags": [
+      "transactions",
+      "jta"
+    ],
     "question": "Transaction management in Quarkus.",
     "answer": "<p>Use <code class=\"inline\">@Transactional</code> on CDI bean methods (from Narayana JTA). Default propagation: REQUIRED — joins existing transaction or creates new one.</p><p>Options: <code class=\"inline\">rollbackOn</code>, <code class=\"inline\">dontRollbackOn</code>, <code class=\"inline\">value = TxType.REQUIRES_NEW</code> for independent transactions.</p><p>Works with Hibernate Panache — a single <code class=\"inline\">@Transactional</code> method can call multiple repository operations atomically.</p>",
     "tip": "@Transactional only works on CDI bean methods called through the proxy — not on private methods or self-invocation.",
     "code": "@Transactional\npublic void transfer(Long from, Long to, BigDecimal amount) {\n  accountRepo.debit(from, amount);\n  accountRepo.credit(to, amount);\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "**`@Transactional`** (Narayana JTA) on a CDI bean method.\n• Default propagation **REQUIRED** (join or start a tx); `REQUIRES_NEW` for an independent one; `rollbackOn`/`dontRollbackOn` tune rollback rules.\n• Multiple Panache calls in one method = atomic.\n• **Interview tip**: only works through the CDI proxy — self-invocation and private methods silently bypass it."
   },
   {
     "id": "qk-kafka-integration",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["kafka", "messaging"],
+    "tags": [
+      "kafka",
+      "messaging"
+    ],
     "question": "How does Quarkus integrate with Kafka?",
     "answer": "<p>Add <code class=\"inline\">quarkus-smallrye-reactive-messaging-kafka</code>. Use MicroProfile Reactive Messaging channels:</p><ul><li><strong>Incoming</strong> — <code class=\"inline\">@Incoming(\"orders\")</code> on a method consuming messages.</li><li><strong>Outgoing</strong> — <code class=\"inline\">@Outgoing(\"orders\")</code> on a method producing messages, or inject <code class=\"inline\">@Channel(\"orders\") Emitter&lt;Order&gt;</code>.</li></ul><p>Configure broker, serializers, and consumer group in application.properties.</p>",
     "tip": "Dev services can spin up a Kafka broker automatically in dev mode — zero local setup.",
     "code": "@Incoming(\"orders\")\npublic CompletionStage<Void> process(Order order) {\n  return orderService.handle(order);\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "Kafka via `quarkus-smallrye-reactive-messaging-kafka` (MicroProfile Reactive Messaging).\n• **`@Incoming(\"orders\")`** consumes; **`@Outgoing(\"orders\")`** produces, or inject `@Channel Emitter<Order>`.\n• Broker/serializers/consumer-group in config.\n• **Interview tip**: Dev Services spins up a Kafka broker automatically in dev — zero local setup."
   },
   {
     "id": "qk-blocking-vs-reactive",
     "category": "quarkus",
     "difficulty": "advanced",
-    "tags": ["blocking", "reactive", "virtual-threads"],
+    "tags": [
+      "blocking",
+      "reactive",
+      "virtual-threads"
+    ],
     "question": "Blocking vs reactive endpoints — when to use which?",
     "answer": "<p><strong>Reactive (Uni/Multi)</strong> — non-blocking I/O on the event loop. Best for high-concurrency I/O (many simultaneous requests, reactive DB drivers).</p><p><strong>Blocking (imperative)</strong> — traditional synchronous code. Use <code class=\"inline\">@Blocking</code> or run on a worker thread pool. Fine for most CRUD apps.</p><p><strong>Virtual threads (Java 21+)</strong> — <code class=\"inline\">@RunOnVirtualThread</code> gives blocking-style code with reactive-scale concurrency.</p>",
     "tip": "Don't prematurely optimise for reactive — imperative Quarkus on JVM is already very fast for typical REST APIs.",
     "code": "@GET\n@RunOnVirtualThread  // Java 21+\npublic Order get(@PathParam(\"id\") Long id) {\n  return orderRepo.findById(id);  // blocking JPA, but cheap on virtual thread\n}",
-    "lang": "java"
+    "lang": "java",
+    "revise": "Pick the execution model per workload.\n• **Reactive** (`Uni`/`Multi`): non-blocking on the event loop → best for high-concurrency I/O + reactive DB drivers.\n• **Blocking**: plain imperative; use `@Blocking`/worker thread — fine for typical CRUD.\n• **Virtual threads** (`@RunOnVirtualThread`, Java 21+): blocking style, reactive-scale concurrency.\n• **Interview tip**: don't reach for reactive prematurely — imperative Quarkus on the JVM is already very fast."
   },
   {
     "id": "qk-profiles",
     "category": "quarkus",
     "difficulty": "beginner",
-    "tags": ["profiles", "environment"],
+    "tags": [
+      "profiles",
+      "environment"
+    ],
     "question": "What are Quarkus profiles?",
     "answer": "<p>Profiles activate environment-specific configuration. Set via <code class=\"inline\">quarkus.profile=dev</code> or <code class=\"inline\">%prod</code> prefix in properties:</p><p><code class=\"inline\">%dev.quarkus.log.level=DEBUG</code><br><code class=\"inline\">%prod.quarkus.log.level=WARN</code></p><p>Default profiles: <code class=\"inline\">dev</code>, <code class=\"inline\">test</code>, <code class=\"inline\">prod</code>. Custom profiles supported. Beans can be profile-specific with <code class=\"inline\">@IfBuildProfile(\"dev\")</code>.</p>",
     "tip": "In Kubernetes, set QUARKUS_PROFILE=prod — never ship dev profile config to production.",
     "code": "%dev.quarkus.datasource.jdbc.url=jdbc:h2:mem:test\n%prod.quarkus.datasource.jdbc.url=${DATABASE_URL}",
-    "lang": "properties"
+    "lang": "properties",
+    "revise": "**Profiles** activate environment-specific config.\n• Built-in `dev`/`test`/`prod`; select via `quarkus.profile` or `%prod.` prefix.\n• e.g. `%dev.quarkus.log.level=DEBUG`.\n• Profile-specific beans: `@IfBuildProfile(\"dev\")`.\n• **Interview tip**: set `QUARKUS_PROFILE=prod` in K8s — never ship dev config to production."
   },
   {
     "id": "qk-kubernetes",
     "category": "quarkus",
     "difficulty": "intermediate",
-    "tags": ["kubernetes", "cloud-native", "deployment"],
+    "tags": [
+      "kubernetes",
+      "cloud-native",
+      "deployment"
+    ],
     "question": "Quarkus and Kubernetes — what makes it cloud-native?",
     "answer": "<p>Quarkus generates <strong>Kubernetes manifests</strong> via extensions (<code class=\"inline\">quarkus-kubernetes</code>, <code class=\"inline\">quarkus-openshift</code>). Auto-configures:</p><ul><li>Health probes pointing to <code class=\"inline\">/q/health/ready</code> and <code class=\"inline\">/q/health/live</code></li><li>Resource limits based on native vs JVM mode</li><li>Service discovery and config maps</li><li>Container image via <code class=\"inline\">quarkus-container-image-docker</code></li></ul><p>Fast startup + low memory = higher pod density and faster autoscaling.</p>",
     "tip": "quarkus.kubernetes.deploy=true deploys directly from Maven in dev — useful for quick iteration on OpenShift/K8s.",
     "code": "./mvnw package -Dquarkus.container-image.build=true",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "Cloud-native = fast startup + low memory + generated manifests.\n• `quarkus-kubernetes`/`-openshift` emit YAML wired to `/q/health/*` probes, resource limits, config maps.\n• Container image via `quarkus-container-image-docker`.\n• Low RSS + ms startup → higher pod density + faster autoscaling.\n• **Interview tip**: `quarkus.kubernetes.deploy=true` deploys straight from Maven — handy for quick K8s/OpenShift iteration."
   }
 ]

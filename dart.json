@@ -12,7 +12,8 @@
     "answer": "<p><strong>Dart</strong> is an object-oriented, client-optimized programming language developed by Google. It is the primary language for Flutter because it supports <strong>AOT (Ahead-of-Time)</strong> compilation for fast production performance and <strong>JIT (Just-in-Time)</strong> compilation for Hot Reload during development.</p>",
     "tip": "Mention both AOT (performance) and JIT (Hot Reload)—this is a common interview question.",
     "code": "",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Dart** = Google's object-oriented, client-optimized language; the language of Flutter.\n• **JIT** compile → sub-second **Hot Reload** in dev.\n• **AOT** compile → fast, predictable native production performance.\n• Sound null safety, strong typing.\n• **Interview tip**: always name **both** — AOT for performance, JIT for Hot Reload; that dual pitch is the expected answer."
   },
   {
     "id": "dart-final-const-var",
@@ -27,7 +28,8 @@
     "answer": "<p><strong>var</strong> declares a variable whose type is inferred and whose value can change.</p><p><strong>final</strong> can only be assigned once at runtime.</p><p><strong>const</strong> represents a compile-time constant and must be initialized with a constant value.</p>",
     "tip": "Remember: final = runtime constant, const = compile-time constant.",
     "code": "var name = 'John';\nfinal date = DateTime.now();\nconst pi = 3.14159;",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**var / final / const**:\n• **`var`** — type inferred, value **can change**.\n• **`final`** — assigned once at **runtime** (a runtime constant).\n• **`const`** — **compile-time** constant, deeply immutable, needs a const value.\n• **Interview tip**: one-liner — `final` = runtime constant, `const` = compile-time constant."
   },
   {
     "id": "dart-null-safety",
@@ -41,7 +43,8 @@
     "answer": "<p>Null Safety helps prevent null reference errors by distinguishing between nullable and non-nullable types. A variable declared as <code class=\"inline\">String</code> cannot hold <code class=\"inline\">null</code>, while <code class=\"inline\">String?</code> can.</p><p>Dart also provides operators like <code class=\"inline\">?</code>, <code class=\"inline\">!</code>, and <code class=\"inline\">??</code> to safely work with nullable values.</p>",
     "tip": "Use nullable types only when null is a valid state.",
     "code": "String name = 'John';\nString? middleName;\nprint(middleName ?? 'Not Available');",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Null safety** splits types into non-nullable (`String`) and nullable (`String?`).\n• A non-nullable var can never hold `null` (compiler-enforced).\n• Operators: `?.` (safe call), `!` (assert non-null), `??` (fallback).\n• **Interview tip**: use nullable types **only when `null` is a genuinely valid state** — don't reflexively add `?` to silence the compiler."
   },
   {
     "id": "dart-async-await",
@@ -56,7 +59,8 @@
     "answer": "<p><strong>Future</strong> represents a value that will be available later. Functions marked with <code class=\"inline\">async</code> return a Future, and the <code class=\"inline\">await</code> keyword pauses execution until the Future completes without blocking the main thread.</p>",
     "tip": "Most API calls and database operations in Flutter use Future with async/await.",
     "code": "Future<String> fetchUser() async {\n  await Future.delayed(Duration(seconds: 2));\n  return 'John';\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Future + async/await** = async without callbacks.\n• **`Future<T>`** = a value available later.\n• **`async`** function returns a Future; **`await`** pauses until it completes — **without blocking** the thread.\n• **Interview tip**: nearly all I/O in Flutter (API calls, DB) is Future-based — say `await` reads like sync code but yields the event loop."
   },
   {
     "id": "dart-oop",
@@ -71,7 +75,8 @@
     "answer": "<p>Dart fully supports the four main OOP principles:</p><ul><li><strong>Encapsulation</strong> – Bundle data and methods inside classes.</li><li><strong>Inheritance</strong> – Extend existing classes using <code class=\"inline\">extends</code>.</li><li><strong>Polymorphism</strong> – Override methods in subclasses.</li><li><strong>Abstraction</strong> – Use abstract classes and interfaces to hide implementation details.</li></ul><p>Dart also supports mixins, extensions, and interfaces for code reuse.</p>",
     "tip": "Interviewers often ask about mixins after discussing OOP, so be prepared to explain them as well.",
     "code": "",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "Dart supports all four **OOP pillars**:\n• **Encapsulation** (classes + `_private`), **Inheritance** (`extends`), **Polymorphism** (override), **Abstraction** (`abstract`/interfaces).\n• Plus **mixins**, **extensions**, and implicit interfaces for reuse.\n• **Interview tip**: interviewers usually follow up on **mixins** right after OOP — be ready to explain 'can-do' composition vs 'is-a' inheritance."
   },
   {
     "id": "dart-collections",
@@ -87,7 +92,8 @@
     "answer": "<p><strong>List</strong> is an ordered, index-accessible collection that allows duplicates. <strong>Set</strong> is an unordered collection of unique elements—duplicates are automatically discarded. <strong>Map</strong> stores key-value pairs with unique keys, allowing average O(1) lookup by key.</p>",
     "tip": "Mention that Set is backed by hashing (LinkedHashSet by default), which preserves insertion order in Dart.",
     "code": "var list = [1, 2, 2, 3];\nvar set = {1, 2, 2, 3}; // {1, 2, 3}\nvar map = {'a': 1, 'b': 2};",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**List / Set / Map**:\n• **List** — ordered, indexable, allows duplicates.\n• **Set** — unordered, **unique** elements (hash-backed).\n• **Map** — key→value, unique keys, ~O(1) lookup.\n• **Interview tip**: Dart's default `Set`/`Map` are the *Linked* variants, so **insertion order is preserved** on iteration."
   },
   {
     "id": "dart-generics",
@@ -101,7 +107,8 @@
     "answer": "<p><strong>Generics</strong> let classes and functions operate on a type specified at the call site rather than hardcoding a type, giving compile-time type safety while allowing reusable code. Dart's core collections (<code class=\"inline\">List&lt;T&gt;</code>, <code class=\"inline\">Map&lt;K, V&gt;</code>) are all generic.</p>",
     "tip": "Bring up bounded generics (<T extends SomeClass>) if asked to go deeper.",
     "code": "class Box<T> {\n  final T value;\n  Box(this.value);\n}\nfinal intBox = Box<int>(5);",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Generics** = type-parameterized classes/functions (`List<T>`, `Map<K,V>`).\n• Type chosen at the **call site** → compile-time type safety + reusable code.\n• **Bounded**: `<T extends num>` restricts the type.\n• **Interview tip**: mention bounded generics (`extends`) if asked to go deeper — shows you know more than `List<String>`."
   },
   {
     "id": "dart-extension-methods",
@@ -115,7 +122,8 @@
     "answer": "<p><strong>Extension methods</strong> let you add new functionality to an existing type (even ones you don't own, like <code class=\"inline\">String</code> or <code class=\"inline\">int</code>) without modifying its source or subclassing it. They are resolved statically at compile time.</p>",
     "tip": "Great for adding domain-specific helpers, e.g. formatting or validation, onto core types cleanly.",
     "code": "extension StringExtension on String {\n  bool get isValidEmail => contains('@');\n}\n\nprint('a@b.com'.isValidEmail); // true",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Extension methods** add functionality to a type you don't own (`String`, `int`) — no subclassing, no source edits.\n• Resolved **statically at compile time**.\n• Great for domain helpers (formatting, validation) on core types.\n• **Interview tip**: contrast with subclassing — extensions attach behaviour to existing types cleanly, but can't override or be virtual."
   },
   {
     "id": "dart-mixins",
@@ -130,7 +138,8 @@
     "answer": "<p>A <strong>mixin</strong> lets a class reuse a set of methods/fields from multiple sources without traditional single inheritance, using the <code class=\"inline\">with</code> keyword. Unlike inheritance (an 'is-a' relationship with one superclass), mixins model 'can-do' capabilities and can be composed from multiple mixins at once.</p>",
     "tip": "Use 'on' to restrict a mixin so it can only be applied to subtypes of a specific class.",
     "code": "mixin Flyer {\n  void fly() => print('Flying');\n}\nclass Bird extends Animal with Flyer {}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Mixins** (`with`) = reuse methods/fields from multiple sources without single inheritance.\n• Model **'can-do'** capabilities vs inheritance's **'is-a'**.\n• Compose several at once; restrict with **`on SomeType`**.\n• **Interview tip**: `on` limits a mixin to subtypes of a class — the detail that separates people who've actually used mixins."
   },
   {
     "id": "dart-event-loop",
@@ -145,7 +154,8 @@
     "answer": "<p>Dart runs single-threaded within an isolate using an <strong>event loop</strong>. The <strong>microtask queue</strong> (used internally for resolving Futures) is always fully drained before the event loop processes the next item in the <strong>event queue</strong> (I/O callbacks, timers, user input). This means <code class=\"inline\">scheduleMicrotask</code> callbacks always run before a pending <code class=\"inline\">Timer</code>, even a zero-duration one.</p>",
     "tip": "A classic gotcha question: 'Which prints first, a Future.then or a Timer(Duration.zero)?' — the Future always wins.",
     "code": "Future(() => print('event queue'));\nscheduleMicrotask(() => print('microtask'));\n// Output: microtask, then event queue",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "Dart is **single-threaded per isolate**, driven by an event loop with **two queues**.\n• **Microtask queue** (Future resolution) is **fully drained** before the next **event queue** item (timers, I/O, input).\n• **Interview tip**: classic gotcha — a `Future.then` (microtask) always runs **before** a `Timer(Duration.zero)` (event), even zero-duration."
   },
   {
     "id": "dart-streams",
@@ -160,7 +170,8 @@
     "answer": "<p>A <strong>Stream</strong> is a sequence of asynchronous events. A <strong>single-subscription stream</strong> allows only one listener and buffers events until listened to (used for things like file reads). A <strong>broadcast stream</strong> allows multiple listeners simultaneously but doesn't buffer—listeners only get events emitted after they subscribe.</p>",
     "tip": "If you need multiple widgets listening to the same stream (common in Flutter with StreamBuilder), use asBroadcastStream() or a broadcast StreamController.",
     "code": "final controller = StreamController<int>.broadcast();\ncontroller.stream.listen((v) => print('A: $v'));\ncontroller.stream.listen((v) => print('B: $v'));\ncontroller.add(1);",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Stream** = a sequence of async events.\n• **Single-subscription** — one listener, buffers until listened (file reads).\n• **Broadcast** — many listeners, **no buffering** (only events after you subscribe).\n• **Interview tip**: for multiple `StreamBuilder`s on one stream, use `asBroadcastStream()` or a broadcast controller — a single-sub stream throws on a second listen."
   },
   {
     "id": "dart-future-wait",
@@ -175,7 +186,8 @@
     "answer": "<p><code class=\"inline\">Future.wait([...])</code> runs a list of Futures concurrently and completes when all of them finish (or fails fast if one throws, unless <code class=\"inline\">eagerError: false</code>). This is much faster than awaiting each Future sequentially when the operations are independent.</p>",
     "tip": "Sequential awaits on independent network calls is a common performance mistake—always flag it in code review questions.",
     "code": "final results = await Future.wait([\n  fetchUser(),\n  fetchPosts(),\n]);",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`Future.wait([...])`** runs Futures **concurrently**, completing when all finish (fails fast on error).\n• Far faster than awaiting each sequentially when operations are independent.\n• **Interview tip**: sequential `await`s on independent network calls is the classic perf bug — always flag it and reach for `Future.wait`."
   },
   {
     "id": "dart-enums",
@@ -189,7 +201,8 @@
     "answer": "<p>Since Dart 2.17, enums can have <strong>fields, constructors, methods, and implement interfaces</strong>, not just be a list of named values. This lets you attach data/behavior directly to each enum constant instead of using a separate switch statement.</p>",
     "tip": "A great real-world use: attaching a display label and color directly to a status enum.",
     "code": "enum Status {\n  active(label: 'Active', color: Colors.green),\n  inactive(label: 'Inactive', color: Colors.grey);\n\n  final String label;\n  final Color color;\n  const Status({required this.label, required this.color});\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Enhanced enums** (Dart 2.17+) can have fields, constructors, methods, and implement interfaces.\n• Attach data/behaviour to each constant instead of external `switch`es.\n• **Interview tip**: great real-world use — a `Status` enum carrying its own display **label + color** per constant."
   },
   {
     "id": "dart-records-patterns",
@@ -204,7 +217,8 @@
     "answer": "<p><strong>Records</strong> let you return multiple values from a function without defining a class, e.g. <code class=\"inline\">(int, String)</code>. <strong>Pattern matching</strong> (via <code class=\"inline\">switch</code> expressions, destructuring, and <code class=\"inline\">if-case</code>) lets you deconstruct records, lists, maps, and objects concisely and exhaustively.</p>",
     "tip": "Records are perfect for returning ad-hoc tuples from a function without a wrapper class.",
     "code": "(int, String) getUser() => (1, 'John');\n\nfinal (id, name) = getUser();\nprint('$id $name');",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Records** = lightweight tuples `(int, String)` — return multiple values with no class.\n• **Pattern matching** (switch expressions, destructuring, `if-case`) deconstructs records/lists/maps/objects, **exhaustively**.\n• **Interview tip**: records are perfect for ad-hoc multi-value returns; reach for a class only when the tuple earns a name/behaviour."
   },
   {
     "id": "dart-sealed-classes",
@@ -219,7 +233,8 @@
     "answer": "<p>A <strong>sealed class</strong> restricts all direct subtypes to the same library, letting the compiler know every possible subtype. This allows <code class=\"inline\">switch</code> statements/expressions over the sealed type to be checked for <strong>exhaustiveness</strong> at compile time—if you add a new subtype and forget a case, Dart flags it as an error, not a runtime bug.</p>",
     "tip": "Great for modeling state (Loading/Success/Error) safely—a common pattern for API/UI states.",
     "code": "sealed class Result<T> {}\nclass Success<T> extends Result<T> { final T data; Success(this.data); }\nclass Failure<T> extends Result<T> { final String error; Failure(this.error); }\n\nString show(Result r) => switch (r) {\n  Success(:final data) => 'Data: $data',\n  Failure(:final error) => 'Error: $error',\n};",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`sealed`** class = all direct subtypes live in the same library, so the compiler knows them all.\n• Enables **compile-time exhaustive** switches — forget a case and it's a **compile error**, not a runtime bug.\n• **Interview tip**: the canonical use is modeling UI/API state (`Loading`/`Success`/`Error`) safely."
   },
   {
     "id": "dart-factory-constructor",
@@ -233,7 +248,8 @@
     "answer": "<p>A <strong>factory constructor</strong> doesn't always create a new instance—it can return a cached instance, an instance of a subclass, or run logic before construction (like validating/parsing JSON). This differs from a normal constructor, which always creates a new instance of exactly that class.</p>",
     "tip": "The classic example is `factory User.fromJson(Map json)`—almost every Dart model class has one.",
     "code": "class User {\n  final String name;\n  User._(this.name);\n\n  factory User.fromJson(Map<String, dynamic> json) {\n    return User._(json['name'] as String);\n  }\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "A **`factory`** constructor doesn't have to create a new instance.\n• Can return a **cached** instance, a **subtype**, or run logic first (parse/validate).\n• **Interview tip**: the ubiquitous example is `factory User.fromJson(Map json)` — almost every model class has one."
   },
   {
     "id": "dart-named-constructors-initializer",
@@ -247,7 +263,8 @@
     "answer": "<p><strong>Named constructors</strong> let a class have multiple constructors for different creation scenarios (e.g. <code class=\"inline\">Point.origin()</code>). An <strong>initializer list</strong> (after the colon, before the body) runs before the constructor body and is used to initialize final fields or call <code class=\"inline\">super</code>/<code class=\"inline\">assert</code> before the object exists.</p>",
     "tip": "Initializer lists are required for setting final fields that depend on constructor arguments in some computed way.",
     "code": "class Point {\n  final double x, y;\n  Point(this.x, this.y);\n  Point.origin() : x = 0, y = 0;\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Named constructors** (`Point.origin()`) give a class multiple creation paths.\n• **Initializer list** (after `:`, before body) runs **before** the body — sets `final` fields, calls `super`/`assert` before the object exists.\n• **Interview tip**: initializer lists are how you set `final` fields computed from constructor args."
   },
   {
     "id": "dart-static-vs-instance",
@@ -262,7 +279,8 @@
     "answer": "<p><strong>Instance members</strong> (fields/methods) belong to a specific object and can access <code class=\"inline\">this</code>. <strong>Static members</strong> belong to the class itself, are shared across all instances, and are accessed via the class name—useful for constants, factory helpers, or utility functions that don't need instance state.</p>",
     "tip": "Static members can't access instance members directly since they don't belong to any particular object.",
     "code": "class MathUtils {\n  static const double pi = 3.14159;\n  static double square(double x) => x * x;\n}\nprint(MathUtils.square(4));",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Static vs instance** members:\n• **Instance** — belong to an object, can use `this`.\n• **Static** — belong to the **class**, shared across instances, accessed via `ClassName.x` (constants, helpers, utilities).\n• **Interview tip**: static members **can't touch instance members** directly — they don't belong to any particular object."
   },
   {
     "id": "dart-operator-overloading",
@@ -276,7 +294,8 @@
     "answer": "<p>Dart lets classes override operators like <code class=\"inline\">+</code>, <code class=\"inline\">==</code>, and <code class=\"inline\">[]</code> by defining an <code class=\"inline\">operator</code> method, enabling natural syntax for custom types like vectors or money values.</p>",
     "tip": "If you override ==, you must also override hashCode—otherwise collections like Set/Map will misbehave.",
     "code": "class Vector {\n  final double x, y;\n  Vector(this.x, this.y);\n  Vector operator +(Vector o) => Vector(x + o.x, y + o.y);\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Operator overloading** = define `operator +`, `==`, `[]` etc. for custom types (vectors, money).\n• Gives natural syntax for your own types.\n• **Interview tip**: if you override **`==` you MUST override `hashCode`** too, or `Set`/`Map` will misbehave."
   },
   {
     "id": "dart-exception-handling",
@@ -291,7 +310,8 @@
     "answer": "<p>Dart uses <code class=\"inline\">try</code>/<code class=\"inline\">catch</code>/<code class=\"inline\">on</code>/<code class=\"inline\">finally</code>. <code class=\"inline\">on SomeType catch (e)</code> catches a specific exception type, plain <code class=\"inline\">catch (e, stackTrace)</code> catches anything, and <code class=\"inline\">finally</code> always runs (cleanup). Custom exceptions are made by implementing <code class=\"inline\">Exception</code> or extending <code class=\"inline\">Error</code>.</p>",
     "tip": "Distinguish Exception (expected, recoverable failures) from Error (programming bugs, e.g. RangeError)—interviewers sometimes probe this.",
     "code": "try {\n  riskyCall();\n} on FormatException catch (e) {\n  print('Bad format: $e');\n} catch (e, st) {\n  print('Unknown error: $e');\n} finally {\n  cleanup();\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`try / on / catch / finally`**:\n• `on Type catch (e)` = specific; `catch (e, stack)` = anything + stack trace; `finally` = always-run cleanup.\n• Custom: implement `Exception` or extend `Error`.\n• **Interview tip**: **Exception** = expected/recoverable; **Error** = programming bug (e.g. `RangeError`) you shouldn't catch."
   },
   {
     "id": "dart-spread-collection-if",
@@ -306,7 +326,8 @@
     "answer": "<p>The <strong>spread operator</strong> (<code class=\"inline\">...</code>) inlines the elements of one collection into another literal; <code class=\"inline\">...?</code> spreads a nullable collection safely. <strong>Collection if/for</strong> let you conditionally include elements or generate them with a loop directly inside a list/set/map literal, avoiding manual list-building boilerplate.</p>",
     "tip": "These features make building conditional widget lists in Flutter (e.g. children: [...]) much more concise.",
     "code": "final base = [1, 2, 3];\nfinal combined = [0, ...base, if (base.isNotEmpty) 4, for (var i in base) i * 2];",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "Inline collection building:\n• **Spread `...`** inlines one collection into a literal; **`...?`** spreads a nullable one safely.\n• **Collection `if`/`for`** conditionally include or generate elements inside a literal.\n• **Interview tip**: these make Flutter `children: [...]` lists concise — no manual list-building before the widget."
   },
   {
     "id": "dart-cascade-notation",
@@ -320,7 +341,8 @@
     "answer": "<p>The <strong>cascade operator</strong> (<code class=\"inline\">..</code>) lets you perform a sequence of operations on the same object without repeating its name, and returns the original object rather than the result of the last call.</p>",
     "tip": "Very common when configuring objects like a StringBuffer or a widget's controller in a builder-style chain.",
     "code": "var sb = StringBuffer()\n  ..write('Hello')\n  ..write(' ')\n  ..write('World');\nprint(sb.toString());",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Cascade `..`** runs a sequence of operations on the **same object** without repeating its name.\n• Returns the **original object**, not the last call's result.\n• **Interview tip**: perfect for builder-style config (`StringBuffer`, controllers) — `obj..a()..b()..c()`."
   },
   {
     "id": "dart-typedef",
@@ -334,7 +356,8 @@
     "answer": "<p>A <strong>typedef</strong> creates an alias for a type, most commonly a function signature, making code more readable and giving a named, reusable type for callbacks (e.g. a validator function passed around your app).</p>",
     "tip": "In modern Dart, typedef can alias any type, not just function types—useful for simplifying complex generic types too.",
     "code": "typedef Validator = String? Function(String? value);\n\nvoid setValidator(Validator v) { /* ... */ }",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`typedef`** = a named alias for a type — most often a function signature (callbacks/validators).\n• Improves readability + gives a reusable named type.\n• **Interview tip**: modern Dart lets `typedef` alias **any** type, not just functions — handy for taming complex generics."
   },
   {
     "id": "dart-late-keyword",
@@ -348,7 +371,8 @@
     "answer": "<p><code class=\"inline\">late</code> marks a non-nullable variable that will be initialized after its declaration but before first use—useful for fields initialized in <code class=\"inline\">initState()</code>, or for lazy, expensive computations that should only run when first accessed. Accessing a late variable before it's initialized throws a <code class=\"inline\">LateInitializationError</code>.</p>",
     "tip": "A very common Flutter use case: `late TextEditingController controller;` initialized in initState().",
     "code": "late String name; // initialized later\n\nvoid setup() {\n  name = 'John';\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`late`** = a non-nullable var initialized **after** declaration but before first use.\n• Uses: fields set in `initState()`, or **lazy** expensive computation on first access.\n• Accessing before init throws **`LateInitializationError`**.\n• **Interview tip**: the textbook case is `late TextEditingController controller;` initialized in `initState`."
   },
   {
     "id": "dart-copywith-immutability",
@@ -362,831 +386,1195 @@
     "answer": "<p><code class=\"inline\">copyWith</code> creates a new instance of an immutable class with some fields replaced, keeping the rest unchanged. Since fields are typically <code class=\"inline\">final</code>, this is the standard way to 'update' immutable state objects—common in state management (BLoC/Riverpod state classes).</p>",
     "tip": "Immutable state + copyWith avoids subtle bugs from shared mutable references between widget rebuilds.",
     "code": "class UserState {\n  final String name;\n  final int age;\n  const UserState({required this.name, required this.age});\n\n  UserState copyWith({String? name, int? age}) =>\n      UserState(name: name ?? this.name, age: age ?? this.age);\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`copyWith`** returns a **new** instance with some fields replaced, rest unchanged.\n• Standard way to 'update' immutable (`final`-field) state objects.\n• **Interview tip**: immutable state + `copyWith` is the backbone of BLoC/Riverpod state — it avoids bugs from shared mutable references across rebuilds."
   },
   {
     "id": "dart-var-dynamic-object",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["var", "dynamic", "object", "types"],
+    "tags": [
+      "var",
+      "dynamic",
+      "object",
+      "types"
+    ],
     "question": "What is the difference between var, dynamic, and Object in Dart?",
     "answer": "<p><strong>var</strong> infers a static type at compile time from the assigned value, and that type is then fixed. <strong>dynamic</strong> disables static type checking entirely—you can reassign any type and call any method without a compile error (errors surface at runtime instead). <strong>Object</strong> is the root of Dart's type hierarchy—every value is an Object, but you must cast before calling type-specific members.</p>",
     "tip": "A key interview distinction: 'var x = 5; x = \"hi\";' is a compile error, but 'dynamic x = 5; x = \"hi\";' compiles fine.",
     "code": "var a = 5;      // inferred as int, fixed\ndynamic b = 5;  // can become anything\nb = 'hello';    // OK\nObject c = 5;   // must cast to use int-specific methods",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**var vs dynamic vs Object**:\n• **`var`** — static type inferred once, then **fixed**.\n• **`dynamic`** — type checking **off**; any method compiles, errors at runtime.\n• **`Object`** — root type; holds anything but you must cast to call specific members.\n• **Interview tip**: `var x = 5; x = \"hi\";` is a **compile error**; `dynamic x = 5; x = \"hi\";` compiles fine."
   },
   {
     "id": "dart-string-methods",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["string", "methods"],
+    "tags": [
+      "string",
+      "methods"
+    ],
     "question": "What are some commonly used String methods in Dart?",
     "answer": "<p>Common methods: <code class=\"inline\">substring()</code>, <code class=\"inline\">split()</code>, <code class=\"inline\">trim()</code>, <code class=\"inline\">toUpperCase()</code>/<code class=\"inline\">toLowerCase()</code>, <code class=\"inline\">replaceAll()</code>, <code class=\"inline\">contains()</code>, <code class=\"inline\">startsWith()</code>/<code class=\"inline\">endsWith()</code>, <code class=\"inline\">padLeft()</code>/<code class=\"inline\">padRight()</code>, and <code class=\"inline\">indexOf()</code>. Strings in Dart are immutable—every method returns a new String rather than mutating in place.</p>",
     "tip": "",
     "code": "'  Hello '.trim().toUpperCase(); // 'HELLO'\n'5'.padLeft(3, '0'); // '005'",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "Common **String** methods: `substring`, `split`, `trim`, `toUpperCase/toLowerCase`, `replaceAll`, `contains`, `startsWith/endsWith`, `padLeft/padRight`, `indexOf`.\n• **Interview tip**: Dart strings are **immutable** — every method returns a **new** String, never mutates in place."
   },
   {
     "id": "dart-string-interpolation",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["string-interpolation", "syntax"],
+    "tags": [
+      "string-interpolation",
+      "syntax"
+    ],
     "question": "How does string interpolation work in Dart?",
     "answer": "<p><code class=\"inline\">$variable</code> embeds a variable's value directly inside a string, and <code class=\"inline\">${expression}</code> embeds the result of any expression. This is generally preferred over manual string concatenation with <code class=\"inline\">+</code> for readability and (for multiple concatenations) performance.</p>",
     "tip": "Use ${} (with braces) whenever accessing a property or calling a method—'$user.name' without braces only interpolates 'user', then appends '.name' literally.",
     "code": "var name = 'John';\nprint('Hello, $name! Length: ${name.length}');",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Interpolation**: `$variable` embeds a value; `${expression}` embeds any expression.\n• Preferred over `+` for readability and performance.\n• **Interview tip**: use braces `${}` for a property/method call — `'$user.name'` only interpolates `user` then appends the literal `.name`."
   },
   {
     "id": "dart-num-int-double",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["num", "int", "double", "types"],
+    "tags": [
+      "num",
+      "int",
+      "double",
+      "types"
+    ],
     "question": "What is the relationship between num, int, and double in Dart?",
     "answer": "<p><code class=\"inline\">num</code> is the abstract superclass of both <code class=\"inline\">int</code> (whole numbers) and <code class=\"inline\">double</code> (64-bit floating point). Declaring a variable as <code class=\"inline\">num</code> lets it hold either an int or a double, useful for generic arithmetic code that shouldn't care which one it gets.</p>",
     "tip": "Watch for integer division: 5 / 2 returns a double (2.5) in Dart; use the integer division operator ~/ to get an int result (2).",
     "code": "num value = 5;\nvalue = 5.5; // also valid, still num\nprint(5 ~/ 2); // 2 (integer division)",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**num → int / double**:\n• **`num`** is the abstract superclass of both `int` (whole) and `double` (64-bit float).\n• Declare `num` for arithmetic that shouldn't care which.\n• **Interview tip**: `5 / 2` returns a **double** (2.5); use integer division **`~/`** to get an `int` (2)."
   },
   {
     "id": "dart-list-higher-order",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["list", "map", "where", "reduce", "fold"],
+    "tags": [
+      "list",
+      "map",
+      "where",
+      "reduce",
+      "fold"
+    ],
     "question": "Explain map(), where(), reduce(), and fold() on a Dart List.",
     "answer": "<p><code class=\"inline\">map()</code> transforms each element into a new value (lazy—returns an Iterable). <code class=\"inline\">where()</code> filters elements matching a predicate. <code class=\"inline\">reduce()</code> combines all elements into one using an accumulator function, but throws on an empty list. <code class=\"inline\">fold()</code> is like reduce but takes an explicit initial value, so it works safely on empty lists too.</p>",
     "tip": "Prefer fold over reduce whenever the list could be empty—reduce throws a StateError with no elements.",
     "code": "final nums = [1, 2, 3, 4];\nfinal doubled = nums.map((n) => n * 2).toList();\nfinal evens = nums.where((n) => n.isEven).toList();\nfinal sum = nums.fold(0, (acc, n) => acc + n);",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "List transforms:\n• **`map`** — transform each (lazy `Iterable`).\n• **`where`** — filter by predicate.\n• **`reduce`** — combine to one, **throws on empty**.\n• **`fold`** — like reduce but with an initial value → safe on empty lists.\n• **Interview tip**: prefer **`fold`** whenever the list could be empty; `reduce` throws a `StateError`."
   },
   {
     "id": "dart-iterable-vs-list",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["iterable", "list", "lazy-evaluation"],
+    "tags": [
+      "iterable",
+      "list",
+      "lazy-evaluation"
+    ],
     "question": "What is the difference between Iterable and List in Dart?",
     "answer": "<p><strong>Iterable</strong> is a lazy, one-directional sequence—operations like <code class=\"inline\">map</code>/<code class=\"inline\">where</code> aren't computed until you iterate (e.g. via <code class=\"inline\">toList()</code> or a for-loop). <strong>List</strong> is a concrete, indexable, eagerly-evaluated collection stored in memory, supporting <code class=\"inline\">[]</code> index access and <code class=\"inline\">length</code> in O(1).</p>",
     "tip": "Chaining several map/where calls without calling toList() in between is efficient—Dart only walks the data once when you finally consume it.",
     "code": "",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Iterable vs List**:\n• **Iterable** — lazy, forward-only; `map`/`where` aren't computed until iterated.\n• **List** — concrete, indexable, eager, O(1) `[]` and `length`.\n• **Interview tip**: chaining several `map`/`where` **without** `toList()` between them is efficient — Dart walks the data **once** when finally consumed."
   },
   {
     "id": "dart-sort-comparator",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["sort", "comparator", "list"],
+    "tags": [
+      "sort",
+      "comparator",
+      "list"
+    ],
     "question": "How do you sort a List with a custom comparator in Dart?",
     "answer": "<p><code class=\"inline\">list.sort((a, b) => ...)</code> sorts in place using a comparator that returns negative/zero/positive, similar to Java/JS. For sorting by a derived key, combine with <code class=\"inline\">compareTo</code> on that key, or use a named comparator function for readability.</p>",
     "tip": "sort() mutates the original list in place and returns void—don't try to chain it like people;.sort() would in some other languages.",
     "code": "final people = [Person('Bob', 30), Person('Ann', 25)];\npeople.sort((a, b) => a.age.compareTo(b.age));",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`list.sort((a,b) => ...)`** sorts **in place** with a comparator returning −/0/+.\n• Sort by a key via `a.key.compareTo(b.key)`.\n• **Interview tip**: `sort()` mutates and returns **void** — you can't chain off it like in some other languages."
   },
   {
     "id": "dart-map-methods",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["map", "entries", "putifabsent"],
+    "tags": [
+      "map",
+      "entries",
+      "putifabsent"
+    ],
     "question": "What are some useful Map methods in Dart?",
     "answer": "<p><code class=\"inline\">map.entries</code> exposes key-value pairs for iteration. <code class=\"inline\">putIfAbsent(key, () => value)</code> inserts only if the key is missing. <code class=\"inline\">update(key, (v) => ..., ifAbsent: () => ...)</code> updates an existing value or inserts a default. <code class=\"inline\">map.map((k, v) => ...)</code> transforms a Map into a new Map.</p>",
     "tip": "",
     "code": "final counts = <String, int>{};\nfor (final word in words) {\n  counts.update(word, (v) => v + 1, ifAbsent: () => 1);\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "Useful **Map** methods: `entries` (iterate pairs), `putIfAbsent(k, ()=>v)`, `update(k, (v)=>..., ifAbsent: ...)`, `map((k,v)=>...)` (transform to a new Map).\n• **Interview tip**: `update` with `ifAbsent` is the clean 'increment-or-initialize' pattern (e.g. counting frequencies)."
   },
   {
     "id": "dart-set-operations",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["set", "union", "intersection"],
+    "tags": [
+      "set",
+      "union",
+      "intersection"
+    ],
     "question": "What set operations does Dart's Set support?",
     "answer": "<p><code class=\"inline\">union()</code> combines two sets. <code class=\"inline\">intersection()</code> returns elements present in both. <code class=\"inline\">difference()</code> returns elements in the first set but not the second. These are useful for tasks like finding common tags or de-duplicating combined lists efficiently.</p>",
     "tip": "",
     "code": "final a = {1, 2, 3};\nfinal b = {2, 3, 4};\nprint(a.intersection(b)); // {2, 3}\nprint(a.difference(b));   // {1}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Set operations**: `union()`, `intersection()` (in both), `difference()` (in first, not second).\n• **Interview tip**: ideal for common-tags, de-duplication, or 'what changed' between two sets — O(1)-average membership makes them fast."
   },
   {
     "id": "dart-named-positional-params",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["parameters", "named", "positional"],
+    "tags": [
+      "parameters",
+      "named",
+      "positional"
+    ],
     "question": "What is the difference between named and positional parameters in Dart?",
     "answer": "<p><strong>Positional parameters</strong> are passed in order and are required by default unless wrapped in <code class=\"inline\">[]</code> (optional positional). <strong>Named parameters</strong> (wrapped in <code class=\"inline\">{}</code>) are passed by name at the call site, improving readability, and are optional by default unless marked <code class=\"inline\">required</code>.</p>",
     "tip": "Flutter's widget constructors rely heavily on named parameters specifically because call sites read like configuration, e.g. Text('hi', style: ...).",
     "code": "void greet(String name, {String greeting = 'Hello'}) {\n  print('$greeting, $name');\n}\ngreet('John', greeting: 'Hi');",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Positional vs named params**:\n• **Positional** — by order, required by default (`[]` makes them optional).\n• **Named** (`{}`) — by name at call site, optional by default unless `required`.\n• **Interview tip**: Flutter widgets lean on **named** params so call sites read like configuration — `Text('hi', style: ...)`."
   },
   {
     "id": "dart-required-keyword",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["required", "parameters", "null-safety"],
+    "tags": [
+      "required",
+      "parameters",
+      "null-safety"
+    ],
     "question": "What does the required keyword do in Dart?",
     "answer": "<p><code class=\"inline\">required</code> marks a named parameter as mandatory—callers must supply it, and the compiler enforces this at the call site, even though named parameters are otherwise optional by default. It's commonly combined with non-nullable types on constructors.</p>",
     "tip": "",
     "code": "class User {\n  final String name;\n  User({required this.name});\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`required`** marks a **named** parameter mandatory — the compiler enforces it at the call site.\n• Common with non-nullable constructor fields.\n• **Interview tip**: named params are optional by default; `required` is how you make a named param non-optional without making it positional."
   },
   {
     "id": "dart-closures",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["closures", "functions"],
+    "tags": [
+      "closures",
+      "functions"
+    ],
     "question": "What is a closure in Dart, and how does it capture variables?",
     "answer": "<p>A <strong>closure</strong> is a function that captures variables from its surrounding lexical scope, keeping a reference to them (not a copy) even after the outer function has returned. This is why a counter closure keeps incrementing the same captured variable across calls.</p>",
     "tip": "The classic gotcha: closures capture variables by reference, so a closure created inside a loop referencing the loop variable can behave unexpectedly if not careful (though Dart's per-iteration 'for' scoping avoids the worst of the classic JS var bug).",
     "code": "Function makeCounter() {\n  int count = 0;\n  return () => ++count;\n}\n\nfinal counter = makeCounter();\nprint(counter()); // 1\nprint(counter()); // 2",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "A **closure** is a function that captures variables from its lexical scope — by **reference**, not copy — even after the outer function returns.\n• That's why a counter closure keeps incrementing the same captured var.\n• **Interview tip**: classic gotcha — capturing a **loop variable** in a closure can behave unexpectedly if the variable is shared across iterations."
   },
   {
     "id": "dart-arrow-functions",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["arrow-functions", "syntax"],
+    "tags": [
+      "arrow-functions",
+      "syntax"
+    ],
     "question": "What is arrow function syntax in Dart, and when can you use it?",
     "answer": "<p>The <code class=\"inline\">=&gt;</code> (fat arrow) syntax is shorthand for a function body that's a single expression, implicitly returning that expression's value—equivalent to a <code class=\"inline\">{ return expr; }</code> block but more concise. It cannot be used for bodies needing multiple statements.</p>",
     "tip": "",
     "code": "int square(int x) => x * x;\n// equivalent to:\nint square2(int x) { return x * x; }",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Arrow `=>`** = shorthand for a body that's a **single expression**, implicitly returning it (like `{ return expr; }`).\n• Can't be used for multi-statement bodies.\n• **Interview tip**: idiomatic for tiny callbacks (`onPressed: () => ...`) and getters (`int get area => w * h;`)."
   },
   {
     "id": "dart-higher-order-functions",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["higher-order-functions", "functions"],
+    "tags": [
+      "higher-order-functions",
+      "functions"
+    ],
     "question": "What is a higher-order function in Dart?",
     "answer": "<p>A <strong>higher-order function</strong> either accepts a function as an argument or returns a function as its result. Since functions are first-class values in Dart, this enables patterns like passing callbacks (<code class=\"inline\">onPressed</code>), or building function factories (like a debounce or memoize wrapper).</p>",
     "tip": "",
     "code": "void Function() withLogging(void Function() action) {\n  return () {\n    print('Before');\n    action();\n    print('After');\n  };\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "A **higher-order function** takes a function as an argument or returns one.\n• Functions are **first-class** in Dart → callbacks (`onPressed`), factories (debounce/memoize wrappers).\n• **Interview tip**: name a concrete factory example (a debounce that returns a wrapped function) — it proves you understand functions-as-values."
   },
   {
     "id": "dart-recursion",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["recursion", "functions"],
+    "tags": [
+      "recursion",
+      "functions"
+    ],
     "question": "What should you consider when writing recursive functions in Dart?",
     "answer": "<p>Every recursive function needs a clear <strong>base case</strong> to terminate, and each recursive call should progress toward it. Dart does not guarantee tail-call optimization, so very deep recursion (tens of thousands of levels) can throw a stack overflow—an iterative approach or trampolining is safer for unbounded depth.</p>",
     "tip": "If asked to convert a recursive function to iterative, mention using an explicit Stack/List to simulate the call stack.",
     "code": "int factorial(int n) => n <= 1 ? 1 : n * factorial(n - 1);",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Recursion** needs a clear **base case** and each call must progress toward it.\n• Dart has **no guaranteed tail-call optimization** → deep recursion can overflow the stack.\n• **Interview tip**: to convert recursion→iteration, use an explicit `Stack`/`List` to simulate the call stack (or trampolining for unbounded depth)."
   },
   {
     "id": "dart-abstract-class-interface",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["abstract-class", "interface", "oop"],
+    "tags": [
+      "abstract-class",
+      "interface",
+      "oop"
+    ],
     "question": "How does Dart handle interfaces, given it doesn't have an explicit 'interface' keyword?",
     "answer": "<p>Every Dart class implicitly defines an interface. Any class can act as an interface by having another class <code class=\"inline\">implements</code> it, forcing that class to provide its own implementation of all members (no inherited behavior). An <strong>abstract class</strong> (marked <code class=\"inline\">abstract</code>, can have unimplemented methods) is used when you want to share some default implementation via <code class=\"inline\">extends</code>, while still requiring subclasses to implement specific methods.</p>",
     "tip": "Key distinction: 'implements' gives you zero inherited behavior (pure interface), 'extends' gives you inherited behavior you can override.",
     "code": "abstract class Shape {\n  double area();\n}\nclass Circle implements Shape {\n  final double radius;\n  Circle(this.radius);\n  @override\n  double area() => 3.14159 * radius * radius;\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "Dart has **no `interface` keyword** — every class **implicitly defines an interface**.\n• **`implements`** = adopt the interface, **zero inherited behaviour** (implement everything).\n• **`abstract`** class (via `extends`) = share default implementation, require some overrides.\n• **Interview tip**: `implements` = pure contract; `extends` = inherited behaviour you can override."
   },
   {
     "id": "dart-extends-implements-with",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["extends", "implements", "with", "oop"],
+    "tags": [
+      "extends",
+      "implements",
+      "with",
+      "oop"
+    ],
     "question": "What is the difference between extends, implements, and with in Dart?",
     "answer": "<p><code class=\"inline\">extends</code> inherits from one superclass, gaining its implementation and being able to override it. <code class=\"inline\">implements</code> adopts a class's interface (its member signatures) without any inherited implementation—you must implement everything yourself. <code class=\"inline\">with</code> applies one or more mixins, adding their implementation to the class without traditional single inheritance.</p>",
     "tip": "A class can only extend one class, but can implement multiple interfaces and mix in multiple mixins.",
     "code": "class Bird extends Animal with Flyer, Swimmer implements Pet {}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**extends / implements / with**:\n• **`extends`** — inherit ONE superclass's implementation (overridable).\n• **`implements`** — adopt an interface, **no** inherited code (implement all).\n• **`with`** — apply mixins, adding their implementation.\n• **Interview tip**: one `extends`, but **many** `implements` and many `with`."
   },
   {
     "id": "dart-private-constructor",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["constructors", "private", "singleton"],
+    "tags": [
+      "constructors",
+      "private",
+      "singleton"
+    ],
     "question": "How do you create a private constructor in Dart, and why would you?",
     "answer": "<p>Prefixing a constructor name with an underscore (e.g. <code class=\"inline\">User._()</code>) makes it private to the library, preventing external code from calling it directly. This is commonly used to force object creation through a controlled factory constructor, or to implement the Singleton pattern.</p>",
     "tip": "",
     "code": "class Singleton {\n  Singleton._internal();\n  static final Singleton instance = Singleton._internal();\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "A **private constructor** (`User._()`) is library-private → external code can't call it directly.\n• Forces creation through a controlled **factory**, or implements a **Singleton**.\n• **Interview tip**: it pairs with a `static final _instance` for the classic Dart singleton."
   },
   {
     "id": "dart-getters-setters",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["getters", "setters", "encapsulation"],
+    "tags": [
+      "getters",
+      "setters",
+      "encapsulation"
+    ],
     "question": "How do getters and setters work in Dart?",
     "answer": "<p>A <code class=\"inline\">get</code> defines a computed property accessed like a field (no parentheses), and a <code class=\"inline\">set</code> defines custom logic that runs when a property is assigned. Together they let you expose a field-like API while adding validation or derived computation behind the scenes.</p>",
     "tip": "",
     "code": "class Circle {\n  double radius;\n  Circle(this.radius);\n  double get area => 3.14159 * radius * radius;\n  set diameter(double d) => radius = d / 2;\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Getters/setters**:\n• **`get`** — a computed property accessed like a field (no `()`).\n• **`set`** — custom logic on assignment (validation/derived state).\n• **Interview tip**: they let you expose a field-like API while hiding computation/validation — swap a field for a getter without changing callers."
   },
   {
     "id": "dart-switch-expression",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["switch", "dart3", "pattern-matching"],
+    "tags": [
+      "switch",
+      "dart3",
+      "pattern-matching"
+    ],
     "question": "What is the difference between a switch statement and a switch expression in Dart 3?",
     "answer": "<p>A <strong>switch statement</strong> executes code per matching case using <code class=\"inline\">case</code>/<code class=\"inline\">break</code>. A <strong>switch expression</strong> (Dart 3) directly evaluates to a value using <code class=\"inline\">=&gt;</code> per case, is more concise, supports pattern matching, and the compiler enforces exhaustiveness for enums and sealed types.</p>",
     "tip": "",
     "code": "String describe(int n) => switch (n) {\n  0 => 'zero',\n  int() when n < 0 => 'negative',\n  _ => 'positive',\n};",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**switch statement vs expression** (Dart 3):\n• **Statement** — runs code per `case` (with `break`).\n• **Expression** — evaluates **to a value** via `=>` per case, supports patterns, and enforces **exhaustiveness** for enums/sealed types.\n• **Interview tip**: switch expressions + sealed classes = compile-checked state handling with no default fallthrough."
   },
   {
     "id": "dart-null-aware-operators",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["null-aware", "operators", "null-safety"],
+    "tags": [
+      "null-aware",
+      "operators",
+      "null-safety"
+    ],
     "question": "What do the null-aware operators ?., ??, and ??= do in Dart?",
     "answer": "<p><code class=\"inline\">?.</code> calls a method/accesses a property only if the receiver isn't null, otherwise evaluates to null. <code class=\"inline\">??</code> returns the left value if it's non-null, otherwise the right (fallback) value. <code class=\"inline\">??=</code> assigns the right value only if the variable is currently null.</p>",
     "tip": "",
     "code": "String? name;\nprint(name?.length);      // null, no exception\nprint(name ?? 'Unknown'); // 'Unknown'\nname ??= 'Default';       // assigns only if null",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Null-aware operators**:\n• **`?.`** — call/access only if non-null, else `null`.\n• **`??`** — left if non-null, else the right fallback.\n• **`??=`** — assign only if currently null.\n• **Interview tip**: chain them — `user?.name ?? 'Guest'` is the idiomatic 'safe-read-with-default'."
   },
   {
     "id": "dart-assert-statement",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["assert", "debugging"],
+    "tags": [
+      "assert",
+      "debugging"
+    ],
     "question": "What does the assert statement do in Dart?",
     "answer": "<p><code class=\"inline\">assert(condition, message)</code> throws an <code class=\"inline\">AssertionError</code> if the condition is false, but <strong>only in debug builds</strong>—asserts are stripped entirely in release/profile mode, so they're safe for cheap sanity checks without impacting production performance.</p>",
     "tip": "Never rely on assert for logic that must run in production (e.g. input validation)—use a real if-check/exception instead, since asserts vanish in release builds.",
     "code": "void setAge(int age) {\n  assert(age >= 0, 'Age cannot be negative');\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`assert(cond, msg)`** throws `AssertionError` if false — **debug builds only** (stripped in profile/release).\n• Safe for cheap sanity checks with zero production cost.\n• **Interview tip**: **never** use `assert` for production logic (input validation) — it vanishes in release; use a real `if`/throw instead."
   },
   {
     "id": "dart-rethrow-vs-throw",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["rethrow", "throw", "exceptions"],
+    "tags": [
+      "rethrow",
+      "throw",
+      "exceptions"
+    ],
     "question": "What is the difference between throw and rethrow in a catch block?",
     "answer": "<p><code class=\"inline\">throw e</code> inside a catch block throws the exception again but resets the stack trace to the current point, losing the original error location. <code class=\"inline\">rethrow</code> re-throws the caught exception while preserving its original stack trace, which is important for debugging and logging.</p>",
     "tip": "Use rethrow whenever you're catching an error just to log it and let it propagate—preserves the original stack trace for the eventual handler.",
     "code": "try {\n  riskyCall();\n} catch (e) {\n  logger.log(e);\n  rethrow;\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**throw vs rethrow** in a catch block:\n• **`throw e`** — throws again but **resets** the stack trace to here (loses origin).\n• **`rethrow`** — re-throws while **preserving** the original stack trace.\n• **Interview tip**: when you catch just to log then re-propagate, use **`rethrow`** so the eventual handler keeps the real origin."
   },
   {
     "id": "dart-generator-functions",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["async-generator", "sync-generator", "yield"],
+    "tags": [
+      "async-generator",
+      "sync-generator",
+      "yield"
+    ],
     "question": "What are sync* and async* generator functions in Dart?",
     "answer": "<p><code class=\"inline\">sync*</code> functions return an <code class=\"inline\">Iterable</code> and use <code class=\"inline\">yield</code> to lazily produce values one at a time as the caller iterates. <code class=\"inline\">async*</code> functions return a <code class=\"inline\">Stream</code> and use <code class=\"inline\">yield</code> to asynchronously emit values over time. Both can use <code class=\"inline\">yield*</code> to delegate to another iterable/stream.</p>",
     "tip": "",
     "code": "Stream<int> countStream(int max) async* {\n  for (var i = 1; i <= max; i++) {\n    await Future.delayed(const Duration(seconds: 1));\n    yield i;\n  }\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Generators** lazily produce sequences:\n• **`sync*`** returns an `Iterable`, uses **`yield`** — produces on demand as iterated.\n• **`async*`** returns a `Stream`, uses `yield` — emits over time.\n• Both use **`yield*`** to delegate to another iterable/stream.\n• **Interview tip**: reach for `sync*` when building a lazy sequence without materializing a full list."
   },
   {
     "id": "dart-completer",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["completer", "future", "async"],
+    "tags": [
+      "completer",
+      "future",
+      "async"
+    ],
     "question": "What is a Completer in Dart, and when would you use one?",
     "answer": "<p><code class=\"inline\">Completer&lt;T&gt;</code> lets you manually create and control a <code class=\"inline\">Future</code>, calling <code class=\"inline\">complete(value)</code> or <code class=\"inline\">completeError(error)</code> whenever the async operation actually finishes—useful when wrapping callback-based APIs (that don't natively return a Future) into a Future-based API.</p>",
     "tip": "A very common real use case: wrapping a platform-channel callback API into a Future so it can be awaited like any other async Dart call.",
     "code": "Future<String> waitForCallback() {\n  final completer = Completer<String>();\n  legacyApi.onDone((result) => completer.complete(result));\n  return completer.future;\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`Completer<T>`** lets you build and control a Future manually — call `complete(v)`/`completeError(e)` when the work finishes.\n• Used to wrap **callback-based APIs** into Future-based ones.\n• **Interview tip**: canonical use — turn a platform-channel callback into an awaitable Future."
   },
   {
     "id": "dart-zones",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["zones", "error-handling", "async"],
+    "tags": [
+      "zones",
+      "error-handling",
+      "async"
+    ],
     "question": "What is a Zone in Dart?",
     "answer": "<p>A <strong>Zone</strong> is an execution context that can intercept and modify behavior for code running within it—such as capturing all uncaught async errors (<code class=\"inline\">runZonedGuarded</code>), overriding <code class=\"inline\">print</code>, or tracking timers. It's the mechanism Flutter apps use to globally catch errors thrown inside async callbacks that would otherwise crash silently.</p>",
     "tip": "",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "A **Zone** is an execution context that can intercept behaviour for code inside it.\n• Capture uncaught **async** errors (`runZonedGuarded`), override `print`, track timers.\n• **Interview tip**: it's the mechanism Flutter apps use to globally catch async errors that would otherwise crash silently — wrap `runApp` in `runZonedGuarded`."
   },
   {
     "id": "dart-isolate-spawn",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["isolates", "spawn", "concurrency"],
+    "tags": [
+      "isolates",
+      "spawn",
+      "concurrency"
+    ],
     "question": "How do you manually spawn an Isolate in Dart, and how do isolates communicate?",
     "answer": "<p><code class=\"inline\">Isolate.spawn(entryPoint, message)</code> starts a new isolate running a top-level/static function. Since isolates share no memory, they communicate exclusively via message passing using <code class=\"inline\">SendPort</code>/<code class=\"inline\">ReceivePort</code>—messages are copied between isolates, not shared by reference.</p>",
     "tip": "compute() is a simpler wrapper around Isolate.spawn for the common case of running one function and getting one result back—know both, but reach for compute() unless you need a long-lived isolate.",
     "code": "final receivePort = ReceivePort();\nawait Isolate.spawn(_worker, receivePort.sendPort);\nfinal result = await receivePort.first;\n\nvoid _worker(SendPort sendPort) {\n  sendPort.send('done');\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`Isolate.spawn(entry, msg)`** starts a new isolate running a top-level/static function.\n• Isolates **share no memory** → communicate via `SendPort`/`ReceivePort`; messages are **copied**.\n• **Interview tip**: **`compute()`** is the simpler wrapper for the common 'run one function, get one result' case — know both, reach for `compute`."
   },
   {
     "id": "dart-convert-json",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["dart:convert", "json"],
+    "tags": [
+      "dart:convert",
+      "json"
+    ],
     "question": "How do you encode and decode JSON in Dart using dart:convert?",
     "answer": "<p><code class=\"inline\">jsonDecode(str)</code> parses a JSON string into Dart objects (Map/List/primitives). <code class=\"inline\">jsonEncode(obj)</code> serializes a Dart object back into a JSON string. Custom classes need their own <code class=\"inline\">toJson()</code>/<code class=\"inline\">fromJson()</code> since jsonEncode only knows how to handle built-in types by default.</p>",
     "tip": "",
     "code": "import 'dart:convert';\n\nfinal map = jsonDecode('{\"name\":\"John\"}');\nfinal json = jsonEncode({'name': 'John'});",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`dart:convert`**: `jsonDecode(str)` → Map/List/primitives; `jsonEncode(obj)` → JSON string.\n• Custom classes need their own **`toJson`/`fromJson`** — `jsonEncode` only knows built-in types.\n• **Interview tip**: at scale, use `json_serializable` codegen instead of writing those by hand for every model."
   },
   {
     "id": "dart-io-vs-web",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["dart:io", "platform", "web"],
+    "tags": [
+      "dart:io",
+      "platform",
+      "web"
+    ],
     "question": "Why can't you use dart:io in a Flutter Web app?",
     "answer": "<p><code class=\"inline\">dart:io</code> provides file system, socket, and process APIs that assume a native OS environment—none of which exist in a browser sandbox, so the library isn't available when compiling to JavaScript/WASM for web. Cross-platform code should conditionally import platform-specific implementations, or use packages (like <code class=\"inline\">http</code>) that abstract over the difference.</p>",
     "tip": "Mention conditional imports (import 'io_stub.dart' if (dart.library.io) 'io_real.dart') as the standard pattern for writing code that works on both web and native.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "**`dart:io`** (files, sockets, processes) assumes a native OS → **unavailable in the browser sandbox** (JS/WASM).\n• Cross-platform code uses **conditional imports** or abstractions (`http`).\n• **Interview tip**: name the pattern — `import 'io_stub.dart' if (dart.library.io) 'io_real.dart'` — for code that works on web AND native."
   },
   {
     "id": "dart-sdk-constraints",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["pubspec", "sdk-constraints", "versioning"],
+    "tags": [
+      "pubspec",
+      "sdk-constraints",
+      "versioning"
+    ],
     "question": "What does the environment/sdk constraint in pubspec.yaml control?",
     "answer": "<p>The <code class=\"inline\">environment: sdk:</code> field specifies which Dart SDK versions the package/app is compatible with, using semantic version ranges. Pub uses it to ensure your dependencies (and your own code, if you use newer language features like Dart 3 records) only run on a compatible SDK.</p>",
     "tip": "",
     "code": "environment:\n  sdk: '>=3.0.0 <4.0.0'",
-    "lang": "yaml"
+    "lang": "yaml",
+    "revise": "**`environment: sdk:`** in `pubspec.yaml` = which Dart SDK versions are compatible (semver range).\n• Pub uses it so deps (and your own use of new language features like Dart 3 records) only run on a compatible SDK.\n• **Interview tip**: bumping it is what unlocks newer syntax — mismatched constraints are a common 'why won't this compile' cause."
   },
   {
     "id": "dart-pub-dev-packages",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["pub.dev", "packages", "dependencies"],
+    "tags": [
+      "pub.dev",
+      "packages",
+      "dependencies"
+    ],
     "question": "What should you evaluate before adding a third-party package from pub.dev?",
     "answer": "<p>Check the package's <strong>pub points/popularity/likes score</strong>, how recently it was updated, whether it has null safety support, open issue/PR activity (is it maintained?), and whether it has a compatible license. Also check if it's a thin wrapper you could implement yourself to avoid an unnecessary dependency.</p>",
     "tip": "",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "Before adding a **pub.dev** package, check: **pub points/likes/popularity**, **recent updates**, **null-safety** support, issue/PR activity (maintained?), and **license**.\n• **Interview tip**: also ask 'is this a thin wrapper I could write myself?' — avoiding an unnecessary dependency is a maturity signal."
   },
   {
     "id": "dart-effective-dart",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["effective-dart", "style-guide"],
+    "tags": [
+      "effective-dart",
+      "style-guide"
+    ],
     "question": "What is 'Effective Dart', and why does it matter?",
     "answer": "<p><strong>Effective Dart</strong> is Google's official style and usage guide covering naming conventions (UpperCamelCase for types, lowerCamelCase for members), documentation practices, and usage recommendations (e.g. prefer final over var when possible). Following it keeps code consistent across teams and is what the default <code class=\"inline\">lints</code> package enforces.</p>",
     "tip": "",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "**Effective Dart** = Google's official style/usage guide.\n• Naming (UpperCamelCase types, lowerCamelCase members), docs, usage (prefer `final` over `var`).\n• Enforced by the default **lints** package.\n• **Interview tip**: mention that `flutter_lints`/`analysis_options.yaml` codifies it — consistency comes from tooling, not memory."
   },
   {
     "id": "dart-immutable-vs-mutable",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["immutability", "mutable", "data-structures"],
+    "tags": [
+      "immutability",
+      "mutable",
+      "data-structures"
+    ],
     "question": "Why prefer immutable data structures in Dart, especially in Flutter apps?",
     "answer": "<p>Immutable objects can't be changed after creation, which eliminates a whole class of bugs from shared references being mutated unexpectedly from another part of the app, makes equality checks meaningful (two immutable objects with the same data are truly equal), and works well with widget rebuild optimizations that rely on comparing old vs new state.</p>",
     "tip": "",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "Prefer **immutable** data in Dart/Flutter because:\n• No bugs from shared references being mutated elsewhere.\n• **Meaningful equality** (same data ⇒ equal).\n• Plays well with rebuild optimizations that compare old vs new state.\n• **Interview tip**: immutability + `copyWith` + value equality is the trio behind clean state management."
   },
   {
     "id": "dart-const-vs-final-objects",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["const", "final", "objects"],
+    "tags": [
+      "const",
+      "final",
+      "objects"
+    ],
     "question": "What is the difference between const and final when applied to an object instance (not just a primitive)?",
     "answer": "<p><code class=\"inline\">final</code> means the variable's reference can't be reassigned, but the object it points to could still be internally mutable (if its fields aren't all final). <code class=\"inline\">const</code> creates a fully compile-time-constant, deeply immutable object—all its fields must also be const, and identical const expressions are automatically canonicalized to the same instance in memory.</p>",
     "tip": "The canonicalization detail is a great deep-cut fact: 'const Point(1,2) == const Point(1,2)' is true by identity, not just by value, because Dart reuses the same instance.",
     "code": "final list = [1, 2, 3];\nlist.add(4); // OK, list itself is mutable\n\nconst list2 = [1, 2, 3];\n// list2.add(4); // Error: unmodifiable",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**const vs final** on an object:\n• **`final`** — the **reference** can't be reassigned, but the object may still be internally mutable.\n• **`const`** — a **deeply immutable, compile-time** object; all fields must be const, and identical const expressions are **canonicalized** to one instance.\n• **Interview tip**: `const Point(1,2) == const Point(1,2)` is true by **identity** — Dart reuses the same canonicalized instance."
   },
   {
     "id": "dart-deep-vs-shallow-copy",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["deep-copy", "shallow-copy"],
+    "tags": [
+      "deep-copy",
+      "shallow-copy"
+    ],
     "question": "How do you deep copy a nested object/list/map in Dart?",
     "answer": "<p>Dart has no built-in deep-copy. A shallow copy (<code class=\"inline\">List.from(list)</code> or the spread operator) only copies the top-level references—nested lists/maps/objects are still shared. A true deep copy requires manually recursively cloning nested structures, or serializing to JSON and back for simple data-only structures.</p>",
     "tip": "",
     "code": "final shallow = [...original]; // nested objects still shared\nfinal deep = jsonDecode(jsonEncode(original)); // works only for JSON-safe data",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "Dart has **no built-in deep copy**.\n• **Shallow** (`List.from`, spread) copies only top-level refs — nested lists/maps/objects are still **shared**.\n• **Deep** = recursively clone, or JSON round-trip for pure-data structures.\n• **Interview tip**: mutating a nested element after a shallow copy still hits the original — the classic 'why did both lists change' bug."
   },
   {
     "id": "dart-comparable-interface",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["comparable", "compareto", "sorting"],
+    "tags": [
+      "comparable",
+      "compareto",
+      "sorting"
+    ],
     "question": "What is the Comparable interface used for in Dart?",
     "answer": "<p>Implementing <code class=\"inline\">Comparable&lt;T&gt;</code> and its <code class=\"inline\">compareTo()</code> method lets your custom class define a natural sort order, so it works automatically with <code class=\"inline\">List.sort()</code> (with no comparator needed) and sorted collections like <code class=\"inline\">SplayTreeSet</code>.</p>",
     "tip": "",
     "code": "class Person implements Comparable<Person> {\n  final int age;\n  Person(this.age);\n  @override\n  int compareTo(Person other) => age.compareTo(other.age);\n}\n\npeople.sort(); // uses compareTo automatically",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`Comparable<T>`** + `compareTo()` defines a type's **natural order**.\n• Then `List.sort()` needs no comparator, and sorted collections (`SplayTreeSet`) just work.\n• **Interview tip**: implement it once on the model instead of passing the same comparator everywhere."
   },
   {
     "id": "dart-iterable-generate",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["iterable-generate", "list"],
+    "tags": [
+      "iterable-generate",
+      "list"
+    ],
     "question": "What does Iterable.generate() do, and when is it useful?",
     "answer": "<p><code class=\"inline\">Iterable.generate(count, generator)</code> lazily produces a sequence of a given length by calling a generator function with each index, avoiding manually building a list with a loop—handy for building a range of computed values (like a list of days, or a 2D grid coordinate list).</p>",
     "tip": "",
     "code": "final squares = List.generate(5, (i) => i * i); // [0, 1, 4, 9, 16]",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`Iterable.generate(count, (i)=>...)`** lazily builds a sequence of a given length from an index function.\n• Avoids a manual loop for ranges/computed lists (days, grid coordinates).\n• **Interview tip**: it's lazy — pair with `.toList()` only when you actually need the materialized list."
   },
   {
     "id": "dart-unmodifiable-list",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["unmodifiable", "list", "immutability"],
+    "tags": [
+      "unmodifiable",
+      "list",
+      "immutability"
+    ],
     "question": "What is List.unmodifiable, and why use it?",
     "answer": "<p><code class=\"inline\">List.unmodifiable(source)</code> creates a fixed-length, read-only view over the given elements—attempting <code class=\"inline\">add</code>/<code class=\"inline\">remove</code>/index-assignment throws an <code class=\"inline\">UnsupportedError</code>. It's useful for exposing a collection field publicly without letting external code mutate your internal state.</p>",
     "tip": "This is a common pattern for exposing 'private' internal lists safely: return List.unmodifiable(_internalList) from a getter instead of the raw list.",
     "code": "class Cart {\n  final List<Item> _items = [];\n  List<Item> get items => List.unmodifiable(_items);\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`List.unmodifiable(source)`** = a fixed-length, **read-only** view; `add`/`remove`/index-assign throw.\n• **Interview tip**: standard pattern for safe encapsulation — a getter returns `List.unmodifiable(_internal)` so callers can read but never mutate your internal state."
   },
   {
     "id": "dart-type-promotion",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["type-promotion", "null-safety", "is-check"],
+    "tags": [
+      "type-promotion",
+      "null-safety",
+      "is-check"
+    ],
     "question": "What is type promotion in Dart?",
     "answer": "<p>After an <code class=\"inline\">is</code> type check (or a null check like <code class=\"inline\">if (x != null)</code>), Dart's compiler 'promotes' the variable to the narrower type within that scope, so you can call type-specific members without an explicit cast. Promotion only works on local variables and final fields the compiler can prove aren't reassigned in between.</p>",
     "tip": "Promotion fails on a mutable field accessed via a getter or a non-final variable that could be reassigned by another thread/callback—know this edge case if pressed.",
     "code": "void printLength(Object value) {\n  if (value is String) {\n    print(value.length); // promoted to String here, no cast needed\n  }\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Type promotion**: after an `is` check (or `!= null`), the compiler narrows the variable's type in that scope — no explicit cast needed.\n• Works only on **locals and final fields** the compiler can prove aren't reassigned between check and use.\n• **Interview tip**: promotion **fails** on a mutable field / getter (could change between calls) — assign it to a local first."
   },
   {
     "id": "dart-covariant-keyword",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["covariant", "generics", "type-safety"],
+    "tags": [
+      "covariant",
+      "generics",
+      "type-safety"
+    ],
     "question": "What does the covariant keyword do in Dart?",
     "answer": "<p><code class=\"inline\">covariant</code> lets a subclass override a method parameter with a more specific (narrower) type than the superclass declares, moving what would otherwise be a compile-time type error into a runtime check instead—used when you're confident the narrower type is always what's actually passed in practice.</p>",
     "tip": "This is a niche but real interview differentiator—most Dart devs have never needed it, so mentioning it correctly stands out.",
     "code": "class Animal {\n  void chase(Animal other) {}\n}\nclass Cat extends Animal {\n  @override\n  void chase(covariant Cat other) {} // narrows Animal -> Cat\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`covariant`** lets a subclass override a parameter with a **narrower** type than the base declares.\n• Moves a compile-time type error into a **runtime** check.\n• **Interview tip**: niche but a real differentiator — most devs have never needed it; using it correctly stands out."
   },
   {
     "id": "dart-singleton-pattern",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["singleton", "design-pattern"],
+    "tags": [
+      "singleton",
+      "design-pattern"
+    ],
     "question": "How do you implement the Singleton pattern in Dart?",
     "answer": "<p>Use a private constructor plus a static final instance, or a factory constructor that always returns the same cached instance. Dart guarantees the static field is initialized lazily and only once, making this thread-safe without extra locking (isolates don't share memory, so there's no cross-isolate race either).</p>",
     "tip": "",
     "code": "class ApiClient {\n  ApiClient._internal();\n  static final ApiClient _instance = ApiClient._internal();\n  factory ApiClient() => _instance;\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Singleton** in Dart = a private constructor + a `static final` instance, or a factory that returns one cached instance.\n• The static field is initialized **lazily and once** → thread-safe with no locking (isolates don't share memory).\n• **Interview tip**: no double-checked locking needed like Java — Dart's lazy static init handles it."
   },
   {
     "id": "dart-extension-types",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["extension-types", "dart3"],
+    "tags": [
+      "extension-types",
+      "dart3"
+    ],
     "question": "What are Extension Types in Dart 3?",
     "answer": "<p><strong>Extension types</strong> wrap an existing type with a new static-only interface—unlike a regular class wrapper, there's no runtime object/allocation overhead; the compiler enforces the new type's API at compile time while the underlying representation type is used at runtime. Useful for adding type safety (e.g. distinguishing a raw <code class=\"inline\">int</code> UserId from a ProductId) with zero cost.</p>",
     "tip": "Contrast with a regular wrapper class: extension types add compile-time-only safety with no extra runtime allocation, unlike wrapping a value in a real class.",
     "code": "extension type UserId(int value) {}\n\nvoid greet(UserId id) => print('User #${id.value}');\ngreet(UserId(42));",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Extension types** (Dart 3) wrap a type with a **static-only** interface — **zero runtime overhead** (no wrapper object).\n• Compiler enforces the new API; the underlying representation type is used at runtime.\n• **Interview tip**: perfect for zero-cost type safety — distinguishing a `UserId` from a `ProductId` (both really `int`) with no allocation."
   },
   {
     "id": "dart-class-modifiers",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["class-modifiers", "dart3", "sealed", "base", "interface"],
+    "tags": [
+      "class-modifiers",
+      "dart3",
+      "sealed",
+      "base",
+      "interface"
+    ],
     "question": "What do the base, interface, final, and sealed class modifiers control in Dart 3?",
     "answer": "<p>These modifiers restrict how a class can be used outside its own library: <code class=\"inline\">base</code> forces subclasses to extend (not implement) it, preserving guaranteed behavior. <code class=\"inline\">interface</code> allows implementing but not extending outside the library. <code class=\"inline\">final</code> prevents any subclassing outside the library entirely. <code class=\"inline\">sealed</code> restricts all direct subtypes to the same library, enabling exhaustive switches.</p>",
     "tip": "These exist specifically so package authors can guarantee API contracts—e.g. preventing consumers from implementing an interface in a way that breaks assumed invariants.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "Dart 3 **class modifiers** restrict use outside the declaring library:\n• **`base`** — subclasses must `extend` (not implement).\n• **`interface`** — can implement, not extend.\n• **`final`** — no subclassing at all.\n• **`sealed`** — all subtypes local → exhaustive switches.\n• **Interview tip**: they exist so **package authors can guarantee API contracts** consumers can't break."
   },
   {
     "id": "dart-records-equality",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["records", "equality", "dart3"],
+    "tags": [
+      "records",
+      "equality",
+      "dart3"
+    ],
     "question": "How does equality work for Records in Dart?",
     "answer": "<p>Records have structural equality built in automatically—two records are <code class=\"inline\">==</code> if they have the same shape (same fields/names) and each corresponding field is equal, with no need to override <code class=\"inline\">==</code>/<code class=\"inline\">hashCode</code> manually like you would for a regular class.</p>",
     "tip": "This is a big practical win over plain classes—records give you free value equality, which is exactly what Equatable exists to bolt onto classes.",
     "code": "print((1, 'a') == (1, 'a')); // true\nprint((x: 1, y: 2) == (x: 1, y: 2)); // true",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Records** have **structural equality** built in — two are `==` if same shape and each field is equal, no manual `==`/`hashCode`.\n• **Interview tip**: this is a big win over plain classes — records give **free value equality**, exactly what `Equatable` bolts onto classes."
   },
   {
     "id": "dart-destructuring-patterns",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["destructuring", "pattern-matching", "dart3"],
+    "tags": [
+      "destructuring",
+      "pattern-matching",
+      "dart3"
+    ],
     "question": "How do you destructure a List or Map using pattern matching in Dart 3?",
     "answer": "<p>Dart 3 pattern matching lets you destructure lists (<code class=\"inline\">final [a, b, ...rest] = list;</code>) and maps (<code class=\"inline\">final {'name': name} = map;</code>) directly into variables in one step, including nested destructuring, instead of manually indexing/accessing keys.</p>",
     "tip": "",
     "code": "final [first, second] = [10, 20];\nfinal {'name': name, 'age': age} = {'name': 'John', 'age': 30};",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Destructuring** (Dart 3): pull values out in one step.\n• List: `final [a, b, ...rest] = list;`\n• Map: `final {'name': name} = map;`\n• Supports nested patterns.\n• **Interview tip**: replaces manual indexing/key-access — cleaner and it fails loudly if the shape doesn't match."
   },
   {
     "id": "dart-switch-guards",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["switch", "pattern-guards", "dart3"],
+    "tags": [
+      "switch",
+      "pattern-guards",
+      "dart3"
+    ],
     "question": "What are pattern guards (the 'when' clause) in a Dart switch?",
     "answer": "<p>A <code class=\"inline\">when</code> clause adds an extra boolean condition to a switch case, so the case only matches if both the pattern matches AND the guard evaluates to true—letting you express conditional logic within pattern matching without nesting an if inside every case body.</p>",
     "tip": "",
     "code": "String classify(int n) => switch (n) {\n  int() when n < 0 => 'negative',\n  int() when n == 0 => 'zero',\n  _ => 'positive',\n};",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Pattern guard `when`**: a case matches only if the pattern matches **AND** the boolean guard is true.\n• `case Point(:var x) when x > 0 => ...`\n• **Interview tip**: lets you keep conditional logic inside the pattern instead of nesting an `if` in every case body."
   },
   {
     "id": "dart-equality-identical",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["equality", "identical", "hashcode"],
+    "tags": [
+      "equality",
+      "identical",
+      "hashcode"
+    ],
     "question": "What is the difference between == and identical() in Dart?",
     "answer": "<p><code class=\"inline\">==</code> is value equality and can be overridden by a class to compare fields. <code class=\"inline\">identical(a, b)</code> checks true reference/object identity—whether both variables point to the exact same object in memory—and cannot be overridden.</p>",
     "tip": "If you override ==, you must also override hashCode consistently (equal objects must produce equal hash codes), or Set/Map lookups will silently misbehave.",
     "code": "final a = Point(1, 2);\nfinal b = Point(1, 2);\nprint(a == b);         // true if Point overrides ==\nprint(identical(a, b)); // false, different instances",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`==` vs `identical()`**:\n• **`==`** — value equality, **overridable** by a class.\n• **`identical(a,b)`** — true **object identity** (same instance in memory), can't be overridden.\n• **Interview tip**: override `==` ⇒ override **`hashCode`** consistently (equal objects ⇒ equal hashes), or `Set`/`Map` lookups silently break."
   },
   {
     "id": "dart-tostring-override",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["tostring", "debugging"],
+    "tags": [
+      "tostring",
+      "debugging"
+    ],
     "question": "Why should you override toString() on custom classes?",
     "answer": "<p>By default, <code class=\"inline\">toString()</code> returns something unhelpful like <code class=\"inline\">Instance of 'User'</code>. Overriding it to return meaningful field values makes debugging (print statements, debugger output, test failure messages) far more useful.</p>",
     "tip": "",
     "code": "class User {\n  final String name;\n  User(this.name);\n  @override\n  String toString() => 'User(name: $name)';\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "Override **`toString()`** to return meaningful field values instead of the default `Instance of 'User'`.\n• Makes `print`, debugger output, and test-failure messages far more useful.\n• **Interview tip**: it's near-free and pays off every time you debug — packages like Freezed generate it for you."
   },
   {
     "id": "dart-collection-types",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["dart:collection", "hashmap", "linkedhashmap", "splaytreemap"],
+    "tags": [
+      "dart:collection",
+      "hashmap",
+      "linkedhashmap",
+      "splaytreemap"
+    ],
     "question": "What is the difference between HashMap, LinkedHashMap, and SplayTreeMap in dart:collection?",
     "answer": "<p><strong>HashMap</strong> offers no guaranteed iteration order but the fastest average operations. <strong>LinkedHashMap</strong> (what Dart's default <code class=\"inline\">{}</code> map literal actually uses) preserves insertion order while iterating. <strong>SplayTreeMap</strong> keeps keys sorted according to a comparator, at the cost of O(log n) operations instead of average O(1).</p>",
     "tip": "A commonly missed fact: Dart's default Map literal {} is already a LinkedHashMap, so insertion order is preserved out of the box without any special import.",
     "code": "",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`dart:collection` maps**:\n• **HashMap** — no order, fastest average ops.\n• **LinkedHashMap** — preserves **insertion order** (this is what `{}` literals actually use).\n• **SplayTreeMap** — keeps keys **sorted** (O(log n)).\n• **Interview tip**: the default `{}` map is already a `LinkedHashMap`, so insertion order is preserved out of the box."
   },
   {
     "id": "dart-queue-collection",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["queue", "dart:collection"],
+    "tags": [
+      "queue",
+      "dart:collection"
+    ],
     "question": "What is Queue in dart:collection, and why use it instead of List?",
     "answer": "<p><code class=\"inline\">Queue&lt;T&gt;</code> (backed by a doubly-linked list, via <code class=\"inline\">ListQueue</code>) supports efficient O(1) insertion/removal at both ends (<code class=\"inline\">addFirst</code>/<code class=\"inline\">removeFirst</code>/<code class=\"inline\">addLast</code>/<code class=\"inline\">removeLast</code>), unlike a plain List where removing from the front is O(n) because remaining elements must shift.</p>",
     "tip": "Reach for Queue specifically when implementing something like a BFS traversal or a sliding-window algorithm that repeatedly pops from the front.",
     "code": "import 'dart:collection';\nfinal queue = Queue<int>();\nqueue.addLast(1);\nqueue.addFirst(0);\nprint(queue.removeFirst()); // 0",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`Queue<T>`** (via `ListQueue`) = O(1) add/remove at **both ends** (`addFirst`/`removeFirst`/...).\n• A `List` removing from the **front is O(n)** (elements shift).\n• **Interview tip**: use a `Queue` for **BFS** or sliding-window algorithms that repeatedly pop the front."
   },
   {
     "id": "dart-garbage-collection",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["garbage-collection", "memory"],
+    "tags": [
+      "garbage-collection",
+      "memory"
+    ],
     "question": "How does garbage collection work in Dart, at a high level?",
     "answer": "<p>Dart uses a <strong>generational garbage collector</strong>: short-lived objects (most allocations, like temporary widget instances) are collected quickly in a fast 'young generation' scavenger, while long-lived objects that survive multiple collections are promoted to an 'old generation' collected less frequently with a more thorough mark-and-sweep/compact pass.</p>",
     "tip": "This is why creating lots of short-lived const/immutable objects each frame (common in Flutter) is cheap—the young-gen collector is optimized exactly for that pattern.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "Dart uses a **generational GC**:\n• **Young gen** — fast scavenger collects short-lived objects (most allocations) quickly.\n• **Old gen** — survivors get promoted, collected less often with mark-sweep/compact.\n• **Interview tip**: this is why creating lots of short-lived `const`/immutable objects per frame in Flutter is **cheap** — young-gen is optimized for exactly that."
   },
   {
     "id": "dart-tree-shaking",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["tree-shaking", "aot-compilation"],
+    "tags": [
+      "tree-shaking",
+      "aot-compilation"
+    ],
     "question": "What is tree shaking in Dart's AOT compilation?",
     "answer": "<p><strong>Tree shaking</strong> analyzes which code is actually reachable from the app's entry point and strips out unused classes, functions, and even unused icon glyphs from a font, reducing final binary size. This is only fully effective in AOT release builds—debug/JIT builds keep everything for fast iterative recompilation.</p>",
     "tip": "",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "**Tree shaking** (AOT) strips unreachable code — unused classes, functions, even unused **icon glyphs** — shrinking the binary.\n• Fully effective only in **AOT release** builds (JIT/debug keeps everything for fast recompiles).\n• **Interview tip**: it's why release builds are smaller/faster and why 'it works in debug but the icon is missing in release' can happen with dynamic icon lookups."
   },
   {
     "id": "dart-future-error-value",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["future", "future-error", "future-value"],
+    "tags": [
+      "future",
+      "future-error",
+      "future-value"
+    ],
     "question": "What are Future.value and Future.error used for?",
     "answer": "<p><code class=\"inline\">Future.value(x)</code> creates an already-completed Future wrapping a value—useful for satisfying a Future-returning interface with a synchronously-known result. <code class=\"inline\">Future.error(e)</code> creates an already-failed Future—useful for returning a consistent error type from a function that must always return a Future, even in an early-exit error path.</p>",
     "tip": "",
     "code": "Future<int> getCached(int? cached) {\n  if (cached != null) return Future.value(cached);\n  return fetchFromNetwork();\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`Future.value(x)`** = an already-completed Future (satisfy a Future-returning API with a sync-known result).\n• **`Future.error(e)`** = an already-failed Future (consistent error return from an early-exit path).\n• **Interview tip**: handy for stubbing async interfaces in tests and for early returns in functions that must always return a Future."
   },
   {
     "id": "dart-stream-transform-chain",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["stream", "transform", "map", "where"],
+    "tags": [
+      "stream",
+      "transform",
+      "map",
+      "where"
+    ],
     "question": "How do you transform a Stream's data using map/where/transform?",
     "answer": "<p>Like Iterables, <code class=\"inline\">stream.map()</code> and <code class=\"inline\">stream.where()</code> return a new Stream that lazily applies the transformation/filter as events flow through, without needing to buffer or wait for the source stream to finish. <code class=\"inline\">transform()</code> applies a custom <code class=\"inline\">StreamTransformer</code> for more complex reusable pipeline logic.</p>",
     "tip": "",
     "code": "final evens = numberStream.where((n) => n.isEven).map((n) => n * 2);",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "Streams transform like Iterables: **`stream.map()`/`where()`** return a new Stream applying the op **lazily** as events flow — no buffering.\n• **`transform(StreamTransformer)`** for reusable complex pipelines.\n• **Interview tip**: you can build a filter/map pipeline without waiting for the source stream to finish."
   },
   {
     "id": "dart-streamsubscription-control",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["streamsubscription", "pause", "resume", "cancel"],
+    "tags": [
+      "streamsubscription",
+      "pause",
+      "resume",
+      "cancel"
+    ],
     "question": "What can you do with a StreamSubscription after calling stream.listen()?",
     "answer": "<p>The returned <code class=\"inline\">StreamSubscription</code> lets you <code class=\"inline\">pause()</code> (buffer events without processing), <code class=\"inline\">resume()</code>, and <code class=\"inline\">cancel()</code> (stop listening entirely and release resources)—essential for cleaning up subscriptions in a widget's <code class=\"inline\">dispose()</code> to avoid calling setState on an unmounted widget.</p>",
     "tip": "Always store the subscription returned by listen() so you can cancel it in dispose()—an uncancelled subscription is one of the most common Flutter memory leak sources.",
     "code": "late StreamSubscription sub;\n\n@override\nvoid initState() {\n  super.initState();\n  sub = stream.listen((data) => setState(() {}));\n}\n\n@override\nvoid dispose() {\n  sub.cancel();\n  super.dispose();\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "`stream.listen()` returns a **`StreamSubscription`** you can **`pause()`**, **`resume()`**, and **`cancel()`**.\n• **Interview tip**: **always store it and `cancel()` in `dispose()`** — an uncancelled subscription (calling `setState` on an unmounted widget) is one of the most common Flutter memory leaks."
   },
   {
     "id": "dart-futureor",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["futureor", "async", "types"],
+    "tags": [
+      "futureor",
+      "async",
+      "types"
+    ],
     "question": "What is FutureOr<T>, and when is it used?",
     "answer": "<p><code class=\"inline\">FutureOr&lt;T&gt;</code> declares that a value can be either a plain <code class=\"inline\">T</code> or a <code class=\"inline\">Future&lt;T&gt;</code>—used in APIs (like <code class=\"inline\">Future.then</code>'s callback) that need to accept either a synchronous or asynchronous result without forcing the caller to always wrap synchronous values in <code class=\"inline\">Future.value()</code>.</p>",
     "tip": "",
     "code": "FutureOr<int> maybeAsync(bool useAsync) {\n  return useAsync ? Future.value(1) : 1;\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`FutureOr<T>`** = a value that's **either** a `T` **or** a `Future<T>`.\n• Used by APIs (like `Future.then`'s callback) that accept sync or async results without forcing `Future.value()`.\n• **Interview tip**: it's how a callback can return a plain value OR a Future and both are valid."
   },
   {
     "id": "dart-part-of-directive",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["part", "libraries", "code-organization"],
+    "tags": [
+      "part",
+      "libraries",
+      "code-organization"
+    ],
     "question": "What do part and part of do in Dart?",
     "answer": "<p><code class=\"inline\">part 'file.dart';</code> and <code class=\"inline\">part of 'library.dart';</code> split a single logical library across multiple files while sharing the same top-level scope (including private members)—commonly used by code generators (e.g. Freezed, json_serializable) to keep generated code in a sibling <code class=\"inline\">.g.dart</code> file that can still access the original file's private members.</p>",
     "tip": "",
     "code": "// user.dart\npart 'user.g.dart';\n\n// user.g.dart\npart of 'user.dart';",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`part` / `part of`** split one logical **library** across files sharing the same top-level scope (incl. `_private` members).\n• **Interview tip**: this is exactly how code generators (Freezed, json_serializable) put generated code in a sibling `.g.dart` that can still see your file's private members."
   },
   {
     "id": "dart-import-show-hide",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["import", "show", "hide", "libraries"],
+    "tags": [
+      "import",
+      "show",
+      "hide",
+      "libraries"
+    ],
     "question": "What do the show, hide, and as keywords do when importing a library in Dart?",
     "answer": "<p><code class=\"inline\">show</code> imports only the listed names from a library. <code class=\"inline\">hide</code> imports everything except the listed names. <code class=\"inline\">as prefix</code> imports the library under a namespace prefix, useful for resolving naming conflicts between two libraries that export the same identifier.</p>",
     "tip": "",
     "code": "import 'package:collection/collection.dart' show ListEquality;\nimport 'package:http/http.dart' as http;",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "Import controls:\n• **`show`** — import only the listed names.\n• **`hide`** — import everything except them.\n• **`as`** — import under a namespace prefix.\n• **Interview tip**: use `as` to resolve a name clash when two libraries export the same identifier (e.g. `import 'math.dart' as m;`)."
   },
   {
     "id": "dart-main-function-args",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["main-function", "entry-point"],
+    "tags": [
+      "main-function",
+      "entry-point"
+    ],
     "question": "What is the role of the main() function in a Dart program?",
     "answer": "<p><code class=\"inline\">main()</code> is the required entry point of every Dart program/app. It can optionally accept <code class=\"inline\">List&lt;String&gt; args</code> for command-line arguments (in server/CLI Dart), and can be declared <code class=\"inline\">async</code> when startup requires awaiting async initialization (like <code class=\"inline\">Firebase.initializeApp()</code>) before calling <code class=\"inline\">runApp()</code>.</p>",
     "tip": "",
     "code": "void main(List<String> args) {\n  print('Hello, ${args.isNotEmpty ? args[0] : 'World'}');\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`main()`** = required entry point of every Dart program.\n• Optional `List<String> args` for CLI arguments; can be **`async`** when startup must `await` init (e.g. `Firebase.initializeApp()`) before `runApp()`.\n• **Interview tip**: an async `main` is why you often see `WidgetsFlutterBinding.ensureInitialized()` as its first line."
   },
   {
     "id": "dart-library-privacy",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["privacy", "underscore", "libraries"],
+    "tags": [
+      "privacy",
+      "underscore",
+      "libraries"
+    ],
     "question": "How does privacy/encapsulation work in Dart, given there's no 'private' keyword?",
     "answer": "<p>Dart enforces privacy at the <strong>library (file)</strong> level, not the class level: any identifier prefixed with an underscore (<code class=\"inline\">_name</code>) is only visible within the same library. There's no true class-level 'private' like in Java—two classes in the same file can access each other's underscore-prefixed members.</p>",
     "tip": "A common surprising fact: a '_privateField' is accessible from another class defined in the SAME file, since privacy is per-library, not per-class.",
     "code": "class _InternalHelper {\n  int _secret = 42;\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "Dart privacy is at the **library (file) level**, not the class level.\n• Any `_name` identifier is visible only **within the same file**.\n• **Interview tip**: surprising fact — a `_privateField` **is** accessible from another class in the **same file**, since privacy is per-library, not per-class."
   },
   {
     "id": "dart-stringbuffer-performance",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["stringbuffer", "performance", "strings"],
+    "tags": [
+      "stringbuffer",
+      "performance",
+      "strings"
+    ],
     "question": "Why is StringBuffer preferred over repeated string concatenation in a loop?",
     "answer": "<p>Since Dart strings are immutable, each <code class=\"inline\">+</code> concatenation in a loop allocates a brand-new string, making repeated concatenation O(n²) overall. <code class=\"inline\">StringBuffer</code> accumulates pieces internally and builds the final string once with <code class=\"inline\">toString()</code>, making it O(n).</p>",
     "tip": "Bring this up whenever asked to build a large string in a loop—it's a classic 'shows you think about performance' answer.",
     "code": "final sb = StringBuffer();\nfor (final word in words) {\n  sb.write(word);\n  sb.write(' ');\n}\nfinal result = sb.toString();",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "Strings are **immutable**, so `+` in a loop reallocates each time → **O(n²)**.\n• **`StringBuffer`** accumulates internally and builds once via `toString()` → **O(n)**.\n• **Interview tip**: bring this up whenever asked to build a large string in a loop — it's a clean 'I think about performance' answer."
   },
   {
     "id": "dart-object-runtimetype",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["object", "runtimetype", "reflection"],
+    "tags": [
+      "object",
+      "runtimetype",
+      "reflection"
+    ],
     "question": "What do runtimeType and noSuchMethod provide on Dart's Object class?",
     "answer": "<p><code class=\"inline\">runtimeType</code> returns the actual runtime <code class=\"inline\">Type</code> of an object (useful for debugging/logging, though comparing types with <code class=\"inline\">is</code> is usually preferred for logic). <code class=\"inline\">noSuchMethod</code> can be overridden to intercept calls to undefined methods/properties—used by some mocking frameworks and dynamic proxy-style APIs.</p>",
     "tip": "Avoid using runtimeType for control flow (e.g. 'if (x.runtimeType == String)')—prefer 'x is String' since it also handles subtypes correctly.",
     "code": "",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "On `Object`: **`runtimeType`** returns the actual runtime `Type` (debugging/logging); **`noSuchMethod`** intercepts calls to undefined members (mocking, dynamic proxies).\n• **Interview tip**: don't branch on `runtimeType` (`== String`) — use **`x is String`**, which also handles subtypes correctly."
   },
   {
     "id": "dart-enum-values-index",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["enum", "values", "index"],
+    "tags": [
+      "enum",
+      "values",
+      "index"
+    ],
     "question": "What do Enum.values and enum.index provide in Dart?",
     "answer": "<p><code class=\"inline\">MyEnum.values</code> returns a <code class=\"inline\">List</code> of all declared enum constants in declaration order—handy for building a dropdown of all options. <code class=\"inline\">instance.index</code> returns that constant's zero-based position in the declaration order, useful for serialization to a compact integer form (though this breaks if you reorder the enum later).</p>",
     "tip": "Warn against persisting enum.index to a database/API—reordering or inserting a new enum value later silently shifts every stored index. Persist the enum's name instead.",
     "code": "enum Status { active, inactive }\nprint(Status.values); // [Status.active, Status.inactive]\nprint(Status.active.index); // 0",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`MyEnum.values`** = all constants in declaration order (build a dropdown); **`instance.index`** = its zero-based position.\n• **Interview tip**: **don't persist `enum.index`** to a DB/API — reordering or inserting a value later silently shifts every stored index. Persist the enum **name** instead."
   },
   {
     "id": "dart-redirecting-constructors",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["constructors", "redirecting"],
+    "tags": [
+      "constructors",
+      "redirecting"
+    ],
     "question": "What is a redirecting constructor in Dart?",
     "answer": "<p>A <strong>redirecting constructor</strong> forwards to another constructor of the same class instead of having its own body, avoiding duplicated initialization logic between multiple named constructors.</p>",
     "tip": "",
     "code": "class Point {\n  final double x, y;\n  Point(this.x, this.y);\n  Point.origin() : this(0, 0); // redirects to the main constructor\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "A **redirecting constructor** forwards to another constructor of the same class (`: this.named(...)`) instead of having a body.\n• Avoids duplicated init logic across named constructors.\n• **Interview tip**: it's the DRY way to have several constructors funnel into one canonical one."
   },
   {
     "id": "dart-conditional-imports",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["conditional-imports", "cross-platform"],
+    "tags": [
+      "conditional-imports",
+      "cross-platform"
+    ],
     "question": "How do conditional imports work in Dart, and why are they used?",
     "answer": "<p>Conditional imports pick a different implementation file at compile time based on which platform library is available (e.g. <code class=\"inline\">dart.library.io</code> vs <code class=\"inline\">dart.library.html</code>), letting the same public API compile correctly for both native and web targets even though their underlying implementations differ completely.</p>",
     "tip": "",
     "code": "import 'storage_stub.dart'\n  if (dart.library.io) 'storage_io.dart'\n  if (dart.library.html) 'storage_web.dart';",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Conditional imports** pick a different implementation file at compile time based on an available platform library (`dart.library.io` vs `dart.library.html`).\n• Same public API compiles for both native and web despite different underlying impls.\n• **Interview tip**: the standard way to write a package that works on web **and** native without runtime platform checks."
   },
   {
     "id": "dart-toplevel-vs-static",
     "category": "dart",
     "difficulty": "beginner",
-    "tags": ["top-level-functions", "static", "organization"],
+    "tags": [
+      "top-level-functions",
+      "static",
+      "organization"
+    ],
     "question": "When should you use a top-level function versus a static method in Dart?",
     "answer": "<p>A <strong>top-level function</strong> (declared outside any class) is best for standalone utility logic unrelated to a specific type. A <strong>static method</strong> is better when the logic is conceptually tied to a class (e.g. a factory-like helper or a named constant computation), improving discoverability via the class namespace and avoiding polluting the global namespace.</p>",
     "tip": "",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "**Top-level function vs static method**:\n• **Top-level** — standalone utility unrelated to a type.\n• **Static** — logic conceptually tied to a class (discoverable via the class namespace, avoids polluting global scope).\n• **Interview tip**: note that `compute()`/isolates require **top-level or static** functions (no captured state)."
   },
   {
     "id": "dart-list-remove-complexity",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["list", "complexity", "performance"],
+    "tags": [
+      "list",
+      "complexity",
+      "performance"
+    ],
     "question": "What is the time complexity of List.removeAt(0) versus List.removeLast() in Dart?",
     "answer": "<p><code class=\"inline\">removeLast()</code> is O(1) since it only touches the end. <code class=\"inline\">removeAt(0)</code> (or any removal from the front/middle) is O(n) because every subsequent element must shift left by one to fill the gap. If you frequently remove from the front, a <code class=\"inline\">Queue</code> (doubly-linked list) is the better data structure.</p>",
     "tip": "",
     "code": "",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`removeLast()` = O(1)** (touches only the end); **`removeAt(0)`/front/middle = O(n)** (everything shifts left).\n• **Interview tip**: if you frequently remove from the **front**, use a **`Queue`** (doubly-linked) instead of a `List`."
   },
   {
     "id": "dart-future-then-catcherror",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["future", "then", "catcherror"],
+    "tags": [
+      "future",
+      "then",
+      "catcherror"
+    ],
     "question": "What is the difference between using .then()/.catchError() and async/await for handling a Future?",
     "answer": "<p><code class=\"inline\">.then()</code>/<code class=\"inline\">.catchError()</code> is the callback-chaining style—functionally equivalent to async/await but can become harder to read once chained several levels deep. <code class=\"inline\">async</code>/<code class=\"inline\">await</code> with try/catch reads like synchronous code and is generally preferred for readability, though both compile to the same underlying Future machinery.</p>",
     "tip": "",
     "code": "// callback style\nfetchUser().then((user) => print(user)).catchError((e) => print(e));\n\n// async/await style\ntry {\n  final user = await fetchUser();\n  print(user);\n} catch (e) {\n  print(e);\n}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`.then()/.catchError()` vs `async/await`** — same underlying Future machinery.\n• Callback-chaining gets hard to read when deeply nested.\n• `async/await` + `try/catch` reads like sync code → generally preferred.\n• **Interview tip**: they're interchangeable; pick `await` for readability, `.then` for a quick fire-and-forget transform."
   },
   {
     "id": "dart-unhandled-future-errors",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["unhandled-exception", "future", "error-handling"],
+    "tags": [
+      "unhandled-exception",
+      "future",
+      "error-handling"
+    ],
     "question": "What happens if a Future's error is never caught?",
     "answer": "<p>An uncaught error on a Future is reported to the current <strong>Zone</strong>'s uncaught error handler—in a Flutter app without a custom zone/handler, this typically crashes the app or prints an 'Unhandled exception' to the console. This is exactly why production apps wrap <code class=\"inline\">runApp()</code> in <code class=\"inline\">runZonedGuarded</code> to catch these globally.</p>",
     "tip": "",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "An **uncaught Future error** goes to the current **Zone**'s uncaught handler.\n• With no custom handler in Flutter → 'Unhandled exception' / crash.\n• **Interview tip**: this is exactly why production apps wrap `runApp()` in **`runZonedGuarded`** — to funnel these to a crash reporter instead of losing them."
   },
   {
     "id": "dart-cascade-vs-chain",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["cascade", "method-chaining"],
+    "tags": [
+      "cascade",
+      "method-chaining"
+    ],
     "question": "What is the difference between cascade notation (..) and regular method chaining (.)?",
     "answer": "<p>Regular chaining (<code class=\"inline\">.</code>) calls a method on the <strong>result</strong> of the previous call, so the receiver changes at each step. Cascade notation (<code class=\"inline\">..</code>) calls each method on the <strong>same original object</strong>, ignoring each call's return value, and the whole cascade expression evaluates to that original object.</p>",
     "tip": "This distinction matters when a method returns something other than 'this' (e.g. List.add returns void)—chaining would break, but cascading still works since it ignores the return value.",
     "code": "final list = <int>[]..add(1)..add(2); // cascade: works even though add() returns void",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**Cascade `..` vs chain `.`**:\n• **Chain `.`** — each call operates on the **previous result** (receiver changes).\n• **Cascade `..`** — each call operates on the **same original object**, ignoring return values; the whole expression evaluates to that object.\n• **Interview tip**: matters when a method returns `void` (e.g. `List.add`) — chaining breaks, cascading still works."
   },
   {
     "id": "dart-static-factory-methods",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["static-methods", "factory-pattern"],
+    "tags": [
+      "static-methods",
+      "factory-pattern"
+    ],
     "question": "What is the difference between a static factory method and a factory constructor in Dart?",
     "answer": "<p>A <strong>static method</strong> that returns an instance is just a regular function attached to the class namespace—callers must know it's not a 'real' constructor. A <strong>factory constructor</strong> is called with <code class=\"inline\">ClassName(...)</code> syntax like a normal constructor, but internally can return a cached/subtype instance—preserving normal constructor call syntax while still allowing that flexibility.</p>",
     "tip": "",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "**Static factory method vs factory constructor**:\n• A **static method** returning an instance is just a function on the class namespace — callers know it's not a real constructor.\n• A **factory constructor** is called with `ClassName(...)` syntax but can return a cached/subtype instance.\n• **Interview tip**: factory constructors keep normal constructor call-syntax while allowing that flexibility."
   },
   {
     "id": "dart-spread-nullaware-operator",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["spread-operator", "null-aware", "collections"],
+    "tags": [
+      "spread-operator",
+      "null-aware",
+      "collections"
+    ],
     "question": "What does the null-aware spread operator (...?) do?",
     "answer": "<p><code class=\"inline\">...?</code> spreads a collection into a literal only if it's non-null, safely skipping it (rather than throwing) if the source collection is null—avoiding a manual null check before spreading.</p>",
     "tip": "",
     "code": "List<int>? maybeNulls;\nfinal combined = [1, 2, ...?maybeNulls]; // [1, 2] if maybeNulls is null",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "**`...?`** (null-aware spread) inlines a collection into a literal **only if it's non-null**, safely skipping it otherwise.\n• **Interview tip**: avoids a manual null check before spreading — great for optional widget-list sections (`if (extra != null) ...?extra`)."
   },
   {
     "id": "dart-mixin-resolution-order",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["mixins", "resolution-order", "oop"],
+    "tags": [
+      "mixins",
+      "resolution-order",
+      "oop"
+    ],
     "question": "When a class applies multiple mixins, what determines which implementation wins if they define the same method?",
     "answer": "<p>Mixins are applied left-to-right, and each one 'layers' on top of the previous, similar to a linear inheritance chain. The <strong>rightmost</strong> mixin in the <code class=\"inline\">with</code> clause takes precedence for any conflicting method, since it's applied last and is closest to the concrete class in the resulting chain.</p>",
     "tip": "",
     "code": "class C extends A with MixinX, MixinY {} // MixinY's methods win over MixinX's on conflict",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "With multiple mixins, resolution is **left-to-right** — each layers on top of the previous like a linear chain.\n• The **rightmost** mixin wins for a conflicting method (applied last, closest to the concrete class).\n• **Interview tip**: `class C with A, B` → **B** overrides **A** for a shared method."
   },
   {
     "id": "dart-const-constructor-requirements",
     "category": "dart",
     "difficulty": "intermediate",
-    "tags": ["const-constructor", "immutability"],
+    "tags": [
+      "const-constructor",
+      "immutability"
+    ],
     "question": "What requirements must a class satisfy to have a const constructor?",
     "answer": "<p>All of the class's fields must be <code class=\"inline\">final</code>, and the constructor itself must be marked <code class=\"inline\">const</code>. Any field values passed in when creating a const instance must themselves be compile-time constants. This guarantees the resulting object is fully immutable and safe to canonicalize/reuse.</p>",
     "tip": "This is exactly why Flutter's StatelessWidget subclasses can be declared 'const MyWidget()'—their fields are final and their constructor is const.",
     "code": "class Point {\n  final double x, y;\n  const Point(this.x, this.y);\n}\nconst p = Point(1, 2);",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "For a **`const` constructor**: all fields must be **`final`**, the constructor is marked `const`, and any values passed in must themselves be **compile-time constants**.\n• Guarantees a fully immutable, canonicalizable object.\n• **Interview tip**: this is exactly why Flutter `StatelessWidget`s can be `const MyWidget()` — final fields + const constructor."
   },
   {
     "id": "dart-abstract-vs-mixin-class",
     "category": "dart",
     "difficulty": "advanced",
-    "tags": ["mixin-class", "abstract-class", "dart3"],
+    "tags": [
+      "mixin-class",
+      "abstract-class",
+      "dart3"
+    ],
     "question": "What is a 'mixin class' in Dart 3, and how does it differ from a plain mixin?",
     "answer": "<p>A <code class=\"inline\">mixin class</code> can be used both as a regular class (extended, instantiated) <strong>and</strong> as a mixin (applied with <code class=\"inline\">with</code>)—unifying what previously required declaring separate <code class=\"inline\">class</code> and <code class=\"inline\">mixin</code> definitions if you wanted both capabilities for the same behavior.</p>",
     "tip": "",
     "code": "mixin class Loggable {\n  void log(String msg) => print('[LOG] $msg');\n}\n// usable as: class Service extends Loggable {}\n// or as:     class Service2 with Loggable {}",
-    "lang": "dart"
+    "lang": "dart",
+    "revise": "A **`mixin class`** (Dart 3) works both as a regular class (extend/instantiate) **and** as a mixin (`with`).\n• Unifies what previously needed separate `class` + `mixin` declarations.\n• **Interview tip**: use it when the same behaviour should be both a base class and a mixin without duplicating the definition."
   }
 ]

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 58,
-  "updatedAt": "2026-07-29T07:49:21.173Z",
-  "totalQuestions": 1704,
-  "contentHash": "37d9105f7038f35f9dc14c0258d9b007521d9a39",
+  "version": 63,
+  "updatedAt": "2026-07-30T07:40:12.951Z",
+  "totalQuestions": 1706,
+  "contentHash": "fba7e7b1721195deb7fd9bf9c8939dccaa6f6683",
   "groups": [
     {
       "id": "frontend",
@@ -51,7 +51,7 @@
       "id": "java-angular",
       "file": "packs/java-angular.json",
       "label": "Java + Angular",
-      "count": 995,
+      "count": 997,
       "hash": "ae5da0dfd601"
     },
     {
@@ -65,7 +65,7 @@
       "id": "java-backend",
       "file": "packs/java-backend.json",
       "label": "Java Backend Developer",
-      "count": 587,
+      "count": 589,
       "hash": "ef4083c12fbd"
     }
   ],
@@ -104,7 +104,7 @@
       "group": "frontend",
       "color": "#B4820A",
       "count": 64,
-      "hash": "96cd64c46993"
+      "hash": "9d7735f3f02f"
     },
     {
       "id": "typescript",
@@ -176,7 +176,7 @@
       "group": "frontend",
       "color": "#667085",
       "count": 18,
-      "hash": "7ba65eac39a6"
+      "hash": "9290e994bbfc"
     },
     {
       "id": "java",
@@ -203,8 +203,8 @@
       "label": "Spring Boot",
       "group": "backend",
       "color": "#4E8B2C",
-      "count": 105,
-      "hash": "42e5242811ff"
+      "count": 107,
+      "hash": "5c1c790ce25f"
     },
     {
       "id": "python",
@@ -231,7 +231,7 @@
       "group": "backend",
       "color": "#A8B9CC",
       "count": 20,
-      "hash": "db9dd14080ce"
+      "hash": "68813eec7de9"
     },
     {
       "id": "cpp",
@@ -240,7 +240,7 @@
       "group": "backend",
       "color": "#00599C",
       "count": 23,
-      "hash": "86411bff630b"
+      "hash": "729d473b37ba"
     },
     {
       "id": "quarkus",
@@ -249,7 +249,7 @@
       "group": "backend",
       "color": "#4695EB",
       "count": 22,
-      "hash": "b7ae50359a83"
+      "hash": "335ea77698cf"
     },
     {
       "id": "kafka",
@@ -267,7 +267,7 @@
       "group": "backend",
       "color": "#FF6600",
       "count": 19,
-      "hash": "218b62d25f71"
+      "hash": "34b0dfffa4fe"
     },
     {
       "id": "redis",
@@ -303,7 +303,7 @@
       "group": "backend",
       "color": "#336791",
       "count": 30,
-      "hash": "1369ed689ebb"
+      "hash": "128e5b8d2260"
     },
     {
       "id": "git",
@@ -330,7 +330,7 @@
       "group": "hr",
       "color": "#5C7A8F",
       "count": 22,
-      "hash": "608c78b3022b"
+      "hash": "9fc9565bf35b"
     },
     {
       "id": "flutter",
@@ -339,7 +339,7 @@
       "group": "mobile",
       "color": "#42A5F5",
       "count": 100,
-      "hash": "7392b47ab57b"
+      "hash": "747bef70d1d8"
     },
     {
       "id": "dart",
@@ -348,7 +348,7 @@
       "group": "mobile",
       "color": "#0175C2",
       "count": 100,
-      "hash": "e128f45c96a0"
+      "hash": "4b2b0cd20389"
     },
     {
       "id": "fluttercoding",
@@ -357,7 +357,7 @@
       "group": "mobile",
       "color": "#7C4DFF",
       "count": 100,
-      "hash": "121084bc10f2"
+      "hash": "fe08e1a3bd11"
     },
     {
       "id": "swift",
@@ -366,7 +366,7 @@
       "group": "mobile",
       "color": "#FA7349",
       "count": 25,
-      "hash": "28e3c93c6406"
+      "hash": "ba60bd6d8363"
     },
     {
       "id": "testing-fundamentals",
@@ -375,7 +375,7 @@
       "group": "testing",
       "color": "#0F766E",
       "count": 24,
-      "hash": "eb15cb5578a7"
+      "hash": "f8f5183ea2bf"
     },
     {
       "id": "manual-qa",
@@ -384,7 +384,7 @@
       "group": "testing",
       "color": "#14919B",
       "count": 20,
-      "hash": "3ee9a0bc73c0"
+      "hash": "b8632613fa4e"
     },
     {
       "id": "api-testing",
@@ -393,7 +393,7 @@
       "group": "testing",
       "color": "#0E7490",
       "count": 20,
-      "hash": "f471902a7d75"
+      "hash": "3c96aa262739"
     },
     {
       "id": "ui-automation",
@@ -402,7 +402,7 @@
       "group": "testing",
       "color": "#B45309",
       "count": 20,
-      "hash": "8a3f6561c49d"
+      "hash": "13dbe5ea60f5"
     },
     {
       "id": "sql-testing",
@@ -411,7 +411,7 @@
       "group": "testing",
       "color": "#A16207",
       "count": 20,
-      "hash": "842ae00b5b68"
+      "hash": "d023bd22c14f"
     },
     {
       "id": "cicd-testing",
@@ -420,7 +420,7 @@
       "group": "testing",
       "color": "#C2410C",
       "count": 20,
-      "hash": "85bfa80f9266"
+      "hash": "334e9cfaefb3"
     },
     {
       "id": "angular-testing",
@@ -429,7 +429,7 @@
       "group": "testing",
       "color": "#A83294",
       "count": 20,
-      "hash": "6fb95359f368"
+      "hash": "cec230fccc23"
     },
     {
       "id": "llm",
@@ -438,7 +438,7 @@
       "group": "ai",
       "color": "#8B5CF6",
       "count": 26,
-      "hash": "213c50b5401e"
+      "hash": "c06f20f36551"
     },
     {
       "id": "ml-fundamentals",
@@ -447,7 +447,7 @@
       "group": "ai",
       "color": "#6366F1",
       "count": 24,
-      "hash": "98d0786384c5"
+      "hash": "9f552ac1ff77"
     },
     {
       "id": "system-design",
@@ -456,7 +456,7 @@
       "group": "architecture",
       "color": "#0F172A",
       "count": 27,
-      "hash": "3373ffa38195"
+      "hash": "e0d4b6fdceb0"
     }
   ]
 }

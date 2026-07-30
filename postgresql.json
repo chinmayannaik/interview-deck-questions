@@ -3,331 +3,462 @@
     "id": "pg-what-is",
     "category": "postgresql",
     "difficulty": "beginner",
-    "tags": ["basics", "postgres"],
+    "tags": [
+      "basics",
+      "postgres"
+    ],
     "question": "What is PostgreSQL and why is it popular?",
     "answer": "<p>PostgreSQL is an <strong>open-source, object-relational database</strong> known for reliability, standards compliance, and rich features. Unlike MySQL, it prioritises SQL standard adherence and extensibility.</p><p>Strengths: ACID transactions, advanced indexing (GIN, GiST, BRIN), JSONB, full-text search, CTEs, window functions, extensions (PostGIS), strong concurrency via MVCC.</p>",
     "tip": "PostgreSQL is the default choice for new backend projects that need relational data with JSON flexibility.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "**PostgreSQL** = open-source **object-relational** DB known for correctness, standards, extensibility.\n• Strengths: **ACID**, advanced indexes (GIN/GiST/BRIN), **JSONB**, full-text search, CTEs, window functions, **MVCC**.\n• Extensible: PostGIS, pgvector, custom types.\n• **Interview tip**: it's the default pick for a new backend needing relational data **plus** JSON flexibility."
   },
   {
     "id": "pg-mvcc",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["mvcc", "concurrency"],
+    "tags": [
+      "mvcc",
+      "concurrency"
+    ],
     "question": "How does MVCC work in PostgreSQL?",
     "answer": "<p><strong>Multi-Version Concurrency Control</strong> — readers don't block writers and writers don't block readers. Each row has <code class=\"inline\">xmin</code> (inserting transaction) and <code class=\"inline\">xmax</code> (deleting/updating transaction). Updates create a new row version; old versions remain until vacuumed.</p><p>This enables consistent snapshots without read locks — the foundation of PostgreSQL's concurrency model.</p>",
     "tip": "High update/delete churn without VACUUM causes table bloat — monitor autovacuum.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Snapshot isolation</h4><p>Each transaction sees a consistent snapshot of the database as of its start time. Other transactions' uncommitted changes are invisible.</p><h4>Why UPDATE = INSERT + DELETE</h4><p>PostgreSQL never overwrites a row in place. An UPDATE inserts a new row version and marks the old one dead. That's why heavy updates cause bloat.</p><h4>How to say it in an interview</h4><p>“Postgres uses MVCC — readers and writers don't block each other. Updates create new row versions, and VACUUM reclaims dead tuples. I watch autovacuum and bloat on high-churn tables.”</p>"
+    "deep": "<h4>Snapshot isolation</h4><p>Each transaction sees a consistent snapshot of the database as of its start time. Other transactions' uncommitted changes are invisible.</p><h4>Why UPDATE = INSERT + DELETE</h4><p>PostgreSQL never overwrites a row in place. An UPDATE inserts a new row version and marks the old one dead. That's why heavy updates cause bloat.</p><h4>How to say it in an interview</h4><p>“Postgres uses MVCC — readers and writers don't block each other. Updates create new row versions, and VACUUM reclaims dead tuples. I watch autovacuum and bloat on high-churn tables.”</p>",
+    "revise": "**MVCC** = readers don't block writers and vice-versa.\n• Each row carries `xmin` (inserter) and `xmax` (deleter/updater).\n• An UPDATE writes a **new row version**; old versions linger until vacuumed.\n• Gives consistent snapshots with no read locks.\n• **Interview tip**: high update/delete churn without VACUUM → **table bloat**; watch autovacuum."
   },
   {
     "id": "pg-indexes",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["index", "performance"],
+    "tags": [
+      "index",
+      "performance"
+    ],
     "question": "PostgreSQL index types and when to use each.",
     "answer": "<ul><li><strong>B-tree</strong> (default) — equality and range queries on scalars.</li><li><strong>Hash</strong> — equality only; rarely needed (B-tree is fine).</li><li><strong>GIN</strong> — JSONB, arrays, full-text search (contains queries).</li><li><strong>GiST</strong> — geometric data, nearest-neighbor, full-text.</li><li><strong>BRIN</strong> — very large tables with naturally ordered data (timestamps); tiny index size.</li><li><strong>Partial index</strong> — index a subset: <code class=\"inline\">WHERE active = true</code>.</li><li><strong>Composite index</strong> — column order matters for multi-column filters.</li></ul>",
     "tip": "EXPLAIN ANALYZE is your best friend — always verify the planner uses your index.",
     "code": "CREATE INDEX idx_orders_user ON orders(user_id);\nCREATE INDEX idx_active_users ON users(email) WHERE active = true;\nCREATE INDEX idx_data_gin ON docs USING GIN(data);",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Pick the index by query shape:\n• **B-tree** (default) — equality + ranges on scalars.\n• **GIN** — JSONB, arrays, full-text (`contains`).\n• **GiST** — geometric, nearest-neighbor.\n• **BRIN** — huge, naturally-ordered tables (timestamps); tiny.\n• **Partial** (`WHERE active`) and **composite** (column order matters).\n• **Interview tip**: always `EXPLAIN ANALYZE` to confirm the planner actually uses your index."
   },
   {
     "id": "pg-explain-analyze",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["explain", "query-plan", "performance"],
+    "tags": [
+      "explain",
+      "query-plan",
+      "performance"
+    ],
     "question": "How do you use EXPLAIN ANALYZE?",
     "answer": "<p><code class=\"inline\">EXPLAIN</code> shows the query planner's execution plan without running the query. <code class=\"inline\">EXPLAIN ANALYZE</code> actually executes it and shows real timings.</p><p>Look for: <strong>Seq Scan</strong> on large tables (bad — add index), <strong>Nested Loop</strong> with high row counts, high <strong>actual time</strong>, <strong>Buffers</strong> (cache hits vs disk reads).</p>",
     "tip": "Seq Scan on a 10-row table is fine. Seq Scan on 10 million rows is a problem.",
     "code": "EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)\nSELECT * FROM orders WHERE user_id = 42 AND status = 'open';",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "**EXPLAIN** shows the plan; **EXPLAIN ANALYZE** runs it with real timings.\n• Red flags: **Seq Scan** on big tables, **Nested Loop** over high row counts, high `actual time`, disk-heavy `Buffers`.\n• **Interview tip**: Seq Scan on 10 rows is fine; Seq Scan on 10M rows means a missing/unused index — that's your fix target."
   },
   {
     "id": "pg-jsonb",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["jsonb", "semi-structured"],
+    "tags": [
+      "jsonb",
+      "semi-structured"
+    ],
     "question": "JSON vs JSONB in PostgreSQL.",
     "answer": "<p><strong>JSON</strong> — stores exact text, faster to insert, slower to query (re-parsed each time).</p><p><strong>JSONB</strong> — binary format, decomposed storage, supports indexing (GIN), slightly slower to insert but <strong>much faster to query</strong>. Use JSONB in almost all cases.</p><p>Query with <code class=\"inline\">-></code> (JSON object), <code class=\"inline\">->></code> (text), <code class=\"inline\">@></code> (contains).</p>",
     "tip": "JSONB + GIN index is Postgres's answer to document databases for semi-structured data.",
     "code": "SELECT data->>'name' FROM profiles WHERE data @> '{\"active\": true}';\nCREATE INDEX idx_profile_data ON profiles USING GIN(data);",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "**JSON vs JSONB**.\n• **JSON** = exact text, fast insert, re-parsed on every read (slow to query).\n• **JSONB** = binary/decomposed, GIN-indexable, slightly slower insert but **much faster query**.\n• Query: `->` (object), `->>` (text), `@>` (contains).\n• **Interview tip**: use **JSONB almost always**; JSONB + GIN is Postgres's answer to document databases."
   },
   {
     "id": "pg-isolation-levels",
     "category": "postgresql",
     "difficulty": "advanced",
-    "tags": ["transactions", "isolation"],
+    "tags": [
+      "transactions",
+      "isolation"
+    ],
     "question": "PostgreSQL isolation levels.",
     "answer": "<p>PostgreSQL offers three practical levels (default: <strong>Read Committed</strong>):</p><ul><li><strong>Read Committed</strong> — each statement sees committed data as of statement start. Prevents dirty reads.</li><li><strong>Repeatable Read</strong> — snapshot at transaction start. Prevents non-repeatable reads. May get serialization failures.</li><li><strong>Serializable</strong> — strictest; prevents phantom reads via SSI (Serializable Snapshot Isolation).</li></ul><p>On conflict, Postgres raises <code class=\"inline\">40001 serialization_failure</code> — retry the transaction.</p>",
     "tip": "Most apps use Read Committed. Use Serializable only when you need strict consistency and can handle retries.",
     "code": "BEGIN ISOLATION LEVEL REPEATABLE READ;\n-- queries see consistent snapshot\nCOMMIT;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Three practical levels (default **Read Committed**):\n• **Read Committed** — each statement sees data committed at its start (no dirty reads).\n• **Repeatable Read** — snapshot at tx start (no non-repeatable reads).\n• **Serializable** — strictest, prevents phantoms via SSI; conflicts raise `40001`.\n• **Interview tip**: most apps stay on Read Committed; use Serializable only when you need strict consistency AND retry on serialization failure."
   },
   {
     "id": "pg-deadlocks",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["deadlock", "locking"],
+    "tags": [
+      "deadlock",
+      "locking"
+    ],
     "question": "What causes deadlocks and how does PostgreSQL handle them?",
     "answer": "<p>A <strong>deadlock</strong> occurs when two transactions wait for each other's locks in a cycle. PostgreSQL's deadlock detector identifies cycles and <strong>aborts one transaction</strong> (the victim), returning an error.</p><p>Prevention: acquire locks in a consistent order, keep transactions short, use appropriate isolation levels, avoid unnecessary locking reads.</p>",
     "tip": "Deadlocks are normal under concurrency — handle the error and retry. They're not a bug unless frequent.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "A **deadlock** = two transactions each waiting on the other's lock (a cycle).\n• Postgres's detector aborts one (the **victim**) with an error.\n• Prevent: acquire locks in a **consistent order**, keep transactions short, avoid needless locking.\n• **Interview tip**: deadlocks are normal under concurrency — **catch and retry**; they're only a bug if frequent."
   },
   {
     "id": "pg-vacuum",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["vacuum", "maintenance"],
+    "tags": [
+      "vacuum",
+      "maintenance"
+    ],
     "question": "What is VACUUM and why is it important?",
     "answer": "<p><strong>VACUUM</strong> reclaims storage from dead row versions (from UPDATEs/DELETEs) and updates statistics for the query planner. <strong>Autovacuum</strong> runs this automatically.</p><p>Without vacuum: table bloat (wasted disk), transaction ID wraparound risk (catastrophic), stale statistics (bad query plans).</p><p><strong>VACUUM FULL</strong> rewrites the entire table (locks table) — last resort for severe bloat.</p>",
     "tip": "If queries suddenly slow down on a high-churn table, check last autovacuum time and table bloat.",
     "code": "SELECT relname, last_autovacuum, n_dead_tup\nFROM pg_stat_user_tables ORDER BY n_dead_tup DESC;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "**VACUUM** reclaims dead row versions and refreshes planner statistics.\n• **Autovacuum** does it automatically.\n• Skip it → bloat, stale stats (bad plans), and **transaction-ID wraparound** (catastrophic).\n• `VACUUM FULL` rewrites+locks the table (last resort).\n• **Interview tip**: sudden slowdown on a high-churn table → check last autovacuum time and bloat first."
   },
   {
     "id": "pg-connection-pooling",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["pooling", "pgbouncer"],
+    "tags": [
+      "pooling",
+      "pgbouncer"
+    ],
     "question": "Why use connection pooling with PostgreSQL?",
     "answer": "<p>Each Postgres connection spawns a backend process (~5–10MB RAM). Thousands of app connections can exhaust memory. A <strong>pooler</strong> (PgBouncer, pgpool) maintains a small pool of real connections and multiplexes client requests.</p><p>Modes: <strong>session</strong> (one server conn per client session), <strong>transaction</strong> (return conn after each transaction — most efficient), <strong>statement</strong> (most aggressive).</p>",
     "tip": "Spring Boot + Postgres in K8s with many pods almost always needs PgBouncer in transaction mode.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "Each Postgres connection = a backend process (~5–10MB) → thousands exhaust memory.\n• A **pooler** (PgBouncer) keeps a small real pool and multiplexes clients.\n• Modes: **session**, **transaction** (return after each tx — most efficient), **statement**.\n• **Interview tip**: Spring Boot + many K8s pods almost always needs **PgBouncer in transaction mode**."
   },
   {
     "id": "pg-sequences",
     "category": "postgresql",
     "difficulty": "beginner",
-    "tags": ["sequences", "serial"],
+    "tags": [
+      "sequences",
+      "serial"
+    ],
     "question": "SERIAL vs IDENTITY vs sequences.",
     "answer": "<p>All generate auto-incrementing integers:</p><ul><li><strong>SERIAL</strong> — legacy shorthand; creates a sequence + column default.</li><li><strong>GENERATED ALWAYS AS IDENTITY</strong> — SQL standard (preferred since PG 10).</li><li><strong>Sequences</strong> — standalone objects; multiple tables can share one.</li></ul><p>For distributed systems, consider <strong>UUID</strong> or <strong>Snowflake IDs</strong> instead of sequences.</p>",
     "tip": "IDENTITY is the modern default for primary keys in new schemas.",
     "code": "CREATE TABLE users (\n  id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  email TEXT NOT NULL\n);",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Auto-incrementing keys, three flavours:\n• **SERIAL** — legacy shorthand (sequence + default).\n• **GENERATED ALWAYS AS IDENTITY** — SQL-standard, preferred since PG10 (cleaner ownership/permissions).\n• **Sequences** — standalone objects, shareable across tables.\n• Distributed systems → consider UUID/Snowflake.\n• **Interview tip**: for new schemas say **IDENTITY**, not SERIAL."
   },
   {
     "id": "pg-cte-recursive",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["cte", "recursive"],
+    "tags": [
+      "cte",
+      "recursive"
+    ],
     "question": "What are recursive CTEs?",
     "answer": "<p>A <strong>recursive CTE</strong> queries hierarchical data (org charts, category trees, bill of materials) using a base case + recursive step:</p><p><code class=\"inline\">WITH RECURSIVE tree AS (base SELECT ... UNION ALL recursive SELECT ... FROM tree JOIN ...)</code></p><p>PostgreSQL has excellent CTE support — use them for readable complex queries.</p>",
     "tip": "Recursive CTEs replace painful self-join chains for tree traversal.",
     "code": "WITH RECURSIVE subordinates AS (\n  SELECT id, name, manager_id FROM emp WHERE id = 1\n  UNION ALL\n  SELECT e.id, e.name, e.manager_id\n  FROM emp e JOIN subordinates s ON e.manager_id = s.id\n)\nSELECT * FROM subordinates;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "**Recursive CTE** = query hierarchical data (org charts, trees, BOM).\n• Shape: `WITH RECURSIVE t AS (base SELECT ... UNION ALL recursive SELECT ... JOIN t ...)`.\n• Base case + recursive step; Postgres has excellent CTE support.\n• **Interview tip**: they replace painful self-join chains for tree traversal — reach for one whenever you'd otherwise loop in app code."
   },
   {
     "id": "pg-full-text-search",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["full-text", "search"],
+    "tags": [
+      "full-text",
+      "search"
+    ],
     "question": "Full-text search in PostgreSQL.",
     "answer": "<p>Convert text to <code class=\"inline\">tsvector</code> (normalized tokens) and query with <code class=\"inline\">tsquery</code>. Operators: <code class=\"inline\">@@</code> (match), <code class=\"inline\">to_tsvector()</code>, <code class=\"inline\">plainto_tsquery()</code>.</p><p>Index with GIN for fast search. Supports ranking (<code class=\"inline\">ts_rank</code>), highlighting, and multiple languages.</p><p>Good for app-level search; for heavy search workloads consider OpenSearch/Elasticsearch alongside Postgres.</p>",
     "tip": "For simple 'search products by name/description', Postgres FTS is enough — no need for Elasticsearch.",
     "code": "SELECT title, ts_rank(search_vec, query) AS rank\nFROM articles, plainto_tsquery('english', 'postgres indexing') query\nWHERE search_vec @@ query\nORDER BY rank DESC;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Postgres has built-in **full-text search**.\n• Text → `tsvector` (normalized tokens); query with `tsquery` and `@@`.\n• `to_tsvector()`, `plainto_tsquery()`; **GIN** index for speed; ranking via `ts_rank`.\n• **Interview tip**: for 'search products by name/description' Postgres FTS is enough — only add Elasticsearch/OpenSearch for heavy dedicated search workloads."
   },
   {
     "id": "pg-replication",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["replication", "ha"],
+    "tags": [
+      "replication",
+      "ha"
+    ],
     "question": "PostgreSQL replication basics.",
     "answer": "<p><strong>Streaming replication</strong> — primary streams WAL (Write-Ahead Log) to standby replicas in real time. Standbys serve read queries (hot standby).</p><p><strong>Logical replication</strong> — replicates specific tables/changes; useful for upgrades, selective sync, and CDC.</p><p>For HA: automatic failover with Patroni, repmgr, or cloud-managed RDS/Cloud SQL.</p>",
     "tip": "Read replicas offload reporting/analytics queries from the primary — a common scaling pattern.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "Two replication modes.\n• **Streaming** — primary ships **WAL** to standbys in real time; hot standbys serve reads.\n• **Logical** — replicates specific tables/changes (upgrades, selective sync, CDC).\n• HA/failover: Patroni, repmgr, or managed RDS/Cloud SQL.\n• **Interview tip**: **read replicas** offload reporting/analytics off the primary — the standard read-scaling pattern."
   },
   {
     "id": "pg-partitioning",
     "category": "postgresql",
     "difficulty": "advanced",
-    "tags": ["partitioning", "scaling"],
+    "tags": [
+      "partitioning",
+      "scaling"
+    ],
     "question": "Table partitioning in PostgreSQL.",
     "answer": "<p>Split a large table into smaller <strong>partitions</strong> by range, list, or hash. The planner prunes irrelevant partitions — queries only scan relevant chunks.</p><p><strong>Range partitioning</strong> by date is the most common (monthly order partitions). Partitions can be detached, archived, or dropped cheaply.</p>",
     "tip": "Partition when a table exceeds ~100M rows or when you need efficient time-based data retention.",
     "code": "CREATE TABLE orders (\n  id BIGINT, created_at DATE, amount NUMERIC\n) PARTITION BY RANGE (created_at);\n\nCREATE TABLE orders_2024 PARTITION OF orders\n  FOR VALUES FROM ('2024-01-01') TO ('2025-01-01');",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "**Partitioning** splits a big table into pieces by **range/list/hash**.\n• The planner **prunes** irrelevant partitions → scans only what's needed.\n• Range-by-date is most common (monthly order partitions); partitions can be detached/dropped cheaply.\n• **Interview tip**: partition once a table passes ~100M rows or when you need efficient **time-based retention** (drop old months instantly)."
   },
   {
     "id": "pg-jpa-hibernate",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["jpa", "hibernate", "spring"],
+    "tags": [
+      "jpa",
+      "hibernate",
+      "spring"
+    ],
     "question": "PostgreSQL with Spring Data JPA — common pitfalls.",
     "answer": "<ul><li><strong>N+1 queries</strong> — lazy loading without <code class=\"inline\">@EntityGraph</code> or JOIN FETCH causes hundreds of queries.</li><li><strong>Wrong dialect</strong> — use <code class=\"inline\">org.hibernate.dialect.PostgreSQLDialect</code>.</li><li><strong>JSONB mapping</strong> — use <code class=\"inline\">@JdbcTypeCode(SqlTypes.JSON)</code> (Hibernate 6).</li><li><strong>Connection pool sizing</strong> — HikariCP max pool vs Postgres max_connections.</li><li><strong>DDL auto</strong> — never use <code class=\"inline\">create-drop</code> in production; use Flyway/Liquibase.</li></ul>",
     "tip": "Enable Hibernate SQL logging in dev and count queries per request — N+1 is the #1 JPA performance bug.",
     "code": "spring.datasource.url=jdbc:postgresql://localhost:5432/mydb\nspring.jpa.properties.hibernate.jdbc.batch_size=25",
-    "lang": "properties"
+    "lang": "properties",
+    "revise": "Common Postgres + Spring Data JPA pitfalls:\n• **N+1 queries** — lazy loading without `@EntityGraph`/`JOIN FETCH`.\n• Correct **dialect** (`PostgreSQLDialect`); JSONB via `@JdbcTypeCode(SqlTypes.JSON)` (Hibernate 6).\n• Size **HikariCP** vs `max_connections`; never `ddl-auto=create-drop` in prod → use Flyway/Liquibase.\n• **Interview tip**: turn on SQL logging in dev and count queries per request — **N+1 is the #1 JPA perf bug**."
   },
   {
     "id": "pg-upsert",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["upsert", "on-conflict"],
+    "tags": [
+      "upsert",
+      "on-conflict"
+    ],
     "question": "How do you do an UPSERT in PostgreSQL?",
     "answer": "<p><code class=\"inline\">INSERT ... ON CONFLICT (unique_column) DO UPDATE SET ...</code> — insert if not exists, update if conflict on a unique constraint/index.</p><p><code class=\"inline\">DO NOTHING</code> silently skips duplicates. Essential for idempotent consumers and sync operations.</p>",
     "tip": "ON CONFLICT requires a unique index on the conflict columns — create one if missing.",
     "code": "INSERT INTO inventory (product_id, qty)\nVALUES (42, 10)\nON CONFLICT (product_id)\nDO UPDATE SET qty = inventory.qty + EXCLUDED.qty;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "**UPSERT** = `INSERT ... ON CONFLICT (col) DO UPDATE SET ...`.\n• `DO NOTHING` silently skips duplicates.\n• Requires a **unique index** on the conflict columns.\n• Essential for idempotent consumers and sync jobs.\n• **Interview tip**: if ON CONFLICT errors, you're missing the unique constraint/index it needs to detect the conflict."
   },
   {
     "id": "pg-locks-monitoring",
     "category": "postgresql",
     "difficulty": "advanced",
-    "tags": ["locks", "monitoring"],
+    "tags": [
+      "locks",
+      "monitoring"
+    ],
     "question": "How do you diagnose locking issues?",
     "answer": "<p>Query <code class=\"inline\">pg_locks</code> joined with <code class=\"inline\">pg_stat_activity</code> to see who holds and waits for locks. <code class=\"inline\">pg_blocking_pids()</code> (PG 14+) returns blocking process IDs.</p><p>Common causes: long-running transactions holding row locks, missing indexes causing table-level locks, DDL during peak traffic.</p>",
     "tip": "A transaction left open in a dev SQL client holding locks is a classic production incident cause.",
     "code": "SELECT pid, query, state, wait_event_type\nFROM pg_stat_activity\nWHERE state != 'idle'\nORDER BY query_start;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Diagnose locks via the catalog views.\n• Join **`pg_locks`** with **`pg_stat_activity`** to see holders vs waiters.\n• **`pg_blocking_pids()`** (PG14+) returns the blocking PIDs.\n• Causes: long-running transactions, missing indexes forcing table locks, DDL at peak.\n• **Interview tip**: a transaction left open in a dev SQL client holding locks is a classic production incident."
   },
   {
     "id": "pg-vs-mysql",
     "category": "postgresql",
     "difficulty": "beginner",
-    "tags": ["comparison", "mysql"],
+    "tags": [
+      "comparison",
+      "mysql"
+    ],
     "question": "PostgreSQL vs MySQL — key differences.",
     "answer": "<table><tr><th></th><th>PostgreSQL</th><th>MySQL</th></tr><tr><td><strong>SQL compliance</strong></td><td>Very high</td><td>Moderate</td></tr><tr><td><strong>JSON</strong></td><td>JSONB (indexable)</td><td>JSON (less mature indexing)</td></tr><tr><td><strong>Concurrency</strong></td><td>MVCC (readers never block writers)</td><td>InnoDB MVCC (improved but different)</td></tr><tr><td><strong>Extensions</strong></td><td>Rich (PostGIS, pgvector)</td><td>Limited</td></tr><tr><td><strong>Best for</strong></td><td>Complex queries, analytics, JSON, geospatial</td><td>Simple web apps, WordPress, read-heavy</td></tr></table>",
     "tip": "For new Spring Boot projects, PostgreSQL is the stronger default in 2026.",
     "code": "",
-    "lang": ""
+    "lang": "",
+    "revise": "**PostgreSQL vs MySQL**.\n• Postgres: very high SQL compliance, **JSONB** (indexable), MVCC readers-never-block-writers, rich extensions (PostGIS, pgvector).\n• MySQL: moderate compliance, less mature JSON indexing; great for simple/read-heavy web apps.\n• **Interview tip**: for a new Spring Boot project in 2026, Postgres is the stronger default — especially with complex queries, JSON, or geospatial."
   },
   {
     "id": "pg-backup-restore",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["backup", "pg_dump"],
+    "tags": [
+      "backup",
+      "pg_dump"
+    ],
     "question": "Backup and restore strategies.",
     "answer": "<ul><li><strong>pg_dump</strong> — logical backup (SQL or custom format). Portable, good for small/medium DBs.</li><li><strong>pg_basebackup</strong> — physical backup of data directory. Faster for large DBs; basis for PITR.</li><li><strong>PITR</strong> — Point-in-Time Recovery using WAL archiving; restore to any moment.</li><li><strong>Managed services</strong> — automated backups on RDS, Cloud SQL, Azure.</li></ul>",
     "tip": "Test your restore procedure — an untested backup is not a backup.",
     "code": "pg_dump -Fc mydb > mydb.dump\npg_restore -d mydb_restored mydb.dump",
-    "lang": "bash"
+    "lang": "bash",
+    "revise": "Three backup strategies:\n• **`pg_dump`** — logical (SQL/custom), portable, good for small/medium DBs.\n• **`pg_basebackup`** — physical data-dir copy, faster for large DBs, basis for PITR.\n• **PITR** — WAL archiving → restore to any moment; managed services automate this.\n• **Interview tip**: an untested restore is not a backup — always rehearse the recovery."
   },
   {
     "id": "pg-array-types",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["arrays", "data-types"],
+    "tags": [
+      "arrays",
+      "data-types"
+    ],
     "question": "Native array support in PostgreSQL.",
     "answer": "<p>Postgres supports array columns: <code class=\"inline\">INTEGER[]</code>, <code class=\"inline\">TEXT[]</code>, etc. Query with <code class=\"inline\">ANY</code>, <code class=\"inline\">@></code> (contains), <code class=\"inline\">unnest()</code>.</p><p>Useful for tags, multi-value attributes without a junction table. Index with GIN for containment queries.</p>",
     "tip": "Arrays are convenient but normalize to junction tables if you need FK constraints on elements.",
     "code": "SELECT * FROM posts WHERE 'angular' = ANY(tags);\nSELECT * FROM posts WHERE tags @> ARRAY['angular', 'typescript'];",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Postgres supports **native array columns** (`INTEGER[]`, `TEXT[]`).\n• Query with `ANY`, `@>` (contains), `unnest()`.\n• Handy for tags/multi-value attributes without a junction table; **GIN** index for containment.\n• **Interview tip**: convenient, but **normalize to a junction table** when you need foreign-key constraints on the elements."
   },
   {
     "id": "pg-schemas-search-path",
     "category": "postgresql",
     "difficulty": "beginner",
-    "tags": ["schemas", "search-path", "namespaces"],
+    "tags": [
+      "schemas",
+      "search-path",
+      "namespaces"
+    ],
     "question": "Schemas and the search_path.",
     "answer": "<p>A <strong>schema</strong> is a namespace for tables, views, and functions inside a single database (the default is <code class=\"inline\">public</code>). The <strong>search_path</strong> is the ordered list of schemas Postgres checks when you use an unqualified name.</p><p>Schemas are how you do multi-tenancy (one schema per tenant) or separate app modules within one database.</p>",
     "tip": "A per-tenant schema lets identical table names coexist — just set search_path per connection to route to the right tenant.",
     "code": "CREATE SCHEMA tenant_acme;\nSET search_path TO tenant_acme, public;\nSELECT * FROM orders;   -- resolves to tenant_acme.orders",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "A **schema** = a namespace for tables/views/functions inside one database (default `public`).\n• **`search_path`** = ordered list of schemas checked for unqualified names.\n• Enables **multi-tenancy** (one schema per tenant) or module separation.\n• **Interview tip**: identical table names can coexist per tenant — just set `search_path` per connection to route to the right tenant's schema."
   },
   {
     "id": "pg-uuid-vs-serial",
     "category": "postgresql",
     "difficulty": "beginner",
-    "tags": ["primary-key", "uuid", "identity"],
+    "tags": [
+      "primary-key",
+      "uuid",
+      "identity"
+    ],
     "question": "SERIAL vs IDENTITY vs UUID for primary keys.",
     "answer": "<ul><li><strong>SERIAL</strong> — legacy auto-increment (a sequence behind the scenes).</li><li><strong>GENERATED ALWAYS AS IDENTITY</strong> — the SQL-standard, preferred replacement: same auto-increment, cleaner ownership/permissions.</li><li><strong>UUID</strong> — globally unique, generatable on the client with no coordination, but larger (16 bytes) and, if random (v4), causes index fragmentation.</li></ul>",
     "tip": "Prefer IDENTITY over SERIAL in modern Postgres; if you need UUIDs, use time-ordered ones (v7) to keep the B-tree happy.",
     "code": "CREATE TABLE users (\n  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  ext_id UUID DEFAULT gen_random_uuid()\n);",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "Primary-key options:\n• **SERIAL** — legacy auto-increment.\n• **IDENTITY** — SQL-standard replacement (cleaner ownership) — the modern default.\n• **UUID** — globally unique, client-generatable, but 16 bytes and, if v4/random, **fragments the B-tree**.\n• **Interview tip**: prefer IDENTITY; if you need UUIDs, use **time-ordered v7** to keep index inserts sequential."
   },
   {
     "id": "pg-generated-columns",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["generated-columns", "computed"],
+    "tags": [
+      "generated-columns",
+      "computed"
+    ],
     "question": "Generated (computed) columns.",
     "answer": "<p>A <code class=\"inline\">GENERATED ALWAYS AS (expr) STORED</code> column is computed from other columns in the same row and kept in sync automatically on every write — you can't insert into it directly.</p><p>Great for derived values you want to filter, sort, or index on (e.g. a lowercased search column, a total).</p>",
     "tip": "Postgres only supports STORED generated columns (persisted) — there are no VIRTUAL ones like MySQL, so they cost storage but read for free.",
     "code": "CREATE TABLE items (\n  price NUMERIC, qty INT,\n  total NUMERIC GENERATED ALWAYS AS (price * qty) STORED\n);",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "**Generated column** = `GENERATED ALWAYS AS (expr) STORED`, auto-computed on every write (can't insert into it).\n• Great for derived values you want to filter/sort/**index** (lowercased search col, a total).\n• **Interview tip**: Postgres only supports **STORED** (persisted) generated columns — no MySQL-style VIRTUAL ones — so they cost storage but read for free."
   },
   {
     "id": "pg-materialized-views",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["materialized-views", "performance", "caching"],
+    "tags": [
+      "materialized-views",
+      "performance",
+      "caching"
+    ],
     "question": "Materialized views in PostgreSQL.",
     "answer": "<p>Unlike a regular view (recomputed on every query), a <strong>materialized view</strong> stores the result <em>physically</em> — expensive aggregations read instantly. The price is staleness: the data is a snapshot until you <code class=\"inline\">REFRESH</code> it.</p><p><code class=\"inline\">REFRESH ... CONCURRENTLY</code> avoids locking out readers during the rebuild, but requires a unique index on the view.</p>",
     "tip": "Schedule the REFRESH (cron/pg_cron/trigger) to match how fresh the data must be — that cadence is the whole design decision.",
     "code": "CREATE MATERIALIZED VIEW daily_sales AS\nSELECT date_trunc('day', created_at) d, sum(total) rev\nFROM orders GROUP BY 1;\nREFRESH MATERIALIZED VIEW CONCURRENTLY daily_sales;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "**Materialized view** stores a query's result **physically** — expensive aggregations read instantly.\n• Price = **staleness**: it's a snapshot until you `REFRESH`.\n• `REFRESH ... CONCURRENTLY` avoids locking readers but needs a unique index.\n• **Interview tip**: the whole design decision is the **refresh cadence** (cron/pg_cron/trigger) — match it to how fresh the data must be."
   },
   {
     "id": "pg-extensions",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["extensions", "ecosystem"],
+    "tags": [
+      "extensions",
+      "ecosystem"
+    ],
     "question": "Useful PostgreSQL extensions.",
     "answer": "<p><code class=\"inline\">CREATE EXTENSION</code> bolts on powerful features:</p><ul><li><strong>pg_stat_statements</strong> — aggregated query performance stats (find slow queries).</li><li><strong>pgcrypto</strong> — hashing/encryption; <strong>uuid-ossp</strong> / built-in <code class=\"inline\">gen_random_uuid()</code> for UUIDs.</li><li><strong>pg_trgm</strong> — trigram fuzzy/similarity search (great with GIN).</li><li><strong>PostGIS</strong> — full geospatial types and queries.</li></ul>",
     "tip": "pg_stat_statements is the single most useful one to name — it's how you find the query eating your database.",
     "code": "CREATE EXTENSION IF NOT EXISTS pg_stat_statements;\nSELECT query, calls, mean_exec_time\nFROM pg_stat_statements ORDER BY mean_exec_time DESC LIMIT 5;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "`CREATE EXTENSION` bolts on features:\n• **pg_stat_statements** — aggregated query stats (find slow queries).\n• **pgcrypto** / `gen_random_uuid()` — hashing/UUIDs.\n• **pg_trgm** — trigram fuzzy/similarity search (with GIN).\n• **PostGIS** — full geospatial.\n• **Interview tip**: name **pg_stat_statements** first — it's how you find the query eating your database."
   },
   {
     "id": "pg-triggers-plpgsql",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["triggers", "plpgsql", "procedural"],
+    "tags": [
+      "triggers",
+      "plpgsql",
+      "procedural"
+    ],
     "question": "Triggers and PL/pgSQL.",
     "answer": "<p><strong>PL/pgSQL</strong> is Postgres's procedural language for functions and triggers. A <strong>trigger</strong> binds a trigger function to fire <code class=\"inline\">BEFORE</code>/<code class=\"inline\">AFTER</code> an INSERT/UPDATE/DELETE; the special records <code class=\"inline\">NEW</code> and <code class=\"inline\">OLD</code> hold the row values.</p><p>Common uses: audit logging, maintaining <code class=\"inline\">updated_at</code>, and enforcing rules a CHECK can't express.</p>",
     "tip": "Business logic buried in triggers is hard to debug — reserve them for cross-cutting concerns like audit trails and timestamps.",
     "code": "CREATE FUNCTION touch() RETURNS trigger AS $$\nBEGIN NEW.updated_at = now(); RETURN NEW; END;\n$$ LANGUAGE plpgsql;\nCREATE TRIGGER t BEFORE UPDATE ON orders\nFOR EACH ROW EXECUTE FUNCTION touch();",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "**PL/pgSQL** = Postgres's procedural language for functions + triggers.\n• A **trigger** fires a function `BEFORE`/`AFTER` an INSERT/UPDATE/DELETE; `NEW`/`OLD` hold the row.\n• Uses: audit logging, maintaining `updated_at`, rules a CHECK can't express.\n• **Interview tip**: logic buried in triggers is hard to debug — reserve them for cross-cutting concerns (audit, timestamps), not business rules."
   },
   {
     "id": "pg-copy-bulk",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["copy", "bulk-load", "performance"],
+    "tags": [
+      "copy",
+      "bulk-load",
+      "performance"
+    ],
     "question": "Bulk loading data with COPY.",
     "answer": "<p><code class=\"inline\">COPY</code> streams whole files of rows in or out far faster than row-by-row <code class=\"inline\">INSERT</code> — one command, minimal parsing and per-statement overhead. <code class=\"inline\">\\copy</code> is the psql client-side variant that reads a local file.</p><p>For very large loads, drop/disable indexes and triggers first, load, then rebuild — maintaining indexes per row is the bottleneck.</p>",
     "tip": "COPY is the answer to 'how do you load millions of rows fast' — thousands of single INSERTs is the wrong answer.",
     "code": "COPY orders (id, total) FROM '/data/orders.csv' WITH (FORMAT csv, HEADER);\n-- client side:\n\\copy orders FROM 'orders.csv' CSV HEADER",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "**COPY** streams whole files of rows in/out far faster than row-by-row INSERT.\n• `\\copy` = psql client-side variant (reads a local file).\n• Very large load: drop/disable indexes+triggers, load, rebuild — per-row index maintenance is the bottleneck.\n• **Interview tip**: 'load millions of rows fast' → **COPY**; thousands of single INSERTs is the wrong answer."
   },
   {
     "id": "pg-index-types",
     "category": "postgresql",
     "difficulty": "intermediate",
-    "tags": ["indexes", "gin", "gist", "brin"],
+    "tags": [
+      "indexes",
+      "gin",
+      "gist",
+      "brin"
+    ],
     "question": "Index types: B-tree, GIN, GiST, BRIN, Hash.",
     "answer": "<ul><li><strong>B-tree</strong> — default; equality, ranges, sorting.</li><li><strong>GIN</strong> — multi-valued data: <code class=\"inline\">jsonb</code>, arrays, full-text search.</li><li><strong>GiST</strong> — geometric/spatial, ranges, nearest-neighbor.</li><li><strong>BRIN</strong> — tiny index for huge, naturally-ordered tables (e.g. append-only by time).</li><li><strong>Hash</strong> — equality only; rarely worth it over B-tree.</li></ul>",
     "tip": "jsonb containment (@>), array membership, and full-text all need GIN — a plain B-tree won't help those queries.",
     "code": "CREATE INDEX idx_doc ON docs USING GIN (data jsonb_path_ops);\nCREATE INDEX idx_ts ON events USING BRIN (created_at);",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "One-line index cheat sheet:\n• **B-tree** — equality, ranges, sorting (default).\n• **GIN** — jsonb, arrays, full-text.\n• **GiST** — geometric/spatial, ranges, nearest-neighbor.\n• **BRIN** — tiny index for huge, naturally-ordered (append-by-time) tables.\n• **Hash** — equality only, rarely worth it.\n• **Interview tip**: jsonb `@>`, array membership, and full-text all require **GIN** — a plain B-tree won't help."
   },
   {
     "id": "pg-lateral-join",
     "category": "postgresql",
     "difficulty": "advanced",
-    "tags": ["lateral", "joins", "advanced"],
+    "tags": [
+      "lateral",
+      "joins",
+      "advanced"
+    ],
     "question": "What is a LATERAL join?",
     "answer": "<p><code class=\"inline\">LATERAL</code> lets a subquery (or set-returning function) in the <code class=\"inline\">FROM</code> clause <strong>reference columns from the preceding FROM items</strong> — it's evaluated once per outer row, like a correlated subquery you can join to.</p><p>The classic use is <strong>top-N per group</strong>: for each parent, run a small ordered/limited query.</p>",
     "tip": "LATERAL + LIMIT is the cleanest 'latest 3 orders per customer' — no window-function filtering needed.",
     "code": "SELECT c.name, o.*\nFROM customers c\nCROSS JOIN LATERAL (\n  SELECT * FROM orders o\n  WHERE o.customer_id = c.id\n  ORDER BY o.created_at DESC LIMIT 3\n) o;",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "**LATERAL** lets a FROM-clause subquery reference columns from preceding FROM items — evaluated once per outer row (a joinable correlated subquery).\n• Classic use: **top-N per group** — for each parent run a small ordered/limited query.\n• **Interview tip**: `LATERAL` + `LIMIT` is the cleanest 'latest 3 orders per customer' — no window-function filtering needed."
   },
   {
     "id": "pg-listen-notify",
     "category": "postgresql",
     "difficulty": "advanced",
-    "tags": ["listen-notify", "pubsub", "realtime"],
+    "tags": [
+      "listen-notify",
+      "pubsub",
+      "realtime"
+    ],
     "question": "LISTEN / NOTIFY — what and when?",
     "answer": "<p>Postgres's built-in lightweight <strong>pub/sub</strong>: <code class=\"inline\">NOTIFY channel, 'payload'</code> broadcasts a message (often from a trigger); connected clients that ran <code class=\"inline\">LISTEN channel</code> receive it in near real time.</p><p>Great for cache invalidation or nudging workers. But it's <em>not a durable queue</em> — a client that's disconnected misses the message.</p>",
     "tip": "Use it for 'something changed, go check' signals; if you need guaranteed delivery, back it with a real queue or an outbox table.",
     "code": "-- worker:\nLISTEN order_created;\n-- producer (or trigger):\nNOTIFY order_created, '{\"id\": 42}';",
-    "lang": "sql"
+    "lang": "sql",
+    "revise": "**LISTEN/NOTIFY** = built-in lightweight **pub/sub**.\n• `NOTIFY channel, 'payload'` (often from a trigger); clients that ran `LISTEN channel` get it in near real time.\n• Great for cache invalidation / nudging workers.\n• **NOT durable**: a disconnected client misses the message.\n• **Interview tip**: use it for 'something changed, go check' signals; for guaranteed delivery back it with a real queue or an outbox table."
   }
 ]

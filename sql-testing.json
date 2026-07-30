@@ -13,7 +13,8 @@
     "tip": "UI can lie (cached/wrong message) — DB checks prove persistence.",
     "code": "-- After creating order ORD-1001 via API/UI\nSELECT order_id, status, total_amount\nFROM orders\nWHERE order_id = 'ORD-1001';",
     "lang": "sql",
-    "deep": "<h4>Where SQL fits in an SDET workflow</h4><ul><li>Prepare test data (insert/update known users).</li><li>Validate backend after UI/API actions.</li><li>Debug: is the bug in UI, API, or data?</li><li>Support defect reports with query evidence.</li></ul><h4>How to say it in an interview</h4><p>“I use SQL as a source of truth. If checkout succeeds in UI, I still verify the order row, status, and amounts in the database — especially for billing and order-management systems.”</p>"
+    "deep": "<h4>Where SQL fits in an SDET workflow</h4><ul><li>Prepare test data (insert/update known users).</li><li>Validate backend after UI/API actions.</li><li>Debug: is the bug in UI, API, or data?</li><li>Support defect reports with query evidence.</li></ul><h4>How to say it in an interview</h4><p>“I use SQL as a source of truth. If checkout succeeds in UI, I still verify the order row, status, and amounts in the database — especially for billing and order-management systems.”</p>",
+    "revise": "Testers use **SQL to validate the data behind the UI/API** — confirm rows were created/updated/deleted and gather defect evidence.\n• e.g. after a UI order, check the `orders` status; compare counts before/after a batch job.\n• **Interview tip**: the **UI can lie** (cached/wrong message) — a DB check proves **persistence**."
   },
   {
     "id": "sqlt-select-where",
@@ -30,7 +31,8 @@
     "tip": "Select only columns you will assert — easier to read in defect evidence.",
     "code": "SELECT customer_id, email, status\nFROM customers\nWHERE email = 'qa.user+123@test.com';",
     "lang": "sql",
-    "deep": "<h4>Useful beginner filters</h4><ul><li><code class=\"inline\">=</code>, <code class=\"inline\">&lt;&gt;</code>, <code class=\"inline\">IN (...)</code></li><li><code class=\"inline\">LIKE 'test%'</code> for prefixes</li><li><code class=\"inline\">BETWEEN</code> for dates/amounts</li><li><code class=\"inline\">ORDER BY created_at DESC</code> to see latest rows</li></ul><h4>Tester habit</h4><p>Keep a tiny library of validation queries per feature (order created, payment captured, status transitioned). Reuse them during regression.</p><h4>How to say it in an interview</h4><p>“I validate with targeted SELECTs — usually by business key like order_id or email — then compare status and critical fields to the expected result from the test case.”</p>"
+    "deep": "<h4>Useful beginner filters</h4><ul><li><code class=\"inline\">=</code>, <code class=\"inline\">&lt;&gt;</code>, <code class=\"inline\">IN (...)</code></li><li><code class=\"inline\">LIKE 'test%'</code> for prefixes</li><li><code class=\"inline\">BETWEEN</code> for dates/amounts</li><li><code class=\"inline\">ORDER BY created_at DESC</code> to see latest rows</li></ul><h4>Tester habit</h4><p>Keep a tiny library of validation queries per feature (order created, payment captured, status transitioned). Reuse them during regression.</p><h4>How to say it in an interview</h4><p>“I validate with targeted SELECTs — usually by business key like order_id or email — then compare status and critical fields to the expected result from the test case.”</p>",
+    "revise": "Validate test data with **`SELECT columns FROM table WHERE ...`**, filtered by your test entity (id/email) so you don't scan unrelated rows.\n• **Interview tip**: select **only the columns you'll assert** — it keeps the defect evidence readable."
   },
   {
     "id": "sqlt-joins-validation",
@@ -46,7 +48,8 @@
     "tip": "LEFT JOIN + IS NULL is a classic data-integrity defect finder.",
     "code": "SELECT o.order_id, c.email, o.status, o.total_amount\nFROM orders o\nINNER JOIN customers c ON c.customer_id = o.customer_id\nWHERE o.order_id = 'ORD-1001';\n\n-- Orders missing payment rows\nSELECT o.order_id\nFROM orders o\nLEFT JOIN payments p ON p.order_id = o.order_id\nWHERE p.payment_id IS NULL;",
     "lang": "sql",
-    "deep": "<h4>Integrity bugs JOINs catch</h4><ul><li>Order created with wrong customer_id.</li><li>Order line items missing after \"successful\" checkout.</li><li>Orphan records after failed transactions.</li></ul><h4>How to say it in an interview</h4><p>“I use joins to validate relationships across tables — for example order + customer + payment. LEFT JOIN ... IS NULL is especially useful to find missing related records after a flow that should create them.”</p>"
+    "deep": "<h4>Integrity bugs JOINs catch</h4><ul><li>Order created with wrong customer_id.</li><li>Order line items missing after \"successful\" checkout.</li><li>Orphan records after failed transactions.</li></ul><h4>How to say it in an interview</h4><p>“I use joins to validate relationships across tables — for example order + customer + payment. LEFT JOIN ... IS NULL is especially useful to find missing related records after a flow that should create them.”</p>",
+    "revise": "**JOINs** validate relationships — order→customer, line items→order, payment→order.\n• **INNER JOIN** = matched pairs; **LEFT JOIN** finds missing children.\n• **Interview tip**: **`LEFT JOIN ... WHERE right.id IS NULL`** is the classic data-integrity / orphan-record finder."
   },
   {
     "id": "sqlt-aggregates",
@@ -62,7 +65,8 @@
     "tip": "Compare API/UI total with SQL SUM — billing bugs hide here.",
     "code": "-- How many items in an order?\nSELECT COUNT(*) AS item_count\nFROM order_items\nWHERE order_id = 'ORD-1001';\n\n-- Does item sum match order total?\nSELECT SUM(line_total) AS items_total\nFROM order_items\nWHERE order_id = 'ORD-1001';",
     "lang": "sql",
-    "deep": "<h4>Practical patterns</h4><ul><li>Before/after counts around a batch job.</li><li>SUM of line items equals order header total.</li><li>COUNT of failed records in an error table after file upload.</li></ul><h4>How to say it in an interview</h4><p>“I use COUNT for row-level expectations and SUM for financial/quantity checks. In order management, matching order total to SUM of line items is a high-value validation.”</p>"
+    "deep": "<h4>Practical patterns</h4><ul><li>Before/after counts around a batch job.</li><li>SUM of line items equals order header total.</li><li>COUNT of failed records in an error table after file upload.</li></ul><h4>How to say it in an interview</h4><p>“I use COUNT for row-level expectations and SUM for financial/quantity checks. In order management, matching order total to SUM of line items is a high-value validation.”</p>",
+    "revise": "**Aggregates** verify volume + totals: **`COUNT(*)`** = how many rows created/updated; **`SUM`** = money/quantity totals.\n• **Interview tip**: compare the UI/API total against a SQL **`SUM`** — **billing bugs hide here**."
   },
   {
     "id": "sqlt-nulls",
@@ -78,7 +82,8 @@
     "tip": "A common bug: UI shows blank while DB stores NULL — confirm with IS NULL queries.",
     "code": "SELECT order_id, shipping_city\nFROM orders\nWHERE order_id = 'ORD-1001'\n  AND shipping_city IS NULL;",
     "lang": "sql",
-    "deep": "<h4>Gotchas</h4><ul><li><code class=\"inline\">WHERE city = NULL</code> never works as intended — use <code class=\"inline\">IS NULL</code>.</li><li>Aggregates ignore NULLs in <code class=\"inline\">SUM/AVG</code> (except <code class=\"inline\">COUNT(*)</code> counts rows).</li><li>Optional fields may legally be NULL — know the requirement before filing a bug.</li></ul><h4>How to say it in an interview</h4><p>“I check mandatory fields with IS NULL after create/update flows. If a required payment reference is NULL after ‘success’, that’s a backend persistence defect.”</p>"
+    "deep": "<h4>Gotchas</h4><ul><li><code class=\"inline\">WHERE city = NULL</code> never works as intended — use <code class=\"inline\">IS NULL</code>.</li><li>Aggregates ignore NULLs in <code class=\"inline\">SUM/AVG</code> (except <code class=\"inline\">COUNT(*)</code> counts rows).</li><li>Optional fields may legally be NULL — know the requirement before filing a bug.</li></ul><h4>How to say it in an interview</h4><p>“I check mandatory fields with IS NULL after create/update flows. If a required payment reference is NULL after ‘success’, that’s a backend persistence defect.”</p>",
+    "revise": "**NULL = unknown/missing** — you **can't** compare it with `=`; use **`IS NULL`/`IS NOT NULL`**.\n• Unexpected NULLs usually mean a field wasn't persisted (address, payment ref, status).\n• **Interview tip**: common bug — **UI shows blank while DB stores NULL**; confirm with an `IS NULL` query."
   },
   {
     "id": "sqlt-api-ui-db",
@@ -94,7 +99,8 @@
     "tip": "Best evidence in a bug: screenshot/API response + SQL result side by side.",
     "code": "1) POST /orders  → 201 orderId=ORD-1001\n2) SQL: SELECT status, total_amount FROM orders WHERE order_id='ORD-1001'\n3) GET /orders/ORD-1001 → body matches DB",
     "lang": "text",
-    "deep": "<h4>Example defect patterns</h4><ul><li>API 201 but no DB row (transaction issue).</li><li>DB saved, API response shows stale/wrong status.</li><li>UI success toast, DB status still PENDING.</li></ul><h4>How to say it in an interview</h4><p>“For critical order flows I validate all three: request/response, database state, and sometimes UI. That triangulation makes defects easy to localise and hard to dismiss.”</p>"
+    "deep": "<h4>Example defect patterns</h4><ul><li>API 201 but no DB row (transaction issue).</li><li>DB saved, API response shows stale/wrong status.</li><li>UI success toast, DB status still PENDING.</li></ul><h4>How to say it in an interview</h4><p>“For critical order flows I validate all three: request/response, database state, and sometimes UI. That triangulation makes defects easy to localise and hard to dismiss.”</p>",
+    "revise": "Treat the layers as **one story**: act via UI/API → **verify persistence with SQL** → optionally re-fetch.\n• Catches 'UI says success but data is wrong' and 'API returns OK but the transaction rolled back'.\n• **Interview tip**: best bug evidence = **screenshot/API response + SQL result side by side**."
   },
   {
     "id": "sqlt-insert-update-delete",
@@ -110,7 +116,8 @@
     "tip": "Always scope DELETE/UPDATE with a precise WHERE on test keys.",
     "code": "INSERT INTO customers(email, status) VALUES ('qa+1@test.com', 'ACTIVE');\nUPDATE orders SET status='CREATED' WHERE order_id='ORD-QA-1';\nDELETE FROM order_items WHERE order_id='ORD-QA-1';",
     "lang": "sql",
-    "deep": "<h4>Safety rules</h4><ul><li>Use unique test prefixes.</li><li>Avoid <code class=\"inline\">DELETE FROM table</code> without WHERE.</li><li>Know whether env auto-refreshes data.</li></ul><h4>How to say it in an interview</h4><p>“I use DML only in QA to seed and clean test data, always with precise keys, so scenarios start from known preconditions.”</p>"
+    "deep": "<h4>Safety rules</h4><ul><li>Use unique test prefixes.</li><li>Avoid <code class=\"inline\">DELETE FROM table</code> without WHERE.</li><li>Know whether env auto-refreshes data.</li></ul><h4>How to say it in an interview</h4><p>“I use DML only in QA to seed and clean test data, always with precise keys, so scenarios start from known preconditions.”</p>",
+    "revise": "Use **DML** to prepare/clean test data in **QA only** — create a known user/order, set a precondition status, delete temp rows.\n• Prefer transactions/rollback or isolated schemas; **never** run destructive scripts on prod.\n• **Interview tip**: always scope `DELETE`/`UPDATE` with a **precise `WHERE` on test keys**."
   },
   {
     "id": "sqlt-inner-vs-left",
@@ -127,7 +134,8 @@
     "tip": "Missing related records = LEFT JOIN ... IS NULL.",
     "code": "-- Orders with customer (both must exist)\nSELECT o.order_id, c.email\nFROM orders o\nINNER JOIN customers c ON c.customer_id = o.customer_id;\n\n-- Orders missing payments\nSELECT o.order_id\nFROM orders o\nLEFT JOIN payments p ON p.order_id = o.order_id\nWHERE p.payment_id IS NULL;",
     "lang": "sql",
-    "deep": "<h4>How to say it in an interview</h4><p>“INNER JOIN validates expected relationships. LEFT JOIN is my go-to for finding missing child records after a create flow.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“INNER JOIN validates expected relationships. LEFT JOIN is my go-to for finding missing child records after a create flow.”</p>",
+    "revise": "**INNER vs LEFT JOIN** in validation:\n• **INNER** — both sides must exist (order must have a customer).\n• **LEFT** — keep all left rows to **detect missing right-side children** (orders without payments).\n• **Interview tip**: missing related records = **`LEFT JOIN ... IS NULL`**."
   },
   {
     "id": "sqlt-groupby-having",
@@ -143,7 +151,8 @@
     "tip": "WHERE filters rows; HAVING filters groups.",
     "code": "SELECT status, COUNT(*) AS cnt\nFROM orders\nWHERE created_at >= CURRENT_DATE\nGROUP BY status\nHAVING COUNT(*) > 0;",
     "lang": "sql",
-    "deep": "<h4>Example</h4><p>After a nightly billing job, group invoices by status and assert expected counts for GENERATED vs FAILED.</p><h4>How to say it in an interview</h4><p>“I use GROUP BY/HAVING for reconciliation — comparing expected volumes per status after batch processing.”</p>"
+    "deep": "<h4>Example</h4><p>After a nightly billing job, group invoices by status and assert expected counts for GENERATED vs FAILED.</p><h4>How to say it in an interview</h4><p>“I use GROUP BY/HAVING for reconciliation — comparing expected volumes per status after batch processing.”</p>",
+    "revise": "**GROUP BY** buckets rows (orders per status); **HAVING** filters those **buckets** (customers with >3 open orders).\n• Great for batch-job/reconciliation checks.\n• **Interview tip**: **`WHERE` filters rows; `HAVING` filters groups** — the classic distinction."
   },
   {
     "id": "sqlt-subquery",
@@ -159,7 +168,8 @@
     "tip": "NOT EXISTS is excellent for orphan detection.",
     "code": "SELECT o.order_id\nFROM orders o\nWHERE NOT EXISTS (\n  SELECT 1 FROM payments p WHERE p.order_id = o.order_id\n);",
     "lang": "sql",
-    "deep": "<h4>How to say it in an interview</h4><p>“I use NOT EXISTS to find orphans — orders without payments, or line items without a parent order — which are common integration defects.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“I use NOT EXISTS to find orphans — orders without payments, or line items without a parent order — which are common integration defects.”</p>",
+    "revise": "**Subqueries** express 'rows that match/don't match another set' — orders whose customer is inactive, payments without an order.\n• **`EXISTS`/`NOT EXISTS`** are often clearer for presence checks.\n• **Interview tip**: **`NOT EXISTS`** is excellent for **orphan detection**."
   },
   {
     "id": "sqlt-distinct-duplicates",
@@ -175,7 +185,8 @@
     "tip": "Decide the real unique key first (email? external_order_ref?).",
     "code": "SELECT email, COUNT(*)\nFROM customers\nGROUP BY email\nHAVING COUNT(*) > 1;",
     "lang": "sql",
-    "deep": "<h4>Ecommerce example</h4><p>Duplicate <code class=\"inline\">external_ref</code> on orders after client retries POST without idempotency.</p><h4>How to say it in an interview</h4><p>“I hunt duplicates with GROUP BY + HAVING COUNT &gt; 1 on business keys — especially after create APIs that may be retried.”</p>"
+    "deep": "<h4>Ecommerce example</h4><p>Duplicate <code class=\"inline\">external_ref</code> on orders after client retries POST without idempotency.</p><h4>How to say it in an interview</h4><p>“I hunt duplicates with GROUP BY + HAVING COUNT &gt; 1 on business keys — especially after create APIs that may be retried.”</p>",
+    "revise": "**Detect duplicates**: `GROUP BY <business key> HAVING COUNT(*) > 1`.\n• Duplicates appear after retry bugs or a missing unique constraint.\n• **Interview tip**: decide the **real unique key first** (email? `external_order_ref`?) before hunting duplicates."
   },
   {
     "id": "sqlt-dates",
@@ -191,7 +202,8 @@
     "tip": "Timezone mismatches are a top source of “works in UI, fails in DB checks”.",
     "code": "SELECT order_id, created_at, cancelled_at\nFROM orders\nWHERE order_id = 'ORD-1001'\n  AND cancelled_at <= created_at + INTERVAL '60' MINUTE;",
     "lang": "sql",
-    "deep": "<h4>How to say it in an interview</h4><p>“I validate time-based rules with explicit ranges and call out timezone assumptions. For cancel windows I compare created_at vs cancelled_at in SQL.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“I validate time-based rules with explicit ranges and call out timezone assumptions. For cancel windows I compare created_at vs cancelled_at in SQL.”</p>",
+    "revise": "**Date/time validation**: filter with clear ranges, **beware timezones**, and check business rules ('cancel within 60 min').\n• Compare API/UI timestamps with DB values + precision/format.\n• **Interview tip**: **timezone mismatches** are a top source of 'works in UI, fails in DB checks'."
   },
   {
     "id": "sqlt-like-patterns",
@@ -207,7 +219,8 @@
     "tip": "Exact IDs for asserts; LIKE for finding your test footprints.",
     "code": "SELECT email FROM customers WHERE email LIKE 'qa.order+%@test.com';",
     "lang": "sql",
-    "deep": "<h4>How to say it in an interview</h4><p>“I use LIKE to locate my seeded QA data quickly, then assert on exact primary keys for pass/fail evidence.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“I use LIKE to locate my seeded QA data quickly, then assert on exact primary keys for pass/fail evidence.”</p>",
+    "revise": "**`LIKE`** finds seeded test rows by prefix/suffix (all QA emails) — for **investigation**, not assertions.\n• **Interview tip**: use **exact IDs for asserts**, `LIKE` only to find your test footprints."
   },
   {
     "id": "sqlt-transactions",
@@ -223,7 +236,8 @@
     "tip": "Partial commits after errors are high-severity data integrity bugs.",
     "code": "-- After failed payment attempt, order should not be PAID\nSELECT status FROM orders WHERE order_id='ORD-1001';",
     "lang": "sql",
-    "deep": "<h4>Example scenario</h4><p>API create order + reserve inventory + charge payment. If payment fails, inventory reservation and order state should roll back or compensate consistently — verify with SQL.</p><h4>How to say it in an interview</h4><p>“I specially test failure paths for partial writes. If payment fails, I confirm we don’t end up with inconsistent order/payment/inventory rows.”</p>"
+    "deep": "<h4>Example scenario</h4><p>API create order + reserve inventory + charge payment. If payment fails, inventory reservation and order state should roll back or compensate consistently — verify with SQL.</p><h4>How to say it in an interview</h4><p>“I specially test failure paths for partial writes. If payment fails, I confirm we don’t end up with inconsistent order/payment/inventory rows.”</p>",
+    "revise": "**Transactions** keep multi-step writes **atomic** — all commit or all roll back.\n• Testers verify failure paths don't leave **partial data** (order header without items, payment without order).\n• **Interview tip**: **partial commits after an error** are high-severity data-integrity bugs."
   },
   {
     "id": "sqlt-indexes-testers",
@@ -239,7 +253,8 @@
     "tip": "Mention indexes when discussing slow screens tied to search/filter APIs.",
     "code": "-- Conceptual: email lookup benefits from index on customers(email)",
     "lang": "sql",
-    "deep": "<h4>How to say it in an interview</h4><p>“I understand indexes improve read performance. If search-by-order-id is slow in QA with production-like volume, I flag it as a performance risk, not only a test inconvenience.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“I understand indexes improve read performance. If search-by-order-id is slow in QA with production-like volume, I flag it as a performance risk, not only a test inconvenience.”</p>",
+    "revise": "Testers don't design DBs, but should know **indexes speed lookups** and missing ones make QA checks/jobs slow.\n• **Interview tip**: if a validation query on a large table is very slow, **raise it** — it may signal an app performance problem too."
   },
   {
     "id": "sqlt-data-mapping",
@@ -255,7 +270,8 @@
     "tip": "Money and enums are where mapping bugs hide.",
     "code": "API totalAmount=99.90  <=>  orders.total_amount=99.90\nAPI status=CREATED     <=>  orders.status='CREATED'",
     "lang": "text",
-    "deep": "<h4>Example defect</h4><p>UI shows city from shipping address, DB saved billing city — mapping mismatch.</p><h4>How to say it in an interview</h4><p>“I keep a field mapping for critical objects and verify UI/API values against DB columns after writes, especially amounts and status enums.”</p>"
+    "deep": "<h4>Example defect</h4><p>UI shows city from shipping address, DB saved billing city — mapping mismatch.</p><h4>How to say it in an interview</h4><p>“I keep a field mapping for critical objects and verify UI/API values against DB columns after writes, especially amounts and status enums.”</p>",
+    "revise": "**Field-mapping validation**: build a checklist mapping each UI/API field → DB column, then compare **value-by-value** after create/update (types, enums, money rounding, trimmed spaces).\n• **Interview tip**: **money and enums** are where mapping bugs hide."
   },
   {
     "id": "sqlt-soft-delete",
@@ -270,7 +286,8 @@
     "tip": "Ask which delete model the product uses before filing a bug.",
     "code": "SELECT customer_id, is_deleted, deleted_at\nFROM customers\nWHERE email='qa+del@test.com';",
     "lang": "sql",
-    "deep": "<h4>How to say it in an interview</h4><p>“I confirm whether delete is hard or soft. For soft delete I check the flag/timestamp and that GET APIs hide the record while audit data remains.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“I confirm whether delete is hard or soft. For soft delete I check the flag/timestamp and that GET APIs hide the record while audit data remains.”</p>",
+    "revise": "**Soft vs hard delete**:\n• **Hard** — row removed.\n• **Soft** — row kept but flagged (`is_deleted`/`deleted_at`/status).\n• Verify the chosen behaviour AND that APIs no longer return deleted entities.\n• **Interview tip**: **ask which delete model** the product uses before filing a bug."
   },
   {
     "id": "sqlt-between-in",
@@ -286,7 +303,8 @@
     "tip": "BETWEEN is inclusive on both ends — confirm that matches the requirement.",
     "code": "SELECT *\nFROM orders\nWHERE status IN ('CREATED','PAID')\n  AND total_amount BETWEEN 100 AND 500;",
     "lang": "sql",
-    "deep": "<h4>How to say it in an interview</h4><p>“I use IN for allowed status sets and BETWEEN for range checks on amounts/dates when validating filters or business rules.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“I use IN for allowed status sets and BETWEEN for range checks on amounts/dates when validating filters or business rules.”</p>",
+    "revise": "**`IN`** checks membership in a set (statuses/ids); **`BETWEEN`** checks an inclusive range (dates/amounts).\n• Both make multi-value assertions readable.\n• **Interview tip**: **`BETWEEN` is inclusive on both ends** — confirm that matches the requirement."
   },
   {
     "id": "sqlt-count-star-vs-column",
@@ -301,7 +319,8 @@
     "tip": "For row existence use COUNT(*); for populated fields count the column.",
     "code": "SELECT COUNT(*) AS rows_total,\n       COUNT(shipping_city) AS city_populated\nFROM orders\nWHERE created_at >= CURRENT_DATE;",
     "lang": "sql",
-    "deep": "<h4>How to say it in an interview</h4><p>“I pick COUNT carefully. COUNT(*) tells me how many orders exist; COUNT(shipping_city) tells me how many have city filled — useful for mandatory-field audits.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“I pick COUNT carefully. COUNT(*) tells me how many orders exist; COUNT(shipping_city) tells me how many have city filled — useful for mandatory-field audits.”</p>",
+    "revise": "**`COUNT(*)`** counts rows; **`COUNT(column)`** counts **non-NULL** values in that column.\n• Counting a nullable column can under-count rows.\n• **Interview tip**: for row existence use **`COUNT(*)`**; to check a **populated field**, count the column."
   },
   {
     "id": "sqlt-reconciliation",
@@ -317,6 +336,7 @@
     "tip": "Common in BSS/OSS and ecommerce order/billing landscapes.",
     "code": "-- Orders missing in billing\nSELECT o.order_id\nFROM orders o\nLEFT JOIN bills b ON b.order_id = o.order_id\nWHERE o.status='DELIVERED' AND b.bill_id IS NULL;",
     "lang": "sql",
-    "deep": "<h4>Practical approach</h4><ol><li>Define expected relationship.</li><li>Compare counts.</li><li>Find missing/extra keys.</li><li>Compare amount totals.</li><li>Sample mismatches for root cause.</li></ol><h4>How to say it in an interview</h4><p>“I reconcile across systems with count, key-match, and amount checks. For delivered orders I verify corresponding billing rows exist and totals match.”</p>"
+    "deep": "<h4>Practical approach</h4><ol><li>Define expected relationship.</li><li>Compare counts.</li><li>Find missing/extra keys.</li><li>Compare amount totals.</li><li>Sample mismatches for root cause.</li></ol><h4>How to say it in an interview</h4><p>“I reconcile across systems with count, key-match, and amount checks. For delivered orders I verify corresponding billing rows exist and totals match.”</p>",
+    "revise": "**Reconciliation** compares two sources of truth — source file vs DB, order service vs billing table, API totals vs `SUM` of lines.\n• Check counts, totals, and mismatched keys.\n• **Interview tip**: it's common in **BSS/OSS and ecommerce order/billing** landscapes."
   }
 ]

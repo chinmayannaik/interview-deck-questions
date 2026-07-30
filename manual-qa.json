@@ -13,7 +13,8 @@
     "tip": "Another tester should be able to execute it without asking you what you meant.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Minimal template</h4><table><thead><tr><th>Field</th><th>Example</th></tr></thead><tbody><tr><td>Title</td><td>Login with valid credentials</td></tr><tr><td>Preconditions</td><td>User exists; app is on login page</td></tr><tr><td>Steps</td><td>1) Enter email 2) Enter password 3) Click Login</td></tr><tr><td>Test data</td><td>user@test.com / Valid@123</td></tr><tr><td>Expected</td><td>User lands on Home; session cookie set</td></tr></tbody></table><h4>What \"good\" looks like</h4><ul><li><strong>One main behaviour</strong> per case (don’t mix login + checkout).</li><li><strong>Observable expected result</strong> (UI message, DB row, API status).</li><li><strong>Traceable</strong> to a requirement/story ID when possible.</li></ul><h4>How to say it in an interview</h4><p>“A test case is a repeatable recipe: preconditions, steps, data, and expected result. I write it so anyone on the team can run it and know pass/fail without guessing.”</p>"
+    "deep": "<h4>Minimal template</h4><table><thead><tr><th>Field</th><th>Example</th></tr></thead><tbody><tr><td>Title</td><td>Login with valid credentials</td></tr><tr><td>Preconditions</td><td>User exists; app is on login page</td></tr><tr><td>Steps</td><td>1) Enter email 2) Enter password 3) Click Login</td></tr><tr><td>Test data</td><td>user@test.com / Valid@123</td></tr><tr><td>Expected</td><td>User lands on Home; session cookie set</td></tr></tbody></table><h4>What \"good\" looks like</h4><ul><li><strong>One main behaviour</strong> per case (don’t mix login + checkout).</li><li><strong>Observable expected result</strong> (UI message, DB row, API status).</li><li><strong>Traceable</strong> to a requirement/story ID when possible.</li></ul><h4>How to say it in an interview</h4><p>“A test case is a repeatable recipe: preconditions, steps, data, and expected result. I write it so anyone on the team can run it and know pass/fail without guessing.”</p>",
+    "revise": "A **test case** = documented steps + data + expected result to verify one behaviour.\n• Good = clear, reusable, **independent**; includes ID, title, preconditions, steps, data, expected result, priority.\n• **Interview tip**: another tester should execute it **without asking you what you meant**."
   },
   {
     "id": "mqa-bug-lifecycle",
@@ -30,7 +31,8 @@
     "tip": "Always retest after fix — and check nearby areas for regression.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Statuses in plain language</h4><ul><li><strong>New</strong>: logged, not yet reviewed.</li><li><strong>Assigned / Open</strong>: developer owns it.</li><li><strong>Fixed / Ready for QA</strong>: developer believes it is done.</li><li><strong>Retest</strong>: QA verifies the fix.</li><li><strong>Closed</strong>: confirmed fixed (or accepted as not a defect).</li><li><strong>Reopened</strong>: fix did not work or bug returned.</li></ul><h4>What a good bug report needs</h4><ul><li>Clear title, environment, build/version.</li><li>Steps to reproduce, actual vs expected.</li><li>Severity/priority, screenshots/logs, evidence.</li></ul><h4>How to say it in an interview</h4><p>“I log defects with clear repro steps, triage severity/priority, track them through fix and retest, and reopen if the issue persists. The lifecycle exists so nothing is lost between QA, dev, and release.”</p>"
+    "deep": "<h4>Statuses in plain language</h4><ul><li><strong>New</strong>: logged, not yet reviewed.</li><li><strong>Assigned / Open</strong>: developer owns it.</li><li><strong>Fixed / Ready for QA</strong>: developer believes it is done.</li><li><strong>Retest</strong>: QA verifies the fix.</li><li><strong>Closed</strong>: confirmed fixed (or accepted as not a defect).</li><li><strong>Reopened</strong>: fix did not work or bug returned.</li></ul><h4>What a good bug report needs</h4><ul><li>Clear title, environment, build/version.</li><li>Steps to reproduce, actual vs expected.</li><li>Severity/priority, screenshots/logs, evidence.</li></ul><h4>How to say it in an interview</h4><p>“I log defects with clear repro steps, triage severity/priority, track them through fix and retest, and reopen if the issue persists. The lifecycle exists so nothing is lost between QA, dev, and release.”</p>",
+    "revise": "**Defect life cycle**: New → Assigned → Open/In-Progress → Fixed → Retest → **Verified/Closed**.\n• Branches: Rejected, Deferred, Reopened, Duplicate. Jira tracks status/owner/history.\n• **Interview tip**: always **retest after fix** AND check nearby areas for regression."
   },
   {
     "id": "mqa-severity-priority",
@@ -47,7 +49,8 @@
     "tip": "QA usually proposes severity; product/lead often sets priority.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Common severity scale</h4><ul><li><strong>Critical/Blocker</strong>: system down, data loss, no workaround.</li><li><strong>Major</strong>: major feature broken, workaround may exist.</li><li><strong>Minor</strong>: limited impact, UI/functional nuisance.</li><li><strong>Trivial</strong>: cosmetic.</li></ul><h4>Interview trap</h4><p>People treat them as the same. Show you can give a mismatched example — that proves you understand triage, not just definitions.</p><h4>How to say it in an interview</h4><p>“Severity is impact on the product; priority is order of fixing for the business. I classify severity from evidence, then align priority with stakeholders during defect triage.”</p>"
+    "deep": "<h4>Common severity scale</h4><ul><li><strong>Critical/Blocker</strong>: system down, data loss, no workaround.</li><li><strong>Major</strong>: major feature broken, workaround may exist.</li><li><strong>Minor</strong>: limited impact, UI/functional nuisance.</li><li><strong>Trivial</strong>: cosmetic.</li></ul><h4>Interview trap</h4><p>People treat them as the same. Show you can give a mismatched example — that proves you understand triage, not just definitions.</p><h4>How to say it in an interview</h4><p>“Severity is impact on the product; priority is order of fixing for the business. I classify severity from evidence, then align priority with stakeholders during defect triage.”</p>",
+    "revise": "**Severity vs Priority**:\n• **Severity** — technical **impact** on the system.\n• **Priority** — business **urgency** to fix.\n• Homepage typo = low severity / high priority; admin-screen crash = high severity / low priority.\n• **Interview tip**: QA proposes **severity**; product/lead sets **priority**."
   },
   {
     "id": "mqa-smoke-sanity-regression",
@@ -64,7 +67,8 @@
     "tip": "Smoke = build stability; Sanity = fix confidence; Regression = no side effects.",
     "code": "",
     "lang": "",
-    "deep": "<h4>When you run each</h4><table><thead><tr><th>Type</th><th>When</th><th>Scope</th></tr></thead><tbody><tr><td>Smoke</td><td>New build arrives</td><td>Critical paths only, quick</td></tr><tr><td>Sanity</td><td>After a bug fix / small patch</td><td>Affected feature</td></tr><tr><td>Regression</td><td>Before release / after larger changes</td><td>Existing features</td></tr></tbody></table><h4>SDET angle</h4><p>Smoke and regression are prime automation candidates in CI. Sanity is often a short manual or targeted automated pack around the ticket.</p><h4>How to say it in an interview</h4><p>“Smoke decides if the build is worth testing. Sanity checks the specific change. Regression protects existing behaviour. I automate smoke/regression where possible and keep sanity focused on the ticket.”</p>"
+    "deep": "<h4>When you run each</h4><table><thead><tr><th>Type</th><th>When</th><th>Scope</th></tr></thead><tbody><tr><td>Smoke</td><td>New build arrives</td><td>Critical paths only, quick</td></tr><tr><td>Sanity</td><td>After a bug fix / small patch</td><td>Affected feature</td></tr><tr><td>Regression</td><td>Before release / after larger changes</td><td>Existing features</td></tr></tbody></table><h4>SDET angle</h4><p>Smoke and regression are prime automation candidates in CI. Sanity is often a short manual or targeted automated pack around the ticket.</p><h4>How to say it in an interview</h4><p>“Smoke decides if the build is worth testing. Sanity checks the specific change. Regression protects existing behaviour. I automate smoke/regression where possible and keep sanity focused on the ticket.”</p>",
+    "revise": "**Smoke vs Sanity vs Regression**:\n• **Smoke** — shallow, wide 'is the build testable?' (fail → reject build).\n• **Sanity** — narrow, deep check of a specific fix.\n• **Regression** — broad check that old features still work.\n• **Interview tip**: Smoke = build stability; Sanity = fix confidence; Regression = no side effects."
   },
   {
     "id": "mqa-uat",
@@ -80,7 +84,8 @@
     "tip": "UAT success = business acceptance, not just 'QA passed'.",
     "code": "",
     "lang": "",
-    "deep": "<h4>What SDETs/QA do in UAT</h4><ul><li>Prepare UAT scenarios and data with stakeholders.</li><li>Support users, capture defects, clarify expected business behaviour.</li><li>Track sign-off criteria and open risks.</li></ul><h4>Difference that matters</h4><p>QA may verify \"order status updates to Shipped\". UAT users ask \"Can our operations team process Friday’s peak orders the way they work today?\" — process fit, not only functional correctness.</p><h4>How to say it in an interview</h4><p>“System testing validates requirements from a QA lens. UAT validates business readiness with real users. I’ve led UAT by preparing scenarios, guiding stakeholders, and driving defect triage to sign-off.”</p>"
+    "deep": "<h4>What SDETs/QA do in UAT</h4><ul><li>Prepare UAT scenarios and data with stakeholders.</li><li>Support users, capture defects, clarify expected business behaviour.</li><li>Track sign-off criteria and open risks.</li></ul><h4>Difference that matters</h4><p>QA may verify \"order status updates to Shipped\". UAT users ask \"Can our operations team process Friday’s peak orders the way they work today?\" — process fit, not only functional correctness.</p><h4>How to say it in an interview</h4><p>“System testing validates requirements from a QA lens. UAT validates business readiness with real users. I’ve led UAT by preparing scenarios, guiding stakeholders, and driving defect triage to sign-off.”</p>",
+    "revise": "**UAT** = acceptance testing by **business users/clients** confirming real-world readiness and **sign-off**.\n• **System testing** = QA vs requirements in a test env.\n• UAT focuses on business workflows and real data, not every low-level validation.\n• **Interview tip**: UAT success = **business acceptance**, not just 'QA passed'."
   },
   {
     "id": "mqa-ep-bva",
@@ -97,7 +102,8 @@
     "tip": "EP reduces cases; BVA catches off-by-one defects.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Example: age field allowed 18–60</h4><ul><li><strong>EP valid</strong>: 18–60 → pick 30.</li><li><strong>EP invalid</strong>: &lt;18, &gt;60, non-numeric → pick 17, 61, \"abc\".</li><li><strong>BVA</strong>: 17, 18, 19 and 59, 60, 61.</li></ul><h4>Why interviewers ask</h4><p>It shows you design tests systematically instead of randomly clicking. Mention combining EP + BVA for efficient coverage.</p><h4>How to say it in an interview</h4><p>“I use equivalence partitioning to avoid redundant cases, then boundary value analysis on the edges because off-by-one defects are common. Together they give strong coverage with fewer tests.”</p>"
+    "deep": "<h4>Example: age field allowed 18–60</h4><ul><li><strong>EP valid</strong>: 18–60 → pick 30.</li><li><strong>EP invalid</strong>: &lt;18, &gt;60, non-numeric → pick 17, 61, \"abc\".</li><li><strong>BVA</strong>: 17, 18, 19 and 59, 60, 61.</li></ul><h4>Why interviewers ask</h4><p>It shows you design tests systematically instead of randomly clicking. Mention combining EP + BVA for efficient coverage.</p><h4>How to say it in an interview</h4><p>“I use equivalence partitioning to avoid redundant cases, then boundary value analysis on the edges because off-by-one defects are common. Together they give strong coverage with fewer tests.”</p>",
+    "revise": "**EP + BVA** reduce cases while keeping coverage:\n• **Equivalence Partitioning** — group inputs that behave the same, test **one per group**.\n• **Boundary Value Analysis** — test the **edges** (0, 1, 100, 101 for a 1–100 range).\n• **Interview tip**: EP reduces cases; **BVA catches off-by-one** defects."
   },
   {
     "id": "mqa-bug-report",
@@ -113,7 +119,8 @@
     "tip": "If the developer can’t reproduce from your report, the report failed.",
     "code": "Title: Checkout total ignores 10% coupon CODE10 on QA\nEnv: QA v24.6.1, Chrome 126\nSteps: ...\nActual: Total remains 100\nExpected: Total becomes 90\nEvidence: screenshot + network response",
     "lang": "text",
-    "deep": "<h4>Weak vs strong title</h4><ul><li>Weak: \"Checkout bug\"</li><li>Strong: \"Coupon CODE10 not applied to order total on QA Chrome\"</li></ul><h4>How to say it in an interview</h4><p>“I write defects for reproducibility — exact build, steps, data, actual vs expected, and evidence. That speeds triage and fix verification.”</p>"
+    "deep": "<h4>Weak vs strong title</h4><ul><li>Weak: \"Checkout bug\"</li><li>Strong: \"Coupon CODE10 not applied to order total on QA Chrome\"</li></ul><h4>How to say it in an interview</h4><p>“I write defects for reproducibility — exact build, steps, data, actual vs expected, and evidence. That speeds triage and fix verification.”</p>",
+    "revise": "A good **bug report** lets someone reproduce+fix without guessing:\n• Title, environment/build, preconditions, steps, data, **actual vs expected**, severity/priority, evidence (screenshots/logs/response).\n• **Interview tip**: if the developer **can't reproduce** from your report, the report failed."
   },
   {
     "id": "mqa-test-scenario-vs-case",
@@ -128,7 +135,8 @@
     "tip": "One scenario often expands into multiple cases (valid email, expired token, etc.).",
     "code": "Scenario: User resets password\nCases: valid reset, expired link, mismatched confirm password",
     "lang": "text",
-    "deep": "<h4>How to say it in an interview</h4><p>“Scenarios define coverage themes. Cases make them executable and measurable with clear expected results.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“Scenarios define coverage themes. Cases make them executable and measurable with clear expected results.”</p>",
+    "revise": "**Scenario vs Case**:\n• **Scenario** — high-level *what* to test ('verify user can reset password').\n• **Case** — detailed *how* (steps, data, expected results).\n• **Interview tip**: one scenario expands into **many cases** (valid email, expired token, ...)."
   },
   {
     "id": "mqa-decision-table",
@@ -144,7 +152,8 @@
     "tip": "Great for complex business rules in telecom/BSS/order systems.",
     "code": "VIP=Y, Order=OPEN, Paid=Y → Allow cancel with refund\nVIP=N, Order=SHIPPED, Paid=Y → Cancel blocked",
     "lang": "text",
-    "deep": "<h4>Beginner walkthrough</h4><p>List conditions as columns, each row a combination, and expected system action. Then create one test case per important row (or pairwise if combinations explode).</p><h4>How to say it in an interview</h4><p>“When rules depend on multiple conditions, I use a decision table so we don’t miss an allowed/denied combination — common in order management and entitlement flows.”</p>"
+    "deep": "<h4>Beginner walkthrough</h4><p>List conditions as columns, each row a combination, and expected system action. Then create one test case per important row (or pairwise if combinations explode).</p><h4>How to say it in an interview</h4><p>“When rules depend on multiple conditions, I use a decision table so we don’t miss an allowed/denied combination — common in order management and entitlement flows.”</p>",
+    "revise": "**Decision table testing** maps **combinations of conditions → actions/outcomes**.\n• Best when business rules have multiple inputs (role + order status + payment state → allowed actions).\n• **Interview tip**: great for complex rules in telecom/BSS/order systems — it exposes untested combinations."
   },
   {
     "id": "mqa-state-transition",
@@ -160,7 +169,8 @@
     "tip": "Draw the state diagram, then test valid paths and illegal transitions.",
     "code": "CREATED --pay--> PAID --ship--> SHIPPED\nCREATED --ship--> ✘ rejected",
     "lang": "text",
-    "deep": "<h4>What to test</h4><ul><li>Happy path transitions.</li><li>Invalid transition attempts (API/UI).</li><li>Terminal states (CANCELLED/DELIVERED) don’t accept further illegal updates.</li></ul><h4>How to say it in an interview</h4><p>“For order lifecycle I model states and events, then verify both allowed transitions and that illegal ones are blocked with clear errors.”</p>"
+    "deep": "<h4>What to test</h4><ul><li>Happy path transitions.</li><li>Invalid transition attempts (API/UI).</li><li>Terminal states (CANCELLED/DELIVERED) don’t accept further illegal updates.</li></ul><h4>How to say it in an interview</h4><p>“For order lifecycle I model states and events, then verify both allowed transitions and that illegal ones are blocked with clear errors.”</p>",
+    "revise": "**State transition testing** validates an entity moves between **allowed** states on valid events and **rejects illegal** ones.\n• e.g. CREATED → PAID → SHIPPED → DELIVERED; can't jump CREATED → DELIVERED.\n• **Interview tip**: draw the **state diagram**, then test valid paths AND illegal transitions."
   },
   {
     "id": "mqa-use-case",
@@ -175,7 +185,8 @@
     "tip": "Ask: happy path, failure path, and authorization path for every story.",
     "code": "Story: Cancel order within 1 hour\n- Success within 60 min\n- Reject after 61 min\n- Unauthorized user cannot cancel",
     "lang": "text",
-    "deep": "<h4>How to say it in an interview</h4><p>“I turn acceptance criteria into positive, negative, and permission cases, then add data/DB checks for side effects like refunds.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“I turn acceptance criteria into positive, negative, and permission cases, then add data/DB checks for side effects like refunds.”</p>",
+    "revise": "Derive tests from a use case/story via its **main path, alternate paths, and exceptions**.\n• Convert acceptance criteria → scenarios → cases with data; add negative + boundary conditions.\n• **Interview tip**: for every story ask — **happy path, failure path, authorization path**."
   },
   {
     "id": "mqa-test-data",
@@ -191,7 +202,8 @@
     "tip": "Flaky manual and automated tests often mean shared mutable data.",
     "code": "qa.order.user+<timestamp>@test.com\nseed order in CREATED status for cancel tests",
     "lang": "text",
-    "deep": "<h4>Good practices</h4><ul><li>Unique emails/IDs per run.</li><li>Known fixtures for each state you need.</li><li>Cleanup or isolated tenants.</li><li>Never use real customer PII in shared docs.</li></ul><h4>How to say it in an interview</h4><p>“I design data for independence — each scenario gets known preconditions. That makes defects reproducible and automation stable.”</p>"
+    "deep": "<h4>Good practices</h4><ul><li>Unique emails/IDs per run.</li><li>Known fixtures for each state you need.</li><li>Cleanup or isolated tenants.</li><li>Never use real customer PII in shared docs.</li></ul><h4>How to say it in an interview</h4><p>“I design data for independence — each scenario gets known preconditions. That makes defects reproducible and automation stable.”</p>",
+    "revise": "**Test data**: identify what each scenario needs, keep it **reusable + unique** where collisions matter, document setup/cleanup, use dedicated QA accounts/factories.\n• **Interview tip**: flaky manual AND automated tests often mean **shared mutable data**."
   },
   {
     "id": "mqa-blocker",
@@ -207,7 +219,8 @@
     "tip": "Communicate impact clearly: who is blocked and which exit criteria fail.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Handling steps</h4><ol><li>Confirm reproducibility + severity.</li><li>Escalate in triage with business impact.</li><li>Retest ASAP after fix.</li><li>Run focused regression around the area.</li></ol><h4>How to say it in an interview</h4><p>“Blockers stop critical flows or testing progress. I escalate with evidence, track fix urgently, and retest plus nearby regression before continuing release sign-off.”</p>"
+    "deep": "<h4>Handling steps</h4><ol><li>Confirm reproducibility + severity.</li><li>Escalate in triage with business impact.</li><li>Retest ASAP after fix.</li><li>Run focused regression around the area.</li></ol><h4>How to say it in an interview</h4><p>“Blockers stop critical flows or testing progress. I escalate with evidence, track fix urgently, and retest plus nearby regression before continuing release sign-off.”</p>",
+    "revise": "A **blocker** prevents major testing or a critical journey (can't login/place order).\n• Escalate immediately, pause dependent testing, treat as **release-stopping** unless waived.\n• **Interview tip**: communicate **impact** — who is blocked and which exit criteria fail."
   },
   {
     "id": "mqa-adhoc",
@@ -222,7 +235,8 @@
     "tip": "Don’t rely on pure ad-hoc for release evidence.",
     "code": "",
     "lang": "",
-    "deep": "<h4>How to say it in an interview</h4><p>“Ad-hoc is freeform clicking. Exploratory is structured investigation with a mission and notes I can convert into reusable tests.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“Ad-hoc is freeform clicking. Exploratory is structured investigation with a mission and notes I can convert into reusable tests.”</p>",
+    "revise": "**Ad-hoc vs Exploratory**:\n• **Ad-hoc** — informal, unstructured, undocumented.\n• **Exploratory** — also unscripted but disciplined (time-boxed charters, notes, follow-up cases).\n• **Interview tip**: don't rely on **pure ad-hoc** for release evidence — exploratory is the professional form."
   },
   {
     "id": "mqa-alpha-beta",
@@ -238,7 +252,8 @@
     "tip": "Alpha = internal; Beta = external real users.",
     "code": "",
     "lang": "",
-    "deep": "<h4>How to say it in an interview</h4><p>“Alpha validates readiness internally. Beta validates real-world usage and feedback before broad release.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“Alpha validates readiness internally. Beta validates real-world usage and feedback before broad release.”</p>",
+    "revise": "**Alpha vs Beta**:\n• **Alpha** — in-house (internal users/QA) before external release.\n• **Beta** — limited **external real users** in a production-like setting for feedback.\n• **Interview tip**: Alpha = internal; Beta = external real users."
   },
   {
     "id": "mqa-test-execution",
@@ -254,7 +269,8 @@
     "tip": "Blocked ≠ Failed — blocked means can’t run due to dependency/environment.",
     "code": "High priority: 40 Pass / 2 Fail / 1 Blocked / 7 Not Run",
     "lang": "text",
-    "deep": "<h4>How to say it in an interview</h4><p>“I report execution with clear statuses and defect links so stakeholders see risk, not just a percentage complete.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“I report execution with clear statuses and defect links so stakeholders see risk, not just a percentage complete.”</p>",
+    "revise": "Track each case as **Pass / Fail / Blocked / Not Run**.\n• Summarise by module/priority, link failures to defects, report daily vs exit criteria.\n• **Interview tip**: **Blocked ≠ Failed** — blocked = can't run due to a dependency/environment issue."
   },
   {
     "id": "mqa-defect-triage",
@@ -270,7 +286,8 @@
     "tip": "Come prepared with repro evidence and business impact.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Your role as SDET/QA</h4><ul><li>Explain impact with evidence.</li><li>Suggest severity from technical impact.</li><li>Accept priority from business when appropriate.</li><li>Call out release risks if blockers remain.</li></ul><h4>How to say it in an interview</h4><p>“In triage I present reproducible defects with impact, help classify severity/priority, and ensure critical issues get owners and fix targets before release.”</p>"
+    "deep": "<h4>Your role as SDET/QA</h4><ul><li>Explain impact with evidence.</li><li>Suggest severity from technical impact.</li><li>Accept priority from business when appropriate.</li><li>Call out release risks if blockers remain.</li></ul><h4>How to say it in an interview</h4><p>“In triage I present reproducible defects with impact, help classify severity/priority, and ensure critical issues get owners and fix targets before release.”</p>",
+    "revise": "**Triage** = QA + dev + product review new/open defects: confirm validity, set severity & priority, assign owners, target a fix version, decide defer/reject/duplicate.\n• **Interview tip**: come prepared with **repro evidence + business impact** to argue priority."
   },
   {
     "id": "mqa-error-guessing",
@@ -285,7 +302,8 @@
     "tip": "Pair error guessing with EP/BVA — experience fills gaps in models.",
     "code": "Double-click Place Order → two orders?\nPaste email with trailing space → login fails?",
     "lang": "text",
-    "deep": "<h4>How to say it in an interview</h4><p>“I use error guessing based on past defects — especially concurrency, bad input formatting, and partial failures in multi-step order flows.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“I use error guessing based on past defects — especially concurrency, bad input formatting, and partial failures in multi-step order flows.”</p>",
+    "revise": "**Error guessing** uses experience to invent likely failures formal techniques miss — double-submit, empty optional-but-used fields, pasted whitespace, timezone boundaries, concurrent edits.\n• **Interview tip**: pair it with **EP/BVA** — experience fills the gaps the models leave."
   },
   {
     "id": "mqa-build-accept",
@@ -301,7 +319,8 @@
     "tip": "BVT should be fast, automated when possible, and cover only critical paths.",
     "code": "BVT: login, open dashboard, create order draft, logout",
     "lang": "text",
-    "deep": "<h4>How to say it in an interview</h4><p>“I run a small BVT/smoke first. If core journeys fail, I reject the build instead of wasting a day on full regression.”</p>"
+    "deep": "<h4>How to say it in an interview</h4><p>“I run a small BVT/smoke first. If core journeys fail, I reject the build instead of wasting a day on full regression.”</p>",
+    "revise": "**BVT / build acceptance** = a short smoke pack deciding if a build is stable enough for deeper testing (fail → reject).\n• **Interview tip**: keep it **fast, automated, critical-paths-only** — it's the gate before you invest real test effort."
   },
   {
     "id": "mqa-test-closure",
@@ -317,6 +336,7 @@
     "tip": "Leaders need risk clarity more than raw case counts.",
     "code": "",
     "lang": "",
-    "deep": "<h4>Useful sections</h4><ul><li>What was in scope / out of scope.</li><li>Pass-fail summary by priority.</li><li>Open Sev-1/2 list with impact.</li><li>Known limitations and residual risk.</li><li>Sign-off recommendation.</li></ul><h4>How to say it in an interview</h4><p>“At closure I report coverage, open risks, and a clear go/no-go recommendation tied to exit criteria — not just ‘testing completed’.”</p>"
+    "deep": "<h4>Useful sections</h4><ul><li>What was in scope / out of scope.</li><li>Pass-fail summary by priority.</li><li>Open Sev-1/2 list with impact.</li><li>Known limitations and residual risk.</li><li>Sign-off recommendation.</li></ul><h4>How to say it in an interview</h4><p>“At closure I report coverage, open risks, and a clear go/no-go recommendation tied to exit criteria — not just ‘testing completed’.”</p>",
+    "revise": "A **test closure/summary report** = scope tested, results, open defects by severity, risks/waivers, environment/build, and a **go/no-go recommendation**.\n• It's the evidence behind sign-off.\n• **Interview tip**: leaders need **risk clarity**, not raw case counts."
   }
 ]
