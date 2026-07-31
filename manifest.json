@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 72,
-  "updatedAt": "2026-07-31T12:24:11.328Z",
-  "totalQuestions": 1776,
-  "contentHash": "804a48fd9bc67406c767ac1d2bde9d582598c683",
+  "version": 73,
+  "updatedAt": "2026-07-31T12:57:11.285Z",
+  "totalQuestions": 1782,
+  "contentHash": "62c0a7b22915f64e7fb683fb7c3a8eaf15d64d1f",
   "groups": [
     {
       "id": "frontend",
@@ -51,14 +51,14 @@
       "id": "java-angular",
       "file": "packs/java-angular.json",
       "label": "Java + Angular",
-      "count": 1021,
+      "count": 1027,
       "hash": "ae5da0dfd601"
     },
     {
       "id": "angular-developer",
       "file": "packs/angular-developer.json",
       "label": "Angular Developer",
-      "count": 559,
+      "count": 565,
       "hash": "0c5721f80805"
     },
     {
@@ -76,8 +76,8 @@
       "label": "Angular",
       "group": "frontend",
       "color": "#C3002F",
-      "count": 97,
-      "hash": "224861efef66"
+      "count": 103,
+      "hash": "2affb2dc0a3b"
     },
     {
       "id": "react",

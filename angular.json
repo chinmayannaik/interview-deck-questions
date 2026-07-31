@@ -1642,5 +1642,104 @@
     "code": "<!-- native @angular/localize -->\n<h1 i18n=\"@@homeTitle\">Welcome</h1>\n<span i18n>{count, plural, =0 {no items} =1 {one item} other {{{count}} items}}</span>\n\n// runtime (ngx-translate / Transloco)\n{{ 'HOME.TITLE' | translate }}\nthis.translate.use('fr');",
     "lang": "html",
     "revise": "**i18n approaches**:\n• **@angular/localize** (built-in) — i18n attr + ng extract-i18n → XLIFF → one build per locale (compile-time, fastest).\n• **ngx-translate / Transloco** — JSON files, translate pipe, switch language at runtime (no rebuild).\n• Both do ICU plurals; LOCALE_ID drives Date/Currency/Number pipes."
+  },
+  {
+    "id": "ng-template-ref-var",
+    "category": "angular",
+    "difficulty": "beginner",
+    "tags": [
+      "template",
+      "reference-variable",
+      "basics"
+    ],
+    "question": "What is a template reference variable in Angular?",
+    "answer": "<p>A <strong>template reference variable</strong> is a <code class=\"inline\">#name</code> you declare in the template to get a handle to something, then reference it elsewhere <strong>in the same template</strong>:</p><ul><li>On a plain element — the <strong>DOM element</strong> (e.g. <code class=\"inline\">#box</code> → the <code class=\"inline\">&lt;input&gt;</code>).</li><li>On a component/directive — its <strong>instance</strong> (or the exported directive, e.g. <code class=\"inline\">#f=\"ngForm\"</code>).</li></ul><p>Scope is the template only; to use it in the class, query it with <code class=\"inline\">@ViewChild</code>.</p>",
+    "tip": "#var on an element = the element; on a component = its instance; #f=\"ngForm\" = the exported directive. It's template-scoped.",
+    "code": "<!-- element ref -->\n<input #box (keyup)=\"0\">\n<button (click)=\"box.focus()\">Focus</button>\n<p>{{ box.value }}</p>\n\n<!-- exported directive ref -->\n<form #f=\"ngForm\" (ngSubmit)=\"save(f.value)\">...</form>",
+    "lang": "html",
+    "revise": "**Template reference variable** = `#name` giving a handle within the same template.\n• On an element → the DOM element; on a component → its instance; `#f=\"ngForm\"` → exported directive.\n• Template-scoped; reach it in the class via @ViewChild."
+  },
+  {
+    "id": "ng-angular-material",
+    "category": "angular",
+    "difficulty": "beginner",
+    "tags": [
+      "material",
+      "cdk",
+      "ui",
+      "library"
+    ],
+    "question": "What is Angular Material?",
+    "answer": "<p><strong>Angular Material</strong> is Google's official UI component library implementing <strong>Material Design</strong> for Angular — ready-made, accessible, themeable components (buttons, form fields, dialogs, tables, datepickers, snackbars, etc.).</p><p>You add it with <code class=\"inline\">ng add @angular/material</code>, import the standalone components/modules you need, and theme it with SCSS. It's built on the <strong>Angular CDK (Component Dev Kit)</strong>, which provides the lower-level, unstyled primitives (overlay, accessibility, drag-and-drop, virtual scrolling) you can also use to build your own components.</p>",
+    "tip": "Material = ready-made Material-Design UI components; the CDK underneath = unstyled primitives (overlay, a11y, virtual scroll, drag-drop) for building custom ones.",
+    "code": "ng add @angular/material\n\n// use a component\nimport { MatButtonModule } from '@angular/material/button';\n// <button mat-raised-button color=\"primary\">Save</button>",
+    "lang": "bash",
+    "revise": "**Angular Material** = official Material-Design UI component library (accessible, themeable): buttons, dialogs, tables, datepickers, etc.\n• `ng add @angular/material`, import components, theme via SCSS.\n• Built on the **CDK** (overlay, a11y, drag-drop, virtual scroll) — primitives for custom components."
+  },
+  {
+    "id": "ng-resolver",
+    "category": "angular",
+    "difficulty": "intermediate",
+    "tags": [
+      "routing",
+      "resolver",
+      "data",
+      "asked"
+    ],
+    "question": "What is a Resolver in Angular, and how do you use one?",
+    "answer": "<p>A <strong>Resolver</strong> pre-fetches data <strong>before</strong> a route activates, so the component renders with its data already present — no empty flash or in-component spinner on entry.</p><p>Write a functional resolver (<code class=\"inline\">ResolveFn</code>) that returns the data (value / <code class=\"inline\">Observable</code> / <code class=\"inline\">Promise</code>), attach it to the route via <code class=\"inline\">resolve: { key: fn }</code>, and read it in the component from <code class=\"inline\">ActivatedRoute.data</code> (or the snapshot).</p><p><strong>Trade-off:</strong> navigation <em>waits</em> for the resolver, so keep it fast and handle errors — a slow resolver makes the whole route feel slow.</p>",
+    "tip": "Resolver = fetch data before the route loads, so the page renders ready. Navigation blocks on it, so keep it quick and handle failures.",
+    "code": "// user.resolver.ts\nexport const userResolver: ResolveFn<User> =\n  (route) => inject(UserService).getUser(route.paramMap.get('id')!);\n\n// routes\n{ path: 'users/:id', component: UserComponent, resolve: { user: userResolver } }\n\n// component\nconstructor(private route: ActivatedRoute) {\n  this.user = this.route.snapshot.data['user'];\n}",
+    "lang": "typescript",
+    "revise": "**Resolver** = pre-fetch data **before** a route activates → component renders ready (no empty flash).\n• `ResolveFn` → `resolve: { key: fn }` on the route → read from `ActivatedRoute.data`.\n• Navigation blocks on it — keep it fast, handle errors."
+  },
+  {
+    "id": "ng-formcontrol",
+    "category": "angular",
+    "difficulty": "beginner",
+    "tags": [
+      "reactive-forms",
+      "formcontrol",
+      "forms"
+    ],
+    "question": "What is FormControl in Angular Reactive Forms?",
+    "answer": "<p><code class=\"inline\">FormControl</code> represents a <strong>single input's value and validation state</strong> — the atomic building block of reactive forms (<code class=\"inline\">FormGroup</code> and <code class=\"inline\">FormArray</code> compose FormControls).</p><p>You create it with an initial value and validators, bind it with <code class=\"inline\">[formControl]</code>, and use its API: <code class=\"inline\">.value</code>, <code class=\"inline\">.valid</code>, <code class=\"inline\">.errors</code>, <code class=\"inline\">.valueChanges</code> (an Observable), and <code class=\"inline\">setValue()</code>/<code class=\"inline\">patchValue()</code>.</p>",
+    "tip": "FormControl = one field's value + validity + valueChanges stream. It's the atom; FormGroup/FormArray are made of FormControls.",
+    "code": "email = new FormControl('', [Validators.required, Validators.email]);\n\n// template\n// <input [formControl]=\"email\">\n// <span *ngIf=\"email.errors?.['required']\">Required</span>\n\nthis.email.valueChanges.subscribe(v => console.log(v));",
+    "lang": "typescript",
+    "revise": "**FormControl** = a single input's **value + validation state** (the atomic unit).\n• Create with value + validators; bind `[formControl]`.\n• API: `.value`, `.valid`, `.errors`, `.valueChanges`, `setValue`/`patchValue`."
+  },
+  {
+    "id": "ng-formgroup",
+    "category": "angular",
+    "difficulty": "beginner",
+    "tags": [
+      "reactive-forms",
+      "formgroup",
+      "forms"
+    ],
+    "question": "What is FormGroup in Angular Reactive Forms?",
+    "answer": "<p><code class=\"inline\">FormGroup</code> groups related controls into <strong>one object</strong>: its value is a key→value map, and the group is <strong>valid only when all its children are valid</strong>.</p><p>Build it with <code class=\"inline\">FormBuilder</code> (<code class=\"inline\">fb.group({...})</code>), bind <code class=\"inline\">[formGroup]</code> on the <code class=\"inline\">&lt;form&gt;</code> and <code class=\"inline\">formControlName</code> on each input, then read <code class=\"inline\">form.value</code> on submit. FormGroups can be nested for structured data.</p>",
+    "tip": "FormGroup = a named collection of controls; its value is an object and it's valid only if every child is. Bind [formGroup] + formControlName.",
+    "code": "form = this.fb.group({\n  name:  ['', Validators.required],\n  email: ['', [Validators.required, Validators.email]],\n});\n\n// template\n// <form [formGroup]=\"form\" (ngSubmit)=\"save(form.value)\">\n//   <input formControlName=\"name\">\n//   <input formControlName=\"email\">\n// </form>",
+    "lang": "typescript",
+    "revise": "**FormGroup** = groups related controls into one object; value = key→value map; valid only if **all** children valid.\n• Build with `fb.group({...})`; bind `[formGroup]` + `formControlName`.\n• Nestable for structured forms. Dynamic lists → FormArray."
+  },
+  {
+    "id": "ng-viewchild-vs-contentchild",
+    "category": "angular",
+    "difficulty": "intermediate",
+    "tags": [
+      "viewchild",
+      "contentchild",
+      "queries",
+      "asked"
+    ],
+    "question": "ViewChild vs ContentChild — what's the difference?",
+    "answer": "<p>Both grab a child, but from <strong>different places</strong>:</p><ul><li><strong>@ViewChild</strong> — queries the component's <strong>own template</strong> (its view).</li><li><strong>@ContentChild</strong> — queries <strong>projected content</strong> — the markup a parent passes <em>between the component's tags</em>, rendered through <code class=\"inline\">&lt;ng-content&gt;</code>.</li></ul><p><strong>Timing:</strong> a <code class=\"inline\">@ViewChild</code> is ready in <code class=\"inline\">ngAfterViewInit</code>; a <code class=\"inline\">@ContentChild</code> in <code class=\"inline\">ngAfterContentInit</code>. Use <code class=\"inline\">@ViewChildren</code>/<code class=\"inline\">@ContentChildren</code> (a <code class=\"inline\">QueryList</code>) for multiple.</p>",
+    "tip": "ViewChild = your own template; ContentChild = content projected in via <ng-content>. Ready in ngAfterViewInit vs ngAfterContentInit.",
+    "code": "@Component({ template: `<h1 #title></h1> <ng-content></ng-content>` })\nclass Card {\n  @ViewChild('title') title!: ElementRef;      // from OWN template\n  @ContentChild(IconComponent) icon!: IconComponent; // PROJECTED by parent\n}\n// parent: <app-card><app-icon/></app-card>  <-- app-icon is ContentChild",
+    "lang": "typescript",
+    "revise": "**ViewChild vs ContentChild**: ViewChild = component's **own template**; ContentChild = **projected** content (via `<ng-content>`).\n• Ready in **ngAfterViewInit** vs **ngAfterContentInit**.\n• Multiple → @ViewChildren / @ContentChildren (QueryList)."
   }
 ]
