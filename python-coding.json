@@ -1,0 +1,393 @@
+[
+  {
+    "id": "pyc-reverse-palindrome",
+    "category": "pycoding",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "string",
+      "two-pointer"
+    ],
+    "question": "Reverse a string and check whether it is a palindrome.",
+    "answer": "<p><strong>Reversing</strong>: the Pythonic way is the slice <code class=\"inline\">s[::-1]</code> — a negative step walks the sequence backwards. Interviewers often also want the manual two-pointer version to check you understand the mechanics.</p><p><strong>Palindrome</strong>: compare characters from both ends moving inward. <code class=\"inline\">s == s[::-1]</code> is the one-liner, but the two-pointer loop is <strong>O(1) space</strong> and can exit early on the first mismatch, while the slice builds a whole new string.</p><p>The usual follow-up is to ignore case, spaces, and punctuation — normalise first with a generator expression rather than a regex.</p>",
+    "tip": "Give the one-liner, then immediately offer the two-pointer version and say why: `s[::-1]` is O(n) space, the two-pointer is O(1) and short-circuits. Showing you know the trade-off is the point.",
+    "code": "# reverse\ns[::-1]                                  # Pythonic\n\"\".join(reversed(s))                     # equivalent\n\n# palindrome — one-liner\ndef is_palindrome(s: str) -> bool:\n    return s == s[::-1]\n\n# palindrome — two pointers, O(1) space, early exit\ndef is_palindrome(s: str) -> bool:\n    left, right = 0, len(s) - 1\n    while left < right:\n        if s[left] != s[right]:\n            return False\n        left += 1\n        right -= 1\n    return True\n\n# follow-up: ignore case / spaces / punctuation\ndef is_palindrome_clean(s: str) -> bool:\n    cleaned = [c.lower() for c in s if c.isalnum()]\n    return cleaned == cleaned[::-1]\n\nis_palindrome_clean(\"A man, a plan, a canal: Panama\")   # True",
+    "lang": "python",
+    "revise": "**Reverse**: `s[::-1]` (negative-step slice) or `\"\".join(reversed(s))`.\n**Palindrome**: `s == s[::-1]` one-liner, **or two pointers** from both ends moving inward.\n• Two-pointer is **O(1) space + early exit**; the slice is O(n) space.\n• Follow-up (very common): normalise with `c.lower() for c in s if c.isalnum()` first.\n• **Complexity**: `O(n)` time; `O(1)` space with two pointers."
+  },
+  {
+    "id": "pyc-anagram",
+    "category": "pycoding",
+    "difficulty": "beginner",
+    "tags": [
+      "string",
+      "counter",
+      "hashing"
+    ],
+    "question": "Check whether two strings are anagrams.",
+    "answer": "<p>Two strings are anagrams if they contain the same characters with the same counts.</p><p><strong>Two approaches:</strong></p><ul><li><strong>Sort both</strong> and compare — <code class=\"inline\">sorted(a) == sorted(b)</code>. One line, but <strong>O(n log n)</strong>.</li><li><strong>Count characters</strong> — <code class=\"inline\">Counter(a) == Counter(b)</code>. <strong>O(n)</strong> and the better answer.</li></ul><p>Always check lengths first — an early <code class=\"inline\">len(a) != len(b)</code> return is free and rules out most non-anagrams immediately.</p>",
+    "tip": "Lead with `Counter(a) == Counter(b)` and state it's O(n) vs O(n log n) for sorting. If they ask you to avoid the stdlib, build the count dict manually — increment for the first string, decrement for the second, and verify every count is zero.",
+    "code": "from collections import Counter\n\n# ✅ O(n)\ndef is_anagram(a: str, b: str) -> bool:\n    return len(a) == len(b) and Counter(a) == Counter(b)\n\n# O(n log n) — acceptable but weaker\ndef is_anagram_sorted(a: str, b: str) -> bool:\n    return sorted(a) == sorted(b)\n\n# manual, no stdlib — increment then decrement\ndef is_anagram_manual(a: str, b: str) -> bool:\n    if len(a) != len(b):\n        return False\n    counts = {}\n    for ch in a:\n        counts[ch] = counts.get(ch, 0) + 1\n    for ch in b:\n        if ch not in counts:\n            return False\n        counts[ch] -= 1\n        if counts[ch] == 0:\n            del counts[ch]\n    return not counts\n\nis_anagram(\"listen\", \"silent\")     # True",
+    "lang": "python",
+    "revise": "**Anagram** = same characters, same counts.\n• **Best: `Counter(a) == Counter(b)`** → **O(n)**.\n• `sorted(a) == sorted(b)` works but is **O(n log n)**.\n• **Always short-circuit on `len(a) != len(b)`** first — free.\n• No-stdlib version: **increment** counts for `a`, **decrement** for `b`, dict must end empty."
+  },
+  {
+    "id": "pyc-char-frequency",
+    "category": "pycoding",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "counter",
+      "dict"
+    ],
+    "question": "Count the frequency of characters (or words) in a string.",
+    "answer": "<p><code class=\"inline\">collections.Counter</code> is purpose-built for this and gives you <code class=\"inline\">most_common(n)</code> for free. It's the answer an experienced Python developer gives.</p><p>Interviewers often ask for the manual version too. Two idiomatic options without <code class=\"inline\">Counter</code>:</p><ul><li><code class=\"inline\">dict.get(key, 0) + 1</code> — no import, works everywhere.</li><li><code class=\"inline\">defaultdict(int)</code> — cleaner when you're building up counts across a loop.</li></ul><p>For word frequency, normalise first: lowercase and strip punctuation, otherwise <code class=\"inline\">\"The\"</code> and <code class=\"inline\">\"the,\"</code> count as different words.</p>",
+    "tip": "Show `Counter` first, then the manual `dict.get(ch, 0) + 1`. Mentioning `most_common(n)` unprompted usually leads straight into the 'top-K frequent' follow-up, which you've then already half-answered.",
+    "code": "from collections import Counter, defaultdict\n\n# ✅ the Pythonic answer\nCounter(\"mississippi\")                  # {'i': 4, 's': 4, 'p': 2, 'm': 1}\nCounter(\"mississippi\").most_common(2)   # [('i', 4), ('s', 4)]\n\n# manual — dict.get\ndef char_count(s: str) -> dict:\n    counts = {}\n    for ch in s:\n        counts[ch] = counts.get(ch, 0) + 1\n    return counts\n\n# manual — defaultdict\ndef char_count_dd(s: str) -> dict:\n    counts = defaultdict(int)\n    for ch in s:\n        counts[ch] += 1\n    return dict(counts)\n\n# word frequency — normalise first!\nimport re\ndef word_count(text: str) -> Counter:\n    words = re.findall(r\"[a-z']+\", text.lower())\n    return Counter(words)\n\nword_count(\"The cat. The CAT!\").most_common()   # [('the', 2), ('cat', 2)]",
+    "lang": "python",
+    "revise": "**Frequency count**:\n• **`Counter(s)`** — purpose-built, plus **`.most_common(n)`** for free. The answer to give.\n• Manual: **`counts[ch] = counts.get(ch, 0) + 1`** (no import) or **`defaultdict(int)`** then `counts[ch] += 1`.\n• **Word** frequency: **normalise first** (lowercase + strip punctuation) or `\"The\"` ≠ `\"the,\"`.\n• **Complexity**: `O(n)` time and space."
+  },
+  {
+    "id": "pyc-first-unique",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "string",
+      "counter",
+      "ordering"
+    ],
+    "question": "Find the first non-repeating character in a string.",
+    "answer": "<p>The naive approach counts occurrences of each character by rescanning the string — <strong>O(n²)</strong>.</p><p><strong>The efficient solution is two passes, O(n):</strong></p><ol><li>Build a frequency count of every character.</li><li>Walk the <em>original string</em> again and return the first character whose count is 1.</li></ol><p>The second pass must iterate the <strong>string</strong>, not the dict — you need the original <em>order</em>. (Dicts do preserve insertion order since 3.7, so iterating the Counter also works here, but iterating the string makes the intent explicit and is safer to reason about.)</p>",
+    "tip": "The key insight is that it takes two passes and the second one must preserve original order. Candidates who try to do it in one pass usually end up with an O(n²) rescan.",
+    "code": "from collections import Counter\n\ndef first_unique(s: str) -> str | None:\n    counts = Counter(s)                # pass 1 — O(n)\n    for ch in s:                       # pass 2 — original ORDER matters\n        if counts[ch] == 1:\n            return ch\n    return None\n\nfirst_unique(\"swiss\")        # 'w'\nfirst_unique(\"aabbcc\")       # None\n\n# variant: return the INDEX\ndef first_unique_index(s: str) -> int:\n    counts = Counter(s)\n    for i, ch in enumerate(s):\n        if counts[ch] == 1:\n            return i\n    return -1\n\n# ❌ O(n²) — rescans the string for every character\ndef first_unique_slow(s):\n    for ch in s:\n        if s.count(ch) == 1:      # count() is O(n) EACH time\n            return ch",
+    "lang": "python",
+    "revise": "**First non-repeating character** — **two passes, O(n)**:\n1. **`Counter(s)`** to build frequencies.\n2. Iterate the **original string** (order matters!) and return the first char with count `1`.\n• The second pass must walk the **string**, not the dict, to preserve order.\n• ❌ Avoid `s.count(ch)` inside a loop — that's **O(n²)**.\n• **Complexity**: `O(n)` time, `O(k)` space (k = distinct chars)."
+  },
+  {
+    "id": "pyc-dedupe",
+    "category": "pycoding",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "list",
+      "set",
+      "ordering"
+    ],
+    "question": "Remove duplicates from a list while preserving order.",
+    "answer": "<p><code class=\"inline\">list(set(items))</code> removes duplicates but <strong>destroys the order</strong> — sets are unordered. That's the trap in this question.</p><p><strong>Correct approaches:</strong></p><ul><li><strong><code class=\"inline\">dict.fromkeys(items)</code></strong> — the cleanest one-liner. Dicts preserve insertion order (3.7+) and keys are unique, so this dedupes <em>and</em> keeps order in O(n).</li><li><strong>Seen-set loop</strong> — explicit and works when you need custom key logic (dedupe objects by <code class=\"inline\">id</code>, say) or the items aren't hashable as-is.</li></ul><p>Note both require hashable elements. For unhashable items (dicts, lists), dedupe on a derived key such as a tuple of fields or a JSON string.</p>",
+    "tip": "`list(dict.fromkeys(items))` is the answer that gets a nod — it's O(n), one line, and order-preserving. Then mention the seen-set version for when you need to dedupe by a key rather than by the whole value.",
+    "code": "items = [3, 1, 3, 2, 1, 5]\n\n# ❌ loses order\nlist(set(items))                    # [1, 2, 3, 5] — arbitrary order\n\n# ✅ one-liner, order preserved, O(n)\nlist(dict.fromkeys(items))          # [3, 1, 2, 5]\n\n# ✅ explicit seen-set — needed for custom keys\ndef dedupe(items, key=lambda x: x):\n    seen = set()\n    out = []\n    for item in items:\n        k = key(item)\n        if k not in seen:\n            seen.add(k)\n            out.append(item)\n    return out\n\n# dedupe objects by a field\ndedupe(users, key=lambda u: u.email)\n\n# unhashable items — dedupe on a derived key\nrows = [{\"id\": 1}, {\"id\": 2}, {\"id\": 1}]\ndedupe(rows, key=lambda r: r[\"id\"])       # [{'id': 1}, {'id': 2}]",
+    "lang": "python",
+    "revise": "**Dedupe preserving order**:\n• ❌ **`list(set(items))` DESTROYS order** — that's the trap.\n• ✅ **`list(dict.fromkeys(items))`** — one line, **O(n)**, order preserved (dicts keep insertion order 3.7+).\n• ✅ **Seen-set loop** when you need a **custom key** (dedupe objects by `email`/`id`) or items are unhashable.\n• **Complexity**: `O(n)` time and space."
+  },
+  {
+    "id": "pyc-group-anagrams",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "hashing",
+      "defaultdict",
+      "grouping"
+    ],
+    "question": "Group a list of words into anagram groups.",
+    "answer": "<p><strong>The core idea: find a canonical key that all anagrams share.</strong> Comparing every word against every other is O(n²·k); hashing by a shared key is O(n·k log k).</p><p><strong>Two key choices:</strong></p><ul><li><strong>Sorted letters</strong> — <code class=\"inline\">\"\".join(sorted(word))</code>. \"eat\", \"tea\", \"ate\" all become \"aet\". Simple, O(k log k) per word.</li><li><strong>Character count tuple</strong> — a 26-length tuple of counts. O(k) per word, so asymptotically better for long words, but more code.</li></ul><p>Then <code class=\"inline\">defaultdict(list)</code> collects words under their key — no <code class=\"inline\">if key not in groups</code> boilerplate.</p>",
+    "tip": "This is really a 'design the hash key' question. Say that explicitly — 'I need a canonical form that's identical for all anagrams' — then the sorted-letters key follows naturally, and you can offer the count-tuple as the O(k) optimisation.",
+    "code": "from collections import defaultdict\n\ndef group_anagrams(words: list[str]) -> list[list[str]]:\n    groups = defaultdict(list)\n    for word in words:\n        key = \"\".join(sorted(word))        # canonical form\n        groups[key].append(word)\n    return list(groups.values())\n\ngroup_anagrams([\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"])\n# [['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']]\n\n# O(k) key instead of O(k log k) — count tuple\ndef group_anagrams_counts(words):\n    groups = defaultdict(list)\n    for word in words:\n        counts = [0] * 26\n        for ch in word:\n            counts[ord(ch) - ord(\"a\")] += 1\n        groups[tuple(counts)].append(word)   # tuple is hashable, list is not\n    return list(groups.values())",
+    "lang": "python",
+    "revise": "**Group anagrams** = design a **canonical key** shared by all anagrams.\n• **Key option 1**: `\"\".join(sorted(word))` — 'eat'/'tea'/'ate' → `'aet'`. O(k log k) per word.\n• **Key option 2**: a **26-length count tuple** — O(k) per word (tuples are hashable, lists aren't).\n• Collect with **`defaultdict(list)`** — no key-exists check needed.\n• **Complexity**: `O(n·k log k)` with the sort key, vs `O(n²·k)` for pairwise comparison."
+  },
+  {
+    "id": "pyc-two-sum",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "hashmap",
+      "array",
+      "classic"
+    ],
+    "question": "Find two numbers in a list that add up to a target.",
+    "answer": "<p>The brute force is two nested loops — <strong>O(n²)</strong>.</p><p><strong>The hash-map solution is O(n) in a single pass.</strong> For each number, compute its <em>complement</em> (<code class=\"inline\">target - num</code>) and check whether you've already seen it. Store each number's index as you go, so the lookup is O(1).</p><p>The elegance is that you check and insert in the same pass — you never need to look ahead, because any valid pair will be completed by the later of its two elements.</p><p>If the list is <strong>already sorted</strong>, a two-pointer approach solves it in O(n) time with <strong>O(1) space</strong>: move the left pointer right to increase the sum, the right pointer left to decrease it.</p>",
+    "tip": "Mention the sorted variant unprompted — if the input is sorted, two pointers beat the hash map on space (O(1) vs O(n)). Knowing when each applies is what the question is really testing.",
+    "code": "# ✅ O(n) time, O(n) space — one pass\ndef two_sum(nums: list[int], target: int) -> tuple[int, int] | None:\n    seen = {}                              # value -> index\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:             # O(1) lookup\n            return (seen[complement], i)\n        seen[num] = i\n    return None\n\ntwo_sum([2, 7, 11, 15], 9)      # (0, 1)\n\n# sorted input → two pointers, O(1) space\ndef two_sum_sorted(nums, target):\n    left, right = 0, len(nums) - 1\n    while left < right:\n        total = nums[left] + nums[right]\n        if total == target:\n            return (left, right)\n        if total < target:\n            left += 1                      # need a bigger sum\n        else:\n            right -= 1                     # need a smaller sum\n    return None\n\n# ❌ O(n²)\nfor i in range(len(nums)):\n    for j in range(i + 1, len(nums)):\n        if nums[i] + nums[j] == target: ...",
+    "lang": "python",
+    "revise": "**Two Sum**:\n• **Hash map, one pass — O(n)**: for each `num`, check if **`target - num`** (the complement) is already in `seen`; otherwise store `seen[num] = i`.\n• Works in one pass because any pair is completed by its **later** element.\n• **If the input is SORTED**: **two pointers** — O(n) time, **O(1) space**. Move `left` right to increase the sum, `right` left to decrease.\n• Brute force nested loops = **O(n²)**."
+  },
+  {
+    "id": "pyc-longest-substring",
+    "category": "pycoding",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "sliding-window",
+      "string"
+    ],
+    "question": "Find the length of the longest substring without repeating characters.",
+    "answer": "<p>This is the canonical <strong>sliding window</strong> problem. Maintain a window <code class=\"inline\">[left, right]</code> that always contains only unique characters.</p><p><strong>The algorithm:</strong></p><ol><li>Expand the window by moving <code class=\"inline\">right</code> forward one character at a time.</li><li>If the new character is already in the window, <strong>jump <code class=\"inline\">left</code> to just past its previous occurrence</strong> — not one step at a time.</li><li>Record the maximum window size seen.</li></ol><p>Storing each character's <strong>last index</strong> in a dict is what makes the jump O(1). The naive version moves <code class=\"inline\">left</code> forward one position at a time, which is still correct but slower.</p><p>Critical detail: only move <code class=\"inline\">left</code> <strong>forward</strong> — <code class=\"inline\">max(left, last[ch] + 1)</code>. A stale index from before the current window would otherwise drag <code class=\"inline\">left</code> backwards and break the invariant.</p>",
+    "tip": "The `max(left, ...)` guard is the bug interviewers watch for. Without it, input like `\"abba\"` moves `left` backwards when it re-sees 'a', and you get the wrong answer.",
+    "code": "def longest_unique(s: str) -> int:\n    last = {}                # char -> last index seen\n    left = 0\n    best = 0\n\n    for right, ch in enumerate(s):\n        if ch in last and last[ch] >= left:\n            left = last[ch] + 1        # jump past the duplicate\n        last[ch] = right\n        best = max(best, right - left + 1)\n\n    return best\n\nlongest_unique(\"abcabcbb\")     # 3  ('abc')\nlongest_unique(\"bbbbb\")        # 1  ('b')\nlongest_unique(\"pwwkew\")       # 3  ('wke')\nlongest_unique(\"abba\")         # 2  ← the case that breaks a naive version\n\n# return the substring itself\ndef longest_unique_str(s: str) -> str:\n    last, left, best, start = {}, 0, 0, 0\n    for right, ch in enumerate(s):\n        if ch in last and last[ch] >= left:\n            left = last[ch] + 1\n        last[ch] = right\n        if right - left + 1 > best:\n            best, start = right - left + 1, left\n    return s[start:start + best]",
+    "lang": "python",
+    "revise": "**Longest substring without repeats** — classic **sliding window**.\n• Keep a window `[left, right]` with only unique chars; store each char's **last index** in a dict.\n• On a duplicate, **jump `left` to `last[ch] + 1`** (O(1)) instead of stepping one at a time.\n• **Critical guard**: `left = max(left, last[ch] + 1)` — only move `left` **forward**. Without it, `\"abba\"` drags `left` backwards and gives the wrong answer.\n• **Complexity**: `O(n)` time, `O(k)` space."
+  },
+  {
+    "id": "pyc-flatten",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "recursion",
+      "generator",
+      "list"
+    ],
+    "question": "Flatten an arbitrarily nested list.",
+    "answer": "<p><strong>One level deep</strong> is easy — <code class=\"inline\">itertools.chain.from_iterable</code> or a double comprehension.</p><p><strong>Arbitrary depth needs recursion</strong>: walk each element; if it's itself iterable, recurse into it, otherwise yield it.</p><p><strong>Write it as a generator</strong> — <code class=\"inline\">yield from</code> makes the recursion read cleanly and keeps memory constant, since nothing intermediate is materialised.</p><p><strong>Two details that matter:</strong></p><ul><li><strong>Strings are iterable</strong>, so a naive check recurses into <code class=\"inline\">\"abc\"</code> forever-ish, yielding individual characters. Explicitly exclude <code class=\"inline\">str</code> and <code class=\"inline\">bytes</code>.</li><li>Deep nesting can hit Python's <strong>recursion limit</strong> (~1000). An explicit stack version avoids it.</li></ul>",
+    "tip": "The string case is the whole test. Almost everyone writes `isinstance(x, Iterable)` and gets characters back — say `isinstance(x, (list, tuple))` or explicitly exclude `str`/`bytes`, and mention why.",
+    "code": "from typing import Iterable\n\n# ✅ recursive generator — arbitrary depth, constant memory\ndef flatten(nested):\n    for item in nested:\n        if isinstance(item, Iterable) and not isinstance(item, (str, bytes)):\n            yield from flatten(item)         # ← strings excluded!\n        else:\n            yield item\n\nlist(flatten([1, [2, [3, [4, 5]], 6], 7]))     # [1, 2, 3, 4, 5, 6, 7]\nlist(flatten([1, [\"ab\", [2]]]))                # [1, 'ab', 2]  ← not 'a','b'\n\n# one level only\nfrom itertools import chain\nlist(chain.from_iterable([[1, 2], [3, 4]]))    # [1, 2, 3, 4]\n[x for sub in nested for x in sub]             # same, comprehension\n\n# iterative — avoids the recursion limit on very deep input\ndef flatten_iter(nested):\n    stack = [iter(nested)]\n    while stack:\n        try:\n            item = next(stack[-1])\n        except StopIteration:\n            stack.pop()\n            continue\n        if isinstance(item, (list, tuple)):\n            stack.append(iter(item))\n        else:\n            yield item",
+    "lang": "python",
+    "revise": "**Flatten nested list**:\n• **One level**: `chain.from_iterable(nested)` or `[x for sub in nested for x in sub]`.\n• **Arbitrary depth**: **recursive generator** with **`yield from`** — clean and constant memory.\n• ⚠️ **Strings are iterable** — a naive `isinstance(x, Iterable)` recurses into `\"abc\"` and yields characters. **Exclude `str`/`bytes` explicitly.**\n• Very deep nesting can hit the **~1000 recursion limit** → use an explicit **stack** version.\n• **Complexity**: `O(n)` in total elements."
+  },
+  {
+    "id": "pyc-chunk",
+    "category": "pycoding",
+    "difficulty": "beginner",
+    "tags": [
+      "list",
+      "batching",
+      "generator"
+    ],
+    "question": "Split a list into chunks of size n (batching).",
+    "answer": "<p>Very common in real work — batching database inserts, API calls, or file writes so you don't send 100,000 rows in one request.</p><p><strong>For a list</strong>: a range-with-step slice is the clean solution — <code class=\"inline\">items[i:i+n]</code> for <code class=\"inline\">i</code> in <code class=\"inline\">range(0, len(items), n)</code>. Slicing past the end is safe in Python, so the final short chunk needs no special handling.</p><p><strong>For an arbitrary iterable</strong> (a generator, a database cursor, a file) you can't slice or take <code class=\"inline\">len()</code> — use <code class=\"inline\">itertools.islice</code> in a loop, which pulls lazily and works on infinite sources.</p><p>Python 3.12 added <code class=\"inline\">itertools.batched</code>, which does exactly this.</p>",
+    "tip": "Write the generator version for arbitrary iterables, not just the list slice. Real batching usually runs over a cursor or stream where you can't call `len()` — that's the version that shows you've done it for real.",
+    "code": "# list — slicing past the end is safe, so no special last-chunk case\ndef chunks(items: list, n: int):\n    for i in range(0, len(items), n):\n        yield items[i:i + n]\n\nlist(chunks([1, 2, 3, 4, 5], 2))       # [[1, 2], [3, 4], [5]]\n\n# ✅ any iterable — generators, cursors, files (no len(), no slicing)\nfrom itertools import islice\n\ndef batched(iterable, n):\n    it = iter(iterable)\n    while batch := list(islice(it, n)):     # walrus: stops on empty\n        yield batch\n\nfor batch in batched(db_cursor, 500):\n    bulk_insert(batch)                       # 500 rows per round trip\n\n# Python 3.12+ — in the stdlib\nfrom itertools import batched\nlist(batched(range(7), 3))                   # [(0,1,2), (3,4,5), (6,)]",
+    "lang": "python",
+    "revise": "**Chunk / batch a list** (batching DB inserts, API calls):\n• **List**: `items[i:i+n]` for `i in range(0, len(items), n)` — **slicing past the end is safe**, so no special last-chunk case.\n• **Any iterable** (generator, cursor, file — no `len()`, no slicing): loop **`islice(it, n)`** with the walrus operator, stopping on an empty batch.\n• **Python 3.12+**: **`itertools.batched`** is built in.\n• **Complexity**: `O(n)`."
+  },
+  {
+    "id": "pyc-second-largest",
+    "category": "pycoding",
+    "difficulty": "beginner",
+    "tags": [
+      "array",
+      "single-pass"
+    ],
+    "question": "Find the second largest number in a list without sorting.",
+    "answer": "<p>Sorting is <strong>O(n log n)</strong> and does more work than needed. A <strong>single pass tracking two values</strong> is O(n) and O(1) space.</p><p>Track <code class=\"inline\">largest</code> and <code class=\"inline\">second</code>. For each number:</p><ul><li>If it beats <code class=\"inline\">largest</code>, the old largest becomes <code class=\"inline\">second</code>, and it becomes the new largest.</li><li>Else if it's between <code class=\"inline\">second</code> and <code class=\"inline\">largest</code>, it becomes <code class=\"inline\">second</code>.</li></ul><p><strong>The edge cases are the real test</strong>: duplicates of the maximum (<code class=\"inline\">[5, 5, 3]</code> — is the answer 5 or 3?), fewer than two elements, and all-equal lists. Clarify whether \"second largest\" means the second <em>distinct</em> value — usually it does.</p>",
+    "tip": "Ask about duplicates before writing code — `[5, 5, 3]` returns 5 or 3 depending on whether they want the second distinct value. Asking that question scores better than any implementation.",
+    "code": "def second_largest(nums: list[int]) -> int | None:\n    largest = second = float(\"-inf\")\n    for n in nums:\n        if n > largest:\n            second, largest = largest, n     # demote the old max\n        elif largest > n > second:           # strict → skips duplicates\n            second = n\n    return second if second != float(\"-inf\") else None\n\nsecond_largest([3, 1, 4, 1, 5, 9, 2])   # 5\nsecond_largest([5, 5, 3])               # 3  (second DISTINCT)\nsecond_largest([7])                     # None\nsecond_largest([4, 4, 4])               # None\n\n# if duplicates should count: use >= in the elif\n\n# stdlib shortcuts (fine to mention)\nsorted(set(nums))[-2]                   # O(n log n)\nimport heapq\nheapq.nlargest(2, set(nums))[-1]        # O(n log k) — better for top-k",
+    "lang": "python",
+    "revise": "**Second largest without sorting** — **single pass, O(n) time, O(1) space**.\n• Track `largest` and `second`; if `n > largest` **demote** (`second, largest = largest, n`), elif `largest > n > second` set `second`.\n• **Edge cases are the test**: duplicates of the max (`[5,5,3]` → 5 or 3?), fewer than 2 elements, all-equal.\n• **Interview tip**: **ask whether they want the second DISTINCT value** before coding — strict `>` skips duplicates, `>=` counts them.\n• Sorting is `O(n log n)`; `heapq.nlargest(k, ...)` is `O(n log k)`."
+  },
+  {
+    "id": "pyc-merge-sorted",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "two-pointer",
+      "sorting",
+      "heapq"
+    ],
+    "question": "Merge two sorted lists into one sorted list.",
+    "answer": "<p>Concatenating and re-sorting is <strong>O((n+m) log(n+m))</strong> — it throws away the fact that both inputs are already sorted.</p><p><strong>The two-pointer merge is O(n+m)</strong>: compare the current head of each list, append the smaller, advance that pointer. When one list is exhausted, extend with the remainder of the other. This is exactly the merge step of merge sort.</p><p>For <strong>k lists</strong>, a min-heap generalises it to O(N log k) — and <code class=\"inline\">heapq.merge</code> already does this in the stdlib, returning a lazy iterator so it works on huge or streaming inputs.</p>",
+    "tip": "Mention `heapq.merge` — it merges any number of sorted iterables lazily, which is the real-world answer for merging large sorted files. But write the manual two-pointer version first, since that's what's being tested.",
+    "code": "# ✅ two pointers — O(n + m)\ndef merge(a: list[int], b: list[int]) -> list[int]:\n    out = []\n    i = j = 0\n    while i < len(a) and j < len(b):\n        if a[i] <= b[j]:          # <= keeps it STABLE\n            out.append(a[i]); i += 1\n        else:\n            out.append(b[j]); j += 1\n    out.extend(a[i:])             # one of these is empty\n    out.extend(b[j:])\n    return out\n\nmerge([1, 3, 5], [2, 3, 6])       # [1, 2, 3, 3, 5, 6]\n\n# ❌ discards the existing order — O((n+m) log(n+m))\nsorted(a + b)\n\n# k sorted iterables, lazily — the stdlib answer\nimport heapq\nlist(heapq.merge([1, 4], [2, 5], [3, 6]))    # [1, 2, 3, 4, 5, 6]\n\n# works on huge/streaming sources without loading them\nwith open(\"a.txt\") as fa, open(\"b.txt\") as fb:\n    for line in heapq.merge(fa, fb):\n        out.write(line)",
+    "lang": "python",
+    "revise": "**Merge two sorted lists** — **two pointers, O(n+m)** (the merge step of merge sort).\n• Compare heads, append the smaller, advance that pointer; then **extend with the remainder** of the non-empty list.\n• Use **`<=`** to keep the merge **stable**.\n• ❌ `sorted(a + b)` is `O((n+m) log(n+m))` — it throws away the existing order.\n• **k lists**: min-heap → `O(N log k)`. **`heapq.merge(*iterables)`** does it **lazily** — works on huge/streaming files."
+  },
+  {
+    "id": "pyc-rotate",
+    "category": "pycoding",
+    "difficulty": "beginner",
+    "tags": [
+      "list",
+      "slicing",
+      "deque"
+    ],
+    "question": "Rotate a list by k positions.",
+    "answer": "<p><strong>Slicing is the Pythonic solution</strong>: rotating right by k means the last k elements move to the front — <code class=\"inline\">items[-k:] + items[:-k]</code>. O(n) time and O(n) space.</p><p><strong>Two details that catch people out:</strong></p><ul><li><strong><code class=\"inline\">k</code> can exceed the list length</strong>, so always take <code class=\"inline\">k %= len(items)</code> first. Rotating a 5-element list by 7 is the same as by 2.</li><li><strong><code class=\"inline\">k = 0</code> breaks the slice</strong> — <code class=\"inline\">items[-0:]</code> is <code class=\"inline\">items[0:]</code>, the whole list, so you get the list duplicated. Guard against it, which the modulo also handles if you check after.</li></ul><p><code class=\"inline\">collections.deque</code> has a built-in <code class=\"inline\">rotate()</code> that's O(k) and mutates in place — the right choice if you rotate repeatedly.</p><p>For an in-place O(1)-space rotation, use the <strong>three-reversal trick</strong>: reverse the whole list, then reverse each of the two parts.</p>",
+    "tip": "The `k = 0` slice bug is the trap: `items[-0:]` is the entire list, so a naive slice returns the list twice. Taking `k %= len(items)` and guarding zero is the fix, and mentioning it unprompted lands well.",
+    "code": "def rotate_right(items: list, k: int) -> list:\n    if not items:\n        return items\n    k %= len(items)                  # handles k > len AND negative k\n    if k == 0:\n        return items[:]              # ⚠️ items[-0:] would duplicate the list\n    return items[-k:] + items[:-k]\n\nrotate_right([1, 2, 3, 4, 5], 2)     # [4, 5, 1, 2, 3]\nrotate_right([1, 2, 3, 4, 5], 7)     # same as k=2\nrotate_right([1, 2, 3, 4, 5], 0)     # [1, 2, 3, 4, 5]\n\n# rotate LEFT\nitems[k:] + items[:k]\n\n# deque — O(k), in place, best for repeated rotation\nfrom collections import deque\nd = deque([1, 2, 3, 4, 5])\nd.rotate(2)                          # deque([4, 5, 1, 2, 3])\n\n# in-place, O(1) space — three reversals\ndef rotate_in_place(a, k):\n    n = len(a); k %= n\n    a.reverse()\n    a[:k] = reversed(a[:k])\n    a[k:] = reversed(a[k:])",
+    "lang": "python",
+    "revise": "**Rotate a list by k**:\n• **Right**: `items[-k:] + items[:-k]`. **Left**: `items[k:] + items[:k]`.\n• ⚠️ **Always `k %= len(items)` first** — k can exceed the length (and this handles negatives).\n• ⚠️ **`k == 0` breaks the slice**: `items[-0:]` is `items[0:]` = the whole list → you get it **duplicated**. Guard it.\n• **`collections.deque.rotate(k)`** — O(k), in place, best for repeated rotation.\n• **In-place O(1) space**: **three reversals** (whole list, then each part)."
+  },
+  {
+    "id": "pyc-group-dicts",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "defaultdict",
+      "grouping",
+      "real-world"
+    ],
+    "question": "Group a list of dictionaries by a key (a SQL-style GROUP BY).",
+    "answer": "<p>This is everyday backend work — turning a flat list of rows into a grouped structure.</p><p><strong><code class=\"inline\">defaultdict(list)</code> is the clean solution</strong>: it creates the empty list on first access, so there's no <code class=\"inline\">if key not in groups</code> boilerplate. One pass, O(n).</p><p><strong><code class=\"inline\">itertools.groupby</code> is the trap.</strong> Unlike SQL's <code class=\"inline\">GROUP BY</code>, it only groups <em>consecutive</em> equal keys — so you <strong>must sort by the same key first</strong>, or one logical group comes back as several fragments. Forgetting this produces silently wrong results, not an error. Since sorting costs O(n log n), <code class=\"inline\">defaultdict</code> is usually the better choice anyway.</p><p>For aggregation rather than collection, use <code class=\"inline\">defaultdict(int)</code> or <code class=\"inline\">defaultdict(Decimal)</code> and accumulate.</p>",
+    "tip": "If you reach for `itertools.groupby`, say 'sorted by the same key first' in the same breath — that's the whole gotcha. Otherwise just use `defaultdict(list)`, which is O(n) and needs no sort.",
+    "code": "from collections import defaultdict\nfrom operator import itemgetter\n\norders = [\n    {\"id\": 1, \"customer\": \"ana\", \"total\": 250},\n    {\"id\": 2, \"customer\": \"bob\", \"total\": 100},\n    {\"id\": 3, \"customer\": \"ana\", \"total\":  75},\n]\n\n# ✅ O(n), no sort needed\ngroups = defaultdict(list)\nfor o in orders:\n    groups[o[\"customer\"]].append(o)\n# {'ana': [{...}, {...}], 'bob': [{...}]}\n\n# aggregate instead of collect\ntotals = defaultdict(int)\nfor o in orders:\n    totals[o[\"customer\"]] += o[\"total\"]\n# {'ana': 325, 'bob': 100}\n\n# ⚠️ groupby groups CONSECUTIVE keys only — MUST sort first\nfrom itertools import groupby\norders.sort(key=itemgetter(\"customer\"))            # required!\nfor customer, group in groupby(orders, key=itemgetter(\"customer\")):\n    print(customer, [o[\"id\"] for o in group])\n\n# generic helper\ndef group_by(rows, key):\n    out = defaultdict(list)\n    for r in rows:\n        out[key(r)].append(r)\n    return dict(out)\n\ngroup_by(orders, key=lambda o: o[\"customer\"])",
+    "lang": "python",
+    "revise": "**Group a list of dicts by key** (SQL-style GROUP BY):\n• ✅ **`defaultdict(list)`** — auto-creates the list, one pass, **O(n)**, no sort. Use `defaultdict(int)` to **aggregate** instead of collect.\n• ⚠️ **`itertools.groupby` groups CONSECUTIVE keys only** — **you MUST `sort(key=...)` by the same key first** or one group returns as fragments. **Silently wrong**, not an error. Also costs O(n log n).\n• **Interview tip**: prefer `defaultdict` unless you already have sorted data."
+  },
+  {
+    "id": "pyc-sort-dicts",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "sorting",
+      "real-world"
+    ],
+    "question": "Sort a list of dictionaries by multiple fields, in mixed directions.",
+    "answer": "<p><strong>Single field</strong>: <code class=\"inline\">sorted(rows, key=itemgetter(\"age\"))</code>. <code class=\"inline\">operator.itemgetter</code> is faster than an equivalent lambda because it's implemented in C.</p><p><strong>Multiple fields, same direction</strong>: return a <strong>tuple</strong> from the key function — tuples compare element by element, so <code class=\"inline\">itemgetter(\"dept\", \"name\")</code> sorts by dept then name.</p><p><strong>Mixed directions</strong> is the interesting case, and there are two techniques:</p><ul><li><strong>Negate the numeric field</strong> — <code class=\"inline\">key=lambda r: (-r[\"score\"], r[\"name\"])</code> gives score descending, name ascending. Only works for numbers.</li><li><strong>Two stable passes</strong> — sort by the <em>least</em> significant field first, then the most significant. Python's sort is <strong>stable</strong>, so ties from the second sort retain the first sort's order. This works for any type, including strings you can't negate.</li></ul><p>Handle missing keys with <code class=\"inline\">r.get(\"field\", default)</code> — <code class=\"inline\">itemgetter</code> raises <code class=\"inline\">KeyError</code>, and a <code class=\"inline\">None</code> in the mix raises <code class=\"inline\">TypeError</code> on comparison.</p>",
+    "tip": "The two-stable-passes technique is the answer when you need descending on a string field — you can't negate a string. Explaining *why* it works (stability preserves the earlier order within ties) is the part that impresses.",
+    "code": "from operator import itemgetter\n\nemployees = [\n    {\"name\": \"ana\", \"dept\": \"eng\", \"score\": 90},\n    {\"name\": \"bob\", \"dept\": \"eng\", \"score\": 95},\n    {\"name\": \"cat\", \"dept\": \"ops\", \"score\": 90},\n]\n\n# single field\nsorted(employees, key=itemgetter(\"score\"), reverse=True)\n\n# multiple fields, same direction — tuple key\nsorted(employees, key=itemgetter(\"dept\", \"name\"))\n\n# mixed: score DESC, name ASC — negate the number\nsorted(employees, key=lambda r: (-r[\"score\"], r[\"name\"]))\n\n# mixed with a STRING descending — negation impossible, use two stable passes\nrows = sorted(employees, key=itemgetter(\"score\"))                 # least significant\nrows = sorted(rows,      key=itemgetter(\"dept\"), reverse=True)    # most significant\n\n# missing keys / None values\nsorted(rows, key=lambda r: r.get(\"score\", 0))                     # default\nsorted(rows, key=lambda r: (r.get(\"score\") is None, r.get(\"score\", 0)))  # Nones last",
+    "lang": "python",
+    "revise": "**Sort list of dicts**:\n• Single: `sorted(rows, key=itemgetter(\"age\"))` — **`itemgetter` is faster than a lambda** (C-implemented).\n• **Multi-field, same direction**: return a **tuple** — `itemgetter(\"dept\", \"name\")` (tuples compare element by element).\n• **Mixed directions**: **negate the number** — `key=lambda r: (-r[\"score\"], r[\"name\"])`.\n• **Descending on a STRING** (can't negate): **two stable passes** — sort by the **least** significant field first, then the most significant. Works because **Python's sort is stable**.\n• Missing keys → `r.get(field, default)`; `None` values raise `TypeError` on comparison."
+  },
+  {
+    "id": "pyc-deep-merge",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "dict",
+      "recursion",
+      "real-world"
+    ],
+    "question": "Merge two dictionaries, including a deep/recursive merge of nested dicts.",
+    "answer": "<p><strong>Shallow merge</strong>: <code class=\"inline\">a | b</code> (3.9+) or <code class=\"inline\">{**a, **b}</code>. Later values win. Perfect for flat config overrides.</p><p><strong>The problem</strong>: a shallow merge <em>replaces</em> nested dicts entirely rather than merging into them. If <code class=\"inline\">a</code> has <code class=\"inline\">{\"db\": {\"host\": \"x\", \"port\": 5432}}</code> and <code class=\"inline\">b</code> has <code class=\"inline\">{\"db\": {\"port\": 6000}}</code>, a shallow merge loses <code class=\"inline\">host</code> completely. This is the classic config-loading bug.</p><p><strong>Deep merge</strong> recurses: when the same key holds a dict in <em>both</em> inputs, merge those dicts too; otherwise the override wins.</p><p><strong>Important</strong>: return a <em>new</em> dict rather than mutating the input. Mutating a shared defaults dict means the second call sees the first call's overrides — a genuinely nasty bug to track down.</p>",
+    "tip": "Say why shallow merge isn't enough with a concrete example — nested config where the override drops sibling keys. That's the bug this question exists to test, and it happens in real config loaders constantly.",
+    "code": "# shallow — later wins\nmerged = defaults | overrides            # 3.9+\nmerged = {**defaults, **overrides}       # any version\n\n# ⚠️ shallow merge REPLACES nested dicts\na = {\"db\": {\"host\": \"localhost\", \"port\": 5432}, \"debug\": False}\nb = {\"db\": {\"port\": 6000}}\na | b        # {'db': {'port': 6000}, ...}  ← host is GONE\n\n# ✅ deep merge — returns a NEW dict, never mutates the inputs\ndef deep_merge(base: dict, override: dict) -> dict:\n    out = dict(base)                     # copy, don't mutate\n    for key, value in override.items():\n        if (key in out\n                and isinstance(out[key], dict)\n                and isinstance(value, dict)):\n            out[key] = deep_merge(out[key], value)   # recurse\n        else:\n            out[key] = value\n    return out\n\ndeep_merge(a, b)\n# {'db': {'host': 'localhost', 'port': 6000}, 'debug': False}   ✅ host kept\n\n# layered config without merging at all\nfrom collections import ChainMap\nconfig = ChainMap(env_vars, config_file, defaults)   # first match wins",
+    "lang": "python",
+    "revise": "**Merge dicts**:\n• **Shallow**: **`a | b`** (3.9+) or `{**a, **b}` — later wins. Fine for flat configs.\n• ⚠️ **Shallow merge REPLACES nested dicts** — `{\"db\":{\"host\":..,\"port\":..}} | {\"db\":{\"port\":..}}` **loses `host`**. Classic config-loading bug.\n• ✅ **Deep merge**: recurse when the key holds a **dict in both**, else the override wins.\n• **Return a NEW dict — never mutate the input**, or a shared defaults dict accumulates previous overrides.\n• **`ChainMap(env, file, defaults)`** — layered lookup, first match wins, no merging at all."
+  },
+  {
+    "id": "pyc-top-n",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "heapq",
+      "counter",
+      "complexity"
+    ],
+    "question": "Find the top K most frequent elements in a list.",
+    "answer": "<p>Two steps: <strong>count</strong>, then <strong>select the top K</strong>.</p><p><code class=\"inline\">Counter(items).most_common(k)</code> does both in one line and is the answer to give first.</p><p><strong>The complexity discussion is the real question.</strong> Sorting all distinct elements to take K of them is <strong>O(n log n)</strong> — wasteful when K is small. A <strong>min-heap of size K</strong> gives <strong>O(n log k)</strong>: push each element, and pop the smallest whenever the heap exceeds K, so it always holds the K largest seen so far.</p><p><code class=\"inline\">heapq.nlargest(k, ...)</code> implements exactly that and is the practical choice. (Internally <code class=\"inline\">most_common(k)</code> also uses <code class=\"inline\">nlargest</code> when k is given — worth knowing.)</p><p>For genuinely huge or streaming data where you can't hold all counts, this becomes the <strong>Count-Min Sketch</strong> problem — approximate counts in sub-linear space.</p>",
+    "tip": "The O(n log k) vs O(n log n) distinction is the whole point. Note that `most_common()` with NO argument sorts everything — passing k is what makes it use the heap path.",
+    "code": "from collections import Counter\nimport heapq\n\nwords = [\"a\", \"b\", \"a\", \"c\", \"b\", \"a\"]\n\n# ✅ the one-liner — uses nlargest internally when k is given\nCounter(words).most_common(2)          # [('a', 3), ('b', 2)]\n\n# explicit heap — O(n log k)\ncounts = Counter(words)\nheapq.nlargest(2, counts.items(), key=lambda kv: kv[1])\n\n# top-k objects by a field\nheapq.nlargest(10, employees, key=lambda e: e.salary)\n\n# ⚠️ most_common() with NO k sorts EVERYTHING — O(n log n)\nCounter(words).most_common()           # full sort\n\n# manual min-heap of size k — the underlying idea\ndef top_k(nums, k):\n    heap = []\n    for n in nums:\n        heapq.heappush(heap, n)\n        if len(heap) > k:\n            heapq.heappop(heap)        # drop the smallest → keeps k largest\n    return sorted(heap, reverse=True)\n\ntop_k([5, 1, 9, 3, 7], 3)              # [9, 7, 5]",
+    "lang": "python",
+    "revise": "**Top K frequent** = **count**, then **select**.\n• ✅ **`Counter(items).most_common(k)`** — the one-liner.\n• **Complexity is the real question**: full sort = **O(n log n)**; a **min-heap of size K** = **O(n log k)** — push each item, pop the smallest when the heap exceeds K, so it holds the K largest.\n• **`heapq.nlargest(k, iterable, key=...)`** does exactly this (and `most_common(k)` uses it internally).\n• ⚠️ **`most_common()` with NO argument sorts everything** — O(n log n).\n• Huge/streaming data → **Count-Min Sketch** (approximate, sub-linear space)."
+  },
+  {
+    "id": "pyc-decorator-args",
+    "category": "pycoding",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "decorator",
+      "closures"
+    ],
+    "question": "Write a decorator that takes arguments (e.g. a retry decorator).",
+    "answer": "<p>A plain decorator is a function taking a function. A <strong>decorator with arguments needs three levels</strong>, because <code class=\"inline\">@retry(times=3)</code> is <em>called</em> first and must <em>return</em> a decorator:</p><ol><li><strong>Outer</strong> — takes the decorator's arguments, returns the decorator.</li><li><strong>Middle</strong> — takes the function, returns the wrapper.</li><li><strong>Inner (wrapper)</strong> — takes <code class=\"inline\">*args, **kwargs</code> and does the work.</li></ol><p><strong><code class=\"inline\">@functools.wraps</code> is mandatory.</strong> Without it the wrapper replaces the original function's <code class=\"inline\">__name__</code>, <code class=\"inline\">__doc__</code>, and signature — which breaks introspection, debugging, and any framework that inspects handlers (Flask route names collide, pytest fixtures misbehave, Sphinx docs go blank).</p><p>For a retry specifically: use <strong>exponential backoff with jitter</strong>, catch only specific exceptions, and re-raise after the final attempt rather than swallowing the error.</p>",
+    "tip": "Forgetting `@functools.wraps` is the single most common decorator mistake and interviewers look for it. Say what breaks without it — `func.__name__` becomes `'wrapper'`, which silently breaks frameworks that key off function names.",
+    "code": "import functools, time, random\n\ndef retry(times=3, delay=1.0, exceptions=(Exception,)):\n    def decorator(func):                          # ← takes the function\n        @functools.wraps(func)                    # ← MANDATORY\n        def wrapper(*args, **kwargs):             # ← does the work\n            last = None\n            for attempt in range(times):\n                try:\n                    return func(*args, **kwargs)\n                except exceptions as e:\n                    last = e\n                    if attempt == times - 1:\n                        raise                     # don't swallow the final failure\n                    backoff = delay * (2 ** attempt)\n                    time.sleep(backoff + random.uniform(0, backoff * 0.1))  # jitter\n            raise last\n        return wrapper\n    return decorator\n\n@retry(times=3, delay=0.5, exceptions=(ConnectionError, TimeoutError))\ndef fetch(url):\n    return requests.get(url, timeout=5)\n\n# without @wraps:\n# fetch.__name__  →  'wrapper'   ❌ breaks frameworks and debugging\n# with @wraps:\n# fetch.__name__  →  'fetch'     ✅\n\n# simple timing decorator (no arguments — two levels only)\ndef timed(func):\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n        start = time.perf_counter()\n        try:\n            return func(*args, **kwargs)\n        finally:\n            print(f\"{func.__name__} took {time.perf_counter() - start:.3f}s\")\n    return wrapper",
+    "lang": "python",
+    "revise": "**Decorator with arguments needs THREE levels** (because `@retry(times=3)` is *called* first and must *return* a decorator):\n1. **Outer** — takes the decorator args, returns the decorator.\n2. **Middle** — takes the function, returns the wrapper.\n3. **Wrapper** — `*args, **kwargs`, does the work.\n• **`@functools.wraps(func)` is MANDATORY** — without it `func.__name__` becomes `'wrapper'`, breaking introspection, debugging, Flask route names, pytest, and docs.\n• Retry specifics: **exponential backoff + jitter**, catch **specific** exceptions, **re-raise** after the last attempt (never swallow)."
+  },
+  {
+    "id": "pyc-memoize",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "decorator",
+      "caching",
+      "recursion"
+    ],
+    "question": "Write a memoization decorator from scratch.",
+    "answer": "<p>Memoisation caches a function's return value per argument set, so repeated calls with the same inputs are O(1) lookups. The classic demonstration is naive recursive Fibonacci, which goes from <strong>O(2ⁿ) to O(n)</strong>.</p><p><strong>Building it:</strong> a dict keyed by the arguments, wrapped in a closure. The key must be <strong>hashable</strong>, so use a tuple of <code class=\"inline\">args</code> plus a frozen form of <code class=\"inline\">kwargs</code> — a plain dict can't be a key.</p><p><strong>In production use <code class=\"inline\">functools.lru_cache</code></strong> (or <code class=\"inline\">functools.cache</code> in 3.9+, which is unbounded). It's C-implemented, thread-safe, has a bounded size so it can't leak, and exposes <code class=\"inline\">cache_info()</code>.</p><p><strong>Two real caveats</strong>: the cache holds strong references to arguments and results, so an unbounded cache on a long-lived object <em>is</em> a memory leak; and memoisation is only valid for <strong>pure functions</strong> — caching something that reads a database or the clock returns stale data forever.</p>",
+    "tip": "Say 'only for pure functions' and 'bounded size or it's a memory leak'. Anyone can write the dict; knowing when memoisation is *wrong* is what separates the answers.",
+    "code": "import functools\n\n# from scratch\ndef memoize(func):\n    cache = {}                                  # closure state\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n        key = (args, tuple(sorted(kwargs.items())))   # must be HASHABLE\n        if key not in cache:\n            cache[key] = func(*args, **kwargs)\n        return cache[key]\n    wrapper.cache = cache                       # expose for tests/clearing\n    return wrapper\n\n@memoize\ndef fib(n):\n    return n if n < 2 else fib(n - 1) + fib(n - 2)\n\nfib(100)        # instant — without memoisation this is O(2^n)\n\n# ✅ production: C-implemented, thread-safe, BOUNDED\n@functools.lru_cache(maxsize=1024)\ndef parse_rule(text: str) -> Rule: ...\n\nparse_rule.cache_info()      # CacheInfo(hits=42, misses=8, maxsize=1024, currsize=8)\nparse_rule.cache_clear()\n\n@functools.cache             # 3.9+, unbounded — careful with memory\ndef fib2(n): ...\n\n# ❌ never memoize impure functions\n@functools.cache\ndef get_user(user_id):\n    return db.query(user_id)     # returns stale data forever after the first call",
+    "lang": "python",
+    "revise": "**Memoization decorator** — cache results per argument set (naive Fibonacci **O(2ⁿ) → O(n)**).\n• Build: a **dict in a closure**, key = **`(args, tuple(sorted(kwargs.items())))`** — the key must be **hashable** (a dict can't be one). Plus **`@functools.wraps`**.\n• ✅ **Production: `functools.lru_cache(maxsize=...)`** (C-implemented, thread-safe, **bounded**, has `cache_info()`/`cache_clear()`); `functools.cache` (3.9+) is unbounded.\n• ⚠️ **Only for PURE functions** — caching a DB/clock call returns **stale data forever**.\n• ⚠️ **Unbounded cache = memory leak** (holds strong references to args and results)."
+  },
+  {
+    "id": "pyc-context-manager",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "context-manager",
+      "resources"
+    ],
+    "question": "Write a custom context manager (both the class and the decorator form).",
+    "answer": "<p>Two ways to write one:</p><ul><li><strong>Class-based</strong> — implement <code class=\"inline\">__enter__</code> (returns the value bound by <code class=\"inline\">as</code>) and <code class=\"inline\">__exit__(exc_type, exc_val, tb)</code>. Best when the manager holds state or is reused.</li><li><strong><code class=\"inline\">@contextlib.contextmanager</code></strong> — write a generator: everything before <code class=\"inline\">yield</code> is setup, everything after is teardown. Much less code for simple cases.</li></ul><p><strong>The critical detail: use <code class=\"inline\">try/finally</code> in the generator form.</strong> If the body raises, the exception propagates out of the <code class=\"inline\">yield</code>, and without <code class=\"inline\">finally</code> your teardown never runs — which defeats the entire purpose.</p><p><strong><code class=\"inline\">__exit__</code>'s return value matters</strong>: returning <code class=\"inline\">True</code> <em>suppresses</em> the exception. Return <code class=\"inline\">None</code>/<code class=\"inline\">False</code> (the default) to let it propagate. Accidentally returning a truthy value silently swallows every error in the block.</p>",
+    "tip": "The `try/finally` inside the generator is what interviewers check. Without it a failing block skips cleanup entirely — and that's exactly the scenario a context manager was supposed to protect you from.",
+    "code": "from contextlib import contextmanager\nimport time\n\n# ✅ generator form — try/finally is ESSENTIAL\n@contextmanager\ndef timer(label: str):\n    start = time.perf_counter()\n    try:\n        yield                                # body runs here\n    finally:\n        print(f\"{label}: {time.perf_counter() - start:.3f}s\")   # always runs\n\nwith timer(\"query\"):\n    run_report()          # timing printed even if this raises\n\n# yield a value to bind with `as`\n@contextmanager\ndef transaction(conn):\n    txn = conn.begin()\n    try:\n        yield conn                           # bound by `as`\n    except Exception:\n        txn.rollback()\n        raise                                # don't swallow it\n    else:\n        txn.commit()\n\nwith transaction(conn) as c:\n    c.execute(sql)\n\n# class form — for reusable/stateful managers\nclass Timer:\n    def __enter__(self):\n        self.start = time.perf_counter()\n        return self                          # what `as` binds\n    def __exit__(self, exc_type, exc_val, tb):\n        self.elapsed = time.perf_counter() - self.start\n        return False        # ⚠️ True would SUPPRESS the exception\n\nwith Timer() as t:\n    work()\nprint(t.elapsed)",
+    "lang": "python",
+    "revise": "**Custom context manager** — two forms:\n• **Class**: `__enter__` (returns what `as` binds) + `__exit__(exc_type, exc_val, tb)`.\n• **`@contextlib.contextmanager`**: a generator — before `yield` = setup, after = teardown. Far less code.\n• ⚠️ **`try/finally` in the generator is ESSENTIAL** — if the body raises, the exception propagates out of the `yield` and **teardown never runs** without it.\n• ⚠️ **`__exit__` returning `True` SUPPRESSES the exception** — return `None`/`False` to let it propagate. A stray truthy return silently swallows every error.\n• Use `except/else` inside for rollback-vs-commit patterns."
+  },
+  {
+    "id": "pyc-generator-pipeline",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "generator",
+      "memory",
+      "real-world"
+    ],
+    "question": "Process a file too large to fit in memory using generators.",
+    "answer": "<p><code class=\"inline\">f.read()</code> or <code class=\"inline\">f.readlines()</code> loads the whole file — fine for 10 MB, fatal for 10 GB.</p><p><strong>Iterating the file object yields one line at a time</strong> in constant memory, because file objects are already lazy iterators.</p><p><strong>The powerful pattern is a generator pipeline</strong>: chain small generators together, each transforming the stream. Nothing is materialised — data flows through one item at a time, and memory stays flat regardless of file size. It reads like a Unix pipe, and each stage is independently testable.</p><p>For fixed-size binary reads, loop on <code class=\"inline\">f.read(chunk_size)</code> with the walrus operator until it returns empty.</p>",
+    "tip": "Building the pipeline as separate generator functions is what elevates this answer — each stage is a few lines, independently testable, and composing them costs nothing because they're all lazy.",
+    "code": "# ❌ loads everything\nlines = open(\"huge.log\").readlines()\n\n# ✅ constant memory — file objects are lazy iterators\nwith open(\"huge.log\", encoding=\"utf-8\") as f:\n    for line in f:\n        process(line)\n\n# ✅ generator pipeline — each stage lazy, memory flat\ndef read_lines(path):\n    with open(path, encoding=\"utf-8\") as f:\n        for line in f:\n            yield line.rstrip(\"\\n\")\n\ndef parse(lines):\n    for line in lines:\n        parts = line.split(\"\\t\")\n        if len(parts) == 3:\n            yield {\"ts\": parts[0], \"level\": parts[1], \"msg\": parts[2]}\n\ndef only_errors(records):\n    for r in records:\n        if r[\"level\"] == \"ERROR\":\n            yield r\n\n# compose — nothing runs until iterated, nothing held in memory\npipeline = only_errors(parse(read_lines(\"huge.log\")))\nfor record in pipeline:\n    alert(record)\n\n# count without materialising\nerror_count = sum(1 for _ in only_errors(parse(read_lines(path))))\n\n# fixed-size binary chunks\nwith open(\"video.mp4\", \"rb\") as f:\n    while chunk := f.read(8192):\n        upload(chunk)",
+    "lang": "python",
+    "revise": "**Processing a huge file**:\n• ❌ `f.read()` / `f.readlines()` load everything. ✅ **Iterate the file object** — it's already a **lazy iterator**, one line at a time, **constant memory**.\n• ✅ **Generator pipeline**: chain small generator functions (`read → parse → filter`), each `yield`ing. **Nothing is materialised**, memory stays flat regardless of file size — like Unix pipes, and each stage is independently testable.\n• Nothing runs until you iterate the final generator.\n• Binary: **`while chunk := f.read(8192):`**.\n• Count lazily with `sum(1 for _ in pipeline)`."
+  },
+  {
+    "id": "pyc-lru-cache-impl",
+    "category": "pycoding",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "lru",
+      "data-structures",
+      "classic"
+    ],
+    "question": "Implement an LRU cache with O(1) get and put.",
+    "answer": "<p>The requirement is <strong>O(1) for both operations</strong>, which rules out scanning for the least-recently-used item.</p><p><strong>The classic solution combines two structures:</strong></p><ul><li>A <strong>hash map</strong> for O(1) lookup by key.</li><li>A <strong>doubly linked list</strong> for O(1) reordering — most recent at one end, least recent at the other. Doubly linked (not singly) because you must unlink a node in O(1) given only that node, which needs the previous pointer.</li></ul><p><strong>In Python, <code class=\"inline\">OrderedDict</code> already is that structure</strong> — it's a dict plus a doubly linked list internally. <code class=\"inline\">move_to_end()</code> and <code class=\"inline\">popitem(last=False)</code> are both O(1), which makes the implementation about ten lines.</p><p>Even a plain <code class=\"inline\">dict</code> works since 3.7 (insertion order is guaranteed): delete and reinsert to mark as recently used, and <code class=\"inline\">next(iter(d))</code> gives the oldest key.</p><p>Interviewers often want the manual linked-list version — say the <code class=\"inline\">OrderedDict</code> answer first, then offer to write it from scratch.</p>",
+    "tip": "Explain *why* it's a doubly linked list — you need to unlink an arbitrary node in O(1), which is impossible with a singly linked list because you can't reach the predecessor. That reasoning is what's being tested, not the typing.",
+    "code": "from collections import OrderedDict\n\n# ✅ OrderedDict IS a dict + doubly linked list\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.cap = capacity\n        self.data = OrderedDict()\n\n    def get(self, key):\n        if key not in self.data:\n            return -1\n        self.data.move_to_end(key)              # O(1) → most recent\n        return self.data[key]\n\n    def put(self, key, value):\n        if key in self.data:\n            self.data.move_to_end(key)\n        self.data[key] = value\n        if len(self.data) > self.cap:\n            self.data.popitem(last=False)       # O(1) → evict oldest\n\ncache = LRUCache(2)\ncache.put(1, \"a\"); cache.put(2, \"b\")\ncache.get(1)                 # 'a'  → 1 is now most recent\ncache.put(3, \"c\")            # evicts key 2, not key 1\ncache.get(2)                 # -1\n\n# plain dict also works (3.7+ preserves insertion order)\nclass LRUDict:\n    def __init__(self, cap): self.cap, self.d = cap, {}\n    def get(self, k):\n        if k not in self.d: return -1\n        v = self.d.pop(k); self.d[k] = v        # delete + reinsert = most recent\n        return v\n    def put(self, k, v):\n        if k in self.d: del self.d[k]\n        elif len(self.d) >= self.cap:\n            del self.d[next(iter(self.d))]      # oldest key\n        self.d[k] = v",
+    "lang": "python",
+    "deep": "<h4>Why a doubly linked list</h4><p>On a cache hit you must move that node to the front. With a <em>singly</em> linked list you can't unlink a node in O(1) — you'd have to walk from the head to find its predecessor, making it O(n). The previous pointer is what buys O(1).</p><h4>The manual structure</h4><pre><code>map:  key -> node\nlist: head(MRU) &lt;-&gt; ... &lt;-&gt; tail(LRU)\n\nget(key):   node = map[key]; unlink(node); push_front(node); return node.val\nput(key,v): if exists → update + move to front\n            else → push_front; map[key] = node\n                   if size &gt; cap: evict tail; del map[tail.key]</code></pre><p>Sentinel head and tail nodes remove all the null-checking edge cases — a standard trick worth mentioning.</p><h4>Variants they may ask for</h4><ul><li><strong>LFU</strong> — evict least <em>frequently</em> used; needs a frequency map plus a list per frequency.</li><li><strong>TTL</strong> — store an expiry timestamp per entry and treat expired entries as misses (lazy expiry).</li><li><strong>Thread safety</strong> — wrap operations in a lock; note that this serialises access, which is why real caches shard by key.</li></ul><h4>How to say it in an interview</h4><p>“A hash map for O(1) lookup plus a doubly linked list for O(1) reordering — doubly because unlinking an arbitrary node needs its predecessor. In Python, <code>OrderedDict</code> is exactly that structure, so <code>move_to_end</code> and <code>popitem(last=False)</code> give me both operations in O(1). In production I'd just use <code>functools.lru_cache</code>.”</p>",
+    "revise": "**LRU cache, O(1) get + put** = **hash map** (O(1) lookup) + **doubly linked list** (O(1) reorder; MRU at head, LRU at tail).\n• **Doubly** linked because you must **unlink an arbitrary node in O(1)** — a singly linked list can't reach the predecessor without walking (O(n)).\n• ✅ **Python: `OrderedDict` IS that structure** — **`move_to_end(key)`** on get, **`popitem(last=False)`** to evict. ~10 lines.\n• A plain **`dict` works too** (3.7+ order): `pop`+reinsert to refresh, `next(iter(d))` = oldest key.\n• Production: **`functools.lru_cache`**. Variants: LFU, TTL (lazy expiry), thread safety via lock/sharding."
+  },
+  {
+    "id": "pyc-fibonacci",
+    "category": "pycoding",
+    "difficulty": "beginner",
+    "tags": [
+      "recursion",
+      "dp",
+      "generator"
+    ],
+    "question": "Implement Fibonacci — recursive, memoised, iterative, and as a generator.",
+    "answer": "<p>A staple because it exposes four different approaches and their complexities:</p><ul><li><strong>Naive recursion</strong> — <strong>O(2ⁿ)</strong> time. It recomputes the same subproblems exponentially: <code class=\"inline\">fib(30)</code> makes over a million calls. Never ship this.</li><li><strong>Memoised recursion</strong> — <strong>O(n)</strong> time, O(n) space. One <code class=\"inline\">@cache</code> line turns the exponential version linear, which is the cleanest demonstration of dynamic programming there is.</li><li><strong>Iterative</strong> — <strong>O(n) time, O(1) space</strong>. Just two rolling variables. This is the best single answer.</li><li><strong>Generator</strong> — infinite lazy sequence, O(1) space, and you take as many terms as you want.</li></ul><p>Note that recursion also risks <code class=\"inline\">RecursionError</code> — Python's default limit is around 1000 frames, so <code class=\"inline\">fib(2000)</code> fails even with memoisation.</p>",
+    "tip": "Give the iterative version as your answer (O(n) time, O(1) space) and mention that `@functools.cache` on the recursive one is the textbook DP illustration. Also note the recursion limit — it's a Python-specific detail that generic algorithm answers miss.",
+    "code": "import functools\n\n# ❌ O(2^n) — recomputes everything\ndef fib_naive(n):\n    return n if n < 2 else fib_naive(n - 1) + fib_naive(n - 2)\n\n# ✅ memoised — O(n), one decorator turns exponential into linear\n@functools.cache\ndef fib_memo(n):\n    return n if n < 2 else fib_memo(n - 1) + fib_memo(n - 2)\n\n# ✅ best: O(n) time, O(1) space\ndef fib(n: int) -> int:\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b        # tuple swap — no temp variable\n    return a\n\n# ✅ generator — infinite, lazy, O(1) space\ndef fib_gen():\n    a, b = 0, 1\n    while True:\n        yield a\n        a, b = b, a + b\n\nfrom itertools import islice\nlist(islice(fib_gen(), 10))    # [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]\n\n# ⚠️ recursion limit (~1000 frames) — this raises RecursionError\n# fib_memo(2000)\nfib(2000)                      # ✅ iterative handles it fine (Python ints are arbitrary precision)",
+    "lang": "python",
+    "revise": "**Fibonacci — four ways**:\n• **Naive recursion** — **O(2ⁿ)**, recomputes subproblems exponentially. Never ship it.\n• **Memoised** (`@functools.cache`) — **O(n)**; one line turns exponential into linear (the cleanest **DP** demo).\n• ✅ **Iterative** — **O(n) time, O(1) space**: `a, b = b, a + b`. **Best answer.**\n• **Generator** — infinite lazy sequence, O(1) space; take terms with `islice`.\n• ⚠️ Recursion hits Python's **~1000 frame limit** (`RecursionError`) — the iterative version doesn't."
+  },
+  {
+    "id": "pyc-matrix",
+    "category": "pycoding",
+    "difficulty": "intermediate",
+    "tags": [
+      "matrix",
+      "zip",
+      "list"
+    ],
+    "question": "Transpose a matrix and rotate it 90 degrees.",
+    "answer": "<p><strong>Transpose</strong> (swap rows and columns) is a one-liner with <code class=\"inline\">zip(*matrix)</code>. The <code class=\"inline\">*</code> unpacks the rows as separate arguments, and <code class=\"inline\">zip</code> then pairs the first element of each row, the second of each, and so on — which is exactly the transpose.</p><p><strong>Rotate 90° clockwise</strong> = <strong>transpose, then reverse each row</strong>. Rotating counter-clockwise = transpose, then reverse the row <em>order</em>. Deriving rotation from transpose is the insight worth showing — it means you only have to remember one operation.</p><p><code class=\"inline\">zip</code> returns tuples, so wrap in <code class=\"inline\">list()</code> if you need mutable rows.</p><p>For an <strong>in-place</strong> rotation on a square matrix (O(1) space), transpose by swapping across the diagonal, then reverse each row.</p>",
+    "tip": "`list(zip(*matrix))` for transpose is the one-liner people remember; deriving both rotations from it is the part that shows understanding. Say 'rotate clockwise = transpose + reverse each row' and you've covered the whole family.",
+    "code": "matrix = [[1, 2, 3],\n          [4, 5, 6],\n          [7, 8, 9]]\n\n# transpose — * unpacks rows, zip pairs them column-wise\nlist(zip(*matrix))                 # [(1,4,7), (2,5,8), (3,6,9)]\n[list(row) for row in zip(*matrix)]   # as lists\n\n# rotate 90° CLOCKWISE = transpose + reverse each row\n[list(row)[::-1] for row in zip(*matrix)]\n# [[7,4,1], [8,5,2], [9,6,3]]\n\n# equivalently: reverse rows first, then transpose\n[list(row) for row in zip(*matrix[::-1])]\n\n# rotate 90° COUNTER-CLOCKWISE = transpose + reverse row ORDER\n[list(row) for row in zip(*matrix)][::-1]\n\n# in-place, square matrix, O(1) space\ndef rotate_in_place(m):\n    n = len(m)\n    for i in range(n):                       # transpose across the diagonal\n        for j in range(i + 1, n):\n            m[i][j], m[j][i] = m[j][i], m[i][j]\n    for row in m:                            # reverse each row\n        row.reverse()\n\n# flatten / build\n[x for row in matrix for x in row]           # [1,2,...,9]\n[[0] * 3 for _ in range(3)]                  # ✅ 3 independent rows\n# [[0] * 3] * 3  ❌ three references to the SAME row!",
+    "lang": "python",
+    "revise": "**Matrix ops**:\n• **Transpose**: **`list(zip(*matrix))`** — `*` unpacks rows, `zip` pairs them column-wise. Returns **tuples** (wrap in `list` for mutable rows).\n• **Rotate 90° clockwise** = **transpose + reverse each row**. **Counter-clockwise** = transpose + reverse the **row order**. Derive both from transpose.\n• **In-place** (square, O(1) space): swap across the diagonal, then `row.reverse()`.\n• ⚠️ **`[[0]*3]*3` creates 3 references to the SAME row** — use **`[[0]*3 for _ in range(3)]`**."
+  }
+]

@@ -1,0 +1,327 @@
+[
+  {
+    "id": "lnx-permissions",
+    "category": "linux",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "permissions",
+      "chmod"
+    ],
+    "question": "Explain Linux file permissions, chmod octal notation, and umask.",
+    "answer": "<p>Every file has three permission sets — <strong>user (owner)</strong>, <strong>group</strong>, <strong>others</strong> — each with read (4), write (2), execute (1).</p><p><code class=\"inline\">-rwxr-xr--</code> reads as: type <code class=\"inline\">-</code> (regular file), owner <code class=\"inline\">rwx</code>=7, group <code class=\"inline\">r-x</code>=5, others <code class=\"inline\">r--</code>=4 → <strong>754</strong>.</p><p>On <strong>directories</strong> the meanings shift, which is the part people get wrong:</p><ul><li><strong>r</strong> — list the directory's contents.</li><li><strong>w</strong> — create/delete files inside it (so delete permission comes from the <em>directory</em>, not the file!).</li><li><strong>x</strong> — enter/traverse it (needed to access anything inside, even if you know the path).</li></ul><p><strong>umask</strong> subtracts default permissions on creation. Default <code class=\"inline\">022</code> → new files 666−022 = <strong>644</strong>, new directories 777−022 = <strong>755</strong> (files never get execute by default).</p><p>Special bits: <strong>setuid</strong> (4xxx, run as file owner — e.g. <code class=\"inline\">passwd</code>), <strong>setgid</strong> (2xxx, inherit group — useful for shared directories), <strong>sticky bit</strong> (1xxx, only the owner can delete — that's why <code class=\"inline\">/tmp</code> is <code class=\"inline\">1777</code>).</p>",
+    "tip": "The question that catches people: 'a user has no write permission on a file but deletes it anyway — how?' Answer: they have write+execute on the parent DIRECTORY. Deletion is a directory operation.",
+    "code": "chmod 754 script.sh          # rwx r-x r--\nchmod u+x,go-w script.sh     # symbolic form\nchmod -R 755 /opt/app        # recursive\nchown -R appuser:appgroup /opt/app\n\nls -l /tmp    # drwxrwxrwt  ← the 't' is the sticky bit\numask         # 0022\n\n# 'permission denied' on a path? check EVERY parent needs x:\nnamei -l /opt/app/config/app.yml",
+    "lang": "bash",
+    "revise": "**Linux permissions** — user/group/others × **r=4, w=2, x=1** (`-rwxr-xr--` = **754**).\n• On **directories**: `r`=list, `w`=create/**delete files inside**, `x`=enter/traverse.\n• **umask 022** → new files **644**, new dirs **755** (files never get `x` by default).\n• Special bits: **setuid** 4xxx (run as owner), **setgid** 2xxx (inherit group), **sticky** 1xxx (only owner deletes — `/tmp` is 1777).\n• **Interview tip**: you delete a file via **write+execute on the parent directory**, not the file."
+  },
+  {
+    "id": "lnx-troubleshoot-cpu",
+    "category": "linux",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "troubleshooting",
+      "performance"
+    ],
+    "question": "A production server is running slow. Walk me through your diagnosis.",
+    "answer": "<p>Work top-down through the four resources — <strong>CPU, memory, disk, network</strong> — narrowing at each step:</p><ol><li><strong>Overall load</strong> — <code class=\"inline\">uptime</code> / <code class=\"inline\">top</code>. Compare load average to core count (<code class=\"inline\">nproc</code>): load 8 on 8 cores is saturated; load 30 on 8 cores is a queue.</li><li><strong>CPU</strong> — <code class=\"inline\">top</code>/<code class=\"inline\">htop</code>: is it <code class=\"inline\">us</code> (application), <code class=\"inline\">sy</code> (kernel/syscalls), <code class=\"inline\">wa</code> (blocked on I/O — the disk is the real problem), or <code class=\"inline\">st</code> (steal time — a noisy neighbour on the hypervisor)?</li><li><strong>Memory</strong> — <code class=\"inline\">free -h</code>. Low <em>available</em> (not \"free\" — cache is reclaimable) plus swap activity in <code class=\"inline\">vmstat</code> means thrashing. Check <code class=\"inline\">dmesg -T | grep -i oom</code> for kills.</li><li><strong>Disk</strong> — <code class=\"inline\">df -h</code> (full filesystem), <code class=\"inline\">df -i</code> (inodes exhausted — same symptom, no obvious cause), <code class=\"inline\">iostat -xz 1</code> for high <code class=\"inline\">%util</code>/await.</li><li><strong>Network</strong> — <code class=\"inline\">ss -s</code>, retransmits, connection count, is the slowness actually a downstream dependency?</li><li><strong>The process</strong> — once identified: <code class=\"inline\">ps -o pid,ppid,%cpu,%mem,cmd -p PID</code>, its threads, its open files (<code class=\"inline\">lsof -p</code>), its syscalls (<code class=\"inline\">strace -c -p</code>).</li><li><strong>Logs</strong> — <code class=\"inline\">journalctl -u svc --since \"10 min ago\"</code>, app logs, and <em>what changed</em> (deploy? config? traffic spike?).</li></ol>",
+    "tip": "Two details that separate you: high %wa means the bottleneck is I/O not CPU, and 'free' memory being low is normal on Linux — look at AVAILABLE, because the kernel deliberately uses spare RAM for page cache.",
+    "code": "uptime                    # load avg 1/5/15 min — compare with nproc\ntop -o %CPU               # or htop\nvmstat 1 5                # r=runqueue, si/so=swap, wa=io wait\nfree -h                   # look at 'available', not 'free'\ndf -h && df -i            # disk AND inodes\niostat -xz 1 3            # %util, await per device\nss -s                     # socket summary\ndmesg -T | tail -50       # OOM kills, disk errors\njournalctl -u myapp --since \"15 min ago\" -p err",
+    "lang": "bash",
+    "deep": "<h4>Understanding load average</h4><p>Load average counts processes that are <em>running or waiting</em> — including uninterruptible I/O wait on Linux. So a load of 20 on a 4-core box with 2% CPU usage means processes are queuing on disk or NFS, not on CPU. Always read load alongside <code>%wa</code>.</p><h4>The 'disk is full but du shows nothing' classic</h4><p>A deleted file still held open by a process keeps its blocks allocated. <code>df</code> shows the space used, <code>du</code> doesn't see the file. Find it with <code>lsof +L1</code> and restart the holding process (usually an app writing to a log that was <code>rm</code>'d instead of rotated).</p><h4>How to say it in an interview</h4><p>“I check load against core count first, then split CPU vs I/O wait vs memory pressure with top/vmstat/free, confirm disk and inodes, and only then drill into the specific process. In parallel I ask what changed — a deploy, a config change, or a traffic shift explains most incidents.”</p>",
+    "revise": "**Slow server — top-down through CPU/memory/disk/network**:\n1. `uptime` — load avg vs `nproc`.\n2. `top` — **us** (app) vs **sy** (kernel) vs **wa** (blocked on I/O = disk problem) vs **st** (steal, noisy neighbour).\n3. `free -h` — read **available**, not free; `vmstat` for swap; `dmesg | grep -i oom`.\n4. `df -h` **and `df -i`** (inodes!); `iostat -xz 1` for %util.\n5. `ss -s`, then drill into the process (`lsof -p`, `strace -c -p`) + logs + **what changed**.\n• **Interview tip**: high **%wa** = I/O bottleneck, not CPU. Deleted-but-open files explain `df` full while `du` shows nothing (`lsof +L1`)."
+  },
+  {
+    "id": "lnx-disk-full",
+    "category": "linux",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "disk",
+      "troubleshooting"
+    ],
+    "question": "\"No space left on device\" — but du shows plenty of free space. What's happening?",
+    "answer": "<p>Three distinct causes, and you should check all three:</p><ol><li><strong>Deleted but still-open files</strong> — a process holds a file descriptor to a file that was <code class=\"inline\">rm</code>'d. The inode isn't freed until the process closes it, so <code class=\"inline\">df</code> counts the space but <code class=\"inline\">du</code> can't see the file. Classic cause: someone <code class=\"inline\">rm</code>'d a huge log instead of truncating it. Find with <code class=\"inline\">lsof +L1</code>; fix by restarting the process or truncating via <code class=\"inline\">/proc</code>.</li><li><strong>Inode exhaustion</strong> — millions of tiny files (session files, cache, unrotated logs) used up all inodes while bytes are free. <code class=\"inline\">df -i</code> shows 100% IUse. The only fix is deleting files.</li><li><strong>A filesystem mounted over a populated directory</strong> — files written before the mount are hidden underneath and still consume the parent filesystem.</li></ol>",
+    "tip": "This is a favourite because it separates people who've actually run production Linux from people who've only read about it. Lead with 'deleted file still held open by a process' and you've answered it.",
+    "code": "df -h                       # which filesystem is full\ndf -i                       # inodes exhausted?\n\n# find deleted-but-open files holding space\nlsof +L1 | sort -k7 -n | tail\n\n# reclaim WITHOUT restarting the process\n: > /proc/<pid>/fd/3        # truncate the fd in place\n\n# find the real space hogs\ndu -xh --max-depth=1 / 2>/dev/null | sort -h | tail\nfind /var/log -type f -size +100M -exec ls -lh {} +\n\n# correct way to empty an active log\ntruncate -s 0 /var/log/app.log     # NOT rm",
+    "lang": "bash",
+    "revise": "**Disk full but `du` shows space free** — three causes:\n1. **Deleted but still-open file** — process holds the fd, inode not freed; `df` counts it, `du` can't see it. Find: **`lsof +L1`**. Fix: restart the process or `: > /proc/<pid>/fd/N`.\n2. **Inode exhaustion** — millions of tiny files; **`df -i`** shows 100% IUse, bytes still free.\n3. **Filesystem mounted over a populated directory** — old files hidden underneath.\n• **Interview tip**: to empty an active log use **`truncate -s 0`**, never `rm`."
+  },
+  {
+    "id": "lnx-processes-signals",
+    "category": "linux",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "processes",
+      "signals"
+    ],
+    "question": "Explain processes and signals — what's the real difference between kill -15 and kill -9?",
+    "answer": "<p><code class=\"inline\">kill</code> sends a <strong>signal</strong>, it doesn't \"kill\" anything by itself:</p><ul><li><strong>SIGTERM (15)</strong> — the default. A polite \"please shut down\". The process <em>can catch it</em> and clean up: finish in-flight requests, flush buffers, close DB connections, deregister from the load balancer. <strong>Always try this first.</strong></li><li><strong>SIGKILL (9)</strong> — cannot be caught, blocked, or ignored; the kernel destroys the process immediately. No cleanup, so you risk corrupt files, orphaned locks, and half-written state. Last resort.</li><li><strong>SIGHUP (1)</strong> — historically \"terminal closed\"; daemons repurpose it to <em>reload config</em> without restarting (nginx, sshd).</li><li><strong>SIGINT (2)</strong> — Ctrl+C. <strong>SIGSTOP/SIGCONT (19/18)</strong> — pause/resume.</li></ul><p>Process states in <code class=\"inline\">ps</code>: <strong>R</strong> running, <strong>S</strong> interruptible sleep, <strong>D</strong> <em>uninterruptible</em> sleep (stuck in I/O — <code class=\"inline\">kill -9</code> won't work, that's the one exception), <strong>Z</strong> zombie, <strong>T</strong> stopped.</p><p>A <strong>zombie</strong> is a finished child whose parent hasn't called <code class=\"inline\">wait()</code> to read its exit status. You can't kill a zombie (it's already dead) — you fix the parent, or it's reaped by <code class=\"inline\">init</code> when the parent exits.</p>",
+    "tip": "This connects straight to containers: SIGTERM is exactly what Kubernetes sends before terminationGracePeriodSeconds expires and it escalates to SIGKILL — so 'handle SIGTERM for graceful shutdown' is the practical takeaway.",
+    "code": "kill -15 PID          # or just: kill PID   (graceful)\nkill -9  PID          # force — cleanup skipped\nkill -HUP $(pidof nginx)   # reload config, no restart\n\npkill -f 'java.*myapp'     # by command pattern\nps -eo pid,ppid,stat,etime,%cpu,cmd --sort=-%cpu | head\nps aux | awk '$8 ~ /^Z/ {print}'   # zombies\n\n# what is it stuck on?\ncat /proc/PID/status\nls -l /proc/PID/fd | head",
+    "lang": "bash",
+    "revise": "**Signals** — `kill` sends a signal, it doesn't kill by itself:\n• **SIGTERM (15)** — default, **catchable**: process cleans up (finish requests, flush, close connections). **Try first.**\n• **SIGKILL (9)** — **cannot be caught**; kernel destroys it instantly → no cleanup, risk of corrupt state. Last resort.\n• **SIGHUP (1)** — daemons reload config without restart. **SIGINT (2)** = Ctrl+C.\n• States: R running, S sleep, **D uninterruptible I/O (`kill -9` won't work)**, **Z zombie** (dead child, parent never `wait()`ed — kill the parent).\n• **Interview tip**: K8s sends **SIGTERM** then SIGKILL after `terminationGracePeriodSeconds` — handle it for graceful shutdown."
+  },
+  {
+    "id": "lnx-systemd",
+    "category": "linux",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "systemd",
+      "services"
+    ],
+    "question": "How do you manage services with systemd? Write a unit file.",
+    "answer": "<p><strong>systemd</strong> is PID 1 on modern distros — it starts, supervises, restarts, and logs services (\"units\"). Unit files live in <code class=\"inline\">/etc/systemd/system/</code> (admin) or <code class=\"inline\">/usr/lib/systemd/system/</code> (packages).</p><p>Key sections:</p><ul><li><strong>[Unit]</strong> — description and ordering (<code class=\"inline\">After=</code>, <code class=\"inline\">Requires=</code>).</li><li><strong>[Service]</strong> — how to run it: <code class=\"inline\">ExecStart</code>, <code class=\"inline\">User</code>, <code class=\"inline\">Restart=always</code>, <code class=\"inline\">Environment</code>, resource limits.</li><li><strong>[Install]</strong> — <code class=\"inline\">WantedBy=multi-user.target</code> is what makes <code class=\"inline\">enable</code> work (start at boot).</li></ul><p>The two commands people confuse: <strong><code class=\"inline\">start</code> = now</strong>, <strong><code class=\"inline\">enable</code> = at boot</strong>. You usually want <code class=\"inline\">enable --now</code>. And after editing a unit file you <em>must</em> run <code class=\"inline\">daemon-reload</code>.</p><p>Logs go to the journal: <code class=\"inline\">journalctl -u myapp -f</code>. Because systemd captures stdout/stderr, containerised-style logging (write to stdout, don't manage your own log files) works well here too.</p>",
+    "tip": "Mention Restart=always with RestartSec — self-healing services are a DevOps concern, and it shows you use systemd as a supervisor rather than just a start/stop button.",
+    "code": "# /etc/systemd/system/myapp.service\n[Unit]\nDescription=My App API\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\nType=simple\nUser=appuser\nWorkingDirectory=/opt/myapp\nEnvironmentFile=/etc/myapp/env\nExecStart=/usr/bin/java -jar /opt/myapp/app.jar\nRestart=always\nRestartSec=5\nLimitNOFILE=65536\nStandardOutput=journal\nStandardError=journal\n\n[Install]\nWantedBy=multi-user.target",
+    "lang": "ini",
+    "deep": "<h4>The commands you must know cold</h4><pre><code>systemctl daemon-reload           # ALWAYS after editing a unit file\nsystemctl enable --now myapp      # start now + at boot\nsystemctl status myapp            # state + last log lines\nsystemctl restart myapp\nsystemctl list-units --failed     # what's broken on this box\njournalctl -u myapp -f            # follow logs\njournalctl -u myapp --since \"1 hour ago\" -p err\njournalctl -u myapp -b -1         # previous boot</code></pre><h4>Debugging a service that won't start</h4><ol><li><code>systemctl status myapp</code> — exit code and the last few log lines.</li><li><code>journalctl -xeu myapp</code> — full context.</li><li>Common causes: wrong <code>ExecStart</code> path, missing permissions for <code>User=</code>, SELinux denial, port already bound, missing <code>EnvironmentFile</code>.</li></ol>",
+    "revise": "**systemd** is PID 1 — starts, supervises, restarts, logs services. Units in `/etc/systemd/system/`.\n• Sections: **[Unit]** (ordering `After=`), **[Service]** (`ExecStart`, `User`, **`Restart=always`**), **[Install]** (`WantedBy=multi-user.target`).\n• **`start` = now, `enable` = at boot** → usually `enable --now`. **Always `daemon-reload` after editing a unit.**\n• Logs: **`journalctl -u myapp -f`**, `-p err`, `--since`.\n• Debug won't-start: `systemctl status` → `journalctl -xeu` → check ExecStart path, User perms, port in use."
+  },
+  {
+    "id": "lnx-networking",
+    "category": "linux",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "networking",
+      "troubleshooting"
+    ],
+    "question": "Service A can't reach Service B. How do you debug it from the Linux box?",
+    "answer": "<p>Go up the stack, one layer at a time — each command eliminates a layer:</p><ol><li><strong>DNS</strong> — does the name resolve, and to the right IP? <code class=\"inline\">dig +short b.internal</code> / <code class=\"inline\">nslookup</code>. Check <code class=\"inline\">/etc/resolv.conf</code> and <code class=\"inline\">/etc/hosts</code> overrides.</li><li><strong>Routing / reachability</strong> — <code class=\"inline\">ip route get 10.0.2.5</code>, <code class=\"inline\">ping</code> (may be blocked by policy — absence of ping is not proof of failure), <code class=\"inline\">traceroute</code>/<code class=\"inline\">mtr</code> for where it dies.</li><li><strong>Port open?</strong> — <code class=\"inline\">nc -zv host 8080</code> or <code class=\"inline\">curl -v telnet://host:8080</code>. Connection <em>refused</em> = reached the host, nothing listening. <em>Timeout</em> = firewall/security group silently dropping.</li><li><strong>Is B actually listening, and on which interface?</strong> — <code class=\"inline\">ss -ltnp</code>. A service bound to <code class=\"inline\">127.0.0.1</code> instead of <code class=\"inline\">0.0.0.0</code> is an extremely common cause.</li><li><strong>Firewall</strong> — local (<code class=\"inline\">iptables -L -n</code>, <code class=\"inline\">nft list ruleset</code>, <code class=\"inline\">firewall-cmd --list-all</code>) and cloud (security group, NACL, K8s NetworkPolicy).</li><li><strong>Application layer</strong> — <code class=\"inline\">curl -v</code> for status/TLS errors, certificate expiry, wrong path, auth.</li></ol>",
+    "tip": "The single most useful distinction: 'connection refused' vs 'connection timed out'. Refused means you reached the host and nothing is listening; timeout means a firewall is dropping packets. Say that and you've shown you can actually triage.",
+    "code": "dig +short b.internal              # DNS\nss -ltnp | grep 8080               # is it listening? on 0.0.0.0 or 127.0.0.1?\nnc -zv b.internal 8080             # port reachable?\ncurl -v --max-time 5 http://b.internal:8080/health\nip route get 10.0.2.5              # which interface/gateway\nmtr -rwc 20 b.internal             # where packets die\nsudo iptables -L -n -v             # local firewall\nsudo tcpdump -ni any port 8080 -c 20   # is anything arriving at all?\nopenssl s_client -connect b.internal:443 | openssl x509 -noout -dates",
+    "lang": "bash",
+    "revise": "**A can't reach B — debug up the stack**:\n1. **DNS** — `dig +short`, check `/etc/resolv.conf` + `/etc/hosts`.\n2. **Route/reachability** — `ip route get`, `mtr`.\n3. **Port** — `nc -zv host port`: **refused = reached host, nothing listening; timeout = firewall dropping**.\n4. **Listening?** — `ss -ltnp`; bound to **127.0.0.1 instead of 0.0.0.0** is a top cause.\n5. **Firewall** — iptables/nftables + cloud SG/NACL/NetworkPolicy.\n6. **App layer** — `curl -v` (status, TLS, cert expiry); `tcpdump` if packets seem to vanish."
+  },
+  {
+    "id": "lnx-log-analysis",
+    "category": "linux",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "logs",
+      "grep",
+      "awk"
+    ],
+    "question": "How do you analyse logs from the command line — grep, awk, sed, sort, uniq?",
+    "answer": "<p>The core pipeline pattern: <strong>filter → extract → count → sort</strong>.</p><ul><li><strong>grep</strong> — filter lines. <code class=\"inline\">-i</code> case-insensitive, <code class=\"inline\">-v</code> invert, <code class=\"inline\">-c</code> count, <code class=\"inline\">-E</code> extended regex, <code class=\"inline\">-A/-B/-C</code> context lines (essential for stack traces).</li><li><strong>awk</strong> — column extraction and arithmetic. <code class=\"inline\">awk '{print $7}'</code>, aggregation with associative arrays.</li><li><strong>sed</strong> — stream substitution: <code class=\"inline\">sed 's/old/new/g'</code>, or print a line range.</li><li><strong>sort | uniq -c | sort -rn</strong> — the universal \"top N\" idiom.</li><li><strong>tail -f</strong> / <code class=\"inline\">less +F</code> — follow live; <code class=\"inline\">journalctl -f</code> for systemd.</li><li><strong>jq</strong> — for structured JSON logs, which is what you should actually be producing.</li></ul>",
+    "tip": "Have one real pipeline memorised — 'top 10 IPs by request count' or 'error count per minute'. Being able to type it without thinking is far more convincing than describing the flags.",
+    "code": "# top 10 client IPs in an access log\nawk '{print $1}' access.log | sort | uniq -c | sort -rn | head\n\n# error rate per minute\ngrep ERROR app.log | awk '{print $1, substr($2,1,5)}' | uniq -c\n\n# status code distribution\nawk '{codes[$9]++} END {for (c in codes) print codes[c], c}' access.log | sort -rn\n\n# slowest endpoints (response time in last column)\nawk '{sum[$7]+=$NF; n[$7]++} END {for (u in sum) printf \"%.0fms %s\\n\", sum[u]/n[u], u}' \\\n  access.log | sort -rn | head\n\n# stack traces with 20 lines of context\ngrep -A20 'Exception' app.log | less\n\n# structured JSON logs\njq -r 'select(.level==\"error\") | \"\\(.ts) \\(.msg)\"' app.json.log | tail -50",
+    "lang": "bash",
+    "revise": "**Log analysis pipeline: filter → extract → count → sort.**\n• **grep** `-i -v -c -E`, and **`-A/-B/-C`** for context (stack traces).\n• **awk** `'{print $7}'` for columns; associative arrays for aggregation.\n• **`sort | uniq -c | sort -rn`** = the universal **top-N idiom**.\n• `tail -f` / `journalctl -f` to follow; **`jq`** for JSON logs.\n• **Interview tip**: memorise ONE real pipeline (top 10 IPs by request count) and type it fluently."
+  },
+  {
+    "id": "lnx-bash-scripting",
+    "category": "linux",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "bash",
+      "scripting"
+    ],
+    "question": "How do you write a safe production bash script? What does `set -euo pipefail` do?",
+    "answer": "<p>Default bash is dangerously forgiving: it continues after errors, treats unset variables as empty strings, and hides failures inside pipelines. The standard preamble fixes all three:</p><ul><li><strong><code class=\"inline\">set -e</code></strong> — exit immediately if any command returns non-zero. Without it, a failed <code class=\"inline\">cd /app</code> means the next <code class=\"inline\">rm -rf *</code> runs in the wrong directory.</li><li><strong><code class=\"inline\">set -u</code></strong> — error on an <em>unset</em> variable. This is what turns the infamous <code class=\"inline\">rm -rf \"$PREFIX/\"</code> (with <code class=\"inline\">PREFIX</code> unset → <code class=\"inline\">rm -rf /</code>) into a safe crash.</li><li><strong><code class=\"inline\">set -o pipefail</code></strong> — a pipeline returns the first non-zero exit code, not just the last command's. Without it <code class=\"inline\">failing_cmd | tee log</code> reports success.</li><li><strong><code class=\"inline\">IFS=$'\\n\\t'</code></strong> — stops word-splitting on spaces, so filenames with spaces don't explode.</li></ul><p>Beyond the preamble: quote every variable (<code class=\"inline\">\"$var\"</code>), use <code class=\"inline\">trap</code> for cleanup, validate inputs, prefer <code class=\"inline\">[[ ]]</code> over <code class=\"inline\">[ ]</code>, and run <strong>shellcheck</strong> in CI.</p>",
+    "tip": "Know the one gotcha: `set -e` does NOT trigger inside `if` conditions, `&&` chains, or on a command whose result you test — that's by design. And for a command allowed to fail, write `cmd || true` explicitly.",
+    "code": "#!/usr/bin/env bash\nset -euo pipefail\nIFS=$'\\n\\t'\n\nreadonly LOG_DIR=\"${LOG_DIR:-/var/log/myapp}\"   # default if unset\nreadonly TMP=$(mktemp -d)\ntrap 'rm -rf \"$TMP\"' EXIT                        # cleanup on ANY exit\n\nusage() { echo \"usage: $0 <env>\" >&2; exit 1; }\n[[ $# -eq 1 ]] || usage\n\nenv=\"$1\"\nif [[ ! \"$env\" =~ ^(dev|stage|prod)$ ]]; then\n  echo \"invalid env: $env\" >&2; exit 1\nfi\n\nlog() { printf '%s [%s] %s\\n' \"$(date -Is)\" \"$1\" \"${*:2}\" >&2; }\n\ndeploy() {\n  local target=\"$1\"\n  log INFO \"deploying to $target\"\n  curl -fsS --retry 3 --max-time 30 \"https://$target/health\" || {\n    log ERROR \"health check failed\"; return 1\n  }\n}\n\ndeploy \"$env\"\nlog INFO done",
+    "lang": "bash",
+    "revise": "**Safe bash preamble: `set -euo pipefail`**\n• **`-e`** exit on any non-zero (a failed `cd` followed by `rm -rf *` is why).\n• **`-u`** error on **unset variable** (stops `rm -rf \"$UNSET/\"` → `rm -rf /`).\n• **`-o pipefail`** — pipeline returns the **first** failure, not just the last command.\n• `IFS=$'\\n\\t'` stops space word-splitting.\n• Also: **quote every `\"$var\"`**, `trap ... EXIT` for cleanup, `[[ ]]` over `[ ]`, run **shellcheck** in CI.\n• **Gotcha**: `-e` doesn't fire inside `if`/`&&`; use `cmd || true` for allowed failures."
+  },
+  {
+    "id": "lnx-bash-constructs",
+    "category": "linux",
+    "difficulty": "beginner",
+    "tags": [
+      "bash",
+      "scripting",
+      "loops"
+    ],
+    "question": "Bash essentials: variables, conditionals, loops, functions, and exit codes.",
+    "answer": "<p><strong>Exit codes</strong> are the foundation: <code class=\"inline\">0</code> = success, non-zero = failure, available in <code class=\"inline\">$?</code>. Every conditional in bash is really an exit-code test.</p><p><strong>Special variables</strong>: <code class=\"inline\">$0</code> script name, <code class=\"inline\">$1..$9</code> positional args, <code class=\"inline\">$#</code> arg count, <code class=\"inline\">\"$@\"</code> all args (quoted, preserves each), <code class=\"inline\">$$</code> PID, <code class=\"inline\">$?</code> last exit code.</p><p><strong>Test operators</strong>: strings <code class=\"inline\">=</code>, <code class=\"inline\">!=</code>, <code class=\"inline\">-z</code> (empty), <code class=\"inline\">-n</code> (non-empty); numbers <code class=\"inline\">-eq -ne -gt -lt -ge -le</code>; files <code class=\"inline\">-f</code> (file), <code class=\"inline\">-d</code> (dir), <code class=\"inline\">-e</code> (exists), <code class=\"inline\">-r/-w/-x</code>, <code class=\"inline\">-s</code> (non-empty file).</p><p><strong>Parameter expansion</strong> is the bash superpower worth knowing: <code class=\"inline\">${VAR:-default}</code> (use default if unset), <code class=\"inline\">${VAR:?error msg}</code> (fail if unset), <code class=\"inline\">${VAR#prefix}</code>/<code class=\"inline\">${VAR%suffix}</code> (strip), <code class=\"inline\">${VAR/old/new}</code> (replace).</p>",
+    "tip": "Mixing up string `=` and numeric `-eq` is the classic bash bug: `[[ \"10\" > \"9\" ]]` is FALSE because it compares as strings. Use `-gt` for numbers.",
+    "code": "#!/usr/bin/env bash\nset -euo pipefail\n\nname=\"${1:?usage: $0 <name>}\"        # fail with a message if missing\nretries=\"${RETRIES:-3}\"              # default when unset\n\n# conditional\nif [[ -f /etc/myapp.conf && \"$retries\" -gt 0 ]]; then\n  echo \"config found\"\nelif [[ -d /etc/myapp ]]; then\n  echo \"dir only\"\nelse\n  echo \"missing\" >&2; exit 1\nfi\n\n# loops\nfor f in /var/log/*.log; do\n  echo \"rotating $f\"\ndone\n\nfor i in {1..5}; do echo \"attempt $i\"; done\n\nwhile read -r line; do\n  [[ -z \"$line\" || \"$line\" == \\#* ]] && continue\n  echo \"host: $line\"\ndone < hosts.txt\n\n# function with return code + local vars\nretry() {\n  local n=0 max=\"$1\"; shift\n  until \"$@\"; do\n    n=$((n+1))\n    (( n >= max )) && return 1\n    sleep $(( 2 ** n ))            # exponential backoff\n  done\n}\nretry 3 curl -fsS https://api.example.com/health\n\ncase \"$name\" in\n  dev|stage) echo \"non-prod\" ;;\n  prod)      echo \"PROD — confirm\" ;;\n  *)         echo \"unknown\" >&2; exit 1 ;;\nesac",
+    "lang": "bash",
+    "revise": "**Bash essentials**:\n• **Exit codes**: `0` = success; `$?` = last code. Every conditional is an exit-code test.\n• **Specials**: `$0` name, `$1..$9` args, `$#` count, **`\"$@\"`** all args quoted, `$$` PID.\n• **Tests**: strings `=`, `-z`, `-n`; numbers **`-eq -gt -lt`**; files `-f -d -e -s`.\n• **Parameter expansion**: `${V:-default}`, `${V:?msg}`, `${V#pre}`, `${V%suf}`, `${V/old/new}`.\n• **Interview tip**: `[[ \"10\" > \"9\" ]]` is FALSE (string compare) — use **`-gt`** for numbers."
+  },
+  {
+    "id": "lnx-redirection",
+    "category": "linux",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "redirection",
+      "pipes"
+    ],
+    "question": "Explain stdin/stdout/stderr, pipes, and redirection.",
+    "answer": "<p>Every process starts with three file descriptors: <strong>0 = stdin</strong>, <strong>1 = stdout</strong> (normal output), <strong>2 = stderr</strong> (errors, deliberately separate so you can filter them apart).</p><ul><li><code class=\"inline\">&gt;</code> overwrite, <code class=\"inline\">&gt;&gt;</code> append (stdout only).</li><li><code class=\"inline\">2&gt;</code> redirect stderr, <code class=\"inline\">2&gt;&amp;1</code> merge stderr into stdout, <code class=\"inline\">&amp;&gt;file</code> both.</li><li><code class=\"inline\">&lt;</code> feed a file as stdin; <code class=\"inline\">&lt;&lt;EOF</code> heredoc for inline multi-line input.</li><li><code class=\"inline\">|</code> pipe stdout of one command into stdin of the next.</li><li><code class=\"inline\">/dev/null</code> — the bit bucket. <code class=\"inline\">2&gt;/dev/null</code> silences errors.</li><li><code class=\"inline\">tee</code> — write to a file <em>and</em> pass through, so you can see and save.</li></ul><p><strong>Order matters</strong>: <code class=\"inline\">cmd &gt; file 2&gt;&amp;1</code> sends both to the file, but <code class=\"inline\">cmd 2&gt;&amp;1 &gt; file</code> sends stderr to the <em>terminal</em> (stderr was pointed at the old stdout before stdout was redirected). This is a classic interview trick.</p>",
+    "tip": "Be ready for the `>file 2>&1` vs `2>&1 >file` question — it's asked precisely because it separates memorisation from understanding that redirection is evaluated left to right on descriptor copies.",
+    "code": "cmd > out.log 2> err.log        # split streams\ncmd > all.log 2>&1              # BOTH to file (correct order)\ncmd &> all.log                  # same, bash shorthand\ncmd 2>/dev/null                 # discard errors only\ncmd | tee -a run.log            # see AND save\n\n# only stderr through grep\ncmd 2>&1 >/dev/null | grep -i warn\n\n# heredoc\nkubectl apply -f - <<'EOF'\napiVersion: v1\nkind: ConfigMap\nmetadata: { name: demo }\nEOF\n\n# process substitution — compare two command outputs\ndiff <(ssh host1 'rpm -qa | sort') <(ssh host2 'rpm -qa | sort')",
+    "lang": "bash",
+    "revise": "**Streams**: **0=stdin, 1=stdout, 2=stderr** (separate so you can filter errors apart).\n• `>` overwrite, `>>` append, `2>` stderr, **`2>&1`** merge, `&>` both, `<` stdin, `<<EOF` heredoc.\n• `|` pipe stdout→stdin; `/dev/null` discards; **`tee`** = see AND save.\n• **Interview trick**: `cmd > file 2>&1` sends both to the file, but **`cmd 2>&1 > file` leaves stderr on the terminal** — redirection is evaluated left-to-right on descriptor copies.\n• Bonus: **process substitution** `diff <(cmd1) <(cmd2)`."
+  },
+  {
+    "id": "lnx-find-xargs",
+    "category": "linux",
+    "difficulty": "intermediate",
+    "tags": [
+      "find",
+      "xargs",
+      "cleanup"
+    ],
+    "question": "How do you use find and xargs for bulk operations safely?",
+    "answer": "<p><code class=\"inline\">find</code> walks a tree filtering by name, type, size, age, permissions, or owner; <code class=\"inline\">xargs</code> turns that list into arguments for another command.</p><p>Common filters: <code class=\"inline\">-name</code>/<code class=\"inline\">-iname</code>, <code class=\"inline\">-type f|d|l</code>, <code class=\"inline\">-size +100M</code>, <code class=\"inline\">-mtime +7</code> (modified more than 7 days ago), <code class=\"inline\">-user</code>, <code class=\"inline\">-perm</code>, <code class=\"inline\">-maxdepth</code>.</p><p><strong>The safety rules that matter in production:</strong></p><ul><li>Use <code class=\"inline\">-print0</code> with <code class=\"inline\">xargs -0</code> (or just <code class=\"inline\">-exec ... +</code>) so filenames with spaces or newlines don't split into wrong arguments.</li><li><strong>Always dry-run first</strong> — run the <code class=\"inline\">find</code> alone, or with <code class=\"inline\">-print</code>, before attaching <code class=\"inline\">-delete</code> or <code class=\"inline\">rm</code>.</li><li>Prefer <code class=\"inline\">-exec cmd {} +</code> over <code class=\"inline\">\\;</code> — it batches arguments instead of forking once per file (dramatically faster on thousands of files).</li><li>Add <code class=\"inline\">-maxdepth</code> and an absolute starting path to bound the blast radius.</li></ul>",
+    "tip": "The interviewer's real question is whether you'd `rm` a million files without checking. Say 'I run the find first to see what it matches, then add the delete' — caution is the answer.",
+    "code": "# ALWAYS look first\nfind /var/log -type f -name '*.log' -mtime +30\n\n# then act\nfind /var/log -type f -name '*.log' -mtime +30 -delete\n\n# safe with weird filenames, batched exec\nfind /data -type f -name '*.tmp' -print0 | xargs -0 -r rm -v\nfind /data -type f -name '*.tmp' -exec rm -v {} +\n\n# biggest files\nfind / -xdev -type f -size +500M -exec ls -lh {} + 2>/dev/null | sort -k5 -h\n\n# parallel processing\nfind . -name '*.gz' -print0 | xargs -0 -P 4 -n 1 gunzip\n\n# empty dirs, broken symlinks, wrong ownership\nfind /opt -type d -empty -delete\nfind /opt -xtype l\nfind /opt/app ! -user appuser -exec chown appuser:appgroup {} +",
+    "lang": "bash",
+    "revise": "**find + xargs**:\n• Filters: `-name`, `-type f|d|l`, `-size +100M`, **`-mtime +7`**, `-user`, `-perm`, `-maxdepth`.\n• **Safety**: use **`-print0 | xargs -0`** (or `-exec {} +`) for filenames with spaces; **dry-run the find first**, then add `-delete`.\n• **`-exec {} +` batches** args (one process) vs `\\;` which forks per file — much faster.\n• Bound the blast radius with `-maxdepth` + absolute path; `-P 4` on xargs for parallelism."
+  },
+  {
+    "id": "lnx-ssh",
+    "category": "linux",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "ssh",
+      "security"
+    ],
+    "question": "How does SSH key authentication work? What about config, agent forwarding, and tunnels?",
+    "answer": "<p><strong>Key auth</strong>: you generate a keypair; the <em>public</em> key goes into <code class=\"inline\">~/.ssh/authorized_keys</code> on the server; the <em>private</em> key never leaves your machine. At login the server sends a challenge that only the private key can sign — so no password crosses the wire and there's nothing on the server worth stealing.</p><p>Practical pieces:</p><ul><li><strong>Permissions matter</strong> — SSH refuses keys if they're too open: <code class=\"inline\">700</code> on <code class=\"inline\">~/.ssh</code>, <code class=\"inline\">600</code> on the private key and <code class=\"inline\">authorized_keys</code>. This is the #1 \"key doesn't work\" cause.</li><li><strong><code class=\"inline\">~/.ssh/config</code></strong> — aliases, users, keys, and jump hosts so you type <code class=\"inline\">ssh prod-db</code> instead of a 90-character command.</li><li><strong>Bastion/jump host</strong> — <code class=\"inline\">ProxyJump</code> is the modern way to reach private instances.</li><li><strong>Agent forwarding</strong> (<code class=\"inline\">-A</code>) lets a remote host use your local key — convenient but <em>risky</em>: root on that host can hijack your agent socket. Prefer <code class=\"inline\">ProxyJump</code>.</li><li><strong>Tunnels</strong> — local forward (<code class=\"inline\">-L</code>) to reach a private DB from your laptop; remote forward (<code class=\"inline\">-R</code>); dynamic (<code class=\"inline\">-D</code>) as a SOCKS proxy.</li></ul><p>Hardening the server: disable password auth and root login, use <code class=\"inline\">ed25519</code> keys, and fail2ban.</p>",
+    "tip": "Prefer ProxyJump over agent forwarding and say why — a compromised bastion can use a forwarded agent to authenticate as you everywhere. That's a real security judgement call.",
+    "code": "ssh-keygen -t ed25519 -C \"chinmaya@laptop\"\nssh-copy-id -i ~/.ssh/id_ed25519.pub user@server\n\n# ~/.ssh/config\nHost bastion\n  HostName 203.0.113.10\n  User ec2-user\n  IdentityFile ~/.ssh/prod.pem\n\nHost prod-*\n  User appuser\n  ProxyJump bastion            # safer than agent forwarding\n  IdentityFile ~/.ssh/prod.pem\n  ServerAliveInterval 60\n\n# local port forward: reach a private RDS from localhost:5432\nssh -N -L 5432:mydb.internal:5432 bastion\n\n# permissions (the classic failure)\nchmod 700 ~/.ssh && chmod 600 ~/.ssh/id_ed25519 ~/.ssh/authorized_keys\n\nssh -vvv user@host   # debug auth failures",
+    "lang": "bash",
+    "revise": "**SSH key auth** — public key in server's `~/.ssh/authorized_keys`, private key never leaves your machine; server sends a challenge only the private key can sign.\n• **Permissions**: `700` on `~/.ssh`, **`600`** on private key + `authorized_keys` — #1 cause of 'key doesn't work'.\n• **`~/.ssh/config`** — aliases, `IdentityFile`, **`ProxyJump bastion`** for private hosts.\n• **Agent forwarding (`-A`) is risky** — root on that host can hijack your agent. Prefer **ProxyJump**.\n• **Tunnels**: `-L` local (reach private DB), `-R` remote, `-D` SOCKS. Debug with `ssh -vvv`.\n• Harden: `ed25519`, no password auth, no root login."
+  },
+  {
+    "id": "lnx-cron",
+    "category": "linux",
+    "difficulty": "beginner",
+    "tags": [
+      "cron",
+      "scheduling",
+      "systemd-timers"
+    ],
+    "question": "Explain cron syntax. Why does a job that works manually fail under cron?",
+    "answer": "<p>Format: <code class=\"inline\">minute hour day-of-month month day-of-week command</code>.</p><pre><code>*/5 * * * *      every 5 minutes\n0 2 * * *        daily at 02:00\n0 3 * * 0        Sundays at 03:00\n30 1 1 * *       1st of each month, 01:30</code></pre><p><strong>Why it works manually but fails in cron</strong> — cron runs with a <em>minimal environment</em>:</p><ul><li><strong>PATH is tiny</strong> (usually <code class=\"inline\">/usr/bin:/bin</code>) — so <code class=\"inline\">docker</code>, <code class=\"inline\">aws</code>, <code class=\"inline\">kubectl</code> aren't found. <strong>Use absolute paths.</strong></li><li><strong>No shell profile</strong> — <code class=\"inline\">.bashrc</code>/<code class=\"inline\">.bash_profile</code> are not sourced, so your exported env vars don't exist.</li><li><strong>No TTY</strong>, and the working directory is <code class=\"inline\">$HOME</code>, not where you expect.</li><li><strong>Output goes to mail, not your terminal</strong> — if mail isn't configured, errors vanish silently. Always redirect to a log.</li><li><code class=\"inline\">%</code> has special meaning in crontab and must be escaped as <code class=\"inline\">\\%</code>.</li></ul><p>Modern alternative: <strong>systemd timers</strong> — better logging (journal), dependency ordering, <code class=\"inline\">Persistent=true</code> to catch up on missed runs after downtime, and randomised delays.</p>",
+    "tip": "'Works manually, fails in cron' is almost always PATH or a missing environment variable. Say that immediately, then mention redirecting output to a log so failures aren't silent.",
+    "code": "crontab -e ; crontab -l ; crontab -l -u appuser\n\n# robust entry: absolute paths, explicit env, logged output, no overlap\nSHELL=/bin/bash\nPATH=/usr/local/bin:/usr/bin:/bin\n0 2 * * * /usr/bin/flock -n /tmp/backup.lock /opt/scripts/backup.sh >> /var/log/backup.log 2>&1\n\n# systemd timer equivalent\n# /etc/systemd/system/backup.timer\n[Timer]\nOnCalendar=*-*-* 02:00:00\nPersistent=true          # run on boot if the machine was off\nRandomizedDelaySec=300",
+    "lang": "bash",
+    "revise": "**Cron**: `min hour dom month dow cmd` — `*/5 * * * *` = every 5 min, `0 2 * * *` = daily 02:00.\n• **Works manually, fails in cron** because cron has a **minimal environment**: tiny **PATH** (use absolute paths!), **no `.bashrc`** sourced, no TTY, cwd = `$HOME`, output goes to **mail** not your terminal (always redirect to a log). Escape `%` as `\\%`.\n• Use **`flock`** to prevent overlapping runs.\n• **systemd timers** are the modern option: journal logging, `Persistent=true` catches missed runs, randomised delay."
+  },
+  {
+    "id": "lnx-memory",
+    "category": "linux",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "memory",
+      "oom"
+    ],
+    "question": "How do you read Linux memory usage? What is the OOM killer?",
+    "answer": "<p>The big misconception: <strong>\"free\" memory being near zero is normal and good.</strong> Linux uses spare RAM for page cache and buffers, which are instantly reclaimable. The number that matters is <strong>available</strong>.</p><ul><li><code class=\"inline\">free -h</code> → look at <strong>available</strong>, not <strong>free</strong>.</li><li><strong>buff/cache</strong> — file cache; reclaimed automatically under pressure.</li><li><strong>Swap in use is not automatically bad</strong>; what matters is active swapping (<code class=\"inline\">si</code>/<code class=\"inline\">so</code> columns in <code class=\"inline\">vmstat</code>), which means thrashing.</li></ul><p><strong>The OOM killer</strong>: when the kernel can't satisfy an allocation and can't reclaim, it picks a process to kill based on an <code class=\"inline\">oom_score</code> (roughly: memory used, weighted by <code class=\"inline\">oom_score_adj</code>) and SIGKILLs it. Your app dies with no stack trace and no graceful shutdown — the only evidence is in <code class=\"inline\">dmesg</code>/journal.</p><p>In containers this is sharper: exceeding a container memory <em>limit</em> triggers a cgroup OOM kill → the container restarts with <strong>exit code 137</strong> (128+9). Repeated 137s in Kubernetes = <code class=\"inline\">OOMKilled</code> CrashLoopBackOff, and the fix is either raising the limit or fixing the leak — not adding swap.</p>",
+    "tip": "Exit code 137 = OOMKilled is one of those facts that instantly signals hands-on container experience. Pair it with 'check dmesg for the kernel's kill message'.",
+    "code": "free -h                       # read the 'available' column\nvmstat 1 5                    # si/so non-zero = actively swapping\n\n# who is using memory\nps -eo pid,rss,%mem,cmd --sort=-rss | head\nsmem -rs pss 2>/dev/null | head\n\n# was something OOM-killed?\ndmesg -T | grep -i -E 'killed process|out of memory'\njournalctl -k | grep -i oom\n\n# container/cgroup limits\ncat /sys/fs/cgroup/memory.max /sys/fs/cgroup/memory.current\nkubectl describe pod mypod | grep -A3 'Last State'   # Reason: OOMKilled, Exit Code: 137\n\n# protect a critical process (lower = less likely to be killed)\nchoom -n -500 -p $(pidof critical-app)",
+    "lang": "bash",
+    "revise": "**Linux memory**: near-zero **free** is NORMAL — the kernel uses spare RAM for page cache. Read the **available** column of `free -h`.\n• **buff/cache** is reclaimable; swap *in use* isn't bad — **active swapping** (`si`/`so` in `vmstat`) = thrashing.\n• **OOM killer**: kernel can't allocate → picks a process by `oom_score` and **SIGKILLs** it. No stack trace — evidence is in **`dmesg`**.\n• **Containers**: exceeding the memory limit = cgroup OOM kill → **exit code 137** (128+9) → K8s `OOMKilled`/CrashLoopBackOff.\n• **Interview tip**: quoting **137 = OOMKilled** signals real hands-on experience."
+  },
+  {
+    "id": "lnx-users-sudo",
+    "category": "linux",
+    "difficulty": "beginner",
+    "tags": [
+      "users",
+      "sudo",
+      "security"
+    ],
+    "question": "How do you manage users, groups, and sudo access on a server?",
+    "answer": "<p><strong>Users</strong> live in <code class=\"inline\">/etc/passwd</code> (name, UID, GID, home, shell), password hashes in <code class=\"inline\">/etc/shadow</code> (root-only), groups in <code class=\"inline\">/etc/group</code>.</p><ul><li><code class=\"inline\">useradd -m -s /bin/bash alice</code> — create with home dir and shell.</li><li><code class=\"inline\">usermod -aG docker alice</code> — add to a group. <strong>The <code class=\"inline\">-a</code> is critical</strong>: without it you <em>replace</em> all secondary groups and can lock someone out.</li><li><strong>Service accounts</strong> should be no-login: <code class=\"inline\">useradd -r -s /usr/sbin/nologin appuser</code>. Applications must never run as root.</li></ul><p><strong>sudo</strong> is configured in <code class=\"inline\">/etc/sudoers</code> — <em>always</em> edited with <code class=\"inline\">visudo</code>, which validates syntax before saving (a broken sudoers file can lock everyone out of root). Prefer drop-in files in <code class=\"inline\">/etc/sudoers.d/</code> so config is manageable by Ansible/Terraform.</p><p>Grant the narrowest command set that works, not blanket <code class=\"inline\">ALL</code>. Every sudo invocation is logged — that audit trail is the whole point of sudo over shared root passwords.</p>",
+    "tip": "Two things to volunteer: `usermod -aG` (forgetting -a wipes group membership) and 'always use visudo'. Both are mistakes that cause real outages.",
+    "code": "useradd -m -s /bin/bash -G developers alice\npasswd alice\nusermod -aG docker alice          # -a = APPEND (omitting it wipes other groups)\nid alice ; groups alice\n\n# service account: no login, no shell\nuseradd -r -s /usr/sbin/nologin -d /opt/myapp appuser\n\n# least-privilege sudo drop-in\n# /etc/sudoers.d/deploy   (validate: visudo -cf)\n%deployers ALL=(root) NOPASSWD: /bin/systemctl restart myapp, /bin/systemctl status myapp\n\nsudo -l -U alice                  # what can alice actually run?\nlastlog ; last -20                # login history\ngrep 'sudo:' /var/log/auth.log    # sudo audit trail",
+    "lang": "bash",
+    "revise": "**Users/groups**: `/etc/passwd` (user, UID, shell), `/etc/shadow` (hashes, root-only), `/etc/group`.\n• `useradd -m -s /bin/bash alice`; **`usermod -aG docker alice`** — the **`-a` is critical**, without it you WIPE other groups.\n• **Service accounts**: `useradd -r -s /usr/sbin/nologin` — apps never run as root.\n• **sudo**: always edit with **`visudo`** (validates syntax; a broken sudoers locks out root); use drop-ins in `/etc/sudoers.d/`, grant the **narrowest command list**, not `ALL`.\n• `sudo -l -U alice` shows effective rights; every sudo call is **logged** (the audit trail is the point)."
+  },
+  {
+    "id": "lnx-links",
+    "category": "linux",
+    "difficulty": "beginner",
+    "tags": [
+      "filesystem",
+      "links",
+      "inodes"
+    ],
+    "question": "Hard link vs soft (symbolic) link — and what is an inode?",
+    "answer": "<p>An <strong>inode</strong> is the actual file metadata structure — permissions, owner, timestamps, size, and pointers to the data blocks. Crucially, <em>the filename is not in the inode</em>; a directory entry maps a name → inode number. That single fact explains both link types.</p><ul><li><strong>Hard link</strong> — another directory entry pointing at the <em>same inode</em>. Both names are equally \"real\"; deleting one just decrements the link count, and the data survives until the count hits zero. Limits: cannot cross filesystems, cannot link directories.</li><li><strong>Soft/symbolic link</strong> — a tiny separate file whose content is a <em>path</em>. Can cross filesystems and link directories, but breaks if the target moves or is deleted (a \"dangling\" link). This is what <code class=\"inline\">/etc/alternatives</code> and most deployment \"current release\" pointers use.</li></ul>",
+    "tip": "The deployment use-case makes this concrete: releases go in /opt/app/releases/<timestamp>, and 'current' is a symlink you atomically re-point — that's an instant, rollback-able deploy.",
+    "code": "ln  file.txt hard.txt        # hard link — same inode\nln -s file.txt soft.txt      # symlink — stores a path\n\nls -li                       # -i shows inode numbers\n# 1234567 -rw-r--r-- 2 user user   12 file.txt   ← link count 2\n# 1234567 -rw-r--r-- 2 user user   12 hard.txt   ← same inode\n# 1234890 lrwxrwxrwx 1 user user    8 soft.txt -> file.txt\n\nstat file.txt                # inode, links, timestamps\nfind /path -inum 1234567     # all names for one inode\n\n# atomic release switch (classic deploy pattern)\nln -sfn /opt/app/releases/2026-08-05 /opt/app/current\nsystemctl restart myapp",
+    "lang": "bash",
+    "revise": "**inode** = the file's metadata + data-block pointers. **The filename is NOT in the inode** — a directory maps name → inode.\n• **Hard link** — another name for the **same inode**; equally real, deleting one just decrements the link count. **Can't cross filesystems, can't link directories.**\n• **Soft/symlink** — a small file containing a **path**; crosses filesystems, links directories, but **breaks if the target moves** (dangling).\n• `ls -li` shows inode numbers; `find -inum N` finds all names.\n• **Interview tip**: the `current -> releases/<ts>` symlink is the classic **atomic deploy + rollback** pattern."
+  },
+  {
+    "id": "lnx-filesystem-layout",
+    "category": "linux",
+    "difficulty": "beginner",
+    "tags": [
+      "filesystem",
+      "fhs",
+      "basics"
+    ],
+    "question": "Explain the Linux directory structure — which directories matter for DevOps?",
+    "answer": "<ul><li><strong>/etc</strong> — system and application <em>configuration</em>. Everything you'd version-control or template with Ansible lives here.</li><li><strong>/var</strong> — variable data: <code class=\"inline\">/var/log</code> (logs — the first place you look), <code class=\"inline\">/var/lib</code> (application state: Docker images, databases), <code class=\"inline\">/var/spool</code>. This is the partition that fills up.</li><li><strong>/opt</strong> — third-party/self-installed application software. Common deploy target.</li><li><strong>/usr</strong> — read-only system programs and libraries (<code class=\"inline\">/usr/bin</code>, <code class=\"inline\">/usr/local/bin</code> for locally installed tools).</li><li><strong>/proc</strong> — virtual filesystem exposing kernel and per-process state (<code class=\"inline\">/proc/PID/</code>, <code class=\"inline\">/proc/meminfo</code>). Not on disk.</li><li><strong>/sys</strong> — kernel/device and <strong>cgroup</strong> interface (container limits live here).</li><li><strong>/tmp</strong> — world-writable scratch, sticky bit set, cleared on reboot. <strong>/dev/shm</strong> — shared memory.</li><li><strong>/home</strong>, <strong>/root</strong> — user home directories.</li><li><strong>/dev</strong> — device files (<code class=\"inline\">/dev/null</code>, <code class=\"inline\">/dev/sda</code>).</li></ul>",
+    "tip": "Answer it operationally, not as a list from a textbook: 'when I'm debugging I go to /var/log first, /etc for config, and /proc for live process state'. That's how a DevOps engineer actually uses the tree.",
+    "code": "du -xh --max-depth=1 /var | sort -h    # /var/log and /var/lib grow\ncat /proc/meminfo /proc/cpuinfo\ncat /proc/$(pidof nginx)/limits        # actual ulimits of a running process\nls -l /proc/PID/cwd /proc/PID/exe      # where it runs from\ncat /sys/fs/cgroup/memory.max          # container memory limit\ndf -hT                                 # mounts + filesystem types",
+    "lang": "bash",
+    "revise": "**Directories that matter for DevOps**:\n• **/etc** — configuration (what you template with Ansible).\n• **/var** — variable data: **/var/log** (first place you look), **/var/lib** (Docker, DB state). **The partition that fills up.**\n• **/opt** — third-party/deployed apps. **/usr/bin**, **/usr/local/bin** — binaries.\n• **/proc** — virtual: live kernel + per-process state (`/proc/PID/limits`, `/proc/meminfo`).\n• **/sys** — kernel/device + **cgroups** (container limits).\n• **/tmp** — world-writable, sticky bit, cleared on reboot."
+  },
+  {
+    "id": "lnx-packages",
+    "category": "linux",
+    "difficulty": "beginner",
+    "tags": [
+      "packages",
+      "apt",
+      "yum"
+    ],
+    "question": "How do package managers work — apt vs yum/dnf? How do you pin a version?",
+    "answer": "<p>Package managers resolve dependencies, verify signatures, and track what's installed so upgrades and removals are clean.</p><ul><li><strong>Debian/Ubuntu</strong> — <code class=\"inline\">.deb</code> packages; <code class=\"inline\">dpkg</code> is the low-level tool, <code class=\"inline\">apt</code> adds repository and dependency resolution. Repos configured in <code class=\"inline\">/etc/apt/sources.list(.d)</code>.</li><li><strong>RHEL/CentOS/Amazon Linux</strong> — <code class=\"inline\">.rpm</code>; <code class=\"inline\">rpm</code> is low-level, <code class=\"inline\">yum</code>/<code class=\"inline\">dnf</code> handles repos and dependencies. Repos in <code class=\"inline\">/etc/yum.repos.d/</code>.</li></ul><p><strong>Version pinning matters for reproducibility.</strong> Installing <code class=\"inline\">nginx</code> unpinned means two servers built a week apart run different versions — the exact class of bug that makes environments drift. Pin explicitly (<code class=\"inline\">apt-mark hold</code>, <code class=\"inline\">yum versionlock</code>, or an exact version in the install command) and let a scheduled process handle upgrades deliberately.</p><p>In containers this is the same rule as pinning base images: <code class=\"inline\">apt-get install -y nginx=1.24.0-1</code>, and clean the package cache in the same <code class=\"inline\">RUN</code> layer to keep the image small.</p>",
+    "tip": "Tie it to immutable infrastructure: 'rather than patching packages on long-lived servers, we bake a new AMI/image and replace the instance' — that's the modern DevOps position and it's what they're fishing for.",
+    "code": "# Debian/Ubuntu\napt-get update && apt-get install -y nginx=1.24.0-1ubuntu1\napt-cache policy nginx          # available versions + which repo\napt-mark hold nginx             # pin\ndpkg -l | grep nginx ; dpkg -L nginx ; dpkg -S /usr/sbin/nginx\n\n# RHEL family\ndnf install -y nginx-1.24.0\ndnf list available nginx --showduplicates\ndnf versionlock add nginx\nrpm -qa | grep nginx ; rpm -ql nginx ; rpm -qf /usr/sbin/nginx\n\n# in a Dockerfile — pin AND clean in the same layer\nRUN apt-get update \\\n && apt-get install -y --no-install-recommends curl=7.88.1-10 \\\n && rm -rf /var/lib/apt/lists/*",
+    "lang": "bash",
+    "revise": "**Package managers**:\n• **Debian/Ubuntu** — `.deb`, low-level `dpkg`, `apt` for repos/deps, sources in `/etc/apt/sources.list.d/`.\n• **RHEL/Amazon** — `.rpm`, low-level `rpm`, `yum`/`dnf`, repos in `/etc/yum.repos.d/`.\n• **Pin versions** for reproducibility (`apt-mark hold`, `dnf versionlock`, exact version in install) — unpinned installs = environment drift.\n• Query: `dpkg -S` / `rpm -qf` = which package owns a file.\n• **Interview tip**: modern stance = **bake a new image/AMI and replace the instance** instead of patching long-lived servers."
+  },
+  {
+    "id": "lnx-archives-transfer",
+    "category": "linux",
+    "difficulty": "beginner",
+    "tags": [
+      "tar",
+      "rsync",
+      "backup"
+    ],
+    "question": "tar, gzip, rsync, scp — how do you archive and transfer files efficiently?",
+    "answer": "<p><strong>tar</strong> bundles many files into one archive (it doesn't compress by itself); <code class=\"inline\">-z</code> adds gzip, <code class=\"inline\">-j</code> bzip2, <code class=\"inline\">-J</code> xz (best ratio, slowest).</p><p><strong>scp</strong> is a simple whole-file copy over SSH. <strong>rsync</strong> is what you actually want for anything repeated, because it:</p><ul><li>Transfers only the <strong>differences</strong> (delta algorithm) — a huge win on repeat syncs.</li><li><strong>Resumes</strong> interrupted transfers (<code class=\"inline\">--partial</code>).</li><li>Preserves permissions/ownership/timestamps (<code class=\"inline\">-a</code>).</li><li>Can <code class=\"inline\">--delete</code> to mirror exactly, and <code class=\"inline\">--dry-run</code> to preview first.</li><li>Supports <code class=\"inline\">--exclude</code> patterns and bandwidth limits.</li></ul><p><strong>The trailing-slash rule</strong> is the classic rsync gotcha: <code class=\"inline\">rsync -a src/ dst/</code> copies the <em>contents</em> of src into dst, while <code class=\"inline\">rsync -a src dst/</code> creates <code class=\"inline\">dst/src/</code>. Getting this wrong with <code class=\"inline\">--delete</code> is how people destroy directories.</p>",
+    "tip": "Always mention --dry-run before --delete. Anyone who has actually used rsync in production has learned this the hard way, and saying it signals you have.",
+    "code": "tar -czvf backup.tar.gz /opt/app        # create gzip\ntar -xzvf backup.tar.gz -C /restore     # extract to a directory\ntar -tzvf backup.tar.gz | head          # LIST before extracting\n\n# rsync — preview first, then run\nrsync -avz --delete --dry-run /opt/app/ user@host:/opt/app/\nrsync -avzP --exclude='*.log' --exclude='node_modules' \\\n      /opt/app/ user@host:/opt/app/\n\n# through a bastion, with bandwidth cap\nrsync -avz -e 'ssh -J bastion' --bwlimit=5000 /data/ user@prod:/data/\n\n# stream a directory over SSH without a temp file\ntar -czf - /opt/app | ssh user@host 'tar -xzf - -C /restore'",
+    "lang": "bash",
+    "revise": "**tar / rsync / scp**:\n• **tar** bundles (doesn't compress alone): `-z` gzip, `-j` bzip2, `-J` xz. `-c` create, `-x` extract, **`-t` list before extracting**.\n• **scp** = simple whole-file copy. **rsync** = the real tool: transfers only **deltas**, **resumes** (`--partial`), preserves perms (`-a`), `--exclude`, `--delete` to mirror.\n• **Trailing-slash rule**: `src/` copies the **contents**; `src` (no slash) creates `dst/src/`.\n• **Interview tip**: always **`--dry-run` before `--delete`**."
+  },
+  {
+    "id": "lnx-container-namespaces",
+    "category": "linux",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "namespaces",
+      "cgroups",
+      "containers"
+    ],
+    "question": "What Linux features actually make containers work — namespaces and cgroups?",
+    "answer": "<p>A container is <strong>not a VM</strong> — it's an ordinary Linux process with restricted visibility and resources. Two kernel features do all the work:</p><p><strong>Namespaces = isolation (what a process can SEE):</strong></p><ul><li><strong>PID</strong> — its own process tree; the container's main process is PID 1.</li><li><strong>NET</strong> — own interfaces, IPs, routing table, ports.</li><li><strong>MNT</strong> — own filesystem view (the image's root).</li><li><strong>UTS</strong> — own hostname. <strong>IPC</strong> — own shared memory. <strong>USER</strong> — UID mapping (root inside ≠ root outside).</li></ul><p><strong>cgroups = limits (what a process can USE):</strong> CPU shares/quota, memory limit (exceed it → OOM kill, exit 137), block I/O, PIDs count.</p><p>Add <strong>union filesystems</strong> (OverlayFS) for layered images and copy-on-write, plus <strong>capabilities/seccomp/AppArmor</strong> for syscall restriction, and you have Docker. That's why containers start in milliseconds and share the host kernel — and also why a kernel exploit is a container-escape risk in a way it isn't for a VM.</p>",
+    "tip": "This is the question that proves you understand containers rather than just running docker commands. The one-line answer: 'namespaces control what a process can see, cgroups control what it can use'.",
+    "code": "# a container is just a process on the host\nps -ef | grep myapp\nsudo ls -l /proc/<pid>/ns/          # its namespaces\nsudo nsenter -t <pid> -n ss -ltnp   # run in the container's NET namespace\n\n# cgroup limits (v2)\ncat /sys/fs/cgroup/memory.max\ncat /sys/fs/cgroup/cpu.max\n\n# create isolation by hand — this IS a mini container\nsudo unshare --pid --net --mount --uts --fork --mount-proc bash\n\ndocker run --memory=512m --cpus=1.5 --pids-limit=100 myapp",
+    "lang": "bash",
+    "deep": "<h4>Why this matters operationally</h4><ul><li><strong>PID 1 semantics</strong> — your container's main process is PID 1, which does <em>not</em> get default signal handlers and doesn't reap orphans. That's why containers ignore SIGTERM and leak zombies; the fix is handling SIGTERM in the app or using <code>--init</code>/tini.</li><li><strong>Shared kernel</strong> — <code>sysctl</code> values, kernel version, and kernel bugs are shared with the host. A container can't run a different kernel.</li><li><strong>Root inside the container is root on the host</strong> unless user namespaces are enabled — which is why <code>USER nonroot</code> and dropping capabilities matter.</li></ul><h4>How to say it in an interview</h4><p>“Containers are processes isolated by namespaces — PID, network, mount, UTS, IPC, user — and constrained by cgroups for CPU, memory, and I/O. Because they share the host kernel they start instantly, but isolation is weaker than a VM, so I run them non-root with dropped capabilities.”</p>",
+    "revise": "**Containers = a normal Linux process** with restricted visibility + resources:\n• **Namespaces = isolation (what it can SEE)** — **PID** (own process tree, app is PID 1), **NET** (own IP/ports), **MNT** (own filesystem), UTS (hostname), IPC, USER.\n• **cgroups = limits (what it can USE)** — CPU quota, **memory limit (exceed → OOM, exit 137)**, block I/O, PID count.\n• Plus **OverlayFS** (layered images, copy-on-write) + capabilities/seccomp.\n• **Interview tip**: one-liner — **'namespaces control what a process can see, cgroups control what it can use'**. Shared kernel = faster than a VM but weaker isolation."
+  }
+]

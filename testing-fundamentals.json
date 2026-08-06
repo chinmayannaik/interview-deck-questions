@@ -401,5 +401,107 @@
     "code": "",
     "lang": "",
     "revise": "**Static analysis** inspects code **without running it**:\n• **ESLint** (JS/TS + Angular) — lint-speed bugs/style (unused vars, unsafe `any`), auto-fixable.\n• **SonarQube** — deeper bug patterns, security hotspots, coverage/duplication gates.\n• **Interview tip**: name the CI order — **linter (every save) → tests → Sonar gate on the PR**."
+  },
+  {
+    "id": "tf-seven-principles",
+    "category": "testing-fundamentals",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "principles",
+      "istqb"
+    ],
+    "question": "What are the seven principles of testing (ISTQB)?",
+    "answer": "<ol><li><strong>Testing shows presence of defects</strong>, not their absence — passing tests never prove bug-free.</li><li><strong>Exhaustive testing is impossible</strong> — you can't test every input/path; use risk and prioritisation.</li><li><strong>Early testing</strong> (shift-left) — the earlier a defect is found, the cheaper.</li><li><strong>Defect clustering</strong> — a few modules hold most bugs (Pareto); focus there.</li><li><strong>Pesticide paradox</strong> — the same tests stop finding new bugs; review and refresh them.</li><li><strong>Testing is context-dependent</strong> — a banking app and a game are tested differently.</li><li><strong>Absence-of-errors fallacy</strong> — a bug-free product that solves the wrong problem is still useless.</li></ol>",
+    "tip": "You rarely need all seven — but naming pesticide paradox and defect clustering signals you know theory, not just tooling.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Which ones show up as follow-ups</h4><ul><li><strong>Pesticide paradox</strong> → \"How do you keep your regression suite effective?\" Answer: periodically add cases from new bugs, prune dead ones, vary data.</li><li><strong>Defect clustering</strong> → \"Where do you focus limited time?\" Answer: modules with history of defects + high change rate (git churn) + high business risk.</li><li><strong>Absence-of-errors fallacy</strong> → ties to validation: passing all tests but failing UAT means you built the wrong thing.</li></ul><h4>How to say it in an interview</h4><p>“Testing can only reveal defects, never prove there are none. Since exhaustive testing is impossible, I prioritise by risk and defect clustering, test early, and refresh tests to beat the pesticide paradox.”</p>",
+    "revise": "**7 testing principles (ISTQB)**:\n1. Testing shows **presence**, not absence of defects.\n2. **Exhaustive** testing is impossible → prioritise by risk.\n3. **Early** testing (shift-left) is cheaper.\n4. **Defect clustering** — few modules hold most bugs (Pareto).\n5. **Pesticide paradox** — same tests stop finding bugs; refresh them.\n6. Testing is **context-dependent**.\n7. **Absence-of-errors fallacy** — bug-free but wrong product is useless.\n• **Interview tip**: naming **pesticide paradox** + **defect clustering** signals theory depth."
+  },
+  {
+    "id": "tf-test-pyramid",
+    "category": "testing-fundamentals",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "test-pyramid",
+      "strategy"
+    ],
+    "question": "Explain the test automation pyramid. What is the ice-cream-cone anti-pattern?",
+    "answer": "<p>The <strong>test pyramid</strong> describes the ideal shape of an automated suite:</p><ul><li><strong>Base — many unit tests</strong>: fast, cheap, isolated, pinpoint failures.</li><li><strong>Middle — fewer integration/API tests</strong>: verify wiring between modules/services.</li><li><strong>Top — few end-to-end/UI tests</strong>: slow, brittle, expensive — reserve for critical journeys.</li></ul><p>The <strong>ice-cream cone</strong> is the inverted anti-pattern: lots of manual + UI E2E tests and almost no unit tests. The suite becomes slow, flaky, and hard to debug — every failure means launching the whole app.</p>",
+    "tip": "Push tests to the lowest level that still gives confidence — an API test is worth ten UI tests for the same logic.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Why the shape matters</h4><table><thead><tr><th>Level</th><th>Speed</th><th>Cost/flakiness</th><th>Failure clarity</th></tr></thead><tbody><tr><td>Unit</td><td>ms</td><td>Very low</td><td>Exact line/method</td></tr><tr><td>Integration/API</td><td>ms–s</td><td>Low–medium</td><td>Which service/contract</td></tr><tr><td>E2E/UI</td><td>seconds+</td><td>High</td><td>\"Something broke\"</td></tr></tbody></table><h4>Practical SDET stance</h4><p>Automate business logic at unit/API level; keep a small, stable set of E2E tests for money paths (login, checkout, payment). Modern nuance: some teams use the <em>testing trophy</em> (heavier on integration) for UI-heavy apps — mention it if asked.</p><h4>How to say it in an interview</h4><p>“I aim for a pyramid: many fast unit tests, a solid API layer, and a thin critical-path E2E layer. An inverted ice-cream cone — mostly UI/manual — gives slow, flaky feedback that teams eventually stop trusting.”</p>",
+    "revise": "**Test pyramid** = ideal automated-suite shape:\n• **Base** — many **unit** tests (fast, cheap, precise).\n• **Middle** — fewer **integration/API** tests (wiring).\n• **Top** — few **E2E/UI** tests (slow, brittle → critical journeys only).\n• **Ice-cream cone** = inverted anti-pattern (mostly UI/manual) → slow + flaky.\n• **Interview tip**: push tests to the **lowest level** that still gives confidence."
+  },
+  {
+    "id": "tf-test-doubles",
+    "category": "testing-fundamentals",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "test-doubles",
+      "mocking"
+    ],
+    "question": "Mock vs Stub vs Spy vs Fake vs Dummy — what's the difference?",
+    "answer": "<p>All are <strong>test doubles</strong> — stand-ins for real dependencies. They differ by what they replace and what you assert:</p><ul><li><strong>Dummy</strong> — passed to satisfy a signature but never used (e.g. a null logger).</li><li><strong>Stub</strong> — returns canned data so the test can proceed (repo returns a fixed user). You assert on <em>state/output</em>.</li><li><strong>Spy</strong> — a real or stub object that also <em>records</em> how it was called, so you can verify afterwards.</li><li><strong>Mock</strong> — pre-programmed with <em>expectations</em>; it fails the test if the interaction doesn't happen. You assert on <em>behaviour/interaction</em>.</li><li><strong>Fake</strong> — a working lightweight implementation (in-memory DB, fake payment gateway) — real logic, not production-grade.</li></ul>",
+    "tip": "The key exam line: stubs verify STATE, mocks verify INTERACTION. Over-mocking couples tests to implementation and breaks on every refactor.",
+    "code": "// Stub — canned return, assert on result\nwhen(userRepo.findById(1)).thenReturn(new User(\"Ana\"));\nassertEquals(\"Ana\", service.getName(1));\n\n// Mock — assert the interaction happened\nverify(emailSender, times(1)).send(eq(\"ana@x.com\"), any());\n\n// Fake — real in-memory implementation\nUserRepository repo = new InMemoryUserRepository();",
+    "lang": "java",
+    "deep": "<h4>When to reach for each</h4><ul><li><strong>Stub</strong>: you just need the dependency to \"be there\" and return something — testing your code's output.</li><li><strong>Mock</strong>: the interaction IS the behaviour — e.g. \"on payment success, exactly one confirmation email is sent\".</li><li><strong>Fake</strong>: heavy dependency you call many times — an in-memory repo keeps tests fast and realistic.</li></ul><h4>The classic smell</h4><p>Tests full of mock expectations that break whenever you rename a method or reorder calls — you're testing <em>how</em> the code works, not <em>what</em> it produces. Prefer state-based tests with stubs/fakes; use mocks only for genuine side-effects (email, payment, events).</p><h4>How to say it in an interview</h4><p>“A stub feeds canned data and I assert on the result; a mock has expectations and I assert the interaction. Fakes are lightweight working implementations like an in-memory DB. I lean on stubs/fakes and reserve mocks for real side-effects to avoid brittle tests.”</p>",
+    "revise": "**Test doubles** (stand-ins for real dependencies):\n• **Dummy** — fills a parameter, never used.\n• **Stub** — returns canned data; assert on **state/output**.\n• **Spy** — records how it was called, verify after.\n• **Mock** — pre-set **expectations**; fails if the interaction doesn't happen; assert on **behaviour**.\n• **Fake** — lightweight working impl (in-memory DB).\n• **Interview tip**: **stubs verify state, mocks verify interaction**; over-mocking = brittle tests."
+  },
+  {
+    "id": "tf-bdd",
+    "category": "testing-fundamentals",
+    "difficulty": "intermediate",
+    "tags": [
+      "bdd",
+      "gherkin",
+      "process"
+    ],
+    "question": "What is BDD? How does Given-When-Then work and how is it different from TDD?",
+    "answer": "<p><strong>Behaviour-Driven Development</strong> extends TDD by writing tests as <em>business-readable scenarios</em> first, so developers, testers, and product owners share one language. Scenarios use <strong>Gherkin</strong>:</p><ul><li><strong>Given</strong> — the starting context/precondition.</li><li><strong>When</strong> — the action/event.</li><li><strong>Then</strong> — the expected outcome.</li></ul><p>Tools like Cucumber/SpecFlow map each step to code (step definitions). The difference: TDD tests <em>units</em> in developer language; BDD tests <em>behaviour</em> in business language and doubles as living documentation.</p>",
+    "tip": "BDD's real value is the conversation (the 'three amigos': PO + dev + QA), not the Cucumber syntax — say that and you sound experienced, not tool-obsessed.",
+    "code": "Feature: Coupon at checkout\n\n  Scenario: Valid percentage coupon reduces total\n    Given a cart with items totalling 100\n    When the customer applies coupon \"SAVE10\"\n    Then the order total should be 90",
+    "lang": "gherkin",
+    "deep": "<h4>Where teams get it wrong</h4><ul><li>Writing Gherkin for <em>every</em> unit test → verbose, slow, unmaintainable. Keep BDD for behaviour that stakeholders care about; use plain unit tests below.</li><li>Steps that describe UI clicks (\"When I click #submit\") instead of intent (\"When the customer submits the order\") — the scenario rots when the UI changes.</li></ul><h4>Three amigos</h4><p>Before coding a story, PO, developer, and tester agree on concrete examples. Those examples become the scenarios — requirements and acceptance tests in one artefact.</p><h4>How to say it in an interview</h4><p>“BDD is TDD expressed in business language. Given-When-Then scenarios are agreed with the three amigos before development, then automated with Cucumber. They act as executable acceptance criteria and living docs — but I keep them for meaningful behaviour, not every unit.”</p>",
+    "revise": "**BDD** extends TDD — tests written as **business-readable scenarios** first, shared language for PO/dev/QA.\n• **Gherkin**: **Given** (context) → **When** (action) → **Then** (outcome); Cucumber/SpecFlow map steps to code.\n• **vs TDD**: TDD tests units in dev language; BDD tests **behaviour** in business language + doubles as living docs.\n• **Interview tip**: the value is the **'three amigos' conversation**, not the syntax."
+  },
+  {
+    "id": "tf-flaky-tests",
+    "category": "testing-fundamentals",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "flaky-tests",
+      "automation"
+    ],
+    "question": "What is a flaky test? What causes flakiness and how do you handle it?",
+    "answer": "<p>A <strong>flaky test</strong> passes and fails on the same code with no changes — non-deterministic. Flakiness is dangerous because it erodes trust: once a suite \"sometimes fails\", people start ignoring real failures.</p><p>Common causes:</p><ul><li><strong>Timing/async</strong> — fixed <code class=\"inline\">sleep</code>s or races instead of waiting for a condition.</li><li><strong>Test order / shared state</strong> — one test leaks data another depends on.</li><li><strong>Time & randomness</strong> — real clock, time zones, <code class=\"inline\">Math.random</code>, unstable ordering.</li><li><strong>Environment</strong> — network, third-party APIs, flaky test data.</li></ul>",
+    "tip": "The killer answer is NOT 'add retries' — retries hide flakiness. Say you FIX the root cause and quarantine (not delete) the test until it's fixed.",
+    "code": "// ❌ Flaky: guessing how long the async op takes\nawait sleep(2000);\nexpect(el.text()).toBe(\"Loaded\");\n\n// ✅ Deterministic: wait for the actual condition\nawait waitFor(() => expect(el.text()).toBe(\"Loaded\"));",
+    "lang": "javascript",
+    "deep": "<h4>How to attack flakiness systematically</h4><ol><li><strong>Detect</strong> — track pass/fail history in CI; a test that fails intermittently is flaky by definition.</li><li><strong>Quarantine</strong> — move it out of the blocking suite so it stops masking real failures, but keep it visible (don't silently delete).</li><li><strong>Root-cause</strong> — usually one of the four: time, order dependence, async waits, shared state.</li><li><strong>Fix</strong> — explicit waits, isolate/reset state per test, inject clock/random, stub external calls.</li></ol><h4>Why retries are a trap</h4><p>Auto-retrying a flaky test green hides a bug that could be real (a genuine race in the product). Retries are a last-resort stopgap, never the fix.</p><h4>How to say it in an interview</h4><p>“Flaky tests fail non-deterministically and destroy trust in the suite. I quarantine them so they don’t block CI, then fix the root cause — usually async waits, test-order coupling, or a real clock. I avoid blanket retries because they can hide genuine race conditions.”</p>",
+    "revise": "**Flaky test** = passes/fails on the **same code** (non-deterministic) → erodes trust in the suite.\n• Causes: **timing/async** (sleeps, races), **test order/shared state**, **real clock/randomness**, **environment** (network, third-party).\n• Fix: explicit waits (wait for condition, not `sleep`), isolate/reset state, inject clock/random, stub external calls.\n• **Interview tip**: **fix the root cause + quarantine** — retries HIDE flakiness, they don't fix it."
+  },
+  {
+    "id": "tf-performance-types",
+    "category": "testing-fundamentals",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "performance",
+      "non-functional"
+    ],
+    "question": "Load vs Stress vs Soak vs Spike testing — what's the difference?",
+    "answer": "<p>These are <strong>non-functional performance</strong> tests, each answering a different question:</p><ul><li><strong>Load testing</strong> — behaviour at <em>expected</em> peak load (e.g. 1,000 concurrent users). Verifies response time / throughput meet SLAs.</li><li><strong>Stress testing</strong> — push <em>beyond</em> capacity until it breaks, to find the breaking point and check it fails gracefully (and recovers).</li><li><strong>Soak / endurance testing</strong> — sustained normal load for hours/days to expose slow leaks — memory leaks, connection-pool exhaustion, disk fill.</li><li><strong>Spike testing</strong> — a sudden sharp jump in load (flash sale, viral event) and back down; checks auto-scaling and recovery.</li></ul>",
+    "tip": "Map each to a business scenario: load = normal Monday, stress = find the ceiling, soak = server up for a week, spike = Black Friday flash sale.",
+    "code": "",
+    "lang": "",
+    "deep": "<h4>Quick comparison</h4><table><thead><tr><th>Type</th><th>Load shape</th><th>Finds</th></tr></thead><tbody><tr><td>Load</td><td>Steady at expected peak</td><td>SLA breaches under normal peak</td></tr><tr><td>Stress</td><td>Ramp past capacity</td><td>Breaking point, graceful failure</td></tr><tr><td>Soak</td><td>Normal load, long duration</td><td>Memory/resource leaks over time</td></tr><tr><td>Spike</td><td>Sudden surge then drop</td><td>Auto-scaling &amp; recovery behaviour</td></tr></tbody></table><h4>What you actually measure</h4><p>Response time (p95/p99, not just average), throughput (req/s), error rate, and resource use (CPU, memory, DB connections). Tools: JMeter, k6, Gatling, Locust.</p><h4>How to say it in an interview</h4><p>“Load checks we meet SLAs at expected peak; stress finds the breaking point and whether we fail gracefully; soak runs long to catch memory leaks; spike simulates a sudden surge to test auto-scaling. I watch p95/p99 latency and error rate, not just averages.”</p>",
+    "revise": "**Performance test types** (non-functional):\n• **Load** — expected peak; verify SLAs (response time/throughput).\n• **Stress** — push **beyond** capacity → find breaking point + graceful failure.\n• **Soak/endurance** — normal load for **hours/days** → catch memory/resource **leaks**.\n• **Spike** — sudden surge then drop → test **auto-scaling & recovery**.\n• **Interview tip**: measure **p95/p99** latency + error rate, not just averages (JMeter/k6/Gatling)."
   }
 ]

@@ -1,0 +1,329 @@
+[
+  {
+    "id": "pipe-ci-cd-cd",
+    "category": "cicd",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "basics",
+      "ci",
+      "cd"
+    ],
+    "question": "Continuous Integration vs Continuous Delivery vs Continuous Deployment.",
+    "answer": "<p>Three stacked practices — each builds on the previous one:</p><ul><li><strong>Continuous Integration (CI)</strong> — every developer merges to the mainline frequently (at least daily), and every push triggers an automated build + test. Goal: catch integration bugs within minutes, not at the end of a sprint.</li><li><strong>Continuous Delivery (CD)</strong> — every commit that passes CI produces a <em>deployable artifact</em> and is automatically pushed through environments up to a production-ready state. The final release to production is a <strong>manual button press</strong> (business decision).</li><li><strong>Continuous Deployment (CD)</strong> — same as above but there is <strong>no manual gate</strong>: if all checks pass, it goes to production automatically.</li></ul><p>So the only difference between the two CDs is whether a human approves the last step.</p>",
+    "tip": "The interviewer is checking one thing: do you know Delivery = manual approval to prod, Deployment = fully automatic. Also mention that Continuous Deployment demands very strong test + monitoring + rollback maturity.",
+    "code": "Commit → Build → Unit tests → Package → Deploy DEV → Integration tests\n     → Deploy STAGE → E2E/perf → [manual approval] → PROD   ← Continuous DELIVERY\n     → Deploy STAGE → E2E/perf →                     → PROD   ← Continuous DEPLOYMENT",
+    "lang": "text",
+    "revise": "**CI vs CD vs CD**:\n• **Continuous Integration** — merge to mainline often; every push auto-builds + tests.\n• **Continuous Delivery** — every green commit is deployable and promoted automatically, but prod release is a **manual approval**.\n• **Continuous Deployment** — **no manual gate**; green = it ships to prod.\n• **Interview tip**: the ONLY difference between the CDs is the human approval before prod."
+  },
+  {
+    "id": "pipe-stages",
+    "category": "cicd",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "pipeline",
+      "stages"
+    ],
+    "question": "Walk me through the stages of a typical production CI/CD pipeline.",
+    "answer": "<p>A mature pipeline is ordered <strong>fastest-and-cheapest-fails-first</strong>, so bad commits die in seconds, not 40 minutes:</p><ol><li><strong>Checkout / trigger</strong> — webhook on push, PR, tag, or schedule.</li><li><strong>Static checks</strong> — lint, format, secret scanning. Seconds.</li><li><strong>Build / compile</strong> — produce the artifact once.</li><li><strong>Unit tests</strong> + coverage.</li><li><strong>Quality gate</strong> — SonarQube on new code, coverage threshold.</li><li><strong>Package</strong> — build the container image / jar, tag it with the commit SHA.</li><li><strong>Security scan</strong> — image scan (Trivy/Grype), dependency scan (SCA).</li><li><strong>Publish</strong> — push the artifact to a registry (ECR, Nexus, Artifactory).</li><li><strong>Deploy to DEV</strong> → smoke tests.</li><li><strong>Deploy to STAGE</strong> → integration / E2E / performance tests.</li><li><strong>Approval gate</strong> (for Continuous Delivery).</li><li><strong>Deploy to PROD</strong> — rolling/canary → post-deploy health checks → auto-rollback on failure.</li></ol>",
+    "tip": "Say the phrase 'build once, promote the same artifact' — rebuilding per environment is the classic mistake that means you never actually tested what you shipped.",
+    "code": "stages:\n  - lint\n  - build\n  - test\n  - scan\n  - publish\n  - deploy-dev\n  - deploy-stage\n  - deploy-prod",
+    "lang": "yaml",
+    "deep": "<h4>Why the order matters</h4><p>If your 30-second linter runs after a 20-minute E2E suite, every developer waits 20 minutes to learn they left an unused import. Fail-fast ordering is the single cheapest pipeline optimisation.</p><h4>What separates a junior answer</h4><p>A junior lists 'build, test, deploy'. A 3–4 YOE answer adds: artifact immutability, security scanning in-pipeline, environment promotion, approval gates, and what happens <em>after</em> deploy (health checks, auto-rollback).</p><h4>How to say it in an interview</h4><p>“I structure pipelines fail-fast: lint and unit tests first, then build the artifact <em>once</em>, scan it, publish it, and promote that exact immutable artifact through dev → stage → prod with gates and post-deploy verification.”</p>",
+    "revise": "**Typical pipeline** (ordered fail-fast — cheapest checks first):\nTrigger → **lint/secret scan** → build → **unit tests** → quality gate (Sonar) → package image (tag = commit SHA) → **security scan** → publish to registry → deploy DEV + smoke → deploy STAGE + E2E → **approval** → deploy PROD + health check/rollback.\n• **Interview tip**: say **'build once, promote the same artifact'** — rebuilding per env means you never tested what you shipped."
+  },
+  {
+    "id": "pipe-build-once",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "artifacts",
+      "promotion"
+    ],
+    "question": "What does \"build once, deploy many\" mean, and why does it matter?",
+    "answer": "<p>You build the artifact (jar, container image, bundle) <strong>exactly once</strong>, publish it with an immutable identifier, and then promote that <em>same binary</em> through dev → stage → prod. Only <strong>configuration</strong> changes per environment, injected at deploy time via env vars / ConfigMaps / secret stores.</p><p>The anti-pattern is rebuilding from source at each environment. That means:</p><ul><li>Prod runs a binary that was <strong>never tested</strong> — a transitive dependency could have changed between builds.</li><li>Builds are non-reproducible, so \"it passed in stage\" proves nothing.</li><li>You waste build minutes three times over.</li></ul><p>Practical rules: tag the image with the immutable commit SHA (not just <code class=\"inline\">latest</code>), never mutate a published tag, and keep config strictly outside the artifact (12-factor).</p>",
+    "tip": "Concrete give-away line: 'the image tag is the git SHA, and the exact same SHA that passed stage is what gets promoted to prod' — that shows you've actually run this.",
+    "code": "# build once\ndocker build -t myapp:$GIT_SHA .\ndocker push registry/myapp:$GIT_SHA\n\n# promote the SAME digest — no rebuild\nkubectl set image deploy/myapp app=registry/myapp:$GIT_SHA -n dev\nkubectl set image deploy/myapp app=registry/myapp:$GIT_SHA -n stage\nkubectl set image deploy/myapp app=registry/myapp:$GIT_SHA -n prod",
+    "lang": "bash",
+    "revise": "**Build once, deploy many** = build the artifact ONCE, promote the SAME binary dev → stage → prod; only **config** changes per env (env vars/ConfigMaps).\n• Rebuilding per environment means prod runs a binary that was **never tested** (deps can drift) and builds aren't reproducible.\n• **Interview tip**: tag images with the **git SHA**, never mutate a published tag, keep config outside the artifact (12-factor)."
+  },
+  {
+    "id": "pipe-jenkins-architecture",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "jenkins",
+      "architecture"
+    ],
+    "question": "Explain Jenkins architecture — controller, agents, and executors.",
+    "answer": "<p>Jenkins uses a <strong>controller (master) / agent (node)</strong> model:</p><ul><li><strong>Controller</strong> — serves the UI, stores job config and build history, schedules work, and manages plugins. It should <em>not</em> run builds itself in production.</li><li><strong>Agent</strong> — a separate machine/container that actually executes the build steps. Connected via SSH, JNLP/inbound, or dynamically provisioned (Kubernetes plugin, EC2 plugin, Docker).</li><li><strong>Executor</strong> — a build slot on an agent. An agent with 4 executors runs 4 builds concurrently.</li><li><strong>Labels</strong> — tags on agents (<code class=\"inline\">linux</code>, <code class=\"inline\">docker</code>, <code class=\"inline\">windows</code>) that a pipeline requests via <code class=\"inline\">agent { label 'docker' }</code>.</li></ul><p>Modern setups use <strong>ephemeral agents</strong>: the Kubernetes plugin spins up a fresh pod per build and destroys it after — clean workspace every time, no state leakage, scales to zero.</p>",
+    "tip": "Two things interviewers listen for: (1) 'controller shouldn't execute builds — it's a security and stability risk', (2) 'ephemeral Kubernetes agents give a clean workspace per build'.",
+    "code": "pipeline {\n  agent {\n    kubernetes {\n      yaml '''\n        spec:\n          containers:\n          - name: maven\n            image: maven:3.9-eclipse-temurin-21\n            command: [\"cat\"]\n            tty: true\n      '''\n    }\n  }\n  stages {\n    stage('Build') {\n      steps { container('maven') { sh 'mvn -B clean package' } }\n    }\n  }\n}",
+    "lang": "groovy",
+    "revise": "**Jenkins architecture**:\n• **Controller** — UI, job config, history, scheduling, plugins. Should NOT run builds itself.\n• **Agent/node** — separate machine/container that executes steps (SSH, JNLP, or dynamic K8s/EC2).\n• **Executor** — a build slot on an agent (4 executors = 4 concurrent builds).\n• **Labels** — route jobs to the right agent (`agent { label 'docker' }`).\n• **Interview tip**: **ephemeral K8s agents** = fresh pod per build, clean workspace, scales to zero."
+  },
+  {
+    "id": "pipe-jenkinsfile",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "jenkins",
+      "jenkinsfile",
+      "pipeline-as-code"
+    ],
+    "question": "Declarative vs Scripted Jenkins pipeline — and what is a shared library?",
+    "answer": "<p><strong>Declarative</strong> — the modern, opinionated syntax wrapped in a <code class=\"inline\">pipeline { }</code> block with fixed sections (<code class=\"inline\">agent</code>, <code class=\"inline\">stages</code>, <code class=\"inline\">post</code>, <code class=\"inline\">environment</code>). Validated up front, easier to read, works with the Blue Ocean editor. Use this by default.</p><p><strong>Scripted</strong> — raw Groovy starting with <code class=\"inline\">node { }</code>. Full programmatic power (loops, complex conditionals) but no guardrails and harder to maintain. Escape hatch: you can drop into scripted inside declarative using a <code class=\"inline\">script { }</code> block.</p><p><strong>Shared library</strong> — a separate Git repo of reusable Groovy code (<code class=\"inline\">vars/</code> for custom steps, <code class=\"inline\">src/</code> for classes) loaded with <code class=\"inline\">@Library('my-lib')</code>. This is how you stop copy-pasting the same 200-line Jenkinsfile into 40 repos — each repo's Jenkinsfile becomes a few lines calling a standard template.</p>",
+    "tip": "Saying 'we moved 40 near-identical Jenkinsfiles into a shared library so a pipeline change ships once' is exactly the scale of answer expected at 3–4 YOE.",
+    "code": "@Library('platform-pipelines@v2') _\n\npipeline {\n  agent { label 'docker' }\n  options { timeout(time: 30, unit: 'MINUTES'); disableConcurrentBuilds() }\n  environment { IMAGE = \"registry/myapp:${env.GIT_COMMIT.take(7)}\" }\n  stages {\n    stage('Build')  { steps { sh 'mvn -B clean package' } }\n    stage('Test')   { steps { sh 'mvn test' }\n      post { always { junit 'target/surefire-reports/*.xml' } } }\n    stage('Image')  { steps { sh \"docker build -t $IMAGE .\" } }\n    stage('Deploy') { when { branch 'main' } steps { deployToK8s(image: env.IMAGE) } }\n  }\n  post {\n    failure { slackSend channel: '#alerts', message: \"FAILED ${env.JOB_NAME} #${env.BUILD_NUMBER}\" }\n    always  { cleanWs() }\n  }\n}",
+    "lang": "groovy",
+    "revise": "**Declarative vs Scripted Jenkinsfile**:\n• **Declarative** — `pipeline { }` with fixed sections (agent/stages/post/environment); validated up front, readable. **Default choice**.\n• **Scripted** — raw Groovy `node { }`; full power, no guardrails. Escape hatch inside declarative = `script { }`.\n• **Shared library** — reusable Groovy in a separate repo (`vars/` + `src/`), loaded with `@Library`; kills copy-pasted Jenkinsfiles across repos.\n• **Interview tip**: mention `post { failure { ... } }` for notifications and `options { timeout }`."
+  },
+  {
+    "id": "pipe-github-actions",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "github-actions",
+      "yaml"
+    ],
+    "question": "Explain GitHub Actions: workflows, jobs, steps, and runners.",
+    "answer": "<p>Hierarchy, largest to smallest:</p><ul><li><strong>Workflow</strong> — a YAML file in <code class=\"inline\">.github/workflows/</code> triggered by an event (<code class=\"inline\">push</code>, <code class=\"inline\">pull_request</code>, <code class=\"inline\">schedule</code>, <code class=\"inline\">workflow_dispatch</code>, <code class=\"inline\">release</code>).</li><li><strong>Job</strong> — a set of steps running on one runner. Jobs run <strong>in parallel by default</strong>; use <code class=\"inline\">needs:</code> to sequence them.</li><li><strong>Step</strong> — either a shell command (<code class=\"inline\">run:</code>) or a reusable <strong>action</strong> (<code class=\"inline\">uses:</code>).</li><li><strong>Runner</strong> — the machine. GitHub-hosted (fresh VM per job, billed per minute) or <strong>self-hosted</strong> (your infra — needed for private network access, special hardware, or cost at scale).</li></ul><p>Key mechanics: each job gets a <strong>fresh workspace</strong>, so passing data between jobs needs <code class=\"inline\">actions/upload-artifact</code> or job <code class=\"inline\">outputs</code>. Secrets come from repo/org/environment secrets, and for cloud auth you should use <strong>OIDC federation</strong> instead of long-lived access keys.</p>",
+    "tip": "The senior detail: 'we use OIDC to assume an AWS role instead of storing AWS_SECRET_ACCESS_KEY in GitHub secrets' — that single line marks you as current.",
+    "code": "name: CI\non:\n  push: { branches: [main] }\n  pull_request:\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    strategy:\n      matrix: { node: [18, 20, 22] }\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: '${{ matrix.node }}', cache: 'npm' }\n      - run: npm ci\n      - run: npm test\n\n  deploy:\n    needs: test\n    if: github.ref == 'refs/heads/main'\n    runs-on: ubuntu-latest\n    permissions: { id-token: write, contents: read }   # OIDC\n    environment: production                             # approval gate\n    steps:\n      - uses: aws-actions/configure-aws-credentials@v4\n        with:\n          role-to-assume: arn:aws:iam::123456789012:role/gha-deploy\n          aws-region: ap-south-1\n      - run: ./deploy.sh",
+    "lang": "yaml",
+    "deep": "<h4>Things that trip people up</h4><ul><li><strong>Jobs are parallel by default</strong> — forgetting <code class=\"inline\">needs:</code> means deploy races the tests.</li><li><strong>No shared filesystem between jobs</strong> — the build output must be uploaded as an artifact or rebuilt.</li><li><strong>Secrets are not passed to workflows triggered by forked PRs</strong> — a deliberate security boundary; use <code class=\"inline\">pull_request_target</code> only with extreme care.</li><li><strong>Pin third-party actions</strong> to a commit SHA, not a moving tag — supply-chain safety.</li></ul><h4>How to say it in an interview</h4><p>“Workflows are event-triggered, jobs run in parallel on isolated runners unless I chain them with <code>needs</code>, and steps are either shell commands or reusable actions. I use matrix builds for version coverage, environments for approval gates, and OIDC for cloud credentials.”</p>",
+    "revise": "**GitHub Actions hierarchy**: **Workflow** (YAML in `.github/workflows`, event-triggered) → **Job** (runs on one runner, **parallel by default** — chain with `needs:`) → **Step** (`run:` shell or `uses:` action).\n• **Runner** — GitHub-hosted (fresh VM/job) or **self-hosted** (private network, cost at scale).\n• Each job = fresh workspace → pass data via `upload-artifact` or job `outputs`.\n• **Interview tip**: use **OIDC** to assume a cloud role instead of storing long-lived keys; pin actions to a **SHA**."
+  },
+  {
+    "id": "pipe-gitlab-ci",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "gitlab-ci",
+      "yaml",
+      "runners"
+    ],
+    "question": "How does GitLab CI work? Explain .gitlab-ci.yml, stages, and runners.",
+    "answer": "<p>GitLab CI is configured by a single <code class=\"inline\">.gitlab-ci.yml</code> at the repo root:</p><ul><li><strong>stages</strong> — an ordered list; all jobs in a stage run in parallel, and the next stage starts only when the previous one fully succeeds.</li><li><strong>job</strong> — a named block with <code class=\"inline\">stage</code>, <code class=\"inline\">script</code>, and optional <code class=\"inline\">rules</code>, <code class=\"inline\">artifacts</code>, <code class=\"inline\">cache</code>, <code class=\"inline\">needs</code>.</li><li><strong>runner</strong> — the agent that picks up jobs, registered with tags. Executors: <code class=\"inline\">docker</code> (most common), <code class=\"inline\">shell</code>, <code class=\"inline\">kubernetes</code>.</li><li><strong>rules / only-except</strong> — control when a job runs (branch, tag, MR, changed files, manual).</li><li><strong>needs</strong> — creates a DAG so a job can start before its whole stage is done, cutting pipeline time.</li></ul><p>GitLab also gives you <strong>environments</strong> (with deployment history + one-click rollback), <strong>protected variables</strong> for secrets, and built-in container registry.</p>",
+    "tip": "Know the difference between artifacts and cache: artifacts are outputs passed between stages and kept for download; cache is a speed optimisation for dependencies and must never be relied on for correctness.",
+    "code": "stages: [build, test, deploy]\n\nvariables:\n  IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA\n\nbuild:\n  stage: build\n  script:\n    - docker build -t $IMAGE .\n    - docker push $IMAGE\n  artifacts:\n    paths: [dist/]\n    expire_in: 1 week\n\nunit-test:\n  stage: test\n  cache:\n    key: { files: [package-lock.json] }\n    paths: [node_modules/]\n  script: [npm ci, npm test]\n\ndeploy-prod:\n  stage: deploy\n  environment: { name: production, url: https://app.example.com }\n  rules:\n    - if: $CI_COMMIT_BRANCH == \"main\"\n      when: manual        # approval gate\n  script: ./deploy.sh $IMAGE",
+    "lang": "yaml",
+    "revise": "**GitLab CI** = one `.gitlab-ci.yml` at repo root.\n• **stages** — ordered; jobs within a stage run in **parallel**, next stage waits.\n• **runner** — agent with tags; executors `docker` / `shell` / `kubernetes`.\n• **rules** — when a job runs (branch, MR, changes, `when: manual` = approval gate).\n• **needs** — DAG, lets a job start early and shortens the pipeline.\n• **Interview tip**: **artifacts** = outputs passed between stages (correctness); **cache** = dependency speed-up (never rely on it)."
+  },
+  {
+    "id": "pipe-secrets",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "secrets",
+      "security"
+    ],
+    "question": "How do you manage secrets in a CI/CD pipeline?",
+    "answer": "<p>The rule: <strong>secrets never live in Git, never live in the image, and never get echoed to logs.</strong> In order of maturity:</p><ol><li><strong>Native CI secret store</strong> — Jenkins Credentials, GitHub/GitLab secrets, masked and injected as env vars at runtime. Scope them per environment, not globally.</li><li><strong>Dedicated secret manager</strong> — HashiCorp Vault, AWS Secrets Manager, Azure Key Vault. The pipeline authenticates and fetches at deploy time, so rotation is central and audited.</li><li><strong>OIDC / workload identity</strong> — the best option for cloud access: the pipeline exchanges a short-lived signed token for a cloud role. <em>No stored long-lived credentials at all.</em></li></ol><p>Supporting controls: secret scanning (<code class=\"inline\">gitleaks</code>, GitHub push protection) to block commits, masking in log output, short TTLs and rotation, and separate credentials per environment so a dev leak can't touch prod.</p>",
+    "tip": "If asked 'a secret got committed, what now?' — the answer is ROTATE IT FIRST, then purge history (git filter-repo/BFG). Removing it from Git is useless on its own; it's already been cloned and logged.",
+    "code": "# Jenkins — bind a credential only for the block that needs it\nwithCredentials([string(credentialsId: 'prod-db-pass', variable: 'DB_PASS')]) {\n  sh 'psql -h $DB_HOST -U app'   # note: single quotes, so Groovy never interpolates\n}\n\n# Vault fetch at deploy time\nexport VAULT_TOKEN=$(vault write -field=token auth/jwt/login role=ci jwt=$CI_JOB_JWT)\nDB_PASS=$(vault kv get -field=password secret/prod/db)",
+    "lang": "bash",
+    "deep": "<h4>The Groovy interpolation trap (a real Jenkins gotcha)</h4><p>Using double quotes — <code>sh \"echo $DB_PASS\"</code> — makes Groovy interpolate the secret into the command string <em>before</em> the shell runs it, which can leak it into logs and process listings. Always use single quotes so the shell expands the variable instead.</p><h4>Layered controls worth naming</h4><ul><li><strong>Prevent</strong>: pre-commit hooks + push protection.</li><li><strong>Detect</strong>: repo-wide secret scanning on a schedule.</li><li><strong>Limit blast radius</strong>: per-environment credentials, least privilege, short TTL.</li><li><strong>Respond</strong>: documented rotation runbook.</li></ul><h4>How to say it in an interview</h4><p>“Secrets come from a manager like Vault or the CI's credential store, are injected at runtime, masked in logs, and scoped per environment. For cloud access I prefer OIDC so there's no long-lived key to leak at all.”</p>",
+    "revise": "**Secrets in CI/CD** — never in Git, never baked into the image, never echoed to logs.\n• **Native store** (Jenkins Credentials / GH-GitLab secrets) → masked env vars, scoped per environment.\n• **Secret manager** (Vault, AWS Secrets Manager) → fetched at deploy time, central rotation + audit.\n• **OIDC/workload identity** → short-lived token exchanged for a cloud role; **no stored credentials**. Best option.\n• **Interview tip**: if a secret is committed — **ROTATE first**, then purge history. Deleting it from Git alone fixes nothing."
+  },
+  {
+    "id": "pipe-artifacts",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "artifacts",
+      "registry",
+      "versioning"
+    ],
+    "question": "What is an artifact repository, and how do you version artifacts?",
+    "answer": "<p>An <strong>artifact repository</strong> (Nexus, JFrog Artifactory, ECR/GCR/ACR, GitHub Packages) is the system of record for build outputs — jars, npm packages, container images, Helm charts.</p><p>Why not just rebuild from source? Because the repository gives you <strong>immutability</strong> (a published version can never change), <strong>traceability</strong> (which build, which commit), <strong>caching</strong> of upstream dependencies (proxy remote registries so builds don't break when npm is down), and a <strong>security choke point</strong> for scanning and license policy.</p><p><strong>Versioning</strong> in practice:</p><ul><li><strong>SemVer</strong> <code class=\"inline\">MAJOR.MINOR.PATCH</code> for anything consumed by others — MAJOR = breaking, MINOR = backwards-compatible feature, PATCH = fix.</li><li><strong>Immutable build identity</strong> for deployables — <code class=\"inline\">1.4.2-a3f9c1</code> or just the commit SHA.</li><li><strong>SNAPSHOT / pre-release</strong> versions for in-progress builds, kept out of prod and expired aggressively.</li><li>Never overwrite a released version, and never deploy <code class=\"inline\">latest</code> to production.</li></ul>",
+    "tip": "The one-liner that lands: 'if I can't point at a running prod container and tell you the exact commit it was built from, the pipeline is broken'.",
+    "code": "# tag with both a human version and the immutable SHA\ndocker build -t myapp:1.4.2 -t myapp:1.4.2-$GIT_SHA .\n\n# deploy by DIGEST for absolute immutability (tags can be re-pointed)\nkubectl set image deploy/myapp \\\n  app=registry/myapp@sha256:9f2a...c41b",
+    "lang": "bash",
+    "revise": "**Artifact repository** (Nexus/Artifactory/ECR) = system of record for build outputs.\n• Gives **immutability**, **traceability** (build ↔ commit), dependency **caching/proxying**, and a **security choke point** for scanning.\n• **Versioning**: SemVer `MAJOR.MINOR.PATCH` for consumers; **commit SHA / digest** for deployables; SNAPSHOTs expire fast.\n• **Interview tip**: never overwrite a released version and **never deploy `latest` to prod** — deploy by digest."
+  },
+  {
+    "id": "pipe-deployment-strategies",
+    "category": "cicd",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "deployment",
+      "canary",
+      "blue-green"
+    ],
+    "question": "Compare rolling, blue-green, canary, and feature-flag deployments.",
+    "answer": "<table><thead><tr><th>Strategy</th><th>How it works</th><th>Cost / risk</th></tr></thead><tbody><tr><td><strong>Recreate</strong></td><td>Stop old, start new</td><td>Downtime. Only for batch/internal apps.</td></tr><tr><td><strong>Rolling</strong></td><td>Replace instances a few at a time</td><td>No extra infra, no downtime — but both versions run at once, and rollback is a slow reverse-roll.</td></tr><tr><td><strong>Blue-green</strong></td><td>Two full environments; flip the load balancer to the new one</td><td><strong>Instant rollback</strong> (flip back), but 2× infrastructure and DB migrations must be compatible with both.</td></tr><tr><td><strong>Canary</strong></td><td>Route 1% → 10% → 50% → 100% of traffic to the new version, watching metrics at each step</td><td>Smallest blast radius; needs good metrics + traffic-splitting (Ingress, service mesh, Argo Rollouts).</td></tr><tr><td><strong>Feature flags</strong></td><td>Ship the code dark, enable per user/segment at runtime</td><td>Decouples <em>deploy</em> from <em>release</em>; instant kill switch. Cost: flag debt if never cleaned up.</td></tr></tbody></table>",
+    "tip": "The killer sentence: 'feature flags separate deployment from release' — that's how mature teams ship to prod daily without risking every user on every deploy.",
+    "code": "# Argo Rollouts canary with automated analysis\nstrategy:\n  canary:\n    steps:\n      - setWeight: 10\n      - pause: { duration: 5m }\n      - analysis:                     # abort if error-rate SLO breaks\n          templates: [{ templateName: error-rate }]\n      - setWeight: 50\n      - pause: { duration: 10m }\n      - setWeight: 100",
+    "lang": "yaml",
+    "deep": "<h4>The database is what actually makes this hard</h4><p>Every strategy above assumes the old and new versions can run <strong>simultaneously</strong> against the same database. That forces backwards-compatible schema changes — the <em>expand/contract</em> pattern:</p><ol><li><strong>Expand</strong>: add the new nullable column; deploy code that writes both old and new.</li><li><strong>Migrate</strong>: backfill existing rows.</li><li><strong>Contract</strong>: once no running version reads the old column, drop it — in a <em>later</em> release.</li></ol><p>Never ship a destructive migration in the same release as the code that stops using it, or rollback becomes impossible.</p><h4>Choosing in an interview</h4><p>Rolling for ordinary stateless services; blue-green when you need an instant rollback guarantee and can afford double infra; canary for high-traffic user-facing changes where you have metrics to judge; flags for anything risky or needing gradual rollout.</p>",
+    "revise": "**Deployment strategies**:\n• **Rolling** — replace instances gradually; no extra infra, but both versions run and rollback is slow.\n• **Blue-green** — two full envs, flip the LB → **instant rollback**, costs 2× infra.\n• **Canary** — shift 1%→10%→50% of traffic while watching metrics → smallest blast radius, needs traffic splitting + good metrics.\n• **Feature flags** — ship dark, enable at runtime → **separates deploy from release**, instant kill switch.\n• **Interview tip**: all of them need **backwards-compatible DB migrations** (expand → migrate → contract)."
+  },
+  {
+    "id": "pipe-rollback",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "rollback",
+      "incident"
+    ],
+    "question": "A deployment breaks production. Walk me through your rollback.",
+    "answer": "<p>Priority order: <strong>stop the bleeding first, diagnose second.</strong></p><ol><li><strong>Detect</strong> — post-deploy health checks / alerts fire (error rate, latency, 5xx). Ideally automated, not a customer ticket.</li><li><strong>Decide fast</strong> — if user impact is ongoing, roll back. Do not debug a live outage in place.</li><li><strong>Roll back</strong> — redeploy the previous known-good immutable artifact: <code class=\"inline\">kubectl rollout undo</code>, flip blue-green back, or set canary weight to 0. This is why \"build once\" matters: the old artifact still exists and is trusted.</li><li><strong>Verify</strong> — confirm metrics recover; announce in the incident channel.</li><li><strong>Contain the data problem</strong> — if a DB migration was involved, rollback may not be possible; that's why migrations are expand/contract and forward-only.</li><li><strong>Fix forward + blameless postmortem</strong> — reproduce in stage, add the missing test/alert so the same class of failure is caught next time.</li></ol>",
+    "tip": "State a rollback SLO — 'we can be back on the previous version in under 5 minutes' — and mention that DB migrations are the one thing you can't roll back, which is why they're always backwards-compatible.",
+    "code": "kubectl rollout status deploy/myapp -n prod          # is it actually healthy?\nkubectl rollout history deploy/myapp -n prod\nkubectl rollout undo deploy/myapp -n prod            # back to previous ReplicaSet\nkubectl rollout undo deploy/myapp --to-revision=7 -n prod\n\n# Helm equivalent\nhelm rollback myapp 12 -n prod",
+    "lang": "bash",
+    "revise": "**Rollback = stop the bleeding first, diagnose second.**\n1. **Detect** via automated post-deploy health checks/alerts (not a customer ticket).\n2. **Decide fast** — don't debug a live outage in place.\n3. **Roll back** to the previous immutable artifact (`kubectl rollout undo`, flip blue-green, canary weight 0).\n4. **Verify** metrics recover, then fix forward + blameless postmortem.\n• **Interview tip**: **DB migrations can't be rolled back** — that's why they're expand/contract and backwards-compatible."
+  },
+  {
+    "id": "pipe-gitops",
+    "category": "cicd",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "gitops",
+      "argocd"
+    ],
+    "question": "What is GitOps? How do ArgoCD/Flux differ from a push-based pipeline?",
+    "answer": "<p><strong>GitOps</strong> makes Git the single source of truth for <em>declared</em> infrastructure and application state. An in-cluster agent continuously <strong>reconciles</strong> the live cluster toward what the repo says.</p><p>Four principles: declarative config, versioned in Git, changes applied automatically, and <strong>continuously reconciled</strong> (drift is corrected, not just applied once).</p><p><strong>Push vs pull:</strong></p><ul><li><strong>Push (classic CI/CD)</strong> — Jenkins/GH Actions holds cluster credentials and runs <code class=\"inline\">kubectl apply</code> from outside. Your CI system needs prod admin access, and manual <code class=\"inline\">kubectl edit</code> drift goes unnoticed.</li><li><strong>Pull (GitOps — ArgoCD/Flux)</strong> — the agent runs <em>inside</em> the cluster and pulls from Git. No external system holds cluster credentials, every change is a reviewed Git commit (full audit trail), rollback is <code class=\"inline\">git revert</code>, and drift is auto-corrected.</li></ul><p>Typical split: CI builds and pushes the image, then bumps the tag in a separate <strong>config repo</strong>; ArgoCD notices the commit and syncs the cluster.</p>",
+    "tip": "Always mention the two-repo pattern (app code repo + config/manifest repo). Committing image tags back into the app repo from CI creates commit loops and is the classic beginner mistake.",
+    "code": "apiVersion: argoproj.io/v1alpha1\nkind: Application\nmetadata: { name: myapp, namespace: argocd }\nspec:\n  project: default\n  source:\n    repoURL: https://github.com/org/k8s-config.git\n    targetRevision: main\n    path: apps/myapp/overlays/prod\n  destination: { server: https://kubernetes.default.svc, namespace: prod }\n  syncPolicy:\n    automated: { prune: true, selfHeal: true }   # selfHeal = auto-correct drift\n    syncOptions: [CreateNamespace=true]",
+    "lang": "yaml",
+    "revise": "**GitOps** = Git is the source of truth for declared state; an in-cluster agent **continuously reconciles** the cluster to match it.\n• **Push (classic CI)** — CI holds cluster credentials and runs `kubectl apply` from outside; manual drift goes unnoticed.\n• **Pull (ArgoCD/Flux)** — agent runs INSIDE the cluster, pulls from Git → no external creds, full audit trail, rollback = `git revert`, `selfHeal` fixes drift.\n• **Interview tip**: use the **two-repo pattern** (app code + config repo) — CI bumps the image tag in the config repo, Argo syncs."
+  },
+  {
+    "id": "pipe-pipeline-speed",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "performance",
+      "caching"
+    ],
+    "question": "Your pipeline takes 45 minutes. How do you make it faster?",
+    "answer": "<p>Measure first — instrument stage durations and attack the top two. Then, roughly in order of payoff:</p><ul><li><strong>Parallelise</strong> — run lint, unit tests, and security scans as concurrent jobs instead of a chain. Split slow test suites across N runners (shards).</li><li><strong>Cache dependencies</strong> — <code class=\"inline\">~/.m2</code>, <code class=\"inline\">node_modules</code>, Gradle caches, keyed on the lockfile hash so the cache invalidates correctly.</li><li><strong>Docker layer caching</strong> — order the Dockerfile so dependency install comes before <code class=\"inline\">COPY . .</code>; use BuildKit cache mounts / <code class=\"inline\">--cache-from</code> a registry image.</li><li><strong>Fail fast</strong> — cheapest checks first, so a lint error doesn't cost 45 minutes.</li><li><strong>Run only what changed</strong> — path filters / monorepo affected-project detection (Nx, Bazel, <code class=\"inline\">rules: changes:</code>).</li><li><strong>Move slow suites off the critical path</strong> — heavy E2E/performance on a nightly or post-merge pipeline, with a fast smoke subset on PRs.</li><li><strong>Right-size runners</strong> — bigger machines, or self-hosted with warm caches and pre-pulled images.</li><li><strong>Fix flaky tests</strong> — retries are hidden minutes.</li></ul>",
+    "tip": "Answer with a method, not a list: 'first I look at the stage timing report, find the two biggest, then decide between parallelising, caching, or moving it off the PR path'. Interviewers want to hear measurement before optimisation.",
+    "code": "test:\n  strategy:\n    matrix:\n      shard: [1, 2, 3, 4]           # split the suite 4 ways\n  steps:\n    - uses: actions/cache@v4\n      with:\n        path: ~/.m2/repository\n        key: mvn-${{ hashFiles('**/pom.xml') }}   # key on the lockfile\n        restore-keys: mvn-\n    - run: npm test -- --shard=${{ matrix.shard }}/4",
+    "lang": "yaml",
+    "revise": "**Speeding up a slow pipeline** (measure stage timings FIRST):\n• **Parallelise** independent jobs; **shard** slow test suites across runners.\n• **Cache** deps (`~/.m2`, `node_modules`) keyed on the **lockfile hash**.\n• **Docker layer caching** — deps before `COPY . .`; `--cache-from` a registry image.\n• **Fail fast** — cheap checks first; **run only what changed** (path filters/monorepo affected).\n• Move heavy E2E/perf to **nightly**, keep a smoke subset on PRs; fix flaky tests (retries = hidden minutes).\n• **Interview tip**: lead with **measurement before optimisation**."
+  },
+  {
+    "id": "pipe-quality-gates",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "quality-gates",
+      "sonarqube",
+      "security"
+    ],
+    "question": "What automated gates do you put in a pipeline before code reaches production?",
+    "answer": "<p>Layered gates, each cheap enough to run on every commit:</p><ul><li><strong>Lint + format</strong> — style and obvious bugs, seconds.</li><li><strong>Unit tests + coverage threshold</strong> — gate on <em>new/changed code</em> coverage, not the whole legacy repo.</li><li><strong>SAST / code quality</strong> — SonarQube quality gate on new code (\"clean as you code\"): no new critical bugs or security hotspots.</li><li><strong>SCA — dependency scanning</strong> — Snyk, Dependabot, <code class=\"inline\">npm audit</code>, OWASP Dependency-Check. Fail on known-exploitable CVEs.</li><li><strong>Secret scanning</strong> — gitleaks / push protection.</li><li><strong>Container image scanning</strong> — Trivy/Grype on the built image; fail on HIGH/CRITICAL with a fixable version.</li><li><strong>IaC scanning</strong> — Checkov/tfsec on Terraform (public S3 bucket, open security group).</li><li><strong>Integration + E2E smoke</strong> in a deployed environment.</li><li><strong>Manual approval</strong> for production (change management).</li></ul>",
+    "tip": "Show judgement about failing builds: gate on NEW issues and CVEs that have a fix available, otherwise the pipeline turns red permanently and the team starts bypassing it — a red build everyone ignores is worse than no gate.",
+    "code": "- name: Scan image\n  uses: aquasecurity/trivy-action@master\n  with:\n    image-ref: myapp:${{ github.sha }}\n    severity: HIGH,CRITICAL\n    ignore-unfixed: true      # don't block on CVEs with no patch yet\n    exit-code: '1'\n\n- name: SonarQube quality gate\n  uses: sonarsource/sonarqube-quality-gate-action@master\n  timeout-minutes: 5",
+    "lang": "yaml",
+    "revise": "**Pipeline quality gates** (layered, every commit):\nlint → unit tests + **coverage on new code** → **SAST/Sonar gate on new code** → **SCA** dependency CVEs → secret scanning → **container image scan** (Trivy) → **IaC scan** (Checkov/tfsec) → E2E smoke → manual prod approval.\n• **Interview tip**: gate on **NEW** issues and **fixable** CVEs — a permanently red pipeline gets bypassed, which is worse than no gate."
+  },
+  {
+    "id": "pipe-triggers",
+    "category": "cicd",
+    "difficulty": "beginner",
+    "tags": [
+      "triggers",
+      "webhooks",
+      "polling"
+    ],
+    "question": "How are pipelines triggered? Webhook vs polling vs schedule.",
+    "answer": "<ul><li><strong>Webhook (push)</strong> — the SCM calls the CI server the instant a push/PR/tag lands. Immediate, no wasted cycles. This is the default choice.</li><li><strong>SCM polling</strong> — CI asks the repo \"anything new?\" every N minutes. Wasteful and delayed; only used when the CI server can't be reached from the internet (though a firewall-friendly agent or <code class=\"inline\">pollSCM</code> with long intervals is the usual compromise).</li><li><strong>Scheduled / cron</strong> — nightly regression, weekly dependency updates, periodic security scans, cache warming.</li><li><strong>Manual / parameterised</strong> — <code class=\"inline\">workflow_dispatch</code>, \"Build with Parameters\" — used for deploys, rollbacks, and one-off ops jobs.</li><li><strong>Upstream / chained</strong> — one pipeline triggers another (build → deploy pipeline, or a shared-library change rebuilding consumers).</li><li><strong>Tag / release</strong> — pushing <code class=\"inline\">v1.4.2</code> triggers the release pipeline. Clean separation of CI from release.</li></ul>",
+    "tip": "Add the event filters that matter in practice: run full pipelines on main, lighter ones on PRs, and use path filters in a monorepo so a README change doesn't rebuild 12 services.",
+    "code": "on:\n  push:\n    branches: [main]\n    paths: ['services/payments/**']   # monorepo path filter\n  pull_request:\n  schedule:\n    - cron: '0 2 * * *'              # nightly 02:00 UTC\n  workflow_dispatch:                  # manual, with inputs\n    inputs:\n      environment: { type: choice, options: [dev, stage, prod] }",
+    "lang": "yaml",
+    "revise": "**Pipeline triggers**:\n• **Webhook (push)** — SCM notifies CI instantly. **Default choice**.\n• **Polling** — CI asks every N min; wasteful + delayed, only when CI isn't reachable from the internet.\n• **Schedule/cron** — nightly regression, dependency updates, security scans.\n• **Manual/parameterised** (`workflow_dispatch`) — deploys, rollbacks, ops jobs.\n• **Tag/release** — pushing `v1.4.2` runs the release pipeline.\n• **Interview tip**: use **path filters** in a monorepo so a README change doesn't rebuild 12 services."
+  },
+  {
+    "id": "pipe-branching",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "branching",
+      "trunk-based",
+      "gitflow"
+    ],
+    "question": "Which branching model suits CI/CD — trunk-based or GitFlow?",
+    "answer": "<p><strong>Trunk-based development</strong> is what actually enables continuous integration: everyone commits to <code class=\"inline\">main</code> (directly or via short-lived branches merged within a day or two), behind feature flags if incomplete. Every merge triggers the full pipeline and is potentially releasable.</p><p><strong>GitFlow</strong> (long-lived <code class=\"inline\">develop</code>, <code class=\"inline\">release/*</code>, <code class=\"inline\">hotfix/*</code> branches) was designed for versioned software with scheduled releases. In a continuous-delivery world it causes long-lived divergence, painful merges, and delayed integration feedback — the exact problems CI exists to prevent.</p><p>Practical stance for a 3–4 YOE DevOps engineer:</p><ul><li>Default to trunk-based + short-lived branches + PR checks + feature flags.</li><li>Use release branches only if you genuinely support multiple versions in the field (on-prem, mobile).</li><li>Protect <code class=\"inline\">main</code>: required status checks, required review, no force-push, linear history.</li></ul>",
+    "tip": "If the team already uses GitFlow, don't call it wrong — say 'GitFlow fits scheduled/versioned releases; for continuous delivery to a single production environment, trunk-based gives faster integration feedback'. Judgement beats dogma.",
+    "code": "# Branch protection intent (GitHub)\nmain:\n  required_status_checks: [build, unit-tests, sonar, image-scan]\n  required_approving_review_count: 1\n  enforce_admins: true\n  allow_force_pushes: false\n  required_linear_history: true",
+    "lang": "yaml",
+    "revise": "**Branching for CI/CD**:\n• **Trunk-based** — everyone merges to `main` via **short-lived** branches (< 1–2 days), incomplete work behind **feature flags**. This is what makes CI real.\n• **GitFlow** — long-lived `develop`/`release`/`hotfix`; fits **scheduled/versioned** releases (on-prem, mobile), but causes divergence + delayed integration.\n• Protect `main`: required status checks, review, no force-push, linear history.\n• **Interview tip**: frame it as **fit for release model**, not right vs wrong."
+  },
+  {
+    "id": "pipe-self-hosted-runners",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "runners",
+      "agents",
+      "scaling"
+    ],
+    "question": "Self-hosted runners/agents vs cloud-hosted — how do you choose and scale them?",
+    "answer": "<p><strong>Cloud-hosted</strong> (GitHub-hosted, GitLab SaaS runners): zero maintenance, clean VM per job, pay per minute. Choose when your builds are ordinary and internet-reachable.</p><p><strong>Self-hosted</strong>: choose when you need</p><ul><li><strong>Private network access</strong> — deploying into a VPC, hitting an internal artifact repo or database.</li><li><strong>Cost at scale</strong> — heavy build minutes are far cheaper on your own spot instances.</li><li><strong>Special hardware</strong> — big memory, GPUs, macOS, ARM.</li><li><strong>Warm caches</strong> — pre-pulled base images and populated dependency caches cut minutes off every build.</li></ul><p><strong>Scaling pattern</strong>: ephemeral autoscaled runners — Kubernetes (Actions Runner Controller, GitLab Kubernetes executor) or EC2 spot with an autoscaler. Each job gets a fresh pod/VM that is destroyed after, so there's no state leakage, and the pool scales to zero when idle.</p><p><strong>Security caution</strong>: never run untrusted fork PRs on a persistent self-hosted runner — a malicious PR can steal cached credentials and persist on the box.</p>",
+    "tip": "The security point about fork PRs on persistent self-hosted runners is a genuine differentiator — most candidates never mention it.",
+    "code": "# GitLab Kubernetes executor — one throwaway pod per job\n[[runners]]\n  executor = \"kubernetes\"\n  [runners.kubernetes]\n    namespace = \"gitlab-runner\"\n    image = \"alpine:3.20\"\n    cpu_request = \"500m\"\n    memory_request = \"1Gi\"\n    poll_timeout = 600",
+    "lang": "toml",
+    "revise": "**Self-hosted vs cloud runners**:\n• **Cloud-hosted** — zero maintenance, clean VM per job, per-minute cost. Default for ordinary builds.\n• **Self-hosted** — needed for **private network access** (VPC, internal repos), **cost at scale**, **special hardware** (GPU/ARM/macOS), **warm caches**.\n• **Scale** with ephemeral autoscaled runners (Actions Runner Controller / K8s executor / EC2 spot) — fresh pod per job, scales to zero.\n• **Interview tip**: never run **untrusted fork PRs** on a persistent self-hosted runner — it can steal cached credentials."
+  },
+  {
+    "id": "pipe-docker-in-ci",
+    "category": "cicd",
+    "difficulty": "advanced",
+    "tags": [
+      "docker",
+      "build",
+      "security"
+    ],
+    "question": "How do you build container images inside a CI pipeline safely?",
+    "answer": "<p>The problem: building a Docker image needs a Docker daemon, but the build itself is running <em>inside</em> a container.</p><ul><li><strong>Docker socket mount</strong> (<code class=\"inline\">-v /var/run/docker.sock</code>) — simplest, but the build gets <strong>root on the host</strong>. Acceptable only on trusted, isolated runners.</li><li><strong>Docker-in-Docker (dind)</strong> — a privileged sidecar daemon. Works, but <code class=\"inline\">privileged: true</code> is a big security hole and layer caching is lost between jobs unless configured.</li><li><strong>Daemonless builders</strong> — <strong>Kaniko</strong>, <strong>Buildah</strong>, or BuildKit in rootless mode build images without a privileged daemon. This is the recommended approach on Kubernetes runners.</li></ul><p>Regardless of builder: use multi-stage builds, tag with the commit SHA, scan the image before publishing, sign it (cosign) if you have supply-chain requirements, and push to a private registry using short-lived credentials (OIDC/IRSA).</p>",
+    "tip": "Saying 'we switched from privileged dind to Kaniko so builds don't need a privileged container' is a concrete, senior-sounding decision with a clear reason.",
+    "code": "# Kaniko — build + push with no Docker daemon, no privileged container\n/kaniko/executor \\\n  --context ./ \\\n  --dockerfile ./Dockerfile \\\n  --destination registry/myapp:$CI_COMMIT_SHORT_SHA \\\n  --cache=true --cache-repo=registry/myapp/cache\n\n# then scan before it's ever deployed\ntrivy image --severity HIGH,CRITICAL --exit-code 1 registry/myapp:$CI_COMMIT_SHORT_SHA",
+    "lang": "bash",
+    "revise": "**Building images in CI** (build runs inside a container, but needs a daemon):\n• **Docker socket mount** — simplest, but gives the build **root on the host**. Trusted runners only.\n• **dind (Docker-in-Docker)** — needs `privileged: true` = big security hole, loses layer cache.\n• **Daemonless: Kaniko / Buildah / rootless BuildKit** — no privileged daemon. **Recommended on K8s runners**.\n• Always: multi-stage build, tag = **commit SHA**, **scan before publish**, short-lived registry creds (OIDC/IRSA)."
+  },
+  {
+    "id": "pipe-monorepo",
+    "category": "cicd",
+    "difficulty": "advanced",
+    "tags": [
+      "monorepo",
+      "scaling",
+      "pipelines"
+    ],
+    "question": "How do you design CI/CD for a monorepo with 20 services?",
+    "answer": "<p>The core requirement: a change to one service must not build and deploy the other 19.</p><ul><li><strong>Change detection</strong> — path filters (<code class=\"inline\">paths:</code> / <code class=\"inline\">rules: changes:</code>) for simple cases; a build tool that computes the affected graph (Nx, Turborepo, Bazel, Gradle) when services share libraries — because a change to a shared library <em>must</em> rebuild its dependents.</li><li><strong>Per-service pipelines</strong> — dynamic/child pipelines generated from the affected list, so each service gets its own build → test → image → deploy path and its own version.</li><li><strong>Shared, versioned templates</strong> — reusable workflows / GitLab <code class=\"inline\">include:</code> / Jenkins shared library so 20 services don't own 20 divergent pipeline definitions.</li><li><strong>Independent versioning &amp; deploy</strong> — one service failing must not block the others; tag artifacts per service.</li><li><strong>Remote build cache</strong> — the single biggest speed win in a monorepo; unchanged targets are restored, not rebuilt.</li><li><strong>Merge queue</strong> — at high commit volume, serialise merges so main is always green.</li></ul>",
+    "tip": "The subtlety worth raising unprompted: naive path filters are wrong when services share internal libraries — you need a dependency graph, or you'll ship a service that was never rebuilt against a changed library.",
+    "code": "# GitLab: generate child pipelines only for affected services\ngenerate:\n  stage: prepare\n  script: ./scripts/affected-services.sh > child-pipelines.yml\n  artifacts: { paths: [child-pipelines.yml] }\n\ntrigger-children:\n  stage: build\n  trigger:\n    include: [{ artifact: child-pipelines.yml, job: generate }]\n    strategy: depend",
+    "lang": "yaml",
+    "revise": "**Monorepo CI/CD** — a change to 1 service must not rebuild the other 19:\n• **Change detection** — path filters for simple cases; **affected-graph** tools (Nx/Turborepo/Bazel) when services share libraries.\n• **Per-service child pipelines**, independent versioning + deploy (one failure doesn't block others).\n• **Shared versioned templates** (reusable workflows / `include:` / Jenkins shared library).\n• **Remote build cache** = biggest speed win; **merge queue** keeps main green at volume.\n• **Interview tip**: naive path filters **miss shared-library changes** — you need the dependency graph."
+  },
+  {
+    "id": "pipe-debug-failure",
+    "category": "cicd",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "troubleshooting",
+      "debugging"
+    ],
+    "question": "A pipeline that passed yesterday fails today with no code change. How do you debug it?",
+    "answer": "<p>Classic \"works yesterday, broken today\" — something outside your commit moved. Work through what can change without a commit:</p><ol><li><strong>Read the actual error</strong>, not the summary — expand the failing step, get the first error, not the last.</li><li><strong>Unpinned dependency</strong> — a transitive package, base image tag (<code class=\"inline\">node:20</code> moved), or a third-party action tag published a new version. Most common cause by far.</li><li><strong>Runner/agent change</strong> — the hosted runner image was updated (new OS, new default tool version), or a self-hosted agent has a full disk / stale cache.</li><li><strong>External dependency</strong> — registry outage, expired certificate, revoked/rotated credential, rate limit (Docker Hub anonymous pulls).</li><li><strong>Flaky test or race</strong> — check whether it fails consistently on re-run.</li><li><strong>Shared config drift</strong> — someone changed a shared library, template, or environment variable, or a secret expired.</li></ol><p>Then: reproduce locally with the same image (<code class=\"inline\">docker run</code> the build container), add <code class=\"inline\">set -x</code>/debug logging, or SSH into the runner if your CI supports a debug session. Fix the root cause by <strong>pinning</strong> — lockfiles, digest-pinned base images, SHA-pinned actions.</p>",
+    "tip": "Lead with 'no code changed, so something unpinned did' — that framing immediately shows you understand build reproducibility, and the fix (pin everything) follows naturally.",
+    "code": "# reproduce the CI environment locally\ndocker run --rm -it -v \"$PWD\":/src -w /src node:20.11.1-alpine sh\n\n# pin so it can't happen again\nFROM node:20.11.1-alpine@sha256:2b3c...9f1a\nuses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608  # v4, SHA-pinned",
+    "lang": "bash",
+    "deep": "<h4>A quick triage order that saves time</h4><ol><li>Re-run the job. If it passes → flakiness or a transient external failure.</li><li>Compare with the last green run's logs — tool versions, image digests, resolved dependency versions.</li><li>Check the CI provider's status page before you debug for an hour.</li><li>Check credential/certificate expiry dates.</li></ol><h4>The permanent fix</h4><p>Reproducibility: lockfiles committed, base images pinned by digest, third-party actions pinned by SHA, tool versions declared (<code>.tool-versions</code>, <code>.nvmrc</code>). A build that can't be reproduced can't be debugged.</p>",
+    "revise": "**Passed yesterday, fails today, no code change** → something **unpinned** moved:\n• **Unpinned dependency** — transitive package, base image tag (`node:20` moved), third-party action tag. Most common.\n• **Runner change** — hosted image updated, or self-hosted agent disk full / stale cache.\n• **External** — registry outage, expired cert, rotated credential, Docker Hub rate limit.\n• **Flaky test** — re-run to check; **shared template/secret drift**.\n• **Fix**: reproduce locally in the same image, then **pin everything** (lockfiles, image digests, SHA-pinned actions)."
+  }
+]

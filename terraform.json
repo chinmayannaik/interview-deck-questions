@@ -1,0 +1,324 @@
+[
+  {
+    "id": "tfm-what-is-iac",
+    "category": "terraform",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "iac",
+      "basics"
+    ],
+    "question": "What is Infrastructure as Code, and why Terraform over ClickOps?",
+    "answer": "<p><strong>Infrastructure as Code</strong> means your servers, networks, databases, and permissions are defined in version-controlled files and provisioned by a tool — never clicked together in a console.</p><p>What you gain:</p><ul><li><strong>Reproducibility</strong> — the same code builds dev, stage, and prod identically. No \"it works in stage\" mystery.</li><li><strong>Version control</strong> — infrastructure changes get PRs, review, blame, and revert.</li><li><strong>Auditability</strong> — <code class=\"inline\">git log</code> answers \"who opened this security group and when\".</li><li><strong>Disaster recovery</strong> — rebuild a region from code.</li><li><strong>Scale</strong> — 50 identical environments is a loop, not 50 days of clicking.</li></ul><p><strong>Declarative vs imperative</strong> is the key distinction: you declare the <em>desired end state</em> and Terraform computes the diff to reach it. A script (imperative) describes <em>steps</em> and breaks when re-run; Terraform is idempotent — applying twice changes nothing the second time.</p>",
+    "tip": "Name the failure IaC prevents: configuration drift. Someone fixes prod by hand at 2am, nobody writes it down, and now prod and stage differ in a way that only shows up in the next incident.",
+    "code": "resource \"aws_instance\" \"web\" {\n  ami           = data.aws_ami.al2023.id\n  instance_type = var.instance_type\n  subnet_id     = aws_subnet.private[0].id\n\n  tags = {\n    Name        = \"${var.project}-web\"\n    Environment = var.environment\n    ManagedBy   = \"terraform\"\n  }\n}",
+    "lang": "hcl",
+    "revise": "**IaC** = infrastructure defined in version-controlled files, provisioned by a tool — never clicked in a console.\n• Wins: **reproducibility** (same code = dev/stage/prod), **version control** (PR, review, revert), **auditability**, **disaster recovery**, scale.\n• **Declarative** (Terraform: declare desired end state, tool computes the diff, **idempotent**) vs **imperative** (a script of steps that breaks on re-run).\n• **Interview tip**: name the problem it prevents — **configuration drift** from manual 2am fixes."
+  },
+  {
+    "id": "tfm-workflow",
+    "category": "terraform",
+    "difficulty": "beginner",
+    "tags": [
+      "V.Imp",
+      "workflow",
+      "commands"
+    ],
+    "question": "Explain the Terraform workflow: init, plan, apply, destroy.",
+    "answer": "<ul><li><strong><code class=\"inline\">terraform init</code></strong> — downloads providers and modules, configures the backend, creates <code class=\"inline\">.terraform.lock.hcl</code>. Run it after cloning or whenever providers/modules change.</li><li><strong><code class=\"inline\">terraform validate</code></strong> — syntax and internal consistency only; no cloud calls.</li><li><strong><code class=\"inline\">terraform plan</code></strong> — the heart of Terraform. It refreshes real state, compares <em>config</em> vs <em>state</em> vs <em>reality</em>, and prints exactly what will be created (<code class=\"inline\">+</code>), changed (<code class=\"inline\">~</code>), destroyed (<code class=\"inline\">-</code>), or replaced (<code class=\"inline\">-/+</code>). Nothing changes yet.</li><li><strong><code class=\"inline\">terraform apply</code></strong> — executes the plan, building resources in dependency order (parallel where possible), then writes the new state.</li><li><strong><code class=\"inline\">terraform destroy</code></strong> — tears everything in the state down. Fine for ephemeral environments, never casually in prod.</li></ul><p>In CI the professional pattern is to <strong>save the plan to a file</strong> and apply <em>that exact file</em> — otherwise the world could change between plan and apply and you'd approve one thing and execute another.</p>",
+    "tip": "Watch for '-/+ destroy and then create replacement' in a plan — that's Terraform telling you it will DELETE a resource. On a database or stateful resource that's the difference between a normal deploy and an outage. Always read the plan for replacements.",
+    "code": "terraform init -backend-config=env/prod.hcl\nterraform fmt -recursive\nterraform validate\n\n# CI pattern: plan to a file, apply that exact file\nterraform plan -out=tfplan -var-file=env/prod.tfvars\nterraform show -no-color tfplan > plan.txt      # attach to the PR\nterraform apply tfplan\n\n# scoped operations\nterraform plan -target=module.database          # emergency use only\nterraform apply -replace=aws_instance.web       # force recreate (old 'taint')\nterraform destroy -var-file=env/dev.tfvars",
+    "lang": "bash",
+    "revise": "**Terraform workflow**:\n• **`init`** — download providers/modules, configure backend, write `.terraform.lock.hcl`.\n• **`validate`** — syntax only, no cloud calls. **`fmt`** — formatting.\n• **`plan`** — compares **config vs state vs reality**; shows `+` create, `~` update, `-` destroy, **`-/+` REPLACE**. Changes nothing.\n• **`apply`** — executes in dependency order, writes new state. **`destroy`** — tears down.\n• **Interview tip**: in CI, **`plan -out=tfplan` then `apply tfplan`** — applying a re-computed plan means approving one thing and running another. Always scan the plan for **replacements**."
+  },
+  {
+    "id": "tfm-state",
+    "category": "terraform",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "state",
+      "backend"
+    ],
+    "question": "What is Terraform state and why does it matter?",
+    "answer": "<p><code class=\"inline\">terraform.tfstate</code> is a JSON file mapping your <em>configuration</em> to <em>real-world resource IDs</em>. Without it, Terraform has no idea that <code class=\"inline\">aws_instance.web</code> in your code is instance <code class=\"inline\">i-0abc123</code> in AWS.</p><p>It exists for four reasons:</p><ul><li><strong>Mapping</strong> — config resource ↔ real resource ID.</li><li><strong>Metadata</strong> — dependency order, which is how Terraform knows what to destroy first.</li><li><strong>Performance</strong> — cached attributes so plans don't need to query everything.</li><li><strong>Diffing</strong> — the baseline for \"what changed\".</li></ul><p><strong>Critical warnings:</strong></p><ol><li><strong>State contains secrets in plaintext</strong> — RDS passwords, generated keys. It must be encrypted at rest and access-controlled like a credential store. Never commit it to Git.</li><li><strong>Never hand-edit state.</strong> Use <code class=\"inline\">terraform state</code> subcommands.</li><li><strong>Losing state is worse than losing code</strong> — Terraform will try to recreate everything it thinks doesn't exist. Enable versioning on the state bucket.</li></ol>",
+    "tip": "If asked 'what if state and reality disagree?' — that's drift. `terraform plan` reveals it; `terraform apply` forces reality back to code; `terraform import` adopts an existing resource without recreating it.",
+    "code": "terraform state list                       # everything Terraform manages\nterraform state show aws_instance.web      # attributes of one resource\nterraform state mv aws_instance.web module.compute.aws_instance.web   # after refactor\nterraform state rm aws_s3_bucket.legacy    # forget it (does NOT delete the real bucket)\nterraform import aws_instance.web i-0abc123def456   # adopt an existing resource\n\nterraform state pull > backup.tfstate       # back up before anything risky",
+    "lang": "bash",
+    "deep": "<h4>The state commands and what they actually do</h4><table><thead><tr><th>Command</th><th>Effect on real infra</th><th>Use when</th></tr></thead><tbody><tr><td><code>state rm</code></td><td>None — only forgets it</td><td>Handing a resource to another stack</td></tr><tr><td><code>state mv</code></td><td>None — renames in state</td><td>You refactored code into a module and don't want destroy/create</td></tr><tr><td><code>import</code></td><td>None — adopts existing</td><td>Bringing ClickOps resources under Terraform</td></tr><tr><td><code>apply -replace</code></td><td><strong>Destroys and recreates</strong></td><td>A resource is corrupted/needs rebuild</td></tr></tbody></table><h4>Why `state mv` saves you</h4><p>Renaming <code>aws_instance.web</code> to <code>aws_instance.api</code> in code makes Terraform plan a <em>destroy and create</em> — it thinks one resource vanished and a new one appeared. <code>state mv</code> tells it they're the same thing, avoiding an outage. (Modern Terraform can do this declaratively with <code>moved</code> blocks, which is safer because it's reviewable in the PR.)</p>",
+    "revise": "**State** (`terraform.tfstate`) maps your config → **real resource IDs** (`aws_instance.web` ↔ `i-0abc123`), plus dependency metadata, cached attributes, and the diff baseline.\n• **State holds secrets in PLAINTEXT** → encrypt at rest, access-control it, **never commit to Git**.\n• **Never hand-edit** — use `terraform state` subcommands. Losing state is worse than losing code (enable bucket versioning).\n• `state rm` (forget, doesn't delete) / **`state mv`** (rename after refactor — avoids destroy+create) / `import` (adopt existing) / `apply -replace` (**does** destroy+recreate)."
+  },
+  {
+    "id": "tfm-remote-state-locking",
+    "category": "terraform",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "state",
+      "locking",
+      "team"
+    ],
+    "question": "How do you manage Terraform state for a team? Explain remote backends and locking.",
+    "answer": "<p>Local state breaks the moment a second person or a CI runner is involved: no sharing, no locking, and the file lives on one laptop. The fix is a <strong>remote backend</strong> — S3 + DynamoDB, Azure Storage, GCS, Terraform Cloud, or Consul.</p><p>What a good backend gives you:</p><ul><li><strong>Shared state</strong> — everyone and CI read the same source of truth.</li><li><strong>State locking</strong> — two simultaneous applies would race and corrupt state; the lock makes the second one wait. (S3 backend uses a DynamoDB table for this; newer versions support native S3 lockfiles.)</li><li><strong>Encryption at rest</strong> + versioning for recovery.</li><li><strong>Access control</strong> — prod state readable only by the prod pipeline role.</li></ul><p><strong>Isolate state per environment.</strong> One giant state file for dev+stage+prod means a bad plan can destroy prod, and every apply locks everyone. Use separate state keys/buckets per environment and per component (network / data / apps), and read across them with <code class=\"inline\">terraform_remote_state</code> data sources.</p>",
+    "tip": "If a lock gets stuck (CI killed mid-apply), the fix is `terraform force-unlock <ID>` — but only AFTER confirming no apply is actually running. Force-unlocking a live apply is how state gets corrupted.",
+    "code": "terraform {\n  required_version = \"~> 1.9\"\n  backend \"s3\" {\n    bucket         = \"acme-tfstate-prod\"\n    key            = \"platform/network/terraform.tfstate\"\n    region         = \"ap-south-1\"\n    encrypt        = true\n    kms_key_id     = \"arn:aws:kms:ap-south-1:123456789012:key/abc\"\n    dynamodb_table = \"terraform-locks\"      # state locking\n  }\n}\n\n# read another stack's outputs\ndata \"terraform_remote_state\" \"network\" {\n  backend = \"s3\"\n  config = {\n    bucket = \"acme-tfstate-prod\"\n    key    = \"platform/network/terraform.tfstate\"\n    region = \"ap-south-1\"\n  }\n}\n\nresource \"aws_instance\" \"app\" {\n  subnet_id = data.terraform_remote_state.network.outputs.private_subnet_ids[0]\n}",
+    "lang": "hcl",
+    "revise": "**Team state** needs a **remote backend** (S3+DynamoDB, GCS, Terraform Cloud):\n• **Shared state**, **locking** (blocks concurrent applies that would corrupt state), **encryption at rest**, **versioning**, **access control** per environment.\n• **Isolate state per environment AND per component** (network/data/apps) — one giant state = bigger blast radius + everyone waits on the lock.\n• Cross-stack reads via **`terraform_remote_state`** data source.\n• **Interview tip**: stuck lock → `terraform force-unlock <ID>`, but **only after confirming no apply is running**."
+  },
+  {
+    "id": "tfm-modules",
+    "category": "terraform",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "modules",
+      "reuse"
+    ],
+    "question": "What are Terraform modules? How do you structure and version them?",
+    "answer": "<p>A <strong>module</strong> is any directory of <code class=\"inline\">.tf</code> files — a reusable component with inputs (<code class=\"inline\">variables</code>), resources, and outputs. Your top level is the \"root module\"; anything it calls is a child module.</p><p>Standard layout:</p><pre><code>modules/vpc/\n  main.tf        # resources\n  variables.tf   # inputs, with types + descriptions + validation\n  outputs.tf     # what consumers need\n  versions.tf    # required_providers\n  README.md</code></pre><p><strong>Versioning is not optional.</strong> Source modules from a Git tag or registry version, never an unpinned branch — otherwise someone merging to main changes every consumer's infrastructure on their next apply.</p><p>Design rules that matter:</p><ul><li><strong>Don't over-abstract.</strong> A module wrapping a single resource with 30 pass-through variables adds indirection and no value.</li><li><strong>No hardcoded environment values</strong> inside a module — pass them in.</li><li><strong>Don't set providers inside modules</strong>; inherit them from the root.</li><li>Output everything a consumer might reasonably need; adding outputs later is a breaking-ish change.</li></ul>",
+    "tip": "The three-layer structure is what interviewers want to hear: reusable modules → per-environment root configs (dev/stage/prod) → separate state per environment. Same code, different tfvars.",
+    "code": "module \"vpc\" {\n  source  = \"git::https://github.com/acme/tf-modules.git//vpc?ref=v2.3.1\"  # PINNED\n  # or: source = \"terraform-aws-modules/vpc/aws\"\n  #     version = \"~> 5.0\"\n\n  name               = \"${var.project}-${var.environment}\"\n  cidr               = var.vpc_cidr\n  availability_zones = var.azs\n  enable_nat_gateway = var.environment == \"prod\"   # cost control in dev\n  tags               = local.common_tags\n}\n\n# modules/vpc/variables.tf — validated inputs\nvariable \"vpc_cidr\" {\n  description = \"CIDR block for the VPC\"\n  type        = string\n  validation {\n    condition     = can(cidrhost(var.vpc_cidr, 0))\n    error_message = \"vpc_cidr must be a valid CIDR block.\"\n  }\n}",
+    "lang": "hcl",
+    "revise": "**Module** = any directory of `.tf` files — reusable component with `variables` (inputs), resources, `outputs`.\n• Layout: `main.tf` / `variables.tf` / `outputs.tf` / `versions.tf` / README.\n• **Always PIN the version** (`?ref=v2.3.1` or `version = \"~> 5.0\"`) — an unpinned branch means a merge changes every consumer's infra.\n• Rules: don't over-abstract single resources, **no hardcoded env values inside** (pass them in), **don't declare providers in modules**.\n• **Interview tip**: three layers — **reusable modules → per-env root configs → separate state per env**."
+  },
+  {
+    "id": "tfm-variables-outputs",
+    "category": "terraform",
+    "difficulty": "beginner",
+    "tags": [
+      "variables",
+      "outputs",
+      "locals"
+    ],
+    "question": "Variables, locals, outputs, and tfvars — how do they differ and what's the precedence?",
+    "answer": "<ul><li><strong><code class=\"inline\">variable</code></strong> — an <em>input</em> to the module. Give it a <code class=\"inline\">type</code>, <code class=\"inline\">description</code>, optional <code class=\"inline\">default</code>, <code class=\"inline\">validation</code>, and <code class=\"inline\">sensitive = true</code> where relevant.</li><li><strong><code class=\"inline\">locals</code></strong> — computed values used <em>inside</em> the module. Not settable from outside. Perfect for naming conventions and common tags (DRY).</li><li><strong><code class=\"inline\">output</code></strong> — values exposed to the caller or to other stacks.</li><li><strong><code class=\"inline\">.tfvars</code></strong> — files that supply variable values per environment.</li></ul><p><strong>Precedence, lowest to highest</strong> (later wins):</p><ol><li>Variable <code class=\"inline\">default</code></li><li><code class=\"inline\">TF_VAR_name</code> environment variables</li><li><code class=\"inline\">terraform.tfvars</code>, then <code class=\"inline\">*.auto.tfvars</code> (alphabetical)</li><li><code class=\"inline\">-var-file=...</code> and <code class=\"inline\">-var=...</code> on the command line (last one wins)</li></ol>",
+    "tip": "`sensitive = true` stops a value printing in plan/apply output — but it is still stored in PLAINTEXT in state. Say both halves; candidates who only say the first half get caught by the follow-up.",
+    "code": "variable \"environment\" {\n  description = \"Deployment environment\"\n  type        = string\n  validation {\n    condition     = contains([\"dev\", \"stage\", \"prod\"], var.environment)\n    error_message = \"environment must be dev, stage, or prod.\"\n  }\n}\n\nvariable \"db_password\" {\n  type      = string\n  sensitive = true          # hidden in output, STILL plaintext in state\n}\n\nlocals {\n  name_prefix = \"${var.project}-${var.environment}\"\n  common_tags = {\n    Project     = var.project\n    Environment = var.environment\n    ManagedBy   = \"terraform\"\n    Owner       = var.team\n  }\n  is_prod = var.environment == \"prod\"\n}\n\noutput \"alb_dns_name\" {\n  description = \"Public DNS of the load balancer\"\n  value       = aws_lb.main.dns_name\n}\n\n# env/prod.tfvars\n# environment   = \"prod\"\n# instance_type = \"m6i.xlarge\"\n# min_capacity  = 3",
+    "lang": "hcl",
+    "revise": "• **`variable`** — module **input** (type, description, default, `validation`, `sensitive`).\n• **`locals`** — computed values used **inside** the module (naming conventions, common tags). Not settable externally.\n• **`output`** — exposed to callers/other stacks.\n• **`.tfvars`** — per-environment values.\n• **Precedence (low→high)**: default → `TF_VAR_*` env → `terraform.tfvars` → `*.auto.tfvars` → **`-var-file` / `-var` CLI**.\n• **Interview tip**: `sensitive = true` hides it from **output only** — it's still **plaintext in state**."
+  },
+  {
+    "id": "tfm-count-foreach",
+    "category": "terraform",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "count",
+      "for_each",
+      "meta-arguments"
+    ],
+    "question": "count vs for_each — which should you use and why?",
+    "answer": "<p>Both create multiple instances of a resource, but they index differently and that difference causes real outages.</p><ul><li><strong><code class=\"inline\">count</code></strong> — creates a list indexed by <em>position</em>: <code class=\"inline\">aws_instance.web[0]</code>, <code class=\"inline\">[1]</code>, <code class=\"inline\">[2]</code>.</li><li><strong><code class=\"inline\">for_each</code></strong> — creates a map indexed by <em>key</em>: <code class=\"inline\">aws_instance.web[\"api\"]</code>, <code class=\"inline\">[\"worker\"]</code>.</li></ul><p><strong>The problem with <code class=\"inline\">count</code></strong>: remove the middle element from the list and every subsequent resource shifts index. Terraform sees <code class=\"inline\">[1]</code> changing identity and <code class=\"inline\">[2]</code> disappearing — so it <strong>destroys and recreates resources that should not have been touched</strong>. On stateful resources that's data loss.</p><p>With <code class=\"inline\">for_each</code>, removing the <code class=\"inline\">\"worker\"</code> key destroys only <code class=\"inline\">[\"worker\"]</code>. Everything else is untouched.</p><p><strong>Rule of thumb:</strong> use <code class=\"inline\">for_each</code> for anything with a natural identity (named services, users, buckets, subnets per AZ). Use <code class=\"inline\">count</code> only for N identical, interchangeable copies — or as a conditional toggle (<code class=\"inline\">count = var.enabled ? 1 : 0</code>).</p>",
+    "tip": "This is a top-3 Terraform interview question. The one-line answer: 'count indexes by position so removing a middle item recreates everything after it; for_each indexes by key, so removals are surgical'.",
+    "code": "# ❌ risky: removing \"stage\" recreates \"prod\"\nvariable \"envs\" { default = [\"dev\", \"stage\", \"prod\"] }\nresource \"aws_s3_bucket\" \"logs\" {\n  count  = length(var.envs)\n  bucket = \"logs-${var.envs[count.index]}\"\n}\n\n# ✅ safe: keys are stable identities\nresource \"aws_s3_bucket\" \"logs\" {\n  for_each = toset([\"dev\", \"stage\", \"prod\"])\n  bucket   = \"logs-${each.key}\"\n}\n\n# for_each over a map of objects — the powerful form\nvariable \"services\" {\n  type = map(object({ cpu = number, memory = number }))\n  default = {\n    api    = { cpu = 512,  memory = 1024 }\n    worker = { cpu = 1024, memory = 2048 }\n  }\n}\nresource \"aws_ecs_task_definition\" \"svc\" {\n  for_each = var.services\n  family   = each.key\n  cpu      = each.value.cpu\n  memory   = each.value.memory\n}\n\n# count as a conditional toggle — legitimate use\nresource \"aws_nat_gateway\" \"main\" {\n  count = var.enable_nat ? 1 : 0\n}",
+    "lang": "hcl",
+    "revise": "**count vs for_each**:\n• **`count`** — indexed by **position** (`web[0]`, `web[1]`). Remove a middle item → **everything after it shifts and gets DESTROYED/RECREATED**. Data loss risk on stateful resources.\n• **`for_each`** — indexed by **key** (`web[\"api\"]`). Removing a key destroys only that one. **Surgical.**\n• **Rule**: `for_each` for anything with a natural identity (named services, buckets, per-AZ subnets); `count` only for N interchangeable copies or a **conditional toggle** (`count = var.enabled ? 1 : 0`)."
+  },
+  {
+    "id": "tfm-dependencies",
+    "category": "terraform",
+    "difficulty": "intermediate",
+    "tags": [
+      "dependencies",
+      "depends_on",
+      "graph"
+    ],
+    "question": "How does Terraform determine resource creation order? When do you need depends_on?",
+    "answer": "<p>Terraform builds a <strong>dependency graph</strong> and creates resources in order, running independent branches in parallel (default 10 concurrent operations).</p><p><strong>Implicit dependencies</strong> are created automatically whenever one resource <em>references</em> another's attribute. If your instance uses <code class=\"inline\">aws_subnet.main.id</code>, Terraform knows the subnet must exist first. This covers ~95% of cases and is always preferred, because the dependency is self-documenting and precise.</p><p><strong><code class=\"inline\">depends_on</code></strong> is the explicit escape hatch for dependencies Terraform <em>cannot see</em> — where the relationship exists in the cloud provider's behaviour but not in the config. Classic examples:</p><ul><li>An IAM policy attachment must exist before a Lambda that assumes the role actually runs.</li><li>A resource needs the NAT gateway/route to exist before it can reach the internet during creation, without referencing it.</li><li>Ordering around <code class=\"inline\">null_resource</code>/provisioners.</li></ul><p>Overusing <code class=\"inline\">depends_on</code> is an anti-pattern: it serialises the graph, slows applies, and often hides the fact that you should have referenced the attribute instead.</p>",
+    "tip": "Say 'reference the attribute instead of adding depends_on wherever possible' — implicit dependencies are precise, self-documenting, and keep the graph parallel. depends_on is a blunt instrument.",
+    "code": "# implicit — preferred. The reference IS the dependency.\nresource \"aws_instance\" \"app\" {\n  subnet_id              = aws_subnet.private.id\n  vpc_security_group_ids = [aws_security_group.app.id]\n}\n\n# explicit — for invisible relationships\nresource \"aws_lambda_function\" \"processor\" {\n  function_name = \"processor\"\n  role          = aws_iam_role.lambda.arn\n\n  depends_on = [\n    aws_iam_role_policy_attachment.lambda_logs,   # must exist before first invoke\n    aws_cloudwatch_log_group.lambda\n  ]\n}\n\nterraform graph | dot -Tsvg > graph.svg   # visualise the dependency graph\nterraform apply -parallelism=20",
+    "lang": "hcl",
+    "revise": "**Ordering** = Terraform builds a **dependency graph**, runs independent branches in **parallel** (default 10).\n• **Implicit dependency** — created automatically when you **reference another resource's attribute** (`aws_subnet.main.id`). Covers ~95% of cases; **always prefer this** (precise + self-documenting).\n• **`depends_on`** — explicit escape hatch for relationships Terraform **can't see** (IAM policy attached before Lambda runs, NAT route before creation).\n• **Interview tip**: overusing `depends_on` **serialises the graph** and hides a missing attribute reference."
+  },
+  {
+    "id": "tfm-drift",
+    "category": "terraform",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "drift",
+      "state"
+    ],
+    "question": "Someone changed infrastructure manually in the console. What happens on the next terraform apply?",
+    "answer": "<p>That's <strong>configuration drift</strong> — reality no longer matches state/config.</p><p>On the next <code class=\"inline\">plan</code>, Terraform refreshes state from the real API, sees the difference, and proposes to <strong>revert the manual change</strong> back to what the code says. Terraform's job is to enforce the declared state, so it treats a console edit as something to undo.</p><p>Your options, in order of preference:</p><ol><li><strong>Let Terraform revert it</strong> — the correct default. If the manual change was a mistake, this fixes it.</li><li><strong>Codify it</strong> — if the change was legitimate (a genuine hotfix), update the Terraform config to match so the next plan is clean and the change is now version-controlled.</li><li><strong><code class=\"inline\">terraform import</code></strong> — if entirely new resources were created by hand, import them into state rather than letting Terraform create duplicates.</li><li><strong><code class=\"inline\">ignore_changes</code></strong> — for attributes deliberately managed elsewhere (e.g. autoscaling adjusting <code class=\"inline\">desired_count</code>, or tags applied by a separate policy tool).</li></ol><p><strong>Preventing drift</strong> is the real answer: remove human write access to prod consoles (read-only + break-glass role), run <code class=\"inline\">terraform plan</code> on a schedule and alert on any non-empty diff, and use CloudTrail to catch manual changes.</p>",
+    "tip": "The strong answer isn't just 'terraform reverts it' — it's 'and we run a scheduled drift-detection plan that alerts if prod ever differs from code, because silent drift is what breaks the next deploy'.",
+    "code": "terraform plan -detailed-exitcode\n#   0 = no changes, 1 = error, 2 = drift detected  ← perfect for a cron/CI check\n\nterraform apply -refresh-only     # accept reality into state without changing infra\nterraform import aws_security_group.manual sg-0abc123\n\nresource \"aws_ecs_service\" \"api\" {\n  desired_count = 2\n  lifecycle {\n    ignore_changes = [desired_count]   # autoscaling owns this attribute\n  }\n}",
+    "lang": "bash",
+    "revise": "**Manual console change = configuration drift.** Next `plan` refreshes real state, sees the diff, and proposes to **revert it** — Terraform enforces the declared state.\n• Options: **let it revert** (default) → **codify it** if the change was legitimate → **`import`** if new resources were hand-created → **`lifecycle { ignore_changes }`** for attributes owned elsewhere (autoscaling `desired_count`).\n• **Prevent it**: remove human write access to prod (read-only + break-glass), **scheduled `plan -detailed-exitcode`** (exit **2 = drift**) with alerting, CloudTrail auditing."
+  },
+  {
+    "id": "tfm-workspaces",
+    "category": "terraform",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "workspaces",
+      "environments"
+    ],
+    "question": "Terraform workspaces vs directory-per-environment — how do you separate dev/stage/prod?",
+    "answer": "<p><strong>Workspaces</strong> give you multiple named state files from one configuration (<code class=\"inline\">terraform workspace new prod</code>), branching on <code class=\"inline\">terraform.workspace</code>.</p><p>They're convenient but a <strong>poor fit for dev/stage/prod</strong> in most teams:</p><ul><li>All environments share <strong>one backend and one set of credentials</strong> — prod state sits next to dev state.</li><li>It's <em>far too easy</em> to forget <code class=\"inline\">workspace select</code> and apply dev changes to prod. There's no visual separation in the code.</li><li>Environments inevitably diverge (prod has Multi-AZ, WAF, bigger instances) and you end up with conditionals like <code class=\"inline\">count = terraform.workspace == \"prod\" ? 3 : 1</code> scattered everywhere.</li></ul><p><strong>Preferred: directory (or repo) per environment</strong> — separate root configs each with their own backend key, credentials, and <code class=\"inline\">tfvars</code>, all calling the same shared modules. Explicit, safe, independently reviewable, and prod can have a different pipeline with approvals.</p><p>Workspaces are genuinely good for <strong>short-lived, identical</strong> environments — per-PR preview stacks, per-developer sandboxes.</p>",
+    "tip": "Take a clear position with a reason: 'workspaces for ephemeral identical environments, directory-per-environment for dev/stage/prod — because prod deserves its own state, credentials, and approval path'.",
+    "code": "# preferred layout\n├── modules/\n│   ├── vpc/\n│   ├── eks/\n│   └── rds/\n└── environments/\n    ├── dev/    { main.tf  backend.tf  dev.tfvars }\n    ├── stage/  { main.tf  backend.tf  stage.tfvars }\n    └── prod/   { main.tf  backend.tf  prod.tfvars }\n\n# each environment: its own state key + credentials\ncd environments/prod\nterraform init && terraform plan -var-file=prod.tfvars\n\n# workspaces — good for ephemeral PR previews\nterraform workspace new pr-482\nterraform apply -var=\"name_suffix=pr-482\"\nterraform workspace delete pr-482",
+    "lang": "bash",
+    "revise": "**Workspaces vs directory-per-environment**:\n• **Workspaces** = multiple state files from ONE config. But all envs share **one backend + one set of credentials**, it's easy to forget `workspace select` and **apply dev changes to prod**, and divergence breeds `terraform.workspace == \"prod\" ? ...` conditionals.\n• **Preferred for dev/stage/prod**: **directory per environment** — own backend key, credentials, tfvars, pipeline/approvals; all calling **shared modules**.\n• **Workspaces are good for**: short-lived identical stacks — **per-PR previews**, developer sandboxes."
+  },
+  {
+    "id": "tfm-lifecycle",
+    "category": "terraform",
+    "difficulty": "intermediate",
+    "tags": [
+      "V.Imp",
+      "lifecycle",
+      "meta-arguments"
+    ],
+    "question": "Explain the lifecycle meta-arguments: prevent_destroy, create_before_destroy, ignore_changes.",
+    "answer": "<ul><li><strong><code class=\"inline\">prevent_destroy = true</code></strong> — Terraform errors out rather than destroying this resource. A safety net for databases, state buckets, and production data stores. Note it blocks <code class=\"inline\">terraform destroy</code> entirely for that resource, so removing it requires a deliberate code change (which is exactly the point — it forces a reviewed PR).</li><li><strong><code class=\"inline\">create_before_destroy = true</code></strong> — when a change forces replacement, build the new resource <em>first</em>, then delete the old one. This is how you avoid downtime on things like launch templates and ASGs. Requires unique names (use <code class=\"inline\">name_prefix</code> instead of <code class=\"inline\">name</code>, or the create will collide with the existing resource).</li><li><strong><code class=\"inline\">ignore_changes = [...]</code></strong> — stop Terraform fighting over attributes that another system legitimately owns: autoscaling changing <code class=\"inline\">desired_count</code>, a deployment pipeline updating an image tag, tags applied by an org policy. Use <code class=\"inline\">all</code> sparingly.</li><li><strong><code class=\"inline\">replace_triggered_by</code></strong> — force replacement when another resource changes.</li></ul>",
+    "tip": "prevent_destroy on your RDS instance and state bucket is a five-second change that has saved real companies from catastrophic `terraform destroy` accidents. Mention it as a standard practice, not a trick.",
+    "code": "resource \"aws_db_instance\" \"main\" {\n  identifier = \"prod-postgres\"\n\n  lifecycle {\n    prevent_destroy = true                    # refuse to delete prod data\n    ignore_changes  = [password, engine_version]\n  }\n}\n\nresource \"aws_launch_template\" \"app\" {\n  name_prefix = \"app-\"                        # NOT name — avoids collision\n  image_id    = var.ami_id\n\n  lifecycle {\n    create_before_destroy = true              # zero-downtime replacement\n  }\n}\n\nresource \"aws_ecs_service\" \"api\" {\n  desired_count = 2\n  lifecycle {\n    ignore_changes = [desired_count, task_definition]   # autoscaling + CD own these\n  }\n}",
+    "lang": "hcl",
+    "revise": "**`lifecycle` meta-arguments**:\n• **`prevent_destroy = true`** — Terraform **errors instead of destroying**. Use on prod DBs, state buckets. Removing it requires a reviewed code change.\n• **`create_before_destroy = true`** — on replacement, build the new one **first**, then delete the old → zero downtime. Needs **`name_prefix`** not `name` (avoids name collision).\n• **`ignore_changes = [...]`** — stop fighting systems that legitimately own an attribute (autoscaling `desired_count`, CD updating the image tag, policy-applied tags).\n• **`replace_triggered_by`** — force replacement when another resource changes."
+  },
+  {
+    "id": "tfm-secrets",
+    "category": "terraform",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "secrets",
+      "security"
+    ],
+    "question": "How do you handle secrets in Terraform, given that state stores them in plaintext?",
+    "answer": "<p>Start by accepting the constraint: <strong>anything Terraform manages ends up in state, in plaintext.</strong> Marking a variable <code class=\"inline\">sensitive</code> only hides it from CLI output. So the strategy is to minimise what secrets Terraform ever touches.</p><p>In order of preference:</p><ol><li><strong>Don't put the secret in Terraform at all.</strong> Have Terraform create an <em>empty</em> secret container (AWS Secrets Manager entry, Vault path) and let the application or a separate process populate the value at runtime. Terraform manages the <em>infrastructure</em>, not the credential.</li><li><strong>Reference, don't define.</strong> Use a <code class=\"inline\">data</code> source to read an existing secret at apply time — though note the value still lands in state.</li><li><strong>Generate and store</strong> — let Terraform generate a random password, write it straight to Secrets Manager, and never output it.</li><li><strong>Protect the state itself</strong> — this is mandatory regardless: encryption at rest (KMS), bucket policies restricting read access to the pipeline role only, versioning, and access logging. Treat the state bucket as a credential store.</li></ol><p>Never: hardcode secrets in <code class=\"inline\">.tf</code>, commit <code class=\"inline\">.tfvars</code> containing secrets, or output a secret unnecessarily.</p>",
+    "tip": "Lead with 'state is plaintext, so the real control is encrypting and locking down state access' — candidates who only say `sensitive = true` are demonstrating they've never thought about where the value actually goes.",
+    "code": "# 1. Terraform creates the CONTAINER; something else sets the value\nresource \"aws_secretsmanager_secret\" \"db\" {\n  name       = \"${var.environment}/db/credentials\"\n  kms_key_id = aws_kms_key.secrets.id\n}\n\n# 2. Or generate + store, never output\nresource \"random_password\" \"db\" {\n  length  = 32\n  special = true\n}\nresource \"aws_secretsmanager_secret_version\" \"db\" {\n  secret_id     = aws_secretsmanager_secret.db.id\n  secret_string = jsonencode({ username = \"app\", password = random_password.db.result })\n}\n\n# 3. Read an existing secret rather than defining it\ndata \"aws_secretsmanager_secret_version\" \"api_key\" {\n  secret_id = \"prod/external/api-key\"\n}\n\n# 4. Lock down state — mandatory\n# backend \"s3\" { encrypt = true, kms_key_id = \"...\" } + restrictive bucket policy\n\n# .gitignore\n# *.tfvars\n# *.tfstate*\n# .terraform/",
+    "lang": "hcl",
+    "revise": "**Secrets in Terraform** — accept the constraint: **everything Terraform manages lands in state as PLAINTEXT**; `sensitive = true` only hides CLI output.\n1. **Best: keep the secret out of Terraform** — create an empty Secrets Manager/Vault container, let the app or another process populate the value.\n2. **Reference via `data` source** rather than defining it.\n3. **Generate + store** (`random_password` → Secrets Manager), never `output` it.\n4. **Mandatory: protect state** — KMS encryption, bucket policy limiting reads to the pipeline role, versioning, access logs. Treat the state bucket as a credential store.\n• Never hardcode secrets in `.tf` or commit `.tfvars`."
+  },
+  {
+    "id": "tfm-in-cicd",
+    "category": "terraform",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "cicd",
+      "automation"
+    ],
+    "question": "How do you run Terraform in a CI/CD pipeline safely?",
+    "answer": "<p>The standard, safe pattern:</p><ol><li><strong>On PR</strong> — <code class=\"inline\">fmt -check</code>, <code class=\"inline\">validate</code>, security scan (Checkov/tfsec), then <code class=\"inline\">plan -out=tfplan</code>. Post the plan as a PR comment so a human reviews <em>exactly</em> what will change.</li><li><strong>On merge to main</strong> — <code class=\"inline\">apply tfplan</code> using the <em>saved</em> plan file. Never re-plan at apply time: the world could have changed, and you'd be executing something nobody approved.</li><li><strong>Production</strong> — a manual approval gate (protected environment) before apply.</li></ol><p>Controls that make it safe:</p><ul><li><strong>OIDC/workload identity</strong> for cloud credentials — no long-lived keys in the CI system.</li><li><strong>Separate roles per environment</strong>; the dev pipeline physically cannot touch prod.</li><li><strong>State locking</strong> plus <code class=\"inline\">concurrency</code> limits so two pipelines never apply at once.</li><li><strong>Never <code class=\"inline\">-auto-approve</code> on prod</strong> without an approved saved plan.</li><li>Scheduled <code class=\"inline\">plan -detailed-exitcode</code> for drift alerting.</li></ul><p>Managed options — Terraform Cloud, Spacelift, Atlantis, env0 — give you plan-in-PR, policy-as-code (OPA/Sentinel), and RBAC out of the box.</p>",
+    "tip": "The detail that shows real experience: 'apply the saved plan file, not a fresh plan'. It's the difference between a reviewed change and a surprise.",
+    "code": "jobs:\n  plan:\n    runs-on: ubuntu-latest\n    permissions: { id-token: write, contents: read, pull-requests: write }\n    steps:\n      - uses: actions/checkout@v4\n      - uses: aws-actions/configure-aws-credentials@v4\n        with:\n          role-to-assume: arn:aws:iam::111122223333:role/tf-plan   # OIDC, read-mostly\n          aws-region: ap-south-1\n      - run: terraform init\n      - run: terraform fmt -check -recursive\n      - run: terraform validate\n      - uses: bridgecrewio/checkov-action@master\n      - run: terraform plan -out=tfplan -var-file=env/prod.tfvars\n      - uses: actions/upload-artifact@v4\n        with: { name: tfplan, path: tfplan }\n\n  apply:\n    needs: plan\n    if: github.ref == 'refs/heads/main'\n    environment: production          # manual approval gate\n    concurrency: terraform-prod      # never two applies at once\n    steps:\n      - uses: actions/download-artifact@v4\n        with: { name: tfplan }\n      - run: terraform apply tfplan   # the APPROVED plan, not a new one",
+    "lang": "yaml",
+    "revise": "**Terraform in CI/CD**:\n• **On PR** — `fmt -check` → `validate` → **security scan (Checkov/tfsec)** → `plan -out=tfplan`, posted as a PR comment for review.\n• **On merge** — **`apply tfplan`** using the **saved** plan. Never re-plan at apply time — you'd execute something nobody approved.\n• **Prod** — manual approval gate (protected environment).\n• Controls: **OIDC** (no long-lived keys), **separate role per environment**, **state locking + `concurrency`**, no `-auto-approve` on prod, scheduled drift plan.\n• Managed: Terraform Cloud, Atlantis, Spacelift (plan-in-PR, OPA/Sentinel policy, RBAC)."
+  },
+  {
+    "id": "tfm-providers",
+    "category": "terraform",
+    "difficulty": "intermediate",
+    "tags": [
+      "providers",
+      "versioning",
+      "lockfile"
+    ],
+    "question": "What are Terraform providers? How do you pin versions and use multiple regions?",
+    "answer": "<p>A <strong>provider</strong> is the plugin that translates Terraform's resource model into a specific API — AWS, Azure, Google, Kubernetes, Helm, GitHub, Datadog. Terraform core knows nothing about AWS; the provider does all of it.</p><p><strong>Version pinning</strong> uses two mechanisms:</p><ul><li><code class=\"inline\">required_providers</code> with a constraint — <code class=\"inline\">~&gt; 5.0</code> means \"&gt;= 5.0, &lt; 6.0\" (allow minor/patch, block breaking major).</li><li><code class=\"inline\">.terraform.lock.hcl</code> — records the <em>exact</em> resolved versions and checksums. <strong>Commit this file.</strong> It's what guarantees your laptop and CI use identical provider versions.</li></ul><p><strong>Multiple regions/accounts</strong> use provider <code class=\"inline\">alias</code>: declare a second provider block with an alias and pass it explicitly to resources or modules. Common for a replica in another region, or an ACM certificate that must live in <code class=\"inline\">us-east-1</code> for CloudFront.</p><p>Also pin <code class=\"inline\">required_version</code> for Terraform itself — a state file written by a newer version can't be read by an older one.</p>",
+    "tip": "Committing .terraform.lock.hcl is a small thing people forget, and it's exactly what causes 'works on my machine' in Terraform — a teammate silently gets a newer provider with different defaults.",
+    "code": "terraform {\n  required_version = \"~> 1.9\"\n  required_providers {\n    aws        = { source = \"hashicorp/aws\",        version = \"~> 5.60\" }\n    kubernetes = { source = \"hashicorp/kubernetes\", version = \"~> 2.31\" }\n  }\n}\n\nprovider \"aws\" {\n  region = \"ap-south-1\"\n  default_tags { tags = local.common_tags }   # tag everything, automatically\n}\n\nprovider \"aws\" {\n  alias  = \"us_east\"                          # CloudFront certs must be here\n  region = \"us-east-1\"\n}\n\nresource \"aws_acm_certificate\" \"cdn\" {\n  provider          = aws.us_east\n  domain_name       = var.domain\n  validation_method = \"DNS\"\n}\n\nmodule \"dr\" {\n  source    = \"./modules/app\"\n  providers = { aws = aws.us_east }\n}\n\n# terraform providers lock -platform=linux_amd64 -platform=darwin_arm64",
+    "lang": "hcl",
+    "revise": "**Provider** = plugin translating Terraform's model into a specific API (AWS, Azure, Kubernetes, Helm). Core knows nothing about the cloud.\n• **Pin** with `required_providers { version = \"~> 5.0\" }` (>= 5.0, < 6.0) **and commit `.terraform.lock.hcl`** (exact versions + checksums) — this is what stops 'works on my machine'.\n• **Multi-region/account** = provider **`alias`**, passed explicitly (`provider = aws.us_east`, or `providers = {}` to a module). Classic case: CloudFront certs must be in **us-east-1**.\n• Pin `required_version` too — newer state can't be read by older Terraform.\n• Bonus: `default_tags` tags every resource automatically."
+  },
+  {
+    "id": "tfm-data-sources",
+    "category": "terraform",
+    "difficulty": "beginner",
+    "tags": [
+      "data-sources",
+      "lookup"
+    ],
+    "question": "What is a data source? How is it different from a resource?",
+    "answer": "<p>A <strong>resource</strong> is something Terraform <em>creates and manages</em> — it's in state and Terraform will modify or destroy it. A <strong>data source</strong> only <em>reads</em> existing infrastructure; Terraform never creates, changes, or deletes it.</p><p>Use data sources to:</p><ul><li><strong>Look up values dynamically</strong> instead of hardcoding — the latest AMI ID, the current account ID, available AZs in this region.</li><li><strong>Reference infrastructure owned by another team or stack</strong> — an existing VPC, a shared security group, a manually created hosted zone.</li><li><strong>Read outputs from another Terraform state</strong> (<code class=\"inline\">terraform_remote_state</code>).</li></ul><p>Data sources are resolved during <code class=\"inline\">plan</code>, so their values are available to compute the diff — which is why a data source that depends on a not-yet-created resource can force a two-stage apply.</p>",
+    "tip": "The AMI lookup is the canonical example: hardcoding ami-0abc123 means your code rots and differs per region. A data source with a name filter and most_recent = true keeps it correct everywhere.",
+    "code": "data \"aws_ami\" \"al2023\" {\n  most_recent = true\n  owners      = [\"amazon\"]\n  filter {\n    name   = \"name\"\n    values = [\"al2023-ami-*-x86_64\"]\n  }\n}\n\ndata \"aws_availability_zones\" \"available\" {\n  state = \"available\"\n}\n\ndata \"aws_caller_identity\" \"current\" {}\ndata \"aws_region\" \"current\" {}\n\n# reference a VPC another team owns\ndata \"aws_vpc\" \"shared\" {\n  tags = { Name = \"shared-services\" }\n}\n\nresource \"aws_instance\" \"app\" {\n  ami               = data.aws_ami.al2023.id\n  availability_zone = data.aws_availability_zones.available.names[0]\n  tags = { Account = data.aws_caller_identity.current.account_id }\n}",
+    "lang": "hcl",
+    "revise": "**Resource vs data source**:\n• **`resource`** — Terraform **creates, updates, destroys** it; it lives in state.\n• **`data`** — **read-only** lookup of existing infrastructure; never created or destroyed by Terraform.\n• Use for: **dynamic lookups** (latest AMI, current account ID, available AZs) instead of hardcoding, **infra owned by another team**, and **`terraform_remote_state`** outputs.\n• Resolved during **plan**, so values feed the diff.\n• **Interview tip**: hardcoding `ami-0abc123` rots and breaks per-region — a `data \"aws_ami\"` with `most_recent` fixes it."
+  },
+  {
+    "id": "tfm-provisioners",
+    "category": "terraform",
+    "difficulty": "intermediate",
+    "tags": [
+      "provisioners",
+      "anti-pattern",
+      "packer"
+    ],
+    "question": "What are provisioners, and why does HashiCorp call them a last resort?",
+    "answer": "<p>Provisioners run scripts as part of resource creation — <code class=\"inline\">remote-exec</code> (SSH into the machine), <code class=\"inline\">local-exec</code> (run on the Terraform host), <code class=\"inline\">file</code> (copy a file up).</p><p>Why they're discouraged:</p><ul><li><strong>They break the declarative model.</strong> Terraform can't see what a script did, so it isn't in state and drift is invisible.</li><li><strong>Not idempotent</strong> — the script only runs at creation, so changing it does nothing to existing resources.</li><li><strong>Fragile</strong> — they need SSH/WinRM connectivity, credentials, and correct security groups at create time. A failed provisioner marks the resource <strong>tainted</strong>, so the next apply destroys and recreates it.</li><li>They turn infrastructure provisioning into configuration management, which is a different job.</li></ul><p><strong>Do this instead:</strong> bake configuration into the image with <strong>Packer</strong> (immutable infrastructure), use <strong><code class=\"inline\">user_data</code>/cloud-init</strong> for boot-time setup, or hand off to a proper config-management tool (Ansible) after Terraform provisions. For containers, the Dockerfile is the image build.</p>",
+    "tip": "'Terraform provisions, Packer bakes, Ansible configures' — one sentence that shows you know where each tool's boundary is. That framing is what the question is really testing.",
+    "code": "# ❌ avoid — fragile, invisible to state, only runs at create\nresource \"aws_instance\" \"web\" {\n  provisioner \"remote-exec\" {\n    inline = [\"sudo apt-get update\", \"sudo apt-get install -y nginx\"]\n    connection { type = \"ssh\", host = self.public_ip, private_key = file(var.key) }\n  }\n}\n\n# ✅ preferred — cloud-init at boot, or a pre-baked AMI\nresource \"aws_instance\" \"web\" {\n  ami       = data.aws_ami.baked.id      # built by Packer, nginx already inside\n  user_data = templatefile(\"${path.module}/init.sh.tftpl\", {\n    app_env = var.environment\n  })\n  user_data_replace_on_change = true\n}",
+    "lang": "hcl",
+    "revise": "**Provisioners** (`remote-exec`, `local-exec`, `file`) run scripts during resource creation — **a last resort**:\n• They **break the declarative model** (Terraform can't see what the script did → invisible drift), are **not idempotent** (only run at create), and are **fragile** (need SSH/WinRM + creds; a failure **taints** the resource → destroy + recreate next apply).\n• **Instead**: bake the image with **Packer** (immutable infra), use **`user_data`/cloud-init** for boot-time setup, or hand off to **Ansible**.\n• **Interview tip**: **'Terraform provisions, Packer bakes, Ansible configures.'**"
+  },
+  {
+    "id": "tfm-functions-expressions",
+    "category": "terraform",
+    "difficulty": "intermediate",
+    "tags": [
+      "hcl",
+      "functions",
+      "dynamic"
+    ],
+    "question": "What HCL expressions and functions do you use most — for, dynamic blocks, try, templatefile?",
+    "answer": "<p>HCL is declarative but has real expression power:</p><ul><li><strong><code class=\"inline\">for</code> expressions</strong> — transform lists/maps: <code class=\"inline\">[for s in var.subnets : s.id]</code> or build a map with <code class=\"inline\">{ for k, v in ... : k =&gt; v }</code>.</li><li><strong><code class=\"inline\">dynamic</code> blocks</strong> — generate repeated <em>nested</em> blocks (ingress rules, tags) from a variable. Use sparingly; they hurt readability fast.</li><li><strong>Conditionals</strong> — <code class=\"inline\">var.env == \"prod\" ? 3 : 1</code>.</li><li><strong><code class=\"inline\">templatefile()</code></strong> — render an external file with variables (user-data scripts, config files, policy JSON). Much cleaner than heredocs inline.</li><li><strong><code class=\"inline\">try()</code> / <code class=\"inline\">coalesce()</code> / <code class=\"inline\">lookup()</code></strong> — safe fallbacks for values that may not exist.</li><li><strong>Collection functions</strong> — <code class=\"inline\">merge</code>, <code class=\"inline\">concat</code>, <code class=\"inline\">flatten</code>, <code class=\"inline\">toset</code>, <code class=\"inline\">zipmap</code>, <code class=\"inline\">cidrsubnet</code> (the last one is essential for VPC design).</li></ul>",
+    "tip": "cidrsubnet() is worth knowing by name — calculating subnet CIDRs by hand across 3 AZs is exactly the manual, error-prone work IaC is supposed to eliminate.",
+    "code": "locals {\n  # for expression → list\n  subnet_ids = [for s in aws_subnet.private : s.id]\n\n  # for expression → map, with a filter\n  prod_services = { for k, v in var.services : k => v if v.enabled }\n\n  # auto-calculate /24 subnets from the VPC CIDR\n  subnet_cidrs = [for i, az in var.azs : cidrsubnet(var.vpc_cidr, 8, i)]\n\n  common_tags = merge(var.extra_tags, { ManagedBy = \"terraform\" })\n}\n\n# dynamic block — repeated nested blocks from data\nresource \"aws_security_group\" \"app\" {\n  dynamic \"ingress\" {\n    for_each = var.allowed_ports\n    content {\n      from_port   = ingress.value.port\n      to_port     = ingress.value.port\n      protocol    = \"tcp\"\n      cidr_blocks = ingress.value.cidrs\n    }\n  }\n}\n\n# external template instead of an inline heredoc\nuser_data = templatefile(\"${path.module}/init.sh.tftpl\", {\n  cluster_name = var.cluster_name\n  region       = data.aws_region.current.name\n})\n\n# safe fallback\nimage_tag = try(var.overrides[\"image_tag\"], \"latest\")",
+    "lang": "hcl",
+    "revise": "**HCL expressions worth knowing**:\n• **`for` expressions** — `[for s in var.subnets : s.id]`, `{ for k,v in ... : k => v if v.enabled }`.\n• **`dynamic` blocks** — generate repeated **nested** blocks (ingress rules) from a variable. Use sparingly, hurts readability.\n• **Conditional** — `var.env == \"prod\" ? 3 : 1`.\n• **`templatefile()`** — render an external script/config with variables (cleaner than inline heredocs).\n• **`try()` / `coalesce()` / `lookup()`** — safe fallbacks.\n• **`merge`, `flatten`, `toset`, `cidrsubnet`** — `cidrsubnet(var.vpc_cidr, 8, i)` auto-calculates per-AZ subnets."
+  },
+  {
+    "id": "tfm-failed-apply",
+    "category": "terraform",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "troubleshooting",
+      "state"
+    ],
+    "question": "terraform apply failed halfway through. What's the state of your infrastructure and how do you recover?",
+    "answer": "<p>Terraform applies resources incrementally and <strong>writes state as it goes</strong>, so a mid-apply failure leaves you <em>partially applied</em>: everything created before the failure exists and is in state; everything after it doesn't exist.</p><p>Recovery steps:</p><ol><li><strong>Don't panic-destroy.</strong> State is usually fine — Terraform is designed for this.</li><li><strong>Read the actual error</strong> — most are mundane: insufficient IAM permissions, a name collision, a quota limit, a dependency that wasn't ready, an invalid value the API rejected.</li><li><strong>Run <code class=\"inline\">terraform plan</code> again.</strong> It will show only the remaining work. Fix the underlying cause and re-apply — Terraform is idempotent and will continue from where it stopped.</li><li><strong>If a resource was created but not recorded</strong> (rare — an API timeout after creation succeeded), the next apply fails with \"already exists\". Fix by <code class=\"inline\">terraform import</code>-ing it into state.</li><li><strong>If state is locked</strong> because the process died, <code class=\"inline\">force-unlock &lt;ID&gt;</code> — after verifying nothing is actually running.</li><li><strong>If state is genuinely corrupted</strong>, restore the previous version from the versioned S3 bucket (this is why versioning is mandatory).</li></ol>",
+    "tip": "The reassuring, correct framing is 'partial apply, not corrupt state — re-run plan and it shows only what's left'. Panic-destroying or hand-editing state is how a small failure becomes an outage.",
+    "code": "terraform plan                       # what's actually left to do?\nterraform state list                 # what got created before the failure\n\nTF_LOG=DEBUG terraform apply 2> tf-debug.log   # full API traffic\n\n# resource exists in cloud but not in state\nterraform import aws_s3_bucket.logs my-logs-bucket\n\n# stuck lock after a killed CI job\nterraform force-unlock 8f3a1b2c-...\n\n# restore a previous state version (S3 versioning)\naws s3api list-object-versions --bucket acme-tfstate --prefix platform/terraform.tfstate\naws s3api get-object --bucket acme-tfstate --key platform/terraform.tfstate \\\n  --version-id <ID> restored.tfstate\nterraform state push restored.tfstate",
+    "lang": "bash",
+    "revise": "**Apply failed halfway** = **partially applied, not corrupt**. Terraform writes state as it goes: resources created before the failure exist and are in state; the rest don't.\n1. **Don't panic-destroy**; read the actual error (IAM perms, name collision, quota, invalid value).\n2. **`terraform plan` again** — it shows only the remaining work; fix the cause and re-apply (idempotent).\n3. Created-but-not-recorded (API timeout) → **`terraform import`**.\n4. Stuck lock → **`force-unlock <ID>`** (verify nothing is running).\n5. Corrupt state → **restore from S3 bucket versioning** (why versioning is mandatory)."
+  },
+  {
+    "id": "tfm-vs-others",
+    "category": "terraform",
+    "difficulty": "intermediate",
+    "tags": [
+      "comparison",
+      "ansible",
+      "cloudformation"
+    ],
+    "question": "Terraform vs Ansible vs CloudFormation vs Pulumi — when do you use each?",
+    "answer": "<table><thead><tr><th>Tool</th><th>Type</th><th>Best at</th></tr></thead><tbody><tr><td><strong>Terraform</strong></td><td>Declarative provisioning, multi-cloud</td><td>Creating infrastructure — VPCs, clusters, databases, DNS, SaaS resources. State-tracked, huge provider ecosystem.</td></tr><tr><td><strong>Ansible</strong></td><td>Procedural config management, agentless</td><td>Configuring <em>inside</em> machines — packages, files, services, app deployment, orchestrated ops runbooks.</td></tr><tr><td><strong>CloudFormation</strong></td><td>Declarative, AWS-native</td><td>Pure-AWS shops wanting no state file to manage and native drift detection/rollback. Locked to AWS.</td></tr><tr><td><strong>Pulumi / CDK</strong></td><td>Declarative via real languages</td><td>Teams who want TypeScript/Python with loops, types, and unit tests instead of HCL.</td></tr></tbody></table><p>The honest answer is that Terraform and Ansible are <strong>complements, not competitors</strong>: Terraform creates the servers, Ansible configures them. Many teams use both, plus Packer for baking images.</p>",
+    "tip": "If asked 'why Terraform over CloudFormation?' — multi-cloud/multi-provider (you can manage AWS, Cloudflare, Datadog, and GitHub in one config), better modularity, and a far larger community. The counter-argument (no state to manage) is worth acknowledging.",
+    "code": "# Terraform provisions the instance\nresource \"aws_instance\" \"web\" { ami = data.aws_ami.base.id }\n\noutput \"web_ip\" { value = aws_instance.web.private_ip }\n\n# Ansible then configures it (dynamic inventory reads from AWS tags)\n# ansible-playbook -i aws_ec2.yml site.yml\n# - hosts: tag_Role_web\n#   tasks:\n#     - name: install nginx\n#       ansible.builtin.package: { name: nginx, state: present }",
+    "lang": "hcl",
+    "revise": "• **Terraform** — declarative **provisioning**, multi-cloud, state-tracked. Creates VPCs, clusters, DBs, DNS, SaaS resources.\n• **Ansible** — procedural **configuration management**, agentless. Configures **inside** machines: packages, files, services, deploys.\n• **CloudFormation** — AWS-native, **no state file to manage**, native rollback; locked to AWS.\n• **Pulumi/CDK** — real languages (TS/Python) with types + unit tests instead of HCL.\n• **Interview tip**: Terraform and Ansible are **complements** — *Terraform creates the servers, Ansible configures them* (+ Packer bakes images)."
+  },
+  {
+    "id": "tfm-best-practices",
+    "category": "terraform",
+    "difficulty": "advanced",
+    "tags": [
+      "V.Imp",
+      "best-practices",
+      "security"
+    ],
+    "question": "What are your Terraform best practices for a production codebase?",
+    "answer": "<p><strong>Structure</strong></p><ul><li>Reusable versioned modules + one root config per environment; separate state per environment <em>and</em> per component (network / data / apps) to limit blast radius.</li><li>Consistent naming and mandatory tags via <code class=\"inline\">default_tags</code> and <code class=\"inline\">locals</code> — untagged resources are how cloud bills become unattributable.</li></ul><p><strong>Safety</strong></p><ul><li>Remote encrypted state with locking and bucket versioning; <code class=\"inline\">prevent_destroy</code> on data stores.</li><li>Pin provider and module versions; commit <code class=\"inline\">.terraform.lock.hcl</code>.</li><li>Plan in PR, apply the saved plan, manual approval for prod.</li></ul><p><strong>Quality</strong></p><ul><li><code class=\"inline\">fmt</code> + <code class=\"inline\">validate</code> + <code class=\"inline\">tflint</code> + <code class=\"inline\">checkov</code>/<code class=\"inline\">tfsec</code> in CI; policy-as-code (OPA/Sentinel) for org rules like \"no public S3 buckets\".</li><li>Document module inputs/outputs (<code class=\"inline\">terraform-docs</code>).</li><li>Variable <code class=\"inline\">validation</code> blocks to fail fast on bad input.</li></ul><p><strong>Discipline</strong></p><ul><li>No manual console changes in prod — enforce with read-only access + scheduled drift detection.</li><li>Never commit <code class=\"inline\">.tfstate</code> or secret-bearing <code class=\"inline\">.tfvars</code>.</li><li>Avoid <code class=\"inline\">-target</code> except in emergencies; it produces state that doesn't match a full apply.</li></ul>",
+    "tip": "Pick three practices and explain the incident each one prevents (state loss, blast radius, drift). Reciting a 15-item checklist sounds memorised; explaining WHY sounds like you've operated it.",
+    "code": "# CI quality gate\nterraform fmt -check -recursive\nterraform validate\ntflint --recursive\ncheckov -d . --framework terraform --soft-fail-on LOW\nterraform-docs markdown table --output-file README.md modules/vpc\n\n# tag everything, automatically\nprovider \"aws\" {\n  default_tags {\n    tags = {\n      Project     = var.project\n      Environment = var.environment\n      ManagedBy   = \"terraform\"\n      CostCenter  = var.cost_center\n    }\n  }\n}",
+    "lang": "bash",
+    "revise": "**Production Terraform practices**:\n• **Structure** — versioned reusable modules + root config per env; **separate state per env AND per component** (blast radius); mandatory tags via `default_tags`.\n• **Safety** — remote **encrypted state + locking + versioning**; **`prevent_destroy`** on data stores; **pin providers/modules** + commit `.terraform.lock.hcl`; plan-in-PR → apply the **saved** plan → prod approval.\n• **Quality** — `fmt`/`validate`/**tflint**/**checkov-tfsec** in CI; **policy-as-code** (OPA/Sentinel) for 'no public S3'; `terraform-docs`; variable `validation`.\n• **Discipline** — no console changes in prod (read-only + drift detection), never commit state/secret tfvars, **avoid `-target`** outside emergencies."
+  }
+]

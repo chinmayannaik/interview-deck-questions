@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "version": 73,
-  "updatedAt": "2026-07-31T12:57:11.285Z",
-  "totalQuestions": 1782,
-  "contentHash": "62c0a7b22915f64e7fb683fb7c3a8eaf15d64d1f",
+  "version": 78,
+  "updatedAt": "2026-08-06T08:16:46.666Z",
+  "totalQuestions": 1945,
+  "contentHash": "46061fb9e180f8f7079c5120c53badf08012a4c3",
   "groups": [
     {
       "id": "frontend",
@@ -51,22 +51,22 @@
       "id": "java-angular",
       "file": "packs/java-angular.json",
       "label": "Java + Angular",
-      "count": 1027,
-      "hash": "ae5da0dfd601"
+      "count": 1056,
+      "hash": "7655bb25c5f2"
     },
     {
       "id": "angular-developer",
       "file": "packs/angular-developer.json",
       "label": "Angular Developer",
-      "count": 565,
-      "hash": "0c5721f80805"
+      "count": 594,
+      "hash": "dcc04e378a20"
     },
     {
       "id": "java-backend",
       "file": "packs/java-backend.json",
       "label": "Java Backend Developer",
-      "count": 608,
-      "hash": "ef4083c12fbd"
+      "count": 637,
+      "hash": "5c4d377a98fd"
     }
   ],
   "categories": [
@@ -212,8 +212,17 @@
       "label": "Python",
       "group": "backend",
       "color": "#3776AB",
-      "count": 35,
-      "hash": "2e314ab42038"
+      "count": 59,
+      "hash": "ae206ab246f1"
+    },
+    {
+      "id": "pycoding",
+      "file": "python-coding.json",
+      "label": "Python Coding",
+      "group": "backend",
+      "color": "#4B8BBE",
+      "count": 24,
+      "hash": "30f5abecc071"
     },
     {
       "id": "nodejs",
@@ -333,6 +342,42 @@
       "hash": "ada49df3ca28"
     },
     {
+      "id": "cicd",
+      "file": "cicd.json",
+      "label": "CI/CD",
+      "group": "devops",
+      "color": "#2088FF",
+      "count": 20,
+      "hash": "efe8c96e14fa"
+    },
+    {
+      "id": "linux",
+      "file": "linux.json",
+      "label": "Linux & Shell",
+      "group": "devops",
+      "color": "#4B5563",
+      "count": 20,
+      "hash": "395e22a48be0"
+    },
+    {
+      "id": "terraform",
+      "file": "terraform.json",
+      "label": "Terraform (IaC)",
+      "group": "devops",
+      "color": "#7B42BC",
+      "count": 20,
+      "hash": "bbdb9a11d051"
+    },
+    {
+      "id": "observability",
+      "file": "observability.json",
+      "label": "Observability",
+      "group": "devops",
+      "color": "#E6522C",
+      "count": 20,
+      "hash": "fa83bfc178f1"
+    },
+    {
       "id": "behavioral",
       "file": "behavioral.json",
       "label": "Behavioral",
@@ -383,8 +428,8 @@
       "label": "Fundamentals",
       "group": "testing",
       "color": "#0F766E",
-      "count": 24,
-      "hash": "f8f5183ea2bf"
+      "count": 30,
+      "hash": "8dad43e1e5ab"
     },
     {
       "id": "manual-qa",
@@ -473,8 +518,17 @@
       "label": "System Design",
       "group": "architecture",
       "color": "#0F172A",
-      "count": 27,
-      "hash": "e0d4b6fdceb0"
+      "count": 39,
+      "hash": "2a180d068168"
+    },
+    {
+      "id": "system-design-problems",
+      "file": "system-design-problems.json",
+      "label": "Design Problems",
+      "group": "architecture",
+      "color": "#B45309",
+      "count": 17,
+      "hash": "c805070179a7"
     }
   ]
 }
